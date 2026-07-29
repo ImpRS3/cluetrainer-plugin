@@ -1,0 +1,3 @@
+[submodule "runescape-api-stubs"]
+	path = runescape-api-stubs
+	url = git@github.com:Friendliness/runescape-api-stubs.git
