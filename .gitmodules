@@ -1,0 +1,3 @@
+[submodule "dependencies/runescape-api-stubs"]
+	path = dependencies/runescape-api-stubs
+	url = git@github.com:Friendliness/runescape-api-stubs.git

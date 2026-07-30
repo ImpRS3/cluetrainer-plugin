@@ -5,6 +5,7 @@ local abstraction = require("abstraction")
 local methods = require("data/hard_methods")
 local PathMesh = require("model/PathMesh")
 
+
 --- @type Method?
 local active_method = nil
 
@@ -38,9 +39,16 @@ tileShape.positions = { Vector3.new(-250, 0, -250), Vector3.new(250, 0, -250), V
 tileShape.rgba = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF }
 tileShape.lines = { 0, 1, 1, 2, 2, 3, 3, 0 }
 
-function OnEntityDraw(entityEvent)
+
+
+
+Event.EntityDraw.Subscribe("myEvent", function(entityEvent)
     if entityEvent.entityType == EntityType.NPC then
         -- log("Drawing entity: " .. entityEvent.npcEntity.displayName)
+
+        if entityEvent.npcEntity.displayName == "" then
+            return true
+        end
 
         ShapeList.Draw({
             shapeData = tileShape,
@@ -48,16 +56,14 @@ function OnEntityDraw(entityEvent)
             translation = entityEvent.npcEntity.position + Vector3.new(0, 30, 0),
             ignoreDepth = false,
             -- Draw thicker lines
-            lineWidth = 4,
+            lineWidth = 2,
             -- Orange
-            colour = 0xFF8800FF
+            colour = 0xFF880080
         })
     end
     -- Remember to return true to make sure the entity keeps drawing
     return true
-end
-
-Event.EntityDraw.Subscribe("myEvent", OnEntityDraw)
+end)
 
 ---@type Shape?
 local shape = nil
@@ -70,14 +76,22 @@ Event.Draw.Subscribe("draw_handler", function(event)
             if not shape then
                 local builder = PathMesh.buildPathMesh(path)
                 local a = builder:finalize()
-                log(a)
+
                 shape = a:shapeData()
+
+                log(shape)
+                log(#shape.positions)
+                log(#shape.colors)
+                log(#shape.triangleIndices)
+                log(#shape.lineIndices)
             end
 
-            log(shape)
             if shape then
                 ShapeList.Draw({
-                    shapeData = shape,
+                    shapePositions = shape.positions,
+                    shapeRGBA = shape.colors,
+                    shapeTris = shape.triangleIndices,
+                    shapeLines = shape.lineIndices,
                     lineWidth = 4,
                     ignoreDepth = false
                 })

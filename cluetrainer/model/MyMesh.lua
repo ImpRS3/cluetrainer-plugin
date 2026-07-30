@@ -41,7 +41,7 @@ function Mesh:shapeData()
         local lines = {}
 
         for _, vertex in ipairs(self.vertices) do
-            table.insert(positions, vertex.pos)
+            table.insert(positions, Vector3.new(vertex.pos.x, vertex.pos.y, vertex.pos.z))
             local color = vertex.color_rgba
             local color_int = (color.r << 24) | (color.g << 16) | (color.b << 8) | color.a
             table.insert(colors, color_int)

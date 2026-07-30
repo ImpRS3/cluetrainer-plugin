@@ -9,3 +9,4 @@
 ---@class GieliCoordinates
 ---@field latitude { degrees: number, minutes: number, direction: "north"|"south" }
 ---@field longitude { degrees: number, minutes: number, direction: "east"|"west" }
+
