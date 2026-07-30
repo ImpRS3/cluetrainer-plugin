@@ -1,7 +1,7 @@
----@class Vector2
+---@class MyVector2
 ---@field x number
 ---@field y number
 
 ---@class Rectangle
----@field topleft Vector2
----@field botright Vector2
+---@field topleft MyVector2
+---@field botright MyVector2

@@ -3,6 +3,7 @@
 ---@alias Transportation.TeleportGroup.SpotId any
 ---@alias EntityTransportation any
 ---@alias CTRIcon.ID any
+---@alias MyCursorType string
 
 
 ---@class Path.Step.Base
@@ -50,7 +51,7 @@
 ---@field type "redclick"
 ---@field target EntityName
 ---@field where TileCoordinates
----@field how CursorType
+---@field how MyCursorType
 
 
 ---@class Path.Step.Powerburst : Path.Step.Base

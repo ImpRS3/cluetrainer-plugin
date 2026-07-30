@@ -1,6 +1,6 @@
 ---@alias floor_t 0|1|2|3
 
----@class TileCoordinates : Vector2
+---@class TileCoordinates : MyVector2
 ---@field level floor_t
 
 ---@class TileRectangle : Rectangle

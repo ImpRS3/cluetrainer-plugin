@@ -1,6 +1,3 @@
----@alias ClueAssumptions any
-
-
 ---@class MethodPack.Meta
 ---@field author string
 ---@field name string

@@ -3,6 +3,10 @@ local clues = require("data/clues")
 local util = require("util")
 local abstraction = require("abstraction")
 local methods = require("data/hard_methods")
+local PathMesh = require("model/PathMesh")
+
+--- @type Method?
+local active_method = nil
 
 Event.MiniMenuEntrySelected.Subscribe("hook", function(event)
     -- TODO: Check if a clue was opened, select method and render
@@ -23,31 +27,64 @@ Event.MiniMenuEntrySelected.Subscribe("hook", function(event)
 
         local method = util.find(methods.methods, function(method) return method["for"].clue == clue_id end)
 
-        log(method)
+        active_method = method
     end
 end)
 
-local a = Vector3.new(-200, 100, -200)
-local b = Vector3.new(200, 100, -200)
-local c = Vector3.new(200, 100, 200)
-local d = Vector3.new(-200, 100, 200)
+-- A basic tile shape
+local tileShape = ShapeData.new()
+tileShape.positions = { Vector3.new(-250, 0, -250), Vector3.new(250, 0, -250), Vector3.new(250, 0, 250), Vector3.new(
+    -250, 0, 250) }
+tileShape.rgba = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF }
+tileShape.lines = { 0, 1, 1, 2, 2, 3, 3, 0 }
 
-local mesh = ShapeData.new()
-mesh.positions = { a, b, c, d }
-mesh.rgba = { 0xFF0000FF, 0xFF0000FF, 0xFF0000FF, 0xFF0000FF }
-mesh.tris = {0, 1, 2, 0, 2, 3}
-mesh.lines = {0, 1, 1, 2, 2, 3, 3, 0}
+function OnEntityDraw(entityEvent)
+    if entityEvent.entityType == EntityType.NPC then
+        -- log("Drawing entity: " .. entityEvent.npcEntity.displayName)
 
-local handler = abstraction.subscribe(Event.Draw, function(
---- @param event DrawEvent
-    event)
+        ShapeList.Draw({
+            shapeData = tileShape,
+            -- Draw at the entity feet position, with a small vertical offset to avoid clipping
+            translation = entityEvent.npcEntity.position + Vector3.new(0, 30, 0),
+            ignoreDepth = false,
+            -- Draw thicker lines
+            lineWidth = 4,
+            -- Orange
+            colour = 0xFF8800FF
+        })
+    end
+    -- Remember to return true to make sure the entity keeps drawing
+    return true
+end
 
-    log(ShapeList.Draw{
-        shapeData = mesh,
-        translation = Player.GetEntity().position,
-        ignoreDepth = true,
-        lineWidth = 10
-    })
+Event.EntityDraw.Subscribe("myEvent", OnEntityDraw)
+
+---@type Shape?
+local shape = nil
+
+Event.Draw.Subscribe("draw_handler", function(event)
+    if active_method then
+        if active_method.type == "general_path" then
+            local path = active_method.main_path
+
+            if not shape then
+                local builder = PathMesh.buildPathMesh(path)
+                local a = builder:finalize()
+                log(a)
+                shape = a:shapeData()
+            end
+
+            log(shape)
+            if shape then
+                ShapeList.Draw({
+                    shapeData = shape,
+                    lineWidth = 4,
+                    ignoreDepth = false
+                })
+            end
+        end
+    end
 end)
+
 
 log("clue trainer loaded")

@@ -32,10 +32,9 @@ function util.to_plain_table(value)
     local result = {}
 
     for key, child in pairs(value) do
-      local plain_key = util.to_plain_table(key)
       local plain_value = util.to_plain_table(child)
 
-      result[plain_key] = plain_value
+      result[key] = plain_value
     end
 
     return result
@@ -131,6 +130,20 @@ function util.diff(a, b, path, out)
   end
 
   return out
+end
+
+function util.shallow_copy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
 end
 
 return util

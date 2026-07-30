@@ -1,0 +1,13 @@
+{
+  "Lua.completion.autoRequire": true,
+  "Lua.type.inferParamType": true,
+  "Lua.workspace.library": [],
+
+  "Lua.workspace.checkThirdParty": false,
+  "Lua.workspace.userThirdParty": [],
+
+  "Lua.workspace.ignoreDir": [
+    "**/.git/**",
+    "**/node_modules/**"
+  ]
+}

@@ -1,12 +1,27 @@
 {
 	"$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+	"workspace.ignoreDir": [
+		"dependencies/plugins/"
+	],
 	"workspace.library": [
-		"runescape-api-stubs/types.lua",
-		"runescape-api-stubs/generated/",
-		"runescape-api-stubs/consts/"
+		"dependencies/runescape-api-stubs/types.lua",
+		"dependencies/runescape-api-stubs/generated/"
+		//"dependencies/runescape-api-stubs/consts/"
 	],
 	"workspace.checkThirdParty": false,
-    "diagnostics.globals": [
-        "getObjType"
-    ]
+	"runtime.version": "Lua 5.4",
+	"runtime.builtin": {
+		"basic": "enable",
+		"table": "enable",
+		"string": "enable",
+		"math": "enable",
+		"io": "disable",
+		"os": "disable",
+		"package": "enable",
+		"debug": "disable"
+	},
+	"runtime.path": [
+		"cluetrainer/?.lua",
+		"cluetrainer/?/init.lua"
+	]
 }

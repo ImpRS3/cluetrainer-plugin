@@ -1,10 +1,14 @@
+local Mesh = require("model/MyMesh")
+local util = require("util")
+
 ---@class MutableMesh.VertexRef
 ---@field vertex Mesh.Vertex
 ---@field index integer
 
 ---@class MutableMesh
 ---@field private vertices Mesh.Vertex[]
----@field private indices integer[]
+---@field private triangle_indices integer[]
+---@field private line_indices integer[]
 local MutableMesh = {}
 MutableMesh.__index = MutableMesh
 
@@ -12,7 +16,8 @@ MutableMesh.__index = MutableMesh
 function MutableMesh.new()
     return setmetatable({
         vertices = {},
-        indices = {},
+        triangle_indices = {},
+        line_indices = {},
     }, MutableMesh)
 end
 
@@ -23,13 +28,13 @@ end
 
 ---@return integer
 function MutableMesh:triangle_count()
-    return #self.indices // 3
+    return #self.triangle_indices // 3
 end
 
----@param pos Mesh.Vector3
----@param color? Mesh.ColorRGBA
+---@param pos Vector3
+---@param color? ColorRGBA
 ---@return MutableMesh.VertexRef
-function MutableMesh:create_vertex(pos, color)
+function MutableMesh:createVertex(pos, color)
     ---@type Mesh.Vertex
     local vertex = {
         pos = pos,
@@ -49,7 +54,7 @@ end
 ---@param v1 MutableMesh.VertexRef
 ---@param v2 MutableMesh.VertexRef
 function MutableMesh:triangle(v0, v1, v2)
-    local indices = self.indices
+    local indices = self.triangle_indices
 
     indices[#indices + 1] = v0.index
     indices[#indices + 1] = v1.index
@@ -65,7 +70,7 @@ end
 ---@param v2 MutableMesh.VertexRef
 ---@param v3 MutableMesh.VertexRef
 function MutableMesh:quad(v0, v1, v2, v3)
-    local indices = self.indices
+    local indices = self.triangle_indices
 
     local function push(...)
         for i = 1, select("#", ...) do
@@ -77,7 +82,7 @@ function MutableMesh:quad(v0, v1, v2, v3)
     push(v0.index, v2.index, v1.index, v0.index, v3.index, v2.index)
 end
 
----@param offset Mesh.Vector3
+---@param offset Vector3
 ---@return self
 function MutableMesh:translate(offset)
     for _, vertex in ipairs(self.vertices) do
@@ -101,7 +106,7 @@ function MutableMesh:scale(factor)
     return self
 end
 
----@param color Mesh.ColorRGBA
+---@param color ColorRGBA
 ---@return self
 function MutableMesh:recolor(color)
     for _, vertex in ipairs(self.vertices) do
@@ -122,8 +127,8 @@ function MutableMesh:add(...)
             self.vertices[#self.vertices + 1] = vertex
         end
 
-        for _, index in ipairs(mesh.indices) do
-            self.indices[#self.indices + 1] = index + vertex_offset
+        for _, index in ipairs(mesh.triangle_indices) do
+            self.triangle_indices[#self.triangle_indices + 1] = index + vertex_offset
         end
     end
 
@@ -132,18 +137,11 @@ end
 
 ---@return Mesh
 function MutableMesh:finalize()
-    local vertices = {}
-    local indices = {}
-
-    for i, vertex in ipairs(self.vertices) do
-        vertices[i] = vertex
-    end
-
-    for i, index in ipairs(self.indices) do
-        indices[i] = index
-    end
-
-    return Mesh.new(vertices, indices)
+    return Mesh.new(
+        util.shallow_copy(self.vertices),
+        util.shallow_copy(self.triangle_indices),
+        util.shallow_copy(self.line_indices)
+    )
 end
 
 return MutableMesh

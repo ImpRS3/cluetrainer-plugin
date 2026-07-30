@@ -2,7 +2,6 @@ local clues = {}
 
 ---@alias TileArea any
 ---@alias Challenge any
----@alias CursorType any
 
 ---@alias ClueTier
 ---| "easy"
@@ -150,7 +149,7 @@ clues.ClueTier = {
 ---@field type "skilling"
 ---@field areas TileArea[]
 ---@field answer string
----@field cursor CursorType
+---@field cursor MyCursorType
 
 
 ---@alias Step
