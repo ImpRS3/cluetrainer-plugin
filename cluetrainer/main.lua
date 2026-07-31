@@ -100,5 +100,28 @@ Event.Draw.Subscribe("draw_handler", function(event)
     end
 end)
 
+Event.KeyDown.Subscribe("key_handler", function(event)
+    log("Key pressed: " .. event.gameKey)
+    if event.gameKey == GameKey.F10 then
+        log("F10 pressed, giving clues with value 0")
+            ExecuteConsoleCommand("!clearinv")
+        -- Find 20 keys from clue_map whose value is 0
+        local count = 0
+
+        local keys_with_minus_one = {}
+        for key, value in pairs(clue_map) do
+            if value == -1 then
+                table.insert(keys_with_minus_one, key)
+            end
+        end
+        
+        table.sort(keys_with_minus_one)
+        
+        for i = 1, math.min(20, #keys_with_minus_one) do
+            ExecuteConsoleCommand("!give " .. keys_with_minus_one[i])
+        end
+    end
+end)
+
 
 log("clue trainer loaded")
