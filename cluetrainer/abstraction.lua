@@ -7,8 +7,9 @@ local abstraction = {}
 ---@type integer
 local handler_counter = 0
 
----@param event EventSubscription
----@param handler fun(event: any): any
+---@generic T, RetT
+---@param event EventSubscription<T, RetT>
+---@param handler fun(event: T): RetT
 ---@return Handler
 function abstraction.subscribe(event, handler)
 
