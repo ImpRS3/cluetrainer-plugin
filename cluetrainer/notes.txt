@@ -20,6 +20,12 @@ Compass:
 - Area easy by item id
 - TRAIL_DESTCOORD Client var for target Coordinates (var.VarClient.TRAIL_DESTCOORD.value)
 
+Puzzles:
+Interface IDS:
+    SLIDE_PUZZLE = 1931,
+    LIGHTSOUT = 1933,
+    TRAIL17_SKYSCRAPERS = 1934,
+
 Towers:
 - State seems to be encoded in the item vars
     TRAIL17_SKYSCRAPERS_HINT_SLOT_4_RIGHT_PLAYER = -39767,
