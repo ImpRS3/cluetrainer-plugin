@@ -1,0 +1,9 @@
+Copyright (c) Lukas Gail
+
+All rights reserved.
+
+Subject to the terms of this License, the Licensor grants you a non-exclusive, non-transferable, revocable license to use the Software solely for your own purposes. 
+You may not:
+
+- modify, adapt, or create derivative works of the Software;
+- distribute, sublicense, rent, lease, lend, sell, or otherwise transfer the Software.
