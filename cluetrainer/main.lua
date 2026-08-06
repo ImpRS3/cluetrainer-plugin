@@ -5,7 +5,7 @@ local abstraction = require("abstraction")
 local methods = require("data/hard_methods")
 local PathMesh = require("model/PathMesh")
 local clue_detector = require("clue_detector")
-local towers_solver = require("solvers/towers_solver")
+local towers_solver = require("solvers/towers/towers_solver")
 
 clue_detector:init()
 towers_solver:init()
