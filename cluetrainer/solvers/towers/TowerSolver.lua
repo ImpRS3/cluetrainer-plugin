@@ -154,8 +154,7 @@ function towers_solver:init()
       if not solution then return end
 
       local canvas = ui.Canvas.new(content)
-      canvas:SetSize(300, 300)
-      canvas:AddOutline(0, 0, 300, 300, 1, 0xFF0000FF)
+      canvas:SetSize(content.width, content.height)
 
       local handler = abstraction.subscribe(Event.MiniMenuEntrySelected, function()
         maybeRefreshOverlay()

@@ -5,10 +5,13 @@ local abstraction = require("abstraction")
 local methods = require("data/hard_methods")
 local PathMesh = require("model/PathMesh")
 local clue_detector = require("clue_detector")
-local towers_solver = require("solvers/towers/towers_solver")
+local towers_solver = require("solvers/towers/TowerSolver")
+local lockbox_solver = require("solvers/lockbox/LockboxSolver")
+
 
 clue_detector:init()
 towers_solver:init()
+lockbox_solver:init()
 
 
 --- @type Method?
@@ -109,21 +112,6 @@ for key, value in pairs(clue_map) do
     end
 end
 table.sort(keys_with_minus_one)
-
-local counter = 1
-
-Event.MiniMenuEntrySelected.Subscribe("test", function(event)
-    if event.entry.verbText == "Cycle" or event.entry.verbText == "Walk here" then
-        -- Find 20 keys from clue_map whose value is 0
-        -- if counter < #keys_with_minus_one then
-        --     ExecuteConsoleCommand("!give " .. keys_with_minus_one[counter])
-        --     counter = counter + 1
-        -- end
-
-        log(var.VarClient["TRAIL_LIGHTSOUT_CLIENT_1"].value)
-        log(var.VarClient["TRAIL_LIGHTSOUT_CLIENT_2"].value)
-    end
-end)
 
 
 log("clue trainer loaded")
