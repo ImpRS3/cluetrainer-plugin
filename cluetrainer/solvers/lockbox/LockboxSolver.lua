@@ -112,8 +112,13 @@ local function maybeRefreshOverlay()
   }))
 end
 
+---@type {handler: Handler}?
+lockbox_solver.instance = nil
+
 function lockbox_solver:init()
-  abstraction.subscribe(Event.ServerLogic, function(event)
+  if lockbox_solver.instance ~= nil then return end
+
+  local handler = abstraction.subscribe(Event.ServerLogic, function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.LIGHTSOUT)
 
     if not interface then
@@ -148,6 +153,8 @@ function lockbox_solver:init()
       maybeRefreshOverlay()
     end
   end)
+
+  lockbox_solver.instance = { handler = handler }
 end
 
 return lockbox_solver

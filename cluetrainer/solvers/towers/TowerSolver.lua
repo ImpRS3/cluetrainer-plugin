@@ -131,8 +131,13 @@ local function maybeRefreshOverlay()
     { show_deltas = true, show_should = true })
 end
 
+---@type {handler: Handler}?
+towers_solver.instance = nil
+
 function towers_solver:init()
-  abstraction.subscribe(Event.ServerLogic, function(event)
+  if towers_solver.instance ~= nil then return end
+
+  local handler = abstraction.subscribe(Event.ServerLogic, function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.TRAIL17_SKYSCRAPERS)
 
     if not interface then
@@ -173,6 +178,8 @@ function towers_solver:init()
     -- TODO: The following call should be placed somewhere client-side when we figure out how to read client-side puzzle state
     maybeRefreshOverlay()
   end)
+
+  towers_solver.instance = { handler = handler }
 end
 
 return towers_solver
