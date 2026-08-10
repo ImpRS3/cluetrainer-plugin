@@ -1,11 +1,11 @@
 -- Copyright (c) 2024 ClueTrainer Contributors
 -- See LICENSE file in the project root for full license information.
 
-local abstraction   = require "abstraction"
 local clue_map      = require "clue_mapping"
 local clues         = require "data/clues"
-local util          = require "util"
-local orchestrator  = require "orchestrator"
+local orchestrator  = require "solving/orchestrator"
+local api_util      = require "util/api_util"
+local lua_util      = require "util/lua_util"
 
 ---@class ClueDetector
 ---@field initialized boolean
@@ -15,7 +15,7 @@ local clue_detector = {
 }
 
 function clue_detector:init()
-  self.mini_menu_handler = abstraction.subscribe(Event.MiniMenuEntrySelected, function(event)
+  self.mini_menu_handler = api_util.subscribe_managed(Event.MiniMenuEntrySelected, function(event)
     -- TODO: Check if a clue was opened, select method and render
 
     -- Only react on relevant clicks on clues
@@ -29,7 +29,7 @@ function clue_detector:init()
     local clue_id = clue_map[event.entry.componentData.objConfig.configName]
     if (not clue_id) then return end
 
-    local clue = util.find(clues, function(clue) return clue.id == clue_id end)
+    local clue = lua_util.find(clues, function(clue) return clue.id == clue_id end)
 
     -- Report clue to orchestrator
     if (clue) then orchestrator:setStep(clue) end

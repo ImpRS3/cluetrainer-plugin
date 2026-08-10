@@ -1,5 +1,5 @@
 local Mesh = require("model/MyMesh")
-local util = require("util")
+local lua_util = require("util/lua_util")
 
 ---@class MutableMesh.VertexRef
 ---@field vertex Mesh.Vertex
@@ -138,9 +138,9 @@ end
 ---@return Mesh
 function MutableMesh:finalize()
     return Mesh.new(
-        util.shallow_copy(self.vertices),
-        util.shallow_copy(self.triangle_indices),
-        util.shallow_copy(self.line_indices)
+        lua_util.shallow_copy(self.vertices),
+        lua_util.shallow_copy(self.triangle_indices),
+        lua_util.shallow_copy(self.line_indices)
     )
 end
 

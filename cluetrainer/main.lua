@@ -1,17 +1,18 @@
 local clue_map = require("clue_mapping")
 local clues = require("data/clues")
-local util = require("util")
-local abstraction = require("abstraction")
+local lua_util = require("util/lua_util")
 local methods = require("data/hard_methods")
 local PathMesh = require("model/PathMesh")
 local clue_detector = require("clue_detector")
-local towers_solver = require("solvers/towers/TowerSolver")
-local lockbox_solver = require("solvers/lockbox/LockboxSolver")
+local towers_solver = require("puzzles/towers/TowerSolver")
+local lockbox_solver = require("puzzles/lockbox/LockboxSolver")
+local knot_solver = require("puzzles/knots/KnotSolver")
 
 
 clue_detector:init()
 towers_solver:init()
 lockbox_solver:init()
+knot_solver:init()
 
 
 --- @type Method?
@@ -29,14 +30,10 @@ Event.MiniMenuEntrySelected.Subscribe("hook", function(event)
 
     if (not clue_id) then return end
 
-    local clue = util.find(clues, function(clue) return clue.id == clue_id end)
+    local clue = lua_util.find(clues, function(clue) return clue.id == clue_id end)
 
     if (clue) then
-        log(clue.text[1])
 
-        local method = util.find(methods.methods, function(method) return method["for"].clue == clue_id end)
-
-        active_method = method
     end
 end)
 
@@ -104,14 +101,5 @@ Event.Draw.Subscribe("draw_handler", function(event)
         end
     end
 end)
-
-local keys_with_minus_one = {}
-for key, value in pairs(clue_map) do
-    if value == -1 then
-        table.insert(keys_with_minus_one, key)
-    end
-end
-table.sort(keys_with_minus_one)
-
 
 log("clue trainer loaded")

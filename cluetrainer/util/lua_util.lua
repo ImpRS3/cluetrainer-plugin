@@ -1,12 +1,10 @@
--- util.lua
-
-local util = {}
+local lua_util = {}
 
 ---@generic T
 ---@param list T[]
 ---@param predicate fun(value: T, index: integer): boolean
 ---@return T?
-function util.find(list, predicate)
+function lua_util.find(list, predicate)
   for i, value in ipairs(list) do
     if predicate(value, i) then
       return value
@@ -16,7 +14,7 @@ function util.find(list, predicate)
   return nil
 end
 
-function util.to_plain_table(value)
+function lua_util.to_plain_table(value)
   local value_type = type(value)
 
   -- Values directly supported by most serializers.
@@ -32,7 +30,7 @@ function util.to_plain_table(value)
     local result = {}
 
     for key, child in pairs(value) do
-      local plain_value = util.to_plain_table(child)
+      local plain_value = lua_util.to_plain_table(child)
 
       result[key] = plain_value
     end
@@ -55,7 +53,7 @@ function util.to_plain_table(value)
         end)
 
         if ok then
-          result[name] = util.to_plain_table(field_value)
+          result[name] = lua_util.to_plain_table(field_value)
         end
       end
     end
@@ -66,7 +64,7 @@ function util.to_plain_table(value)
   return nil
 end
 
-function util.serializeTable(val, name, skipnewlines, depth)
+function lua_util.serializeTable(val, name, skipnewlines, depth)
   skipnewlines = skipnewlines or false
   depth = depth or 0
 
@@ -78,7 +76,7 @@ function util.serializeTable(val, name, skipnewlines, depth)
     tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
 
     for k, v in pairs(val) do
-      tmp = tmp .. util.serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
+      tmp = tmp .. lua_util.serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
     end
 
     tmp = tmp .. string.rep(" ", depth) .. "}"
@@ -95,7 +93,7 @@ function util.serializeTable(val, name, skipnewlines, depth)
   return tmp
 end
 
-function util.diff(a, b, path, out)
+function lua_util.diff(a, b, path, out)
   path = path or ""
   out = out or {}
 
@@ -119,7 +117,7 @@ function util.diff(a, b, path, out)
   for k, va in pairs(a) do
     seen[k] = true
     local p = path == "" and tostring(k) or (path .. "." .. tostring(k))
-    util.diff(va, b[k], p, out)
+    lua_util.diff(va, b[k], p, out)
   end
 
   for k, vb in pairs(b) do
@@ -132,7 +130,7 @@ function util.diff(a, b, path, out)
   return out
 end
 
-function util.deepEquals(a, b)
+function lua_util.deepEquals(a, b)
     if a == b then
         return true
     end
@@ -142,7 +140,7 @@ function util.deepEquals(a, b)
     end
 
     for k, v in pairs(a) do
-        if not util.deepEquals(v, b[k]) then
+        if not lua_util.deepEquals(v, b[k]) then
             return false
         end
     end
@@ -156,7 +154,7 @@ function util.deepEquals(a, b)
     return true
 end
 
-function util.shallow_copy(orig)
+function lua_util.shallow_copy(orig)
     local orig_type = type(orig)
     local copy
     if orig_type == 'table' then
@@ -170,4 +168,17 @@ function util.shallow_copy(orig)
     return copy
 end
 
-return util
+---@generic T
+---@generic U
+---@param list T[]
+---@param func fun(value: T, index: integer): U
+---@return U[]
+function lua_util.map(list, func)
+  local result = {}
+  for i, v in ipairs(list) do
+    table.insert(result, func(v, i))
+  end
+  return result
+end
+
+return lua_util

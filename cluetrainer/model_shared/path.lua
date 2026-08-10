@@ -77,7 +77,6 @@
 ---@field arrow? [TileCoordinates, TileCoordinates]
 ---@field arrow_color? string
 
-
 ---@alias Path.Step
 ---| Path.Step.Orientation
 ---| Path.Step.Ability

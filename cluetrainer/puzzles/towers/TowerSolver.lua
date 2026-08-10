@@ -1,6 +1,7 @@
 local abstraction         = require "abstraction"
-local util                = require "util"
+local lua_util            = require "util/lua_util"
 local Towers              = require "solvers/towers/Towers"
+local api_util            = require "util/api_util"
 
 local towers_solver       = {}
 
@@ -123,7 +124,7 @@ local function maybeRefreshOverlay()
   local current_state = getPuzzleState()
 
   -- Skip if no change detected
-  if util.deepEquals(current_state, active_puzzle.latestState) then return end
+  if lua_util.deepEquals(current_state, active_puzzle.latestState) then return end
 
   active_puzzle.latestState = current_state
 
@@ -137,7 +138,7 @@ towers_solver.instance = nil
 function towers_solver:init()
   if towers_solver.instance ~= nil then return end
 
-  local handler = abstraction.subscribe(Event.ServerLogic, function(event)
+  local handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.TRAIL17_SKYSCRAPERS)
 
     if not interface then
@@ -161,7 +162,7 @@ function towers_solver:init()
       local canvas = ui.Canvas.new(content)
       canvas:SetSize(content.width, content.height)
 
-      local handler = abstraction.subscribe(Event.MiniMenuEntrySelected, function()
+      local handler = api_util.subscribe_managed(Event.MiniMenuEntrySelected, function()
         maybeRefreshOverlay()
       end)
 

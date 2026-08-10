@@ -1,4 +1,4 @@
-local abstraction = {}
+local api_util = {}
 
 ---@class Handler 
 ---@field id string
@@ -11,7 +11,7 @@ local handler_counter = 0
 ---@param event EventSubscription<T, RetT>
 ---@param handler fun(event: T): RetT
 ---@return Handler
-function abstraction.subscribe(event, handler)
+function api_util.subscribe_managed(event, handler)
 
   while true do
     handler_counter = handler_counter + 1
@@ -30,5 +30,5 @@ function abstraction.subscribe(event, handler)
   end
 end
 
-return abstraction
+return api_util
 

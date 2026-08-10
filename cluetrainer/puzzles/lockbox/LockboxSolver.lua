@@ -1,16 +1,12 @@
-local abstraction    = require "abstraction"
-local util           = require "util"
+local lua_util       = require "util/lua_util"
 local Lockboxes      = require "solvers/lockbox/Lockboxes"
+local api_util       = require "util/api_util"
 
 local lockbox_solver = {}
 
 local function getTwoBit(value, i)
   return (value >> (i * 2)) & 0x3
 end
-
-local last = {
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-}
 
 ---@return LockboxState
 local function getPuzzleState()
@@ -36,7 +32,7 @@ local TL_OFFSET_IN_CANVAS = {
   y = 17,
 }
 
----Draws the current state of the towers puzzle.
+---Draws the current state of the lockbox puzzle.
 ---@param canvas Canvas
 ---@param solution LockboxSolution
 local function draw(canvas, solution)
@@ -101,7 +97,7 @@ local function maybeRefreshOverlay()
   local current_state = getPuzzleState()
 
   -- Skip if no change detected
-  if util.deepEquals(current_state, active_puzzle.latestState) then return end
+  if lua_util.deepEquals(current_state, active_puzzle.latestState) then return end
 
   active_puzzle.latestState = current_state
 
@@ -118,7 +114,7 @@ lockbox_solver.instance = nil
 function lockbox_solver:init()
   if lockbox_solver.instance ~= nil then return end
 
-  local handler = abstraction.subscribe(Event.ServerLogic, function(event)
+  local handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.LIGHTSOUT)
 
     if not interface then
@@ -140,7 +136,7 @@ function lockbox_solver:init()
 
       log(content.width .. "x" .. content.height)
 
-      local handler = abstraction.subscribe(Event.Draw, function(event)
+      local handler = api_util.subscribe_managed(Event.Draw, function(event)
         maybeRefreshOverlay()
       end)
 

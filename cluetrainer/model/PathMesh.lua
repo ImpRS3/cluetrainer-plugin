@@ -1,4 +1,5 @@
-local MutableMesh = require("model/MutableMesh")
+local MutableMesh         = require("model/MutableMesh")
+local WorldDependentValue = require("util/WorldDependentValue")
 -- Dynamic mesh creation for paths
 
 
@@ -181,7 +182,7 @@ local function drawLine(from_tile, to_tile, thickness, showArrow, startTileSize,
 
     local modifiedStart = a + scale2(0.5 * startTileSize, crossSection)
     local modifiedEnd = b - scale2(0.5 * endTileSize, crossSection) +
-    (showArrow and scale2(-ARROW_HEAD_LENGTH, direction) or Vector2.new(0, 0))
+        (showArrow and scale2(-ARROW_HEAD_LENGTH, direction) or Vector2.new(0, 0))
 
     local length = (modifiedEnd - modifiedStart).length
 
@@ -227,9 +228,12 @@ local function drawLine(from_tile, to_tile, thickness, showArrow, startTileSize,
         local base2 = modifiedEnd + scale2(-arrowWidth, perpendicular)
         local tip = modifiedEnd + scale2(ARROW_HEAD_LENGTH, direction)
 
-        local v0 = builder:createVertex(resolve(vector_as_coord(base1, to_tile.level)) + Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
-        local v1 = builder:createVertex(resolve(vector_as_coord(base2, to_tile.level)) + Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
-        local v2 = builder:createVertex(resolve(vector_as_coord(tip, to_tile.level)) + Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
+        local v0 = builder:createVertex(resolve(vector_as_coord(base1, to_tile.level)) +
+            Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
+        local v1 = builder:createVertex(resolve(vector_as_coord(base2, to_tile.level)) +
+            Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
+        local v2 = builder:createVertex(resolve(vector_as_coord(tip, to_tile.level)) +
+            Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
 
         builder:triangle(v0, v1, v2)
     end
@@ -357,88 +361,145 @@ function PathMesh.drawTileArea(area)
     return builder
 end
 
----Build the mesh for a given path
----@param path Path
----@return MutableMesh
-function PathMesh.buildPathMesh(path)
-    local builder = MutableMesh.new()
+---@alias PathMesh.StepContext {i: integer, context_path: Path}
 
-    local LINE_THICKNESS = 30
-    local MARKER_INSET = 20
-    local MARKER_SIZE = 512 - 2 * MARKER_INSET
-    local currentTileMarkerSize = 0
+local StepContext = {}
 
-    for i, step in ipairs(path) do
-        if step.type == "ability" then
-            local color = ABILITY_COLORS[step.ability]
-            local drawTargetTile = step.ability == "dive" and not step.is_far_dive
-
-            builder:add(drawLine(
-                step.from,
-                step.to,
-                LINE_THICKNESS,
-                true,
-                currentTileMarkerSize,
-                drawTargetTile and MARKER_SIZE or 0,
-                true
-            ):recolor(color))
-
-            if drawTargetTile then
-                builder:add(drawTileMarker(step.to, MARKER_INSET):recolor(color))
-            end
-
-            currentTileMarkerSize = drawTargetTile and MARKER_SIZE or 0
-        elseif step.type == "run" then
-            if #step.waypoints >= 2 then
-                local previous = path[i - 1]
-                local previousIsRedClick = previous ~= nil and previous.type == "redclick"
-                local previousTargetsNpc = previousIsRedClick
-                    and previous.target ~= nil
-                    and previous.target.kind == "npc"
-
-                local lineColor = previousTargetsNpc and COLORS.redclicked_run or COLORS.run
-                local tileColor = previousIsRedClick and COLORS.redclicked_run or COLORS.run
-
-                for j = 1, #step.waypoints - 1 do
-                    local isLast = j == #step.waypoints - 1
-                    builder:add(drawLine(
-                        step.waypoints[j],
-                        step.waypoints[j + 1],
-                        LINE_THICKNESS,
-                        isLast,
-                        j == 1 and currentTileMarkerSize or 0,
-                        isLast and MARKER_SIZE or 0,
-                        false
-                    ):recolor(lineColor))
-                end
-
-                builder:add(drawTileMarker(step.waypoints[#step.waypoints], MARKER_INSET):recolor(tileColor))
-                currentTileMarkerSize = MARKER_SIZE
-            end
-        elseif step.type == "teleport" then
-            currentTileMarkerSize = 0
-        elseif step.type == "transport" then
-        elseif step.type == "powerburst" then
-        elseif step.type == "redclick" then
-        elseif step.type == "orientation"
-            or step.type == "cheat"
-            or step.type == "cosmetic"
-        then
-            -- No geometry.
-        end
+---@param context PathMesh.StepContext
+function StepContext.previous(context)
+    if context.i > 1 then
+        return context.context_path[context.i - 1]
+    else
+        return nil
     end
-
-    return builder
 end
 
-function PathMesh.buildPathsMesh(paths)
-    local builder = MutableMesh.new()
+---
+---@param step Path.Step
+---@return TileCoordinates[]
+local function marker_bounds(step)
+    if step.type == "ability" then
+        return { step.from, step.to }
+    elseif step.type == "run" then
+        return step.waypoints
+    elseif step.type == "teleport" then
+        return { step.spot }
+    elseif step.type == "transport" then
+        return { step.assumed_start }
+    elseif step.type == "powerburst" then
+        return { step.where }
+    elseif step.type == "redclick" then
+        return { step.where }
+    elseif step.type == "orientation"
+        or step.type == "cheat"
+        or step.type == "cosmetic"
+    then
+        -- No geometry.
+    end
+end
 
-    for _, path in ipairs(paths) do
-        builder:add(PathMesh.buildPathMesh(path))
+local function tilesToMapSquareRect(tiles)
+    if (#tiles == 0) then
+        return Rect.new(0, 0, 1, 1)
     end
 
-    return builder
+    local minX = math.huge
+    local minY = math.huge
+    local maxX = -math.huge
+    local maxY = -math.huge
+
+    for _, tile in ipairs(tiles) do
+        minX = math.min(minX, tile.x)
+        minY = math.min(minY, tile.y)
+        maxX = math.max(maxX, tile.x)
+        maxY = math.max(maxY, tile.y)
+    end
+
+    minX = math.floor(minX / 64)
+    minY = math.floor(minY / 64)
+    maxX = math.floor(maxX / 64)
+    maxY = math.floor(maxY / 64)
+
+    return Rect.new(minX, minY, maxX - minX + 1, maxY - minY + 1)
+end
+
+---
+---@param step Path.Step
+---@param context PathMesh.StepContext
+---@return WorldDependentValue<MutableMesh>
+function PathMesh.buildStepMesh(step, context)
+    return WorldDependentValue.new(
+        tilesToMapSquareRect(marker_bounds(step)),
+        function()
+            local builder = MutableMesh.new()
+
+            local LINE_THICKNESS = 30
+            local MARKER_INSET = 20
+            local MARKER_SIZE = 512 - 2 * MARKER_INSET
+            local currentTileMarkerSize = 0
+
+            if step.type == "ability" then
+                local color = ABILITY_COLORS[step.ability]
+                local drawTargetTile = step.ability == "dive" and not step.is_far_dive
+
+                builder:add(drawLine(
+                    step.from,
+                    step.to,
+                    LINE_THICKNESS,
+                    true,
+                    currentTileMarkerSize,
+                    drawTargetTile and MARKER_SIZE or 0,
+                    true
+                ):recolor(color))
+
+                if drawTargetTile then
+                    builder:add(drawTileMarker(step.to, MARKER_INSET):recolor(color))
+                end
+
+                currentTileMarkerSize = drawTargetTile and MARKER_SIZE or 0
+            elseif step.type == "run" then
+                if #step.waypoints >= 2 then
+                    local previous = StepContext.previous(context)
+                    local previousIsRedClick = previous ~= nil and previous.type == "redclick"
+                    local previousTargetsNpc = previous ~= nil
+                        and previous.type == "redclick"
+                        and previous.target ~= nil
+                        and previous.target.kind == "npc"
+
+                    local lineColor = previousTargetsNpc and COLORS.redclicked_run or COLORS.run
+                    local tileColor = previousIsRedClick and COLORS.redclicked_run or COLORS.run
+
+                    for j = 1, #step.waypoints - 1 do
+                        local isLast = j == #step.waypoints - 1
+                        builder:add(drawLine(
+                            step.waypoints[j],
+                            step.waypoints[j + 1],
+                            LINE_THICKNESS,
+                            isLast,
+                            j == 1 and currentTileMarkerSize or 0,
+                            isLast and MARKER_SIZE or 0,
+                            false
+                        ):recolor(lineColor))
+                    end
+
+                    builder:add(drawTileMarker(step.waypoints[#step.waypoints], MARKER_INSET):recolor(tileColor))
+                    currentTileMarkerSize = MARKER_SIZE
+                end
+            elseif step.type == "teleport" then
+                currentTileMarkerSize = 0
+            elseif step.type == "transport" then
+            elseif step.type == "powerburst" then
+            elseif step.type == "redclick" then
+            elseif step.type == "orientation"
+                or step.type == "cheat"
+                or step.type == "cosmetic"
+            then
+                -- No geometry.
+            end
+
+            return builder
+        end
+    )
 end
 
 return PathMesh
