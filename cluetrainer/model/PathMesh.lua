@@ -1,7 +1,6 @@
 local MutableMesh         = require("model/MutableMesh")
 local WorldDependentValue = require("util/WorldDependentValue")
--- Dynamic mesh creation for paths
-
+local api_util            = require("util/api_util")
 
 local PathMesh = {}
 
@@ -13,25 +12,25 @@ local TILE_MARKER_BORDER = 40
 ---@class AbilityColors
 ---@field [any] ColorRGBA
 local ABILITY_COLORS = {
-    surge = { r = 0, g = 0x91, b = 0xf2, a = 255 },
-    escape = { r = 0x56, g = 0xba, b = 0x0f, a = 255 },
-    barge = { r = 0xa9, g = 0x71, b = 0x04, a = 255 },
-    dive = { r = 0xe7, g = 0xd8, b = 0x2c, a = 255 },
+    surge = api_util.color_rgba(0, 0x91, 0xf2, 255),
+    escape = api_util.color_rgba(0x56, 0xba, 0x0f, 255),
+    barge = api_util.color_rgba(0xa9, 0x71, 0x04, 255),
+    dive = api_util.color_rgba(0xe7, 0xd8, 0x2c, 255),
 }
 
 ---@class COLORS
 ---@field [any] ColorRGBA
 local COLORS = {
-    run = { r = 0xb4, g = 0xb4, b = 0xb4, a = 255 },
-    redclicked_run = { r = 255, g = 0, b = 0, a = 255 },
-    teleport = { r = 255, g = 0, b = 255, a = 255 },
-    transport = { r = 0, g = 255, b = 200, a = 255 },
-    powerburst = { r = 255, g = 215, b = 0, a = 255 },
-    redclick = { r = 255, g = 50, b = 50, a = 255 },
-    ability = { r = 255, g = 255, b = 255, a = 255 },
-    cheat = { r = 0, g = 255, b = 200, a = 255 },
-    cosmetic = { r = 0, g = 0, b = 0, a = 0 },
-    orientation = { r = 0, g = 0, b = 0, a = 0 },
+    run = api_util.color_rgba(180, 180, 180, 255),
+    redclicked_run = api_util.color_rgba(255, 0, 0, 255),
+    teleport = api_util.color_rgba(255, 0, 255, 255),
+    transport = api_util.color_rgba(0, 255, 200, 255),
+    powerburst = api_util.color_rgba(255, 215, 0, 255),
+    redclick = api_util.color_rgba(255, 50, 50, 255),
+    ability = api_util.color_rgba(255, 255, 255, 255),
+    cheat = api_util.color_rgba(0, 255, 200, 255),
+    cosmetic = api_util.color_rgba(0, 0, 0, 0),
+    orientation = api_util.color_rgba(0, 0, 0, 0),
 }
 
 
@@ -65,7 +64,7 @@ end
 ---@param coords CoordFine
 ---@return Vector3
 local function resolve(coords)
-    local height, success = World.GetGroundHeight(coords.level, coords.x, coords.z)
+    local height, success = World.GetGroundHeight(coords.level, coords.x, coords.z, HeightOffsetType.GROUND_DECOR)
 
     if not success then
         return Vector3.new(coords.x, coords.y, coords.z)
@@ -93,6 +92,9 @@ function PathMesh.squareCrossSectionVector(dir)
     )
 end
 
+---Compute a convex upper hull of a set of given points across terrain.
+---@param points Vector3[]
+---@return table
 local function upperHull(points)
     if #points <= 2 then
         local copy = {}
@@ -269,98 +271,6 @@ local function drawTileMarker(tile, inset)
     return mesh
 end
 
-local function drawRedClickMarker(builder, tile, color, markerHeightOffset)
-    markerHeightOffset = markerHeightOffset or 5
-
-    local cx = tile.x + 0.5
-    local cz = tile.y + 0.5
-
-    local shaftRadius = 0.12
-    local headRadius = 0.30
-    local totalHeight = 0.9
-    local headHeight = 0.35
-
-    local baseOffsetY = TILE_MARKER_VERTICAL_OFFSET + markerHeightOffset
-    local tipY = baseOffsetY
-    local junctionY = baseOffsetY + headHeight
-    local topY = baseOffsetY + totalHeight
-
-    local cBright = { 255, 0, 0, 255 }
-    local cMid = { 140, 0, 0, 255 }
-    local cDark = { 60, 0, 0, 255 }
-    local cDeep = { 20, 0, 0, 255 }
-
-    local cos8 = { 1.0, 0.7071, 0.0, -0.7071, -1.0, -0.7071, 0.0, 0.7071 }
-    local sin8 = { 0.0, 0.7071, 1.0, 0.7071, 0.0, -0.7071, -1.0, -0.7071 }
-    local sideColors = { cMid, cBright, cBright, cMid, cMid, cDark, cDark, cDeep }
-
-    local tip = builder:createVertex(resolveTerrain({ x = cx, y = cz, level = tile.level }, tipY), cBright)
-
-    local headBaseVertices = {}
-    local shaftBottomVertices = {}
-    local shaftTopVertices = {}
-
-    for i = 1, 8 do
-        local cosine = cos8[i]
-        local sine = sin8[i]
-        local sideColor = sideColors[i]
-
-        headBaseVertices[i] = builder:createVertex(resolveTerrain({
-            x = cx + headRadius * cosine,
-            y = cz + headRadius * sine,
-            level = tile.level,
-        }, junctionY), sideColor)
-
-        shaftBottomVertices[i] = builder:createVertex(resolveTerrain({
-            x = cx + shaftRadius * cosine,
-            y = cz + shaftRadius * sine,
-            level = tile.level,
-        }, junctionY), cDeep)
-
-        shaftTopVertices[i] = builder:createVertex(resolveTerrain({
-            x = cx + shaftRadius * cosine,
-            y = cz + shaftRadius * sine,
-            level = tile.level,
-        }, topY), sideColor)
-    end
-
-    for i = 1, 8 do
-        local nextIndex = (i % 8) + 1
-
-        builder:triangle(tip, headBaseVertices[nextIndex], headBaseVertices[i])
-        builder:triangle(headBaseVertices[i], shaftBottomVertices[i], headBaseVertices[nextIndex])
-        builder:triangle(shaftBottomVertices[i], shaftBottomVertices[nextIndex], headBaseVertices[nextIndex])
-        builder:triangle(shaftBottomVertices[i], shaftTopVertices[i], shaftTopVertices[nextIndex])
-        builder:triangle(shaftBottomVertices[i], shaftTopVertices[nextIndex], shaftBottomVertices[nextIndex])
-    end
-
-    for i = 2, 7 do
-        builder:triangle(shaftTopVertices[1], shaftTopVertices[i], shaftTopVertices[i + 1])
-    end
-end
-
-function PathMesh.drawTileArea(area)
-    local builder = MutableMesh.new()
-    local polygons = TileArea.activate(area):asMultipolygon()
-
-    for _, polygon in ipairs(polygons) do
-        local line = polygon.outer
-        for i = 2, #line do
-            builder:add(drawLine(
-                lift(line[i - 1], area.origin.level),
-                lift(line[i], area.origin.level),
-                0.02,
-                false,
-                -0.01,
-                -0.01,
-                false
-            ))
-        end
-    end
-
-    return builder
-end
-
 ---@alias PathMesh.StepContext {i: integer, context_path: Path}
 
 local StepContext = {}
@@ -396,6 +306,8 @@ local function marker_bounds(step)
     then
         -- No geometry.
     end
+
+    return {}
 end
 
 local function tilesToMapSquareRect(tiles)

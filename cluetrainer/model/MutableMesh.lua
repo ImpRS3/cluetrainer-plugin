@@ -1,6 +1,12 @@
 local Mesh = require("model/MyMesh")
 local lua_util = require("util/lua_util")
 
+---@alias ColorRGBA integer
+
+---@class Mesh.Vertex
+---@field pos Vector3
+---@field color_rgba ColorRGBA
+
 ---@class MutableMesh.VertexRef
 ---@field vertex Mesh.Vertex
 ---@field index integer
@@ -31,6 +37,11 @@ function MutableMesh:triangle_count()
     return #self.triangle_indices // 3
 end
 
+---@return integer
+function MutableMesh:line_count()
+    return #self.line_indices // 2
+end
+
 ---@param pos Vector3
 ---@param color? ColorRGBA
 ---@return MutableMesh.VertexRef
@@ -38,7 +49,7 @@ function MutableMesh:createVertex(pos, color)
     ---@type Mesh.Vertex
     local vertex = {
         pos = pos,
-        color_rgba = color or { 255, 255, 255, 255 },
+        color_rgba = color or 0xFFFFFFFF,
     }
 
     self.vertices[#self.vertices + 1] = vertex
@@ -135,13 +146,34 @@ function MutableMesh:add(...)
     return self
 end
 
----@return Mesh
-function MutableMesh:finalize()
-    return Mesh.new(
-        lua_util.shallow_copy(self.vertices),
-        lua_util.shallow_copy(self.triangle_indices),
-        lua_util.shallow_copy(self.line_indices)
-    )
+---@return ShapeData
+function MutableMesh:shapeData()
+    local positions = {}
+    local colors = {}
+    local tris = {}
+    local lines = {}
+
+    for _, vertex in ipairs(self.vertices) do
+        table.insert(positions, Vector3.new(vertex.pos.x, vertex.pos.y, vertex.pos.z))
+        table.insert(colors, vertex.color_rgba)
+    end
+
+    for i, index in ipairs(self.triangle_indices) do
+        table.insert(tris, index)
+    end
+
+    for i, index in ipairs(self.line_indices) do
+        table.insert(lines, index)
+    end
+
+    local shape = ShapeData.new()
+
+    shape.positions = positions
+    shape.rgba = colors
+    shape.tris = tris
+    shape.lines = lines
+
+    return shape
 end
 
 return MutableMesh

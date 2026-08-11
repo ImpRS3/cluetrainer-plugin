@@ -1,5 +1,5 @@
-local abstraction           = require "abstraction"
 local api_util              = require "util/api_util"
+local lua_util              = require "util/lua_util"
 
 ---A WorldDependentValue is a value that depends on a certain part of the world being loaded.
 ---@generic T
@@ -16,13 +16,24 @@ local instances             = {}
 ---@param bounds Rect
 ---@return boolean
 local function boundsAvailable(bounds)
-  return bounds ~= nil and World.GetMapSquareBounds():Contains(bounds)
+  if bounds == nil then return false end
+
+  local _, a = World.GetGroundHeight(0, bounds.x * 64 * 512 + 256, bounds.y * 64 * 512 + 256)
+  local _, b = World.GetGroundHeight(0, ((bounds.x + bounds.width) * 64 - 1) * 512 + 256,
+    ((bounds.y + bounds.height) * 64 - 1) * 512 + 256)
+
+  return a and b
+
+  --return bounds ~= nil and World.GetMapSquareBounds():Contains(bounds)
 end
 
 ---@generic T
 ---@param self WorldDependentValue<T>
 local function update(self)
   if not self.created and boundsAvailable(self.bounds) then
+    log(lua_util.to_plain_table(self.bounds))
+    log(lua_util.to_plain_table(World.GetMapSquareBounds()))
+
     self.value = self.generator()
     self.created = true
     self.generator = nil

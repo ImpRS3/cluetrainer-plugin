@@ -13,6 +13,21 @@ local lua_util = require "util/lua_util"
 local Navigator = {}
 Navigator.__index = Navigator
 
+---comment
+---@param path Path
+function findProgress(path)
+  ---@type CoordGrid
+  local true_tile = Player.GetEntity().routeEnd
+
+  for i = #path, 1, -1 do
+    local step = path[i]
+
+    if step.type == "ability" then
+      step.to = step.from
+    end
+  end
+end
+
 ---@return Navigator
 function Navigator.new()
   ---@type Navigator
@@ -25,7 +40,8 @@ function Navigator.new()
 
     for _, value in ipairs(self.path) do
       value.geometry:maybeTap(function(instance)
-        instance.colour = 0xFFFFFF80
+        --- TODO: Find progress along path and fade completed steps.
+        ---
       end)
     end
   end)
@@ -33,13 +49,13 @@ function Navigator.new()
   return self
 end
 
-local i = 0
-
 --- Set the current path to the given path segments.
 ---@param path Path.Step[]
 function Navigator:set(path)
   self:clear()
 
+
+  --- TODO: Only include steps that actually have a visual representation
   self.path = lua_util.map(path, function(step, index)
     return {
       step = step,
@@ -48,31 +64,19 @@ function Navigator:set(path)
         i = index
       }):map(
         function(
-        ---@type MutableMesh
+        ---@param mesh MutableMesh
             mesh)
-          local s = mesh:finalize():shapeData()
-          local shape_data = ShapeData.new()
-
-          shape_data.lines = s.lineIndices
-          shape_data.positions = s.positions
-          shape_data.rgba = s.colors
-          shape_data.tris = s.triangleIndices
-
-          local instance = ShapeList.CreateInstance("auniquename" .. i)
-          i = i + 1
-
-          if instance ~= nil then
-            instance:SetShapeData(shape_data)
+          if mesh:triangle_count() == 0 and mesh:line_count() == 0 then
+            return nil
           end
 
-          return instance
+          return api_util.unique_shape_instance(mesh:shapeData())
         end)
     }
   end)
 end
 
 function Navigator:clear()
-  log(self)
   for _, value in ipairs(self.path) do
     if value ~= nil and value.geometry ~= nil then
       value.geometry:maybeTap(function(instance)

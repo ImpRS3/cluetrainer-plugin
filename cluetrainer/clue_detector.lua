@@ -23,7 +23,7 @@ function clue_detector:init()
     if not event.entry.componentData.objConfig then return end
     if event.entry.verbText ~= "Read" and event.entry.verbText ~= "Start scanning" then return end
 
-    log(event.entry.componentData.objConfig.configName)
+    log("Clicked "..event.entry.componentData.objConfig.configName)
 
     -- Find corresponding clue id
     local clue_id = clue_map[event.entry.componentData.objConfig.configName]

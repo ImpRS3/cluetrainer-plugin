@@ -1,6 +1,6 @@
 local lua_util = require "util/lua_util"
 local methods = require "data/hard_methods"
-local navigator = require "solving/navigator"
+local Navigator = require "solving/navigator"
 
 ---@class State
 ---@field step Step
@@ -54,14 +54,13 @@ function orchestrator:setStep(step)
 
   table.insert(self.history, self.state)
 
-
-  log(step.text[1])
+  log(self.state)
 
   local method = resolveMethod(step)
 
   if method ~= nil then
     if method.type == "general_path" then
-      navigator:set(method.main_path)
+      Navigator.instance:set(method.main_path)
     elseif method.type == "scantree" then
 
     end
