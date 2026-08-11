@@ -1,1 +1,0 @@
-log(World.GetMapSquareBounds():Contains(Rect.new(0, 0, 100, 100)))
