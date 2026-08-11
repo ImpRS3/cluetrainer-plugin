@@ -13,19 +13,28 @@ local lua_util = require "util/lua_util"
 local Navigator = {}
 Navigator.__index = Navigator
 
----comment
----@param path Path
-function findProgress(path)
+
+local function isCompleted(step)
   ---@type CoordGrid
   local true_tile = Player.GetEntity().routeEnd
 
-  for i = #path, 1, -1 do
-    local step = path[i]
+  ---@type TileCoordinates
+  local tile = { x = true_tile.x, y = true_tile.z, level = true_tile.level }
 
-    if step.type == "ability" then
-      step.to = step.from
-    end
+  local function distance(a, b)
+    return math.abs(a.x - b.x)  + math.abs(a.y - b.y)
   end
+
+  if step.type == "ability" then
+    return distance(step.from, tile) > distance(step.to, tile)
+  elseif step.type == "run" then
+    local start = step.waypoints[1]
+    local finish = step.waypoints[#step.waypoints]
+
+    return distance(start, tile) >= distance(start, finish) and distance(start, tile) > distance(finish, tile) 
+  end
+
+  return false
 end
 
 ---@return Navigator
@@ -41,7 +50,7 @@ function Navigator.new()
     for _, value in ipairs(self.path) do
       value.geometry:maybeTap(function(instance)
         --- TODO: Find progress along path and fade completed steps.
-        ---
+        instance.colour = isCompleted(value.step) and 0xFFFFFF80 or 0xFFFFFFFF
       end)
     end
   end)

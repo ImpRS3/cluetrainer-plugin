@@ -23,7 +23,6 @@ api_util.subscribe_managed(Event.EntityDraw, function(entityEvent)
     if entityEvent.entityType == EntityType.NPC then
         ShapeList.Draw({
             shapeData = tileShape,
-            -- Draw at the entity feet position, with a small vertical offset to avoid clipping
             translation = entityEvent.npcEntity.position + Vector3.new(0, 30, 0),
             ignoreDepth = false,
             lineWidth = 2,
