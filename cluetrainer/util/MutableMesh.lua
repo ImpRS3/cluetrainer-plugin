@@ -1,6 +1,3 @@
-local Mesh = require("model/MyMesh")
-local lua_util = require("util/lua_util")
-
 ---@alias ColorRGBA integer
 
 ---@class Mesh.Vertex
@@ -127,6 +124,18 @@ function MutableMesh:recolor(color)
     return self
 end
 
+---Turns the mesh inside out by reversing the winding order of all triangles.
+---@return self 
+function MutableMesh:inside_out()
+    local indices = self.triangle_indices
+
+    for i = 1, #indices, 3 do
+        indices[i + 1], indices[i + 2] = indices[i + 2], indices[i + 1]
+    end
+
+    return self
+end
+
 ---@param ... MutableMesh
 ---@return self
 function MutableMesh:add(...)
@@ -174,6 +183,35 @@ function MutableMesh:shapeData()
     shape.lines = lines
 
     return shape
+end
+
+function MutableMesh.cube()
+    local mesh = MutableMesh.new()
+
+    local vertices = {
+        { pos = Vector3.new(0, 0, 0), color_rgba = 0xFFFFFFFF },
+        { pos = Vector3.new(1, 0, 0), color_rgba = 0xFFFFFFFF },
+        { pos = Vector3.new(1, 1, 0), color_rgba = 0xFFFFFFFF },
+        { pos = Vector3.new(0, 1, 0), color_rgba = 0xFFFFFFFF },
+        { pos = Vector3.new(0, 0, 1), color_rgba = 0xFFFFFFFF },
+        { pos = Vector3.new(1, 0, 1), color_rgba = 0xFFFFFFFF },
+        { pos = Vector3.new(1, 1, 1), color_rgba = 0xFFFFFFFF },
+        { pos = Vector3.new(0, 1, 1), color_rgba = 0xFFFFFFFF },
+    }
+
+    local triangle_indices = {
+        0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4,
+        0, 1, 5, 5, 4, 0,
+        2, 3, 7, 7, 6, 2,
+        0, 3, 7, 7, 4, 0,
+        1, 2, 6, 6, 5, 1,
+    }
+
+    mesh.vertices = vertices
+    mesh.triangle_indices = triangle_indices
+
+    return mesh
 end
 
 return MutableMesh

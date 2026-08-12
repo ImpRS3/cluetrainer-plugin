@@ -9,7 +9,7 @@ local lua_util      = require "util/lua_util"
 
 ---@class ClueDetector
 ---@field initialized boolean
----@field mini_menu_handler Handler
+---@field mini_menu_handler zyklip.ApiEventHandler
 local clue_detector = {
   initialized = false,
 }

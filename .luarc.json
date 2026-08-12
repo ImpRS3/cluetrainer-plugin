@@ -23,5 +23,6 @@
 	"runtime.path": [
 		"cluetrainer/?.lua",
 		"cluetrainer/?/init.lua"
-	]
+	],
+	"completion.requireSeparator": "/"
 }

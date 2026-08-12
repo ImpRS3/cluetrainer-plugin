@@ -14,7 +14,7 @@ local clues = { {
         ["y"] = 3521
       },
       botright = {
-        ["x"] = 2914,
+        x = 2914,
         ["y"] = 3521
       }
     }
@@ -1779,7 +1779,8 @@ local clues = { {
       }
     },
     key = {
-      instructions = "The chest has a crude note on top. It reads 'You'll never get these drawers open now! - Zamorak Monk.'",
+      instructions =
+      "The chest has a crude note on top. It reads 'You'll never get these drawers open now! - Zamorak Monk.'",
       answer = "Kill a Monk of Zamorak in the Chaos Temple near the Goblin Village.",
       area = {
         origin = {
@@ -2044,7 +2045,8 @@ local clues = { {
     },
     entity = "Drawers",
     key = {
-      instructions = "The drawers are locked! A note on the top of the drawer reads: Wait till I get my hands on Penda; he's nicked the key again!",
+      instructions =
+      "The drawers are locked! A note on the top of the drawer reads: Wait till I get my hands on Penda; he's nicked the key again!",
       answer = "Pickpocket Penda in the house north of Heroes's Guild.",
       area = {
         origin = {
@@ -6375,7 +6377,8 @@ local clues = { {
   text = { "This anagram reveals who to speak to next: R Ak Mi" },
   challenge = { {
     type = "challengescroll",
-    question = "I have 16 kebabs, I eat one myself and share the rest equally between 3 friends. How many do they have each?",
+    question =
+    "I have 16 kebabs, I eat one myself and share the rest equally between 3 friends. How many do they have each?",
     answers = { {
       answer = 5
     } }
@@ -12797,7 +12800,8 @@ local clues = { {
       ["y"] = 2
     }
   } },
-  answer = "Attempt to pick coconuts from the palm tree south of the main stage at the Lumbridge Crater, or read the palm if it's depleted.",
+  answer =
+  "Attempt to pick coconuts from the palm tree south of the main stage at the Lumbridge Crater, or read the palm if it's depleted.",
   cursor = "generic"
 }, {
   type = "skilling",

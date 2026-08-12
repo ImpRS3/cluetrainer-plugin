@@ -43,7 +43,7 @@
 
 ---@class Path.Step.Transport : Path.Step.Base
 ---@field type "transport"
----@field assumed_start TileCoordinates
+---@field assumed_start TileCoordinates?
 ---@field internal EntityTransportation
 
 
@@ -61,7 +61,7 @@
 
 ---@class Path.Step.Cheat : Path.Step.Base
 ---@field type "cheat"
----@field assumed_start TileCoordinates
+---@field assumed_start TileCoordinates?
 ---@field target TileCoordinates
 ---@field orientation? Direction
 ---@field ticks number

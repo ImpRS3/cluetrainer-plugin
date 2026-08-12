@@ -1,4 +1,4 @@
-local MutableMesh         = require("model/MutableMesh")
+local MutableMesh         = require("util/MutableMesh")
 local WorldDependentValue = require("util/WorldDependentValue")
 local api_util            = require("util/api_util")
 

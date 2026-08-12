@@ -1,6 +1,22 @@
 local lua_util = require "util/lua_util"
-local methods = require "data/hard_methods"
+local easy_methods = require "data/easy_methods"
+local medium_methods = require "data/medium_methods"
+local hard_methods = require "data/hard_methods"
+local compass_methods = require "data/compass_methods"
+local scan_methods = require "data/scan_methods"
+local master_methods = require "data/master_methods"
+local tetracompass_methods = require "data/tetracompass_methods"
 local Navigator = require "solving/navigator"
+
+local packs = {
+  easy_methods,
+  medium_methods,
+  hard_methods,
+  compass_methods,
+  scan_methods,
+  master_methods,
+  tetracompass_methods
+}
 
 ---@class State
 ---@field step Step
@@ -31,10 +47,17 @@ local function getProgress(tier)
 end
 
 ---@param step Step
+---@return Method?
 local function resolveMethod(step)
-  local method = lua_util.find(methods.methods, function(method) return method["for"].clue == step.id end)
+  for _, pack in ipairs(packs) do
+    for _, method in ipairs(pack.methods) do
+      if method["for"].clue == step.id then
+        return method
+      end
+    end
+  end
 
-  return method
+  return nil
 end
 
 ---

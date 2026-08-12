@@ -14,6 +14,10 @@ function lua_util.find(list, predicate)
   return nil
 end
 
+---Takes any value and turns it into a plain lua value.
+---Particularly, this handles userdata values by calling all getter functions on the metatable and returning a table of the results.
+---@param value any
+---@return table | boolean | number | string | nil
 function lua_util.to_plain_table(value)
   local value_type = type(value)
 
@@ -64,108 +68,46 @@ function lua_util.to_plain_table(value)
   return nil
 end
 
-function lua_util.serializeTable(val, name, skipnewlines, depth)
-  skipnewlines = skipnewlines or false
-  depth = depth or 0
-
-  local tmp = string.rep(" ", depth)
-
-  if name then tmp = tmp .. name .. " = " end
-
-  if type(val) == "table" then
-    tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
-
-    for k, v in pairs(val) do
-      tmp = tmp .. lua_util.serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
-    end
-
-    tmp = tmp .. string.rep(" ", depth) .. "}"
-  elseif type(val) == "number" then
-    tmp = tmp .. tostring(val)
-  elseif type(val) == "string" then
-    tmp = tmp .. string.format("%q", val)
-  elseif type(val) == "boolean" then
-    tmp = tmp .. (val and "true" or "false")
-  else
-    tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
-  end
-
-  return tmp
-end
-
-function lua_util.diff(a, b, path, out)
-  path = path or ""
-  out = out or {}
-
-  -- Different types
-  if type(a) ~= type(b) then
-    out[path] = { old = a, new = b }
-    return out
-  end
-
-  -- Primitive values
-  if type(a) ~= "table" then
-    if a ~= b then
-      out[path] = { old = a, new = b }
-    end
-    return out
-  end
-
-  -- Compare all keys
-  local seen = {}
-
-  for k, va in pairs(a) do
-    seen[k] = true
-    local p = path == "" and tostring(k) or (path .. "." .. tostring(k))
-    lua_util.diff(va, b[k], p, out)
-  end
-
-  for k, vb in pairs(b) do
-    if not seen[k] then
-      local p = path == "" and tostring(k) or (path .. "." .. tostring(k))
-      out[p] = { old = nil, new = vb }
-    end
-  end
-
-  return out
-end
-
+---Compares two plain lua values or tables for deep equality.
+---@param a boolean|number|string|table
+---@param b boolean|number|string|table
+---@return boolean 
 function lua_util.deepEquals(a, b)
-    if a == b then
-        return true
-    end
-
-    if type(a) ~= "table" or type(b) ~= "table" then
-        return false
-    end
-
-    for k, v in pairs(a) do
-        if not lua_util.deepEquals(v, b[k]) then
-            return false
-        end
-    end
-
-    for k in pairs(b) do
-        if a[k] == nil then
-            return false
-        end
-    end
-
+  if a == b then
     return true
+  end
+
+  if type(a) ~= "table" or type(b) ~= "table" then
+    return false
+  end
+
+  for k, v in pairs(a) do
+    if not lua_util.deepEquals(v, b[k]) then
+      return false
+    end
+  end
+
+  for k in pairs(b) do
+    if a[k] == nil then
+      return false
+    end
+  end
+
+  return true
 end
 
 function lua_util.shallow_copy(orig)
-    local orig_type = type(orig)
-    local copy
-    if orig_type == 'table' then
-        copy = {}
-        for orig_key, orig_value in pairs(orig) do
-            copy[orig_key] = orig_value
-        end
-    else -- number, string, boolean, etc
-        copy = orig
+  local orig_type = type(orig)
+  local copy
+  if orig_type == 'table' then
+    copy = {}
+    for orig_key, orig_value in pairs(orig) do
+      copy[orig_key] = orig_value
     end
-    return copy
+  else -- number, string, boolean, etc
+    copy = orig
+  end
+  return copy
 end
 
 ---@generic T

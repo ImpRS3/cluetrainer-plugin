@@ -9,7 +9,7 @@ local lua_util = require "util/lua_util"
 
 ---@class Navigator
 ---@field path PathStepEntity[]
----@field logic_handler Handler
+---@field logic_handler zyklip.ApiEventHandler
 local Navigator = {}
 Navigator.__index = Navigator
 

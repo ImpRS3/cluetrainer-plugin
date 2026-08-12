@@ -23,17 +23,12 @@ local function boundsAvailable(bounds)
     ((bounds.y + bounds.height) * 64 - 1) * 512 + 256)
 
   return a and b
-
-  --return bounds ~= nil and World.GetMapSquareBounds():Contains(bounds)
 end
 
 ---@generic T
 ---@param self WorldDependentValue<T>
 local function update(self)
   if not self.created and boundsAvailable(self.bounds) then
-    log(lua_util.to_plain_table(self.bounds))
-    log(lua_util.to_plain_table(World.GetMapSquareBounds()))
-
     self.value = self.generator()
     self.created = true
     self.generator = nil

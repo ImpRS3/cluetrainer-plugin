@@ -112,7 +112,7 @@ end
 ---@class ActivePuzzle
 ---@field canvas Canvas
 ---@field solution Towers.PuzzleState
----@field action_handler Handler
+---@field action_handler zyklip.ApiEventHandler
 ---@field latestState Towers.Blocks?
 
 ---@type ActivePuzzle?
@@ -132,7 +132,7 @@ local function maybeRefreshOverlay()
     { show_deltas = true, show_should = true })
 end
 
----@type {handler: Handler}?
+---@type {handler: zyklip.ApiEventHandler}?
 towers_solver.instance = nil
 
 function towers_solver:init()
