@@ -1,17 +1,18 @@
-local MutableMesh         = require("util/MutableMesh")
-local WorldDependentValue = require("util/WorldDependentValue")
-local api_util            = require("util/api_util")
+local MutableMesh                   = require("zyklib/MutableMesh")
+local WorldDependentValue           = require("zyklib/WorldDependentValue")
+local api_util                      = require("zyklib/api_util")
+local TerrainHighlight              = require("zyklib/highlights/TerrainHighlight")
 
-local PathMesh = {}
+local PathMesh                      = {}
 
-local ARROW_HEAD_LENGTH = 150
+local ARROW_HEAD_LENGTH             = 150
 local FLOOR_OVERLAY_VERTICAL_OFFSET = 60
-local TILE_MARKER_VERTICAL_OFFSET = 80
-local TILE_MARKER_BORDER = 40
+local TILE_MARKER_VERTICAL_OFFSET   = 80
+local TILE_MARKER_BORDER            = 40
 
 ---@class AbilityColors
 ---@field [any] ColorRGBA
-local ABILITY_COLORS = {
+local ABILITY_COLORS                = {
     surge = api_util.color_rgba(0, 0x91, 0xf2, 255),
     escape = api_util.color_rgba(0x56, 0xba, 0x0f, 255),
     barge = api_util.color_rgba(0xa9, 0x71, 0x04, 255),
@@ -20,7 +21,7 @@ local ABILITY_COLORS = {
 
 ---@class COLORS
 ---@field [any] ColorRGBA
-local COLORS = {
+local COLORS                        = {
     run = api_util.color_rgba(180, 180, 180, 255),
     redclicked_run = api_util.color_rgba(255, 0, 0, 255),
     teleport = api_util.color_rgba(255, 0, 255, 255),
@@ -338,9 +339,9 @@ end
 ---
 ---@param step Path.Step
 ---@param context PathMesh.StepContext
----@return WorldDependentValue<MutableMesh>
+---@return zyklib.TerrainHighlight
 function PathMesh.buildStepMesh(step, context)
-    return WorldDependentValue.new(
+    return TerrainHighlight.new(
         tilesToMapSquareRect(marker_bounds(step)),
         function()
             local builder = MutableMesh.new()
@@ -409,7 +410,7 @@ function PathMesh.buildStepMesh(step, context)
                 -- No geometry.
             end
 
-            return builder
+            return builder:shapeData()
         end
     )
 end

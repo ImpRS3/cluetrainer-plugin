@@ -1,6 +1,6 @@
-local lua_util       = require "util/lua_util"
+local lua_util       = require "zyklib/lua_util"
 local Lockboxes      = require "solvers/lockbox/Lockboxes"
-local api_util       = require "util/api_util"
+local api_util       = require "zyklib/api_util"
 
 local lockbox_solver = {}
 
@@ -86,7 +86,7 @@ end
 ---@class ActiveLockboxPuzzle
 ---@field canvas Canvas
 ---@field latestState LockboxState?
----@field action_handler zyklip.ApiEventHandler
+---@field action_handler zyklib.ApiEventHandler
 
 ---@type ActiveLockboxPuzzle?
 local active_puzzle = nil
@@ -108,7 +108,7 @@ local function maybeRefreshOverlay()
   }))
 end
 
----@type {handler: zyklip.ApiEventHandler}?
+---@type {handler: zyklib.ApiEventHandler}?
 lockbox_solver.instance = nil
 
 function lockbox_solver:init()

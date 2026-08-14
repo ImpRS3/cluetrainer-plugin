@@ -1,4 +1,4 @@
-local api_util = require "util/api_util"
+local api_util = require "zyklib/api_util"
 
 local knot_solver = {}
 
@@ -21,7 +21,7 @@ end
 ---@class ActiveKnotPuzzle
 ---@field knot_type integer
 ---@field canvas Canvas
----@field action_handler zyklip.ApiEventHandler
+---@field action_handler zyklib.ApiEventHandler
 
 ---@type ActiveKnotPuzzle?
 local active_puzzle = nil
@@ -50,7 +50,7 @@ local function maybeRefreshOverlay()
   draw(active_puzzle.canvas)
 end
 
----@type {handler: zyklip.ApiEventHandler}?
+---@type {handler: zyklib.ApiEventHandler}?
 knot_solver.instance = nil
 
 ---comment---@return {interface: ui.Interface, knot_type: integer}?

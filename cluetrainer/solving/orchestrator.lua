@@ -1,4 +1,4 @@
-local lua_util = require "util/lua_util"
+local lua_util = require "zyklib/lua_util"
 local easy_methods = require "data/easy_methods"
 local medium_methods = require "data/medium_methods"
 local hard_methods = require "data/hard_methods"

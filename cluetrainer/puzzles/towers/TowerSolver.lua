@@ -1,7 +1,7 @@
 local abstraction         = require "abstraction"
-local lua_util            = require "util/lua_util"
+local lua_util            = require "zyklib/lua_util"
 local Towers              = require "solvers/towers/Towers"
-local api_util            = require "util/api_util"
+local api_util            = require "zyklib/api_util"
 
 local towers_solver       = {}
 
@@ -112,7 +112,7 @@ end
 ---@class ActivePuzzle
 ---@field canvas Canvas
 ---@field solution Towers.PuzzleState
----@field action_handler zyklip.ApiEventHandler
+---@field action_handler zyklib.ApiEventHandler
 ---@field latestState Towers.Blocks?
 
 ---@type ActivePuzzle?
@@ -132,7 +132,7 @@ local function maybeRefreshOverlay()
     { show_deltas = true, show_should = true })
 end
 
----@type {handler: zyklip.ApiEventHandler}?
+---@type {handler: zyklib.ApiEventHandler}?
 towers_solver.instance = nil
 
 function towers_solver:init()

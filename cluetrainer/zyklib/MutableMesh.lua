@@ -188,28 +188,27 @@ end
 function MutableMesh.cube()
     local mesh = MutableMesh.new()
 
-    local vertices = {
-        { pos = Vector3.new(0, 0, 0), color_rgba = 0xFFFFFFFF },
-        { pos = Vector3.new(1, 0, 0), color_rgba = 0xFFFFFFFF },
-        { pos = Vector3.new(1, 1, 0), color_rgba = 0xFFFFFFFF },
-        { pos = Vector3.new(0, 1, 0), color_rgba = 0xFFFFFFFF },
-        { pos = Vector3.new(0, 0, 1), color_rgba = 0xFFFFFFFF },
-        { pos = Vector3.new(1, 0, 1), color_rgba = 0xFFFFFFFF },
-        { pos = Vector3.new(1, 1, 1), color_rgba = 0xFFFFFFFF },
-        { pos = Vector3.new(0, 1, 1), color_rgba = 0xFFFFFFFF },
-    }
+    local a = mesh:createVertex(Vector3.new(0, 0, 0))
+    local b = mesh:createVertex(Vector3.new(1, 0, 0))
+    local c = mesh:createVertex(Vector3.new(1, 1, 0))
+    local d = mesh:createVertex(Vector3.new(0, 1, 0))
+    local e = mesh:createVertex(Vector3.new(0, 0, 1))
+    local f = mesh:createVertex(Vector3.new(1, 0, 1))
+    local g = mesh:createVertex(Vector3.new(1, 1, 1))
+    local h = mesh:createVertex(Vector3.new(0, 1, 1))
 
-    local triangle_indices = {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4,
-        0, 1, 5, 5, 4, 0,
-        2, 3, 7, 7, 6, 2,
-        0, 3, 7, 7, 4, 0,
-        1, 2, 6, 6, 5, 1,
-    }
-
-    mesh.vertices = vertices
-    mesh.triangle_indices = triangle_indices
+    mesh:triangle(a, b, c)
+    mesh:triangle(c, d, a)
+    mesh:triangle(e, f, g)
+    mesh:triangle(g, h, e)
+    mesh:triangle(a, b, f)
+    mesh:triangle(f, e, a)
+    mesh:triangle(c, d, h)
+    mesh:triangle(h, g, c)
+    mesh:triangle(a, d, h)
+    mesh:triangle(h, e, a)
+    mesh:triangle(b, c, g)
+    mesh:triangle(g, f, b)
 
     return mesh
 end

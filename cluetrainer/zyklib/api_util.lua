@@ -1,7 +1,7 @@
-local UniqueNameGenerator = require "util/UniqueNameGenerator"
+local UniqueNameGenerator = require "zyklib/UniqueNameGenerator"
 local api_util = {}
 
----@class zyklip.ApiEventHandler
+---@class zyklib.ApiEventHandler
 ---@field id string
 ---@field cancel fun(): nil
 
@@ -11,7 +11,7 @@ local handler_counter = 0
 ---@generic T, RetT
 ---@param event EventSubscription<T, RetT>
 ---@param handler fun(event: T): RetT
----@return zyklip.ApiEventHandler
+---@return zyklib.ApiEventHandler
 function api_util.subscribe_managed(event, handler)
   while true do
     handler_counter = handler_counter + 1

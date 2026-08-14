@@ -4,12 +4,12 @@
 local clue_map      = require "clue_mapping"
 local clues         = require "data/clues"
 local orchestrator  = require "solving/orchestrator"
-local api_util      = require "util/api_util"
-local lua_util      = require "util/lua_util"
+local api_util      = require "zyklib/api_util"
+local lua_util      = require "zyklib/lua_util"
 
 ---@class ClueDetector
 ---@field initialized boolean
----@field mini_menu_handler zyklip.ApiEventHandler
+---@field mini_menu_handler zyklib.ApiEventHandler
 local clue_detector = {
   initialized = false,
 }

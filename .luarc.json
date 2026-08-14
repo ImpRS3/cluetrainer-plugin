@@ -24,5 +24,8 @@
 		"cluetrainer/?.lua",
 		"cluetrainer/?/init.lua"
 	],
-	"completion.requireSeparator": "/"
+	"completion.requireSeparator": "/",
+    "diagnostics.disable": [
+        "different-requires"
+    ]
 }
