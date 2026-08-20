@@ -14,65 +14,11 @@ function lua_util.find(list, predicate)
   return nil
 end
 
----Takes any value and turns it into a plain lua value.
----Particularly, this handles userdata values by calling all getter functions on the metatable and returning a table of the results.
----@param value any
----@return table | boolean | number | string | nil
-function lua_util.to_plain_table(value)
-  local value_type = type(value)
-
-  -- Values directly supported by most serializers.
-  if value_type == "nil"
-      or value_type == "boolean"
-      or value_type == "number"
-      or value_type == "string"
-  then
-    return value
-  end
-
-  if value_type == "table" then
-    local result = {}
-
-    for key, child in pairs(value) do
-      local plain_value = lua_util.to_plain_table(child)
-
-      result[key] = plain_value
-    end
-
-    return result
-  end
-
-  if value_type == "userdata" then
-    local result = {}
-    local metatable = getmetatable(value)
-
-    for name, getter in pairs(metatable) do
-      if type(name) == "string"
-          and name:sub(1, 2) ~= "__"
-          and type(getter) == "function"
-      then
-        -- Assumes getter functions are methods: getter(value).
-        local ok, field_value = pcall(function()
-          return value[name]
-        end)
-
-        if ok then
-          result[name] = lua_util.to_plain_table(field_value)
-        end
-      end
-    end
-
-    return result
-  end
-
-  return nil
-end
-
 ---Compares two plain lua values or tables for deep equality.
 ---@param a boolean|number|string|table
 ---@param b boolean|number|string|table
 ---@return boolean 
-function lua_util.deepEquals(a, b)
+function lua_util.deep_equals(a, b)
   if a == b then
     return true
   end
@@ -82,7 +28,7 @@ function lua_util.deepEquals(a, b)
   end
 
   for k, v in pairs(a) do
-    if not lua_util.deepEquals(v, b[k]) then
+    if not lua_util.deep_equals(v, b[k]) then
       return false
     end
   end
@@ -96,6 +42,9 @@ function lua_util.deepEquals(a, b)
   return true
 end
 
+---Creates a shallow copy of a table by copying all of its key-value pairs into a new table. Does not copy metatables or nested tables. 
+---@param orig  table
+---@return table
 function lua_util.shallow_copy(orig)
   local orig_type = type(orig)
   local copy
@@ -110,10 +59,11 @@ function lua_util.shallow_copy(orig)
   return copy
 end
 
----@generic T
----@generic U
----@param list T[]
----@param func fun(value: T, index: integer): U
+---Applies a function to each element of a list and returns a new list of the results.
+---@generic T Original type of the list elements
+---@generic U Target type of the list elements after applying the function
+---@param list T[] The list to transform 
+---@param func fun(value: T, index: integer): U The function to apply to each element of the list
 ---@return U[]
 function lua_util.map(list, func)
   local result = {}

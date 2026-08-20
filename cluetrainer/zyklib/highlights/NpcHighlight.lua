@@ -9,7 +9,7 @@ local NpcHighlight = {}
 NpcHighlight.__index = NpcHighlight
 
 ---@type table<zyklib.NpcHighlight, boolean>
-local instances = setmetatable({}, { __mode = "k" })
+local instances = {}
 local instanceCount = 0
 
 ---@type zyklib.ApiEventHandler?

@@ -1,5 +1,4 @@
 local MutableMesh                   = require("zyklib/MutableMesh")
-local WorldDependentValue           = require("zyklib/WorldDependentValue")
 local api_util                      = require("zyklib/api_util")
 local TerrainHighlight              = require("zyklib/highlights/TerrainHighlight")
 
@@ -170,7 +169,7 @@ end
 ---@param startTileSize integer
 ---@param endTileSize integer
 ---@param useUpperHull boolean
----@return MutableMesh
+---@return zyklib.MutableMesh
 local function drawLine(from_tile, to_tile, thickness, showArrow, startTileSize, endTileSize, useUpperHull)
     local builder = MutableMesh.new()
 
@@ -247,7 +246,7 @@ end
 ---Draw a tile marker at the given tile
 ---@param tile TileCoordinates The tile to draw on
 ---@param inset number Distance of the tile marker from the tile edge in fine coordinates (0-250). Default is 0.
----@return MutableMesh
+---@return zyklib.MutableMesh
 local function drawTileMarker(tile, inset)
     inset = inset or 0
     local mesh = MutableMesh.new()

@@ -1,14 +1,18 @@
-local lua_util = require "zyklib/lua_util"
-local easy_methods = require "data/easy_methods"
-local medium_methods = require "data/medium_methods"
-local hard_methods = require "data/hard_methods"
-local compass_methods = require "data/compass_methods"
-local scan_methods = require "data/scan_methods"
-local master_methods = require "data/master_methods"
+local lua_util             = require "zyklib/lua_util"
+local easy_methods         = require "data/easy_methods"
+local medium_methods       = require "data/medium_methods"
+local hard_methods         = require "data/hard_methods"
+local compass_methods      = require "data/compass_methods"
+local scan_methods         = require "data/scan_methods"
+local master_methods       = require "data/master_methods"
 local tetracompass_methods = require "data/tetracompass_methods"
-local Navigator = require "solving/navigator"
+local Navigator            = require "solving/navigator"
+local TerrainHighlight     = require "zyklib/highlights/TerrainHighlight"
+local MutableMesh          = require "zyklib/MutableMesh"
+local coordinate_adaptor   = require "model_shared/coordinate_adaptor"
+local api_util             = require "zyklib/api_util"
 
-local packs = {
+local packs                = {
   easy_methods,
   medium_methods,
   hard_methods,
@@ -60,9 +64,17 @@ local function resolveMethod(step)
   return nil
 end
 
+---@type zyklib.TerrainHighlight?
+local emote_highlight = nil
+
 ---
 ---@param step Step
 function orchestrator:setStep(step)
+  if emote_highlight ~= nil then
+    emote_highlight:deactivate()
+    emote_highlight = nil
+  end
+
   local progress = getProgress(step.tier)
 
   -- Discard duplicate
@@ -78,6 +90,24 @@ function orchestrator:setStep(step)
   table.insert(self.history, self.state)
 
   log(self.state)
+
+  if step.type == "emote" then
+    if emote_highlight == nil then
+      log("Creating emote highlight for step " .. step.id)
+      emote_highlight = TerrainHighlight.new(
+        TerrainHighlight.bounds_from_samples({coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin)}),
+        function()
+          local shape = MutableMesh.cube()
+              :scale3(Vector3.new(512 * step.area.size.x, 1, 512 * step.area.size.y))
+              :recolor(0x91418380)
+              :translate(Vector3.new(0, 128, 0) + api_util.resolve_ground_height(coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin):ToCoordFine(false)))
+          log(shape)
+
+          return shape:shapeData()
+        end
+      ):activate()
+    end
+  end
 
   local method = resolveMethod(step)
 

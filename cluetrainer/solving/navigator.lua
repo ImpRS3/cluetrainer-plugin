@@ -67,16 +67,14 @@ function Navigator:set(path)
       geometry = PathMesh.buildStepMesh(step, {
         context_path = path,
         i = index
-      })
+      }):activate()
     }
   end)
 end
 
 function Navigator:clear()
   for _, value in ipairs(self.path) do
-    if value ~= nil then
-      value.geometry.instance:Destroy()
-    end
+    value.geometry:deactivate()
   end
 
   self.path = {}
