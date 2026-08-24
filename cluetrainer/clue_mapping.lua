@@ -53,7 +53,7 @@ clue_map["TRAIL_CLUE_EASY_SIMPLE014"] = 134
 clue_map["TRAIL_CLUE_EASY_SIMPLE015"] = 131
 clue_map["TRAIL_CLUE_EASY_SIMPLE016"] = 133
 clue_map["TRAIL_CLUE_EASY_SIMPLE017"] =
-DOES_NOT_EXIST                                         --- Talk to one of the squires in the White Knights' castle in Falador
+DOES_NOT_EXIST                                         -- Talk to one of the squires in the White Knights' castle in Falador
 clue_map["TRAIL_CLUE_EASY_SIMPLE018"] = 111
 clue_map["TRAIL_CLUE_EASY_SIMPLE019"] = 135
 clue_map["TRAIL_CLUE_EASY_SIMPLE020"] = 107

@@ -45,14 +45,16 @@ function Navigator.new()
   self.path = {}
 
   self.logic_handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
-    --- If changed, check if new components can be rendered.
-
-    for _, value in ipairs(self.path) do
-      value.geometry.instance.colour = isCompleted(value.step) and 0x80808080 or 0xFFFFFFFF
-    end
+    self:update_progress()
   end)
 
   return self
+end
+
+function Navigator:update_progress()
+  for _, value in ipairs(self.path) do
+    value.geometry.instance.colour = isCompleted(value.step) and 0x80808080 or 0xFFFFFFFF
+  end
 end
 
 --- Set the current path to the given path segments.
@@ -70,6 +72,8 @@ function Navigator:set(path)
       }):activate()
     }
   end)
+
+  self:update_progress()
 end
 
 function Navigator:clear()

@@ -1,8 +1,8 @@
 local base64 = require "zyklib/base64"
 ---@class TileArea
 ---@field origin TileCoordinates
----@field size MyVector2
----@field data string
+---@field size MyVector2?
+---@field data string?
 
 
 local TileArea = {}

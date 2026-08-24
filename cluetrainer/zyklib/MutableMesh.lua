@@ -1,8 +1,8 @@
----@alias ColorRGBA integer
+---@alias ColourRGBA integer
 
 ---@class Mesh.Vertex
 ---@field pos Vector3
----@field color_rgba ColorRGBA
+---@field color_rgba ColourRGBA
 
 ---@class zyklib.MutableMesh.VertexRef
 ---@field vertex Mesh.Vertex
@@ -40,7 +40,7 @@ function MutableMesh:line_count()
 end
 
 ---@param pos Vector3
----@param color? ColorRGBA
+---@param color? ColourRGBA
 ---@return zyklib.MutableMesh.VertexRef
 function MutableMesh:createVertex(pos, color)
     ---@type Mesh.Vertex
@@ -67,9 +67,14 @@ function MutableMesh:triangle(v0, v1, v2)
     indices[#indices + 1] = v0.index
     indices[#indices + 1] = v1.index
     indices[#indices + 1] = v2.index
+end
+
+---@param v0 zyklib.MutableMesh.VertexRef
+---@param v1 zyklib.MutableMesh.VertexRef
+function MutableMesh:line(v0, v1)
+    local indices = self.line_indices
 
     indices[#indices + 1] = v0.index
-    indices[#indices + 1] = v2.index
     indices[#indices + 1] = v1.index
 end
 
@@ -78,16 +83,8 @@ end
 ---@param v2 zyklib.MutableMesh.VertexRef
 ---@param v3 zyklib.MutableMesh.VertexRef
 function MutableMesh:quad(v0, v1, v2, v3)
-    local indices = self.triangle_indices
-
-    local function push(...)
-        for i = 1, select("#", ...) do
-            indices[#indices + 1] = select(i, ...)
-        end
-    end
-
-    push(v0.index, v1.index, v2.index, v0.index, v2.index, v3.index)
-    push(v0.index, v2.index, v1.index, v0.index, v3.index, v2.index)
+    self:triangle(v0, v1, v2)
+    self:triangle(v0, v2, v3)
 end
 
 ---@param offset Vector3
@@ -124,7 +121,7 @@ function MutableMesh:scale3(factor)
     return self
 end
 
----@param color ColorRGBA
+---@param color ColourRGBA
 ---@return self
 function MutableMesh:recolor(color)
     for _, vertex in ipairs(self.vertices) do
@@ -135,7 +132,7 @@ function MutableMesh:recolor(color)
 end
 
 ---Turns the mesh inside out by reversing the winding order of all triangles.
----@return self 
+---@return self
 function MutableMesh:inside_out()
     local indices = self.triangle_indices
 
@@ -196,6 +193,16 @@ function MutableMesh:shapeData()
     return shape
 end
 
+function MutableMesh:faces_only()
+    self.line_indices = {}
+    return self
+end
+
+function MutableMesh:lines_only()
+    self.triangle_indices = {}
+    return self
+end
+
 ---Creates a simple unit cube with vertices between (0,0,0) and (1,1,1). The cube is made of 12 triangles (2 per face).
 ---@return zyklib.MutableMesh
 function MutableMesh.cube()
@@ -222,6 +229,19 @@ function MutableMesh.cube()
     mesh:triangle(h, e, a)
     mesh:triangle(b, c, g)
     mesh:triangle(g, f, b)
+
+    mesh:line(a, b)    
+    mesh:line(b, c)
+    mesh:line(c, d)
+    mesh:line(d, a)
+    mesh:line(e, f)
+    mesh:line(f, g)
+    mesh:line(g, h)
+    mesh:line(h, e)
+    mesh:line(a, e)
+    mesh:line(b, f)
+    mesh:line(c, g)
+    mesh:line(d, h)
 
     return mesh
 end

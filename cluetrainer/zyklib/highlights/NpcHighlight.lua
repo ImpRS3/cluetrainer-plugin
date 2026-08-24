@@ -1,11 +1,12 @@
 local api_util = require "zyklib/api_util"
+local Highlight = require "zyklib/highlights/Highlight"
+local HighlightParams = require "zyklib/highlights/HighlightParams"
 
----@class zyklib.NpcHighlight
+---@class zyklib.NpcHighlight : zyklib.Highlight
 ---@field filter fun(npc: NPCEntity): boolean
 ---@field render fun(npc: NPCEntity): ShapeListDrawSettings
 ---@field active boolean
-
-local NpcHighlight = {}
+local NpcHighlight = setmetatable({}, { __index = Highlight })
 NpcHighlight.__index = NpcHighlight
 
 ---@type table<zyklib.NpcHighlight, boolean>
@@ -26,8 +27,14 @@ local function update_draw_handler()
       if npc.displayName == "" then return true end
 
       for instance in pairs(instances) do
-        if instance.filter(npc) then
-          ShapeList.Draw(instance.render(npc))
+        if instance.actual_params.visible ~= false then
+          if instance.filter(npc) then
+            local settings = instance.render(npc)
+
+            HighlightParams.apply_to_draw_call(instance.actual_params, settings)
+
+            ShapeList.Draw(settings)
+          end
         end
       end
       return true
@@ -45,6 +52,7 @@ end
 function NpcHighlight.new(filter, render)
   ---@type zyklib.NpcHighlight
   local self = setmetatable({}, NpcHighlight)
+  self:init()
   self.filter = filter
   self.render = render
   self.active = false

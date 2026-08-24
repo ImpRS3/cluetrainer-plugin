@@ -11,6 +11,9 @@ local TerrainHighlight     = require "zyklib/highlights/TerrainHighlight"
 local MutableMesh          = require "zyklib/MutableMesh"
 local coordinate_adaptor   = require "model_shared/coordinate_adaptor"
 local api_util             = require "zyklib/api_util"
+local HighlightGroup       = require "zyklib/highlights/HighlightGroup"
+local LocHighlight         = require "zyklib/highlights/LocHighlight"
+local NpcHighlight         = require "zyklib/highlights/NpcHighlight"
 
 local packs                = {
   easy_methods,
@@ -64,23 +67,98 @@ local function resolveMethod(step)
   return nil
 end
 
----@type zyklib.TerrainHighlight?
-local emote_highlight = nil
+---@type zyklib.HighlightGroup?
+local clue_related_highlights = nil
+
+local cube = MutableMesh.new()
+    :add(MutableMesh.cube():faces_only():recolor(0xFFFFFF80))
+    :add(MutableMesh.cube():lines_only():recolor(0xFFFFFFFF))
+    :shapeData()
+
+---comment
+---@param step Step
+local function create_step_highlights(step)
+  ---@type zyklib.TerrainHighlight[]
+  local highlights = {}
+
+  if step.type == "emote" then
+    if clue_related_highlights == nil then
+      table.insert(highlights, TerrainHighlight.new(
+        api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin) }),
+        function()
+          local shape = MutableMesh.cube()
+              :scale3(Vector3.new(512 * step.area.size.x, 1, 512 * step.area.size.y))
+              :recolor(0x91418380)
+              :translate(Vector3.new(0, 128, 0) +
+                api_util.resolve_ground_height(coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin)
+                  :ToCoordFine(false)))
+
+          return shape:shapeData()
+        end
+      ))
+    end
+  end
+
+  if step.solution ~= nil then
+    if step.solution.type == "dig" then
+      -- table.insert(highlights, TerrainHighlight.new(
+      -- api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(step.solution.location) }),
+      --   function(loc)
+      --     return {
+      --       shapeData = cube,
+      --       translation = loc.position,
+      --       scale = Vector3.new(512, 512, 512),
+      --       colour = 0x00FF0080
+      --     }
+      --   end
+      -- ))
+    elseif step.solution.type == "talkto" then
+      table.insert(highlights, NpcHighlight.new(function(npc)
+          return npc.displayName == step.solution.npc
+        end,
+        function(npc)
+          return {
+            shapeData = cube,
+            translation = npc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) - Vector3.new(0.1) * npc.aabb.dimensions,
+            scale = Vector3.new(1.2) * npc.aabb.dimensions,
+            colour = 0xFFFF00A0
+          }
+        end
+      ))
+    elseif step.solution.type == "search" then
+      table.insert(highlights, LocHighlight.new({
+          name = step.solution.entity,
+        },
+        function(loc)
+          return {
+            shapeData = cube,
+            translation = loc.position - Vector3.new(256, 0, 256),
+            scale = Vector3.new(loc.width * 512, 512, loc.length * 512),
+            colour = 0x00FFFFA0
+          }
+        end
+      ))
+    end
+  end
+
+  return HighlightGroup.new(highlights)
+end
 
 ---
 ---@param step Step
 function orchestrator:setStep(step)
-  if emote_highlight ~= nil then
-    emote_highlight:deactivate()
-    emote_highlight = nil
-  end
-
   local progress = getProgress(step.tier)
 
   -- Discard duplicate
   if self.state and self.state.step == step and self.state.progressIndex == progress then
     return
   end
+
+  if clue_related_highlights ~= nil then
+    clue_related_highlights:deactivate()
+    clue_related_highlights = nil
+  end
+
 
   self.state = {
     step = step,
@@ -89,25 +167,7 @@ function orchestrator:setStep(step)
 
   table.insert(self.history, self.state)
 
-  log(self.state)
-
-  if step.type == "emote" then
-    if emote_highlight == nil then
-      log("Creating emote highlight for step " .. step.id)
-      emote_highlight = TerrainHighlight.new(
-        TerrainHighlight.bounds_from_samples({coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin)}),
-        function()
-          local shape = MutableMesh.cube()
-              :scale3(Vector3.new(512 * step.area.size.x, 1, 512 * step.area.size.y))
-              :recolor(0x91418380)
-              :translate(Vector3.new(0, 128, 0) + api_util.resolve_ground_height(coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin):ToCoordFine(false)))
-          log(shape)
-
-          return shape:shapeData()
-        end
-      ):activate()
-    end
-  end
+  clue_related_highlights = create_step_highlights(step):activate()
 
   local method = resolveMethod(step)
 

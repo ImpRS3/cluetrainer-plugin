@@ -1,5 +1,7 @@
 Clue items can be detected from inventory easily. 
 
+Way of the foot shaped key: TRAIL17_MEDIUM_KEY_SKIP_OWNED
+
 
 For masters, individual steps seem to have the same item id
 - emote vars[legacyvarobj=<id>]

@@ -55,6 +55,21 @@ function api_util.color_rgba(r, g, b, a)
   return (r & 0xFF) << 24 | (g & 0xFF) << 16 | (b & 0xFF) << 8 | (a & 0xFF)
 end
 
+---Extracts red, green, blue, and alpha components from a color value
+---@param color integer
+---@return integer r
+---@return integer g
+---@return integer b
+---@return integer a
+function api_util.color_to_rgba(color)
+    local r = (color >> 24) & 0xFF
+    local g = (color >> 16) & 0xFF
+    local b = (color >> 8) & 0xFF
+    local a = color & 0xFF
+
+    return r, g, b, a
+end
+
 ---@param loc LocEntity
 ---@return integer
 function api_util.loc_identity(loc)
@@ -129,6 +144,41 @@ function api_util.resolve_ground_height(coords, kind)
   end
 
   return Vector3.new(coords.x, height, coords.z)
+end
+
+---Checks whether a given rectangle of mapsquares (NOT tiles) has its ground height available.
+---@param bounds Rect
+---@return boolean
+function api_util.bounds_available(bounds)
+  if bounds == nil then return false end
+
+  local _, a = World.GetGroundHeight(0, bounds.x * 64 * 512 + 256, bounds.y * 64 * 512 + 256)
+  local _, b = World.GetGroundHeight(0, ((bounds.x + bounds.width) * 64 - 1) * 512 + 256,
+    ((bounds.y + bounds.height) * 64 - 1) * 512 + 256)
+
+  return a and b
+end
+
+
+---Create a bound rectangle from a set of tile coordinates. The rectangle will be the smallest rectangle that contains all tiles.
+---@param tiles CoordGrid[]
+---@return Rect
+function api_util.map_square_rect_from_tiles(tiles)
+  local min_x = math.huge
+  local min_z = math.huge
+  local max_x = -math.huge
+  local max_z = -math.huge
+
+  for _, sample in ipairs(tiles) do
+    if sample.mapSquareX < min_x then min_x = sample.mapSquareX end
+    if sample.mapSquareZ < min_z then min_z = sample.mapSquareZ end
+    if sample.mapSquareX > max_x then max_x = sample.mapSquareX end
+    if sample.mapSquareZ > max_z then max_z = sample.mapSquareZ end
+  end
+
+  local rec = Rect.new(min_x, min_z, max_x - min_x + 1, max_z - min_z + 1)
+
+  return rec
 end
 
 return api_util

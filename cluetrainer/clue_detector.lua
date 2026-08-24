@@ -18,12 +18,21 @@ function clue_detector:init()
   self.mini_menu_handler = api_util.subscribe_managed(Event.MiniMenuEntrySelected, function(event)
     -- TODO: Check if a clue was opened, select method and render
 
+
     -- Only react on relevant clicks on clues
     if not event.entry.componentData then return end
     if not event.entry.componentData.objConfig then return end
+
+    log("Clicked " .. event.entry.componentData.objConfig.configName)
+
+    for _, value in pairs(event.entry.componentData.objConfig.params) do
+      log(value.configName)
+      log(api_util.to_plain_table(event.entry.componentData.objConfig:GetParamValue(value)))
+    end
+
+
     if event.entry.verbText ~= "Read" and event.entry.verbText ~= "Start scanning" then return end
 
-    log("Clicked "..event.entry.componentData.objConfig.configName)
 
     -- Find corresponding clue id
     local clue_id = clue_map[event.entry.componentData.objConfig.configName]

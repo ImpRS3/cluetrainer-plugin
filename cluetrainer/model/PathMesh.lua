@@ -1,6 +1,8 @@
 local MutableMesh                   = require("zyklib/MutableMesh")
 local api_util                      = require("zyklib/api_util")
 local TerrainHighlight              = require("zyklib/highlights/TerrainHighlight")
+local coordinate_adaptor            = require("model_shared/coordinate_adaptor")
+local lua_util                      = require("zyklib/lua_util")
 
 local PathMesh                      = {}
 
@@ -10,7 +12,7 @@ local TILE_MARKER_VERTICAL_OFFSET   = 80
 local TILE_MARKER_BORDER            = 40
 
 ---@class AbilityColors
----@field [any] ColorRGBA
+---@field [any] ColourRGBA
 local ABILITY_COLORS                = {
     surge = api_util.color_rgba(0, 0x91, 0xf2, 255),
     escape = api_util.color_rgba(0x56, 0xba, 0x0f, 255),
@@ -19,7 +21,7 @@ local ABILITY_COLORS                = {
 }
 
 ---@class COLORS
----@field [any] ColorRGBA
+---@field [any] ColourRGBA
 local COLORS                        = {
     run = api_util.color_rgba(180, 180, 180, 255),
     redclicked_run = api_util.color_rgba(255, 0, 0, 255),
@@ -286,20 +288,20 @@ end
 
 ---
 ---@param step Path.Step
----@return TileCoordinates[]
+---@return CoordGrid[]
 local function marker_bounds(step)
     if step.type == "ability" then
-        return { step.from, step.to }
+        return lua_util.map({ step.from, step.to }, coordinate_adaptor.tile_coordinates_to_coord_grid)
     elseif step.type == "run" then
-        return step.waypoints
+        return lua_util.map(step.waypoints, coordinate_adaptor.tile_coordinates_to_coord_grid)
     elseif step.type == "teleport" then
-        return { step.spot }
+        return lua_util.map({ step.spot }, coordinate_adaptor.tile_coordinates_to_coord_grid)
     elseif step.type == "transport" then
-        return { step.assumed_start }
+        return lua_util.map({ step.assumed_start }, coordinate_adaptor.tile_coordinates_to_coord_grid)
     elseif step.type == "powerburst" then
-        return { step.where }
+        return lua_util.map({ step.where }, coordinate_adaptor.tile_coordinates_to_coord_grid)
     elseif step.type == "redclick" then
-        return { step.where }
+        return lua_util.map({ step.where }, coordinate_adaptor.tile_coordinates_to_coord_grid)
     elseif step.type == "orientation"
         or step.type == "cheat"
         or step.type == "cosmetic"
@@ -310,38 +312,13 @@ local function marker_bounds(step)
     return {}
 end
 
-local function tilesToMapSquareRect(tiles)
-    if (#tiles == 0) then
-        return Rect.new(0, 0, 1, 1)
-    end
-
-    local minX = math.huge
-    local minY = math.huge
-    local maxX = -math.huge
-    local maxY = -math.huge
-
-    for _, tile in ipairs(tiles) do
-        minX = math.min(minX, tile.x)
-        minY = math.min(minY, tile.y)
-        maxX = math.max(maxX, tile.x)
-        maxY = math.max(maxY, tile.y)
-    end
-
-    minX = math.floor(minX / 64)
-    minY = math.floor(minY / 64)
-    maxX = math.floor(maxX / 64)
-    maxY = math.floor(maxY / 64)
-
-    return Rect.new(minX, minY, maxX - minX + 1, maxY - minY + 1)
-end
-
 ---
 ---@param step Path.Step
 ---@param context PathMesh.StepContext
 ---@return zyklib.TerrainHighlight
 function PathMesh.buildStepMesh(step, context)
     return TerrainHighlight.new(
-        tilesToMapSquareRect(marker_bounds(step)),
+        api_util.map_square_rect_from_tiles(marker_bounds(step)),
         function()
             local builder = MutableMesh.new()
 

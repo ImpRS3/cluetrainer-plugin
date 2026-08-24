@@ -1,6 +1,5 @@
 local clues = {}
 
----@alias TileArea any
 ---@alias Challenge any
 
 ---@alias ClueTier
