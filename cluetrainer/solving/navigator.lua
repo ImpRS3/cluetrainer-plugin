@@ -69,7 +69,9 @@ function Navigator:set(path)
       geometry = PathMesh.buildStepMesh(step, {
         context_path = path,
         i = index
-      }):activate()
+      })
+      :setIgnoreDepth(true)
+      :activate()
     }
   end)
 

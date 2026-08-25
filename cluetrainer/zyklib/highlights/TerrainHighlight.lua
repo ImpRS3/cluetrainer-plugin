@@ -8,8 +8,8 @@ local pending_instances = {}
 ---@param self zyklib.TerrainHighlight
 local function create_if_available(self)
   if not self.shape_created and api_util.bounds_available(self.bounds) then
-    local shape = self.generator()
-    self.instance:SetShapeData(shape)
+    self.instance = api_util.unique_shape_instance(self.generator())
+    HighlightParams.apply_to_shape_instance(self.actual_params, self.instance)
     self.shape_created = true
   end
 end
@@ -43,9 +43,6 @@ end
 ---Activates this TerrainHighlight so that it will be drawn. If the bounds are not yet available, it will be drawn as soon as they are.
 ---@return zyklib.TerrainHighlight
 function TerrainHighlight:activate()
-  self.instance = api_util.unique_shape_instance()
-  HighlightParams.apply_to_shape_instance(self.actual_params, self.instance)
-
   create_if_available(self)
 
   if not self.shape_created then
@@ -77,7 +74,7 @@ function TerrainHighlight:propagate_param_change()
   end
 end
 
-local listener = api_util.subscribe_managed(Event.ServerLogic, function(event)
+local listener = api_util.subscribe_managed(Event.ServerLogic, function()
   for instance, _ in pairs(pending_instances) do
     create_if_available(instance)
 

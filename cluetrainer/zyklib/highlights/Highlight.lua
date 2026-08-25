@@ -46,6 +46,12 @@ function Highlight:show()
   return self
 end
 
+function Highlight:setIgnoreDepth(ignoreDepth)
+  self.self_params.ignoreDepth = ignoreDepth
+  self:propagate_param_change()
+  return self
+end
+
 ---Sets the colour of the highlight.
 ---@param colour ColourRGBA
 ---@return zyklib.Highlight
