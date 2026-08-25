@@ -279,6 +279,7 @@ end
 local StepContext = {}
 
 ---@param context PathMesh.StepContext
+---@return Path.Step?
 function StepContext.previous(context)
     if context.i > 1 then
         return context.context_path[context.i - 1]
@@ -294,6 +295,20 @@ local function bounds_from_tile_coordinates(tile_coordinates)
         coordinate_adaptor.tile_coordinates_to_coord_grid))
 end
 
+---@param step Path.Step?
+---@return boolean
+local function ends_with_tile_marker(step)
+    if step == nil then return false end
+
+    if step.type == "ability" then
+        return step.ability == "dive" and not step.is_far_dive
+    elseif step.type == "run" then
+        return true
+    end
+
+    return false
+end
+
 ---@param step Path.Step
 ---@param context PathMesh.StepContext
 ---@return zyklib.Highlight
@@ -301,7 +316,8 @@ function PathMesh.buildStepMesh(step, context)
     local LINE_THICKNESS = 30
     local MARKER_INSET = 20
     local MARKER_SIZE = 512 - 2 * MARKER_INSET
-    local currentTileMarkerSize = 0
+    local previous = StepContext.previous(context)
+    local currentTileMarkerSize = ends_with_tile_marker(previous) and MARKER_SIZE or 0
 
     if step.type == "ability" then
         return TerrainHighlight.new(
@@ -336,7 +352,6 @@ function PathMesh.buildStepMesh(step, context)
                 local builder = MutableMesh.new()
 
                 if #step.waypoints >= 2 then
-                    local previous = StepContext.previous(context)
                     local previousIsRedClick = previous ~= nil and previous.type == "redclick"
                     local previousTargetsNpc = previous ~= nil
                         and previous.type == "redclick"
