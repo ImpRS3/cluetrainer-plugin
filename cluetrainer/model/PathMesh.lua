@@ -3,6 +3,7 @@ local api_util                      = require("zyklib/api_util")
 local TerrainHighlight              = require("zyklib/highlights/TerrainHighlight")
 local coordinate_adaptor            = require("model_shared/coordinate_adaptor")
 local lua_util                      = require("zyklib/lua_util")
+local HighlightGroup                = require("zyklib/highlights/HighlightGroup")
 
 local PathMesh                      = {}
 
@@ -286,48 +287,28 @@ function StepContext.previous(context)
     end
 end
 
----
----@param step Path.Step
----@return CoordGrid[]
-local function marker_bounds(step)
-    if step.type == "ability" then
-        return lua_util.map({ step.from, step.to }, coordinate_adaptor.tile_coordinates_to_coord_grid)
-    elseif step.type == "run" then
-        return lua_util.map(step.waypoints, coordinate_adaptor.tile_coordinates_to_coord_grid)
-    elseif step.type == "teleport" then
-        return lua_util.map({ step.spot }, coordinate_adaptor.tile_coordinates_to_coord_grid)
-    elseif step.type == "transport" then
-        return lua_util.map({ step.assumed_start }, coordinate_adaptor.tile_coordinates_to_coord_grid)
-    elseif step.type == "powerburst" then
-        return lua_util.map({ step.where }, coordinate_adaptor.tile_coordinates_to_coord_grid)
-    elseif step.type == "redclick" then
-        return lua_util.map({ step.where }, coordinate_adaptor.tile_coordinates_to_coord_grid)
-    elseif step.type == "orientation"
-        or step.type == "cheat"
-        or step.type == "cosmetic"
-    then
-        -- No geometry.
-    end
-
-    return {}
+---@param tile_coordinates TileCoordinates[]
+---@return Rect
+local function bounds_from_tile_coordinates(tile_coordinates)
+    return api_util.map_square_rect_from_tiles(lua_util.map(tile_coordinates,
+        coordinate_adaptor.tile_coordinates_to_coord_grid))
 end
 
----
 ---@param step Path.Step
 ---@param context PathMesh.StepContext
----@return zyklib.TerrainHighlight
+---@return zyklib.Highlight
 function PathMesh.buildStepMesh(step, context)
-    return TerrainHighlight.new(
-        api_util.map_square_rect_from_tiles(marker_bounds(step)),
-        function()
-            local builder = MutableMesh.new()
+    local LINE_THICKNESS = 30
+    local MARKER_INSET = 20
+    local MARKER_SIZE = 512 - 2 * MARKER_INSET
+    local currentTileMarkerSize = 0
 
-            local LINE_THICKNESS = 30
-            local MARKER_INSET = 20
-            local MARKER_SIZE = 512 - 2 * MARKER_INSET
-            local currentTileMarkerSize = 0
+    if step.type == "ability" then
+        return TerrainHighlight.new(
+            bounds_from_tile_coordinates({ step.from, step.to }),
+            function()
+                local builder = MutableMesh.new()
 
-            if step.type == "ability" then
                 local color = ABILITY_COLORS[step.ability]
                 local drawTargetTile = step.ability == "dive" and not step.is_far_dive
 
@@ -345,8 +326,15 @@ function PathMesh.buildStepMesh(step, context)
                     builder:add(drawTileMarker(step.to, MARKER_INSET):recolor(color))
                 end
 
-                currentTileMarkerSize = drawTargetTile and MARKER_SIZE or 0
-            elseif step.type == "run" then
+                return builder:shapeData()
+            end
+        )
+    elseif step.type == "run" then
+        return TerrainHighlight.new(
+            bounds_from_tile_coordinates(step.waypoints),
+            function()
+                local builder = MutableMesh.new()
+
                 if #step.waypoints >= 2 then
                     local previous = StepContext.previous(context)
                     local previousIsRedClick = previous ~= nil and previous.type == "redclick"
@@ -374,21 +362,23 @@ function PathMesh.buildStepMesh(step, context)
                     builder:add(drawTileMarker(step.waypoints[#step.waypoints], MARKER_INSET):recolor(tileColor))
                     currentTileMarkerSize = MARKER_SIZE
                 end
-            elseif step.type == "teleport" then
-                currentTileMarkerSize = 0
-            elseif step.type == "transport" then
-            elseif step.type == "powerburst" then
-            elseif step.type == "redclick" then
-            elseif step.type == "orientation"
-                or step.type == "cheat"
-                or step.type == "cosmetic"
-            then
-                -- No geometry.
-            end
 
-            return builder:shapeData()
-        end
-    )
+                return builder:shapeData()
+            end
+        )
+    elseif step.type == "teleport" then
+    elseif step.type == "transport" then
+    elseif step.type == "powerburst" then
+    elseif step.type == "redclick" then
+    elseif step.type == "orientation"
+        or step.type == "cheat"
+        or step.type == "cosmetic"
+    then
+        -- No geometry.
+    end
+
+    -- If we reach this point, the step type has no highlight geometry. Return an empty highlight.
+    return HighlightGroup.new({})
 end
 
 return PathMesh

@@ -10,6 +10,7 @@ HighlightGroup.__index = HighlightGroup
 ---@return zyklib.HighlightGroup
 function HighlightGroup.new(children)
   local self = setmetatable({}, HighlightGroup)
+  self:init()
   self.highlights = children
 
   -- Set this group as the parent of all child highlights

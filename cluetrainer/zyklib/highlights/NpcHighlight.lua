@@ -37,6 +37,7 @@ local function update_draw_handler()
           end
         end
       end
+      
       return true
     end)
   elseif instanceCount == 0 and draw_handler ~= nil then

@@ -5,7 +5,7 @@ local lua_util = require "zyklib/lua_util"
 
 ---@class PathStepEntity
 ---@field step Path.Step
----@field geometry zyklib.TerrainHighlight
+---@field geometry zyklib.Highlight
 
 ---@class Navigator
 ---@field path PathStepEntity[]
@@ -53,7 +53,7 @@ end
 
 function Navigator:update_progress()
   for _, value in ipairs(self.path) do
-    value.geometry.instance.colour = isCompleted(value.step) and 0x80808080 or 0xFFFFFFFF
+    value.geometry:setColour(isCompleted(value.step) and 0x80808080 or 0xFFFFFFFF)
   end
 end
 

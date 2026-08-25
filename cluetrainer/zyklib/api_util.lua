@@ -5,7 +5,6 @@ local api_util = {}
 ---@field id string
 ---@field cancel fun(): nil
 
-
 local handler_name_generator = UniqueNameGenerator.new("api_util_handler_")
 
 ---@generic T, RetT

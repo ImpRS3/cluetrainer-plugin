@@ -2,6 +2,8 @@ local api_util = require "zyklib/api_util"
 local Highlight = require "zyklib/highlights/Highlight"
 local HighlightParams = require "zyklib/highlights/HighlightParams"
 
+--- A LocHighlight is a highlight that is drawn for LocEntity objects. You can specify a filter to determine which LocEntity objects should be highlighted, 
+--- and a render function to determine how each LocEntity highlight should be drawn.
 ---@class zyklib.LocHighlight : zyklib.Highlight
 ---@field filter LocListFilterSettings
 ---@field render fun(npc: LocEntity): ShapeListDrawSettings
@@ -18,6 +20,8 @@ local instanceCount = 0
 local draw_handler = nil
 
 
+---Update the ShapeInstances for a given LocHighlight to synchronize existing ShapeEntities with the current set of LocEntity objects that match the filter. 
+---This will create new ShapeInstances for newly matching LocEntity objects, and destroy ShapeInstances for LocEntity objects that no longer exist or match the filter.
 ---@param instance zyklib.LocHighlight
 local function update_instances(instance)
   local locs = instance.active and LocList.Filter(instance.filter) or {}
@@ -63,7 +67,8 @@ local function update_instances(instance)
   end
 end
 
-local function update_handler()
+---Makes sure the logic hook that periodically updates the ShapeInstances for all active LocHighlight instances is created or destroyed as needed.
+local function update_logic_hook()
   if instanceCount > 0 and draw_handler == nil then
     -- Handler does not exist, but there are active instances, so we create it.
     draw_handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
@@ -78,7 +83,7 @@ local function update_handler()
   end
 end
 
----@param filter LocListFilterSettings
+---@param filter LocListFilterSettings The filter object that determines which LocEntity objects should be highlighted.
 ---@param render fun(loc: LocEntity): ShapeListDrawSettings
 ---@return zyklib.LocHighlight
 function LocHighlight.new(filter, render)
@@ -102,7 +107,7 @@ function LocHighlight:deactivate()
     instanceCount = instanceCount - 1
 
     update_instances(self)
-    update_handler()
+    update_logic_hook()
   end
 
   return self
@@ -117,7 +122,7 @@ function LocHighlight:activate()
     instanceCount = instanceCount + 1
 
     update_instances(self)
-    update_handler()
+    update_logic_hook()
   end
 
   return self
