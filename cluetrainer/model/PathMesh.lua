@@ -1,20 +1,19 @@
-local MutableMesh                   = require("zyklib/MutableMesh")
-local api_util                      = require("zyklib/api_util")
-local TerrainHighlight              = require("zyklib/highlights/TerrainHighlight")
-local coordinate_adaptor            = require("model_shared/coordinate_adaptor")
-local lua_util                      = require("zyklib/lua_util")
-local HighlightGroup                = require("zyklib/highlights/HighlightGroup")
+local MutableMesh        = require("zyklib/MutableMesh")
+local api_util           = require("zyklib/api_util")
+local TerrainHighlight   = require("zyklib/highlights/TerrainHighlight")
+local coordinate_adaptor = require("model_shared/coordinate_adaptor")
+local lua_util           = require("zyklib/lua_util")
+local HighlightGroup     = require("zyklib/highlights/HighlightGroup")
+local OverlayConstants   = require("model/OverlayConstants")
+local TileArea           = require("model_shared/TileArea")
 
-local PathMesh                      = {}
+local PathMesh           = {}
 
-local ARROW_HEAD_LENGTH             = 150
-local FLOOR_OVERLAY_VERTICAL_OFFSET = 60
-local TILE_MARKER_VERTICAL_OFFSET   = 80
-local TILE_MARKER_BORDER            = 40
+
 
 ---@class AbilityColors
 ---@field [any] ColourRGBA
-local ABILITY_COLORS                = {
+local ABILITY_COLORS = {
     surge = api_util.color_rgba(0, 0x91, 0xf2, 255),
     escape = api_util.color_rgba(0x56, 0xba, 0x0f, 255),
     barge = api_util.color_rgba(0xa9, 0x71, 0x04, 255),
@@ -23,7 +22,7 @@ local ABILITY_COLORS                = {
 
 ---@class COLORS
 ---@field [any] ColourRGBA
-local COLORS                        = {
+local COLORS         = {
     run = api_util.color_rgba(180, 180, 180, 255),
     redclicked_run = api_util.color_rgba(255, 0, 0, 255),
     teleport = api_util.color_rgba(255, 0, 255, 255),
@@ -187,7 +186,7 @@ local function drawLine(from_tile, to_tile, thickness, showArrow, startTileSize,
 
     local modifiedStart = a + scale2(0.5 * startTileSize, crossSection)
     local modifiedEnd = b - scale2(0.5 * endTileSize, crossSection) +
-        (showArrow and scale2(-ARROW_HEAD_LENGTH, direction) or Vector2.new(0, 0))
+        (showArrow and scale2(-OverlayConstants.ARROW_HEAD_LENGTH, direction) or Vector2.new(0, 0))
 
     local length = (modifiedEnd - modifiedStart).length
 
@@ -204,8 +203,7 @@ local function drawLine(from_tile, to_tile, thickness, showArrow, startTileSize,
         local t = segment / segmentCount
         local point = (scale2(1 - t, modifiedStart) + scale2(t, modifiedEnd)):Floor()
 
-        controlPoints[#controlPoints + 1] = resolve(vector_as_coord(point, from_tile.level)) +
-            Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0)
+        controlPoints[#controlPoints + 1] = resolve(vector_as_coord(point, from_tile.level))
     end
 
     if useUpperHull then
@@ -231,17 +229,17 @@ local function drawLine(from_tile, to_tile, thickness, showArrow, startTileSize,
         local arrowWidth = thickness * 3
         local base1 = modifiedEnd + scale2(arrowWidth, perpendicular)
         local base2 = modifiedEnd + scale2(-arrowWidth, perpendicular)
-        local tip = modifiedEnd + scale2(ARROW_HEAD_LENGTH, direction)
+        local tip = modifiedEnd + scale2(OverlayConstants.ARROW_HEAD_LENGTH, direction)
 
-        local v0 = builder:createVertex(resolve(vector_as_coord(base1, to_tile.level)) +
-            Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
-        local v1 = builder:createVertex(resolve(vector_as_coord(base2, to_tile.level)) +
-            Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
-        local v2 = builder:createVertex(resolve(vector_as_coord(tip, to_tile.level)) +
-            Vector3.new(0, FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
+        local v0 = builder:createVertex(resolve(vector_as_coord(base1, to_tile.level)))
+        local v1 = builder:createVertex(resolve(vector_as_coord(base2, to_tile.level)))
+        local v2 = builder:createVertex(resolve(vector_as_coord(tip, to_tile.level)))
 
         builder:triangle(v0, v1, v2)
     end
+
+    -- offset entire line to the target height above the terrain
+    builder:translate(Vector3.new(0, OverlayConstants.FLOOR_OVERLAY_VERTICAL_OFFSET, 0))
 
     return builder
 end
@@ -254,22 +252,144 @@ local function drawTileMarker(tile, inset)
     inset = inset or 0
     local mesh = MutableMesh.new()
 
-    local vertical_offset = Vector3.new(0, TILE_MARKER_VERTICAL_OFFSET, 0)
+    local outer00 = mesh:createVertex(resolve(convert(tile, "sw", inset)))
+    local outer01 = mesh:createVertex(resolve(convert(tile, "nw", inset)))
+    local outer11 = mesh:createVertex(resolve(convert(tile, "ne", inset)))
+    local outer10 = mesh:createVertex(resolve(convert(tile, "se", inset)))
 
-    local outer00 = mesh:createVertex(resolve(convert(tile, "sw", inset)) + vertical_offset)
-    local outer01 = mesh:createVertex(resolve(convert(tile, "nw", inset)) + vertical_offset)
-    local outer11 = mesh:createVertex(resolve(convert(tile, "ne", inset)) + vertical_offset)
-    local outer10 = mesh:createVertex(resolve(convert(tile, "se", inset)) + vertical_offset)
-
-    local inner00 = mesh:createVertex(resolve(convert(tile, "sw", inset + TILE_MARKER_BORDER)) + vertical_offset)
-    local inner01 = mesh:createVertex(resolve(convert(tile, "nw", inset + TILE_MARKER_BORDER)) + vertical_offset)
-    local inner11 = mesh:createVertex(resolve(convert(tile, "ne", inset + TILE_MARKER_BORDER)) + vertical_offset)
-    local inner10 = mesh:createVertex(resolve(convert(tile, "se", inset + TILE_MARKER_BORDER)) + vertical_offset)
+    local inner00 = mesh:createVertex(resolve(convert(tile, "sw", inset + OverlayConstants.TILE_MARKER_BORDER)))
+    local inner01 = mesh:createVertex(resolve(convert(tile, "nw", inset + OverlayConstants.TILE_MARKER_BORDER)))
+    local inner11 = mesh:createVertex(resolve(convert(tile, "ne", inset + OverlayConstants.TILE_MARKER_BORDER)))
+    local inner10 = mesh:createVertex(resolve(convert(tile, "se", inset + OverlayConstants.TILE_MARKER_BORDER)))
 
     mesh:quad(outer00, outer01, inner01, inner00)
     mesh:quad(outer01, outer11, inner11, inner01)
     mesh:quad(outer11, outer10, inner10, inner11)
     mesh:quad(outer10, outer00, inner00, inner10)
+
+    mesh:translate(Vector3.new(0, OverlayConstants.TILE_MARKER_VERTICAL_OFFSET, 0))
+
+    return mesh
+end
+
+---@param tile_area TileArea
+---@return zyklib.MutableMesh
+function PathMesh.drawTileAreaOutlines(tile_area)
+    tile_area = TileArea.ensure_mutable(tile_area)
+
+    local mesh = MutableMesh.new()
+
+    ---@type zyklib.MutableMesh.VertexRef[]
+    local vertex_cache = {}
+
+    local function get_corner_vertex(xi, yi)
+        local key = yi * (tile_area:getSize().x + 1) + xi
+        if not vertex_cache[key] then
+            vertex_cache[key] = mesh:createVertex(resolve(CoordFine.new(
+                tile_area.origin.level,
+                512 * (tile_area.origin.x + xi),
+                512 * (tile_area.origin.y + yi))
+            ))
+        end
+        return vertex_cache[key]
+    end
+
+    for xi = 0, tile_area:getSize().x - 1, 1 do
+        local x = tile_area.origin.x + xi
+
+        for yi = 0, tile_area:getSize().y - 1, 1 do
+            local y = tile_area.origin.y + yi
+
+            ---@type TileCoordinates
+            local tile = { x = x, y = y, level = tile_area.origin.level }
+
+            local is_in = tile_area:query(tile)
+
+            if is_in then
+                local north = tile_area:query({ x = x, y = y + 1, level = tile_area.origin.level })
+                local south = tile_area:query({ x = x, y = y - 1, level = tile_area.origin.level })
+                local east = tile_area:query({ x = x + 1, y = y, level = tile_area.origin.level })
+                local west = tile_area:query({ x = x - 1, y = y, level = tile_area.origin.level })
+
+                -- TODO: Check the below
+
+                if not south then
+                    mesh:line(get_corner_vertex(xi, yi), get_corner_vertex(xi + 1, yi))
+                end
+                if not east then
+                    mesh:line(get_corner_vertex(xi + 1, yi), get_corner_vertex(xi + 1, yi + 1))
+                end
+                if not west then
+                    mesh:line(get_corner_vertex(xi, yi), get_corner_vertex(xi, yi + 1))
+                end
+                if not north then
+                    mesh:line(get_corner_vertex(xi, yi + 1), get_corner_vertex(xi + 1, yi + 1))
+                end
+            end
+        end
+    end
+
+    return mesh
+end
+
+---@param tile_area TileArea
+---@return zyklib.MutableMesh
+function PathMesh.drawTileAreaFill(tile_area)
+    tile_area = TileArea.ensure_mutable(tile_area)
+
+    local mesh = MutableMesh.new()
+
+    ---@type zyklib.MutableMesh.VertexRef[]
+    local vertex_cache = {}
+
+    local function get_corner_vertex(xi, yi)
+        local key = yi * (tile_area:getSize().x + 1) + xi
+        if not vertex_cache[key] then
+            vertex_cache[key] = mesh:createVertex(resolve(CoordFine.new(
+                tile_area.origin.level,
+                512 * (tile_area.origin.x + xi),
+                512 * (tile_area.origin.y + yi))
+            ))
+        end
+        return vertex_cache[key]
+    end
+
+    for xi = 0, tile_area:getSize().x - 1, 1 do
+        local x = tile_area.origin.x + xi
+
+        for yi = 0, tile_area:getSize().y - 1, 1 do
+            local y = tile_area.origin.y + yi
+
+            ---@type TileCoordinates
+            local tile = { x = x, y = y, level = tile_area.origin.level }
+
+            local is_in = tile_area:query(tile)
+
+            if is_in then
+                local south_west = get_corner_vertex(xi, yi)
+                local south_east = get_corner_vertex(xi + 1, yi)
+                local north_east = get_corner_vertex(xi + 1, yi + 1)
+                local north_west = get_corner_vertex(xi, yi + 1)
+
+                mesh:quad(south_west, south_east, north_east, north_west)
+            end
+        end
+    end
+
+    return mesh
+end
+
+---Draw a tile area with outlines and fill
+---@param tile_area TileArea
+---@param outline_color ColourRGBA? Colour of the outline. Default is 0xFFFFFFFF (white).
+---@param fill_color ColourRGBA? Color of the fill. Default is 0xFFFFFF80 (semi-transparent white).
+---@return zyklib.MutableMesh
+function PathMesh.drawTileArea(tile_area, outline_color, fill_color)
+    tile_area = TileArea.ensure_mutable(tile_area)
+
+    local mesh = MutableMesh.new()
+    mesh:add(PathMesh.drawTileAreaOutlines(tile_area):recolor(outline_color or 0xFFFFFFFF))
+    mesh:add(PathMesh.drawTileAreaFill(tile_area):recolor(fill_color or 0xFFFFFF80))
 
     return mesh
 end

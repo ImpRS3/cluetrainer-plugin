@@ -62,20 +62,16 @@ end
 ---@param v1 zyklib.MutableMesh.VertexRef
 ---@param v2 zyklib.MutableMesh.VertexRef
 function MutableMesh:triangle(v0, v1, v2)
-    local indices = self.triangle_indices
-
-    indices[#indices + 1] = v0.index
-    indices[#indices + 1] = v1.index
-    indices[#indices + 1] = v2.index
+    self.triangle_indices[#self.triangle_indices + 1] = v0.index
+    self.triangle_indices[#self.triangle_indices + 1] = v1.index
+    self.triangle_indices[#self.triangle_indices + 1] = v2.index
 end
 
 ---@param v0 zyklib.MutableMesh.VertexRef
 ---@param v1 zyklib.MutableMesh.VertexRef
 function MutableMesh:line(v0, v1)
-    local indices = self.line_indices
-
-    indices[#indices + 1] = v0.index
-    indices[#indices + 1] = v1.index
+    self.line_indices[#self.line_indices + 1] = v0.index
+    self.line_indices[#self.line_indices + 1] = v1.index
 end
 
 ---@param v0 zyklib.MutableMesh.VertexRef
@@ -156,6 +152,10 @@ function MutableMesh:add(...)
 
         for _, index in ipairs(mesh.triangle_indices) do
             self.triangle_indices[#self.triangle_indices + 1] = index + vertex_offset
+        end
+
+        for _, index in ipairs(mesh.line_indices) do
+            self.line_indices[#self.line_indices + 1] = index + vertex_offset
         end
     end
 

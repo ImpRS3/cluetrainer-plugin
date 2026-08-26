@@ -14,6 +14,9 @@ local api_util             = require "zyklib/api_util"
 local HighlightGroup       = require "zyklib/highlights/HighlightGroup"
 local LocHighlight         = require "zyklib/highlights/LocHighlight"
 local NpcHighlight         = require "zyklib/highlights/NpcHighlight"
+local PathMesh             = require "model/PathMesh"
+local TileArea             = require "model_shared/TileArea"
+local OverlayConstants     = require "model/OverlayConstants"
 
 local packs                = {
   easy_methods,
@@ -81,37 +84,33 @@ local function create_step_highlights(step)
   ---@type zyklib.TerrainHighlight[]
   local highlights = {}
 
-  if step.type == "emote" then
-    if clue_related_highlights == nil then
-      table.insert(highlights, TerrainHighlight.new(
-        api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin) }),
-        function()
-          local shape = MutableMesh.cube()
-              :scale3(Vector3.new(512 * step.area.size.x, 1, 512 * step.area.size.y))
-              :recolor(0x91418380)
-              :translate(Vector3.new(0, 128, 0) +
-                api_util.resolve_ground_height(coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin)
-                  :ToCoordFine(false)))
+  log(MutableMesh.new()
+    :add(MutableMesh.cube():lines_only():recolor(0xFFFFFFFF)))
 
-          return shape:shapeData()
-        end
-      ))
-    end
+  if step.type == "emote" then
+    table.insert(highlights, TerrainHighlight.new(
+      api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin) }),
+      function()
+        return PathMesh.drawTileArea(step.area, 0x914183FF, 0x91418380)
+            :translate(Vector3.new(0, OverlayConstants.AREA_OVERLAY_HEIGHT, 0))
+            :shapeData()
+      end
+    ))
   end
 
   if step.solution ~= nil then
     if step.solution.type == "dig" then
-      -- table.insert(highlights, TerrainHighlight.new(
-      -- api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(step.solution.location) }),
-      --   function(loc)
-      --     return {
-      --       shapeData = cube,
-      --       translation = loc.position,
-      --       scale = Vector3.new(512, 512, 512),
-      --       colour = 0x00FF0080
-      --     }
-      --   end
-      -- ))
+      local spot = step.solution.spot
+      ---@cast spot TileCoordinates LuaCats does not narrow the type of step.solution to DigSolution, so we need to cast this
+
+      table.insert(highlights, TerrainHighlight.new(
+        api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(spot) }),
+        function()
+          return PathMesh.drawTileArea(TileArea.centered_on(spot, { x = 3, y = 3 }), 0xFFFFFFFF, 0xFFFFFF80)
+              :translate(Vector3.new(0, OverlayConstants.AREA_OVERLAY_HEIGHT, 0))
+              :shapeData()
+        end
+      ))
     elseif step.solution.type == "talkto" then
       table.insert(highlights, NpcHighlight.new(function(npc)
           return npc.displayName == step.solution.npc
