@@ -13,7 +13,6 @@ local lua_util = require "zyklib/lua_util"
 local Navigator = {}
 Navigator.__index = Navigator
 
-
 local function isCompleted(step)
   ---@type CoordGrid
   local true_tile = Player.GetEntity().routeEnd
@@ -62,7 +61,6 @@ end
 function Navigator:set(path)
   self:clear()
 
-  --- TODO: Only include steps that actually have a visual representation
   self.path = lua_util.map(path, function(step, index)
     return {
       step = step,
@@ -70,7 +68,7 @@ function Navigator:set(path)
         context_path = path,
         i = index
       })
-      :setIgnoreDepth(true)
+      :setIgnoreDepth(true) -- TODO: Only ignore depth if on the same level as the player and is not completed, otherwise it looks weird
       :activate()
     }
   end)

@@ -16,9 +16,6 @@ local clue_detector = {
 
 function clue_detector:init()
   self.mini_menu_handler = api_util.subscribe_managed(Event.MiniMenuEntrySelected, function(event)
-    -- TODO: Check if a clue was opened, select method and render
-
-
     -- Only react on relevant clicks on clues
     if not event.entry.componentData then return end
     if not event.entry.componentData.objConfig then return end

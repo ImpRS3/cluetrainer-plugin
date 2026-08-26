@@ -138,14 +138,27 @@ local function create_step_highlights(step)
         end
       ))
     elseif step.solution.type == "search" then
+      local spot = step.solution.spot
+      ---@cast spot TileRectangle LuaCats does not narrow the type of step.solution to SearchSolution, so we need to cast this
+
+      local LOC_SCALE = 1.05
+
       table.insert(highlights, LocHighlight.new({
           name = step.solution.entity,
+          coordGrid = coordinate_adaptor.tile_coordinates_to_coord_grid({
+            x = spot.topleft.x,
+            y = spot.botright.y,
+            level =
+                spot.level
+          }),
+          range = 2
         },
         function(loc)
           return {
             shapeData = cube,
-            translation = loc.position - Vector3.new(256, 0, 256),
-            scale = Vector3.new(loc.width * 512, 512, loc.length * 512),
+            translation = loc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) -
+            Vector3.new((LOC_SCALE - 1) / 2) * loc.aabb.dimensions,
+            scale = Vector3.new(LOC_SCALE) * loc.aabb.dimensions,
             colour = 0x00FFFFA0
           }
         end

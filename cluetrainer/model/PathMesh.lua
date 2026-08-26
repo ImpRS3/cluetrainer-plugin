@@ -311,8 +311,6 @@ function PathMesh.drawTileAreaOutlines(tile_area)
                 local east = tile_area:query({ x = x + 1, y = y, level = tile_area.origin.level })
                 local west = tile_area:query({ x = x - 1, y = y, level = tile_area.origin.level })
 
-                -- TODO: Check the below
-
                 if not south then
                     mesh:line(get_corner_vertex(xi, yi), get_corner_vertex(xi + 1, yi))
                 end
