@@ -98,6 +98,19 @@ local function create_step_highlights(step)
     ))
   end
 
+  if step.type == "scan" or step.type == "compass" then
+    for key, spot in pairs(step.spots) do
+      table.insert(highlights, TerrainHighlight.new(
+        api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(spot) }),
+        function()
+          return PathMesh.drawTileArea(TileArea.centered_on(spot, { x = 3, y = 3 }), 0xFFFFFFFF, 0xFFFFFF80)
+              :translate(Vector3.new(0, OverlayConstants.AREA_OVERLAY_HEIGHT, 0))
+              :shapeData()
+        end
+      ))
+    end
+  end
+
   if step.solution ~= nil then
     if step.solution.type == "dig" then
       local spot = step.solution.spot
