@@ -65,11 +65,11 @@ function Navigator:set(path)
     return {
       step = step,
       geometry = PathMesh.buildStepMesh(step, {
-        context_path = path,
-        i = index
-      })
-      :setIgnoreDepth(true) -- TODO: Only ignore depth if on the same level as the player and is not completed, otherwise it looks weird
-      :activate()
+            context_path = path,
+            i = index
+          })
+          :setIgnoreDepth(true) -- TODO: Only ignore depth if on the same level as the player and is not completed, otherwise it looks weird
+          :activate()
     }
   end)
 
@@ -82,6 +82,14 @@ function Navigator:clear()
   end
 
   self.path = {}
+end
+
+function Navigator:destroy()
+  self:clear()
+  if self.logic_handler then
+    self.logic_handler.cancel()
+    self.logic_handler = nil
+  end
 end
 
 Navigator.instance = Navigator.new()

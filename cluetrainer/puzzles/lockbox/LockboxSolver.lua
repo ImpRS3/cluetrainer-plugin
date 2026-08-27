@@ -1,5 +1,5 @@
 local lua_util       = require "zyklib/lua_util"
-local Lockboxes      = require "solvers/lockbox/Lockboxes"
+local Lockboxes      = require "puzzles/lockbox/Lockboxes"
 local api_util       = require "zyklib/api_util"
 
 local lockbox_solver = {}

@@ -6,6 +6,8 @@ local lua_util           = require("zyklib/lua_util")
 local HighlightGroup     = require("zyklib/highlights/HighlightGroup")
 local OverlayConstants   = require("model/OverlayConstants")
 local TileArea           = require("model_shared/TileArea")
+local LocHighlight       = require("zyklib/highlights/LocHighlight")
+local NpcHighlight       = require("zyklib/highlights/NpcHighlight")
 
 local PathMesh           = {}
 
@@ -503,6 +505,47 @@ function PathMesh.buildStepMesh(step, context)
     elseif step.type == "transport" then
     elseif step.type == "powerburst" then
     elseif step.type == "redclick" then
+        local cube = MutableMesh.new()
+            :add(MutableMesh.cube():faces_only():recolor(0xFFFFFF80))
+            :add(MutableMesh.cube():lines_only():recolor(0xFFFFFFFF))
+            :shapeData()
+
+        if step.target.kind == "npc" then
+            NpcHighlight.new(function(npc)
+                    return npc.displayName == step.target.name
+                end,
+                function(npc)
+                    return {
+                        shapeData = cube,
+                        translation = npc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) -
+                            Vector3.new(0.1) * npc.aabb.dimensions,
+                        scale = Vector3.new(1.2) * npc.aabb.dimensions
+                    }
+                end
+            )
+        elseif step.target.kind == "static" then
+            local LOC_SCALE = 1.05
+
+            log("static redclick")
+
+            return LocHighlight.new({
+                    name = step.target.name,
+                    coordGrid = coordinate_adaptor.tile_coordinates_to_coord_grid(step.where),
+                    range = 2
+                },
+                function(loc)
+                    log("Creating loc")
+
+                    return {
+                        shapeData = cube,
+                        translation = loc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) -
+                            Vector3.new((LOC_SCALE - 1) / 2) * loc.aabb.dimensions,
+                        scale = Vector3.new(LOC_SCALE) * loc.aabb.dimensions,
+                        colour = 0x00FFFFA0
+                    }
+                end
+            )
+        end
     elseif step.type == "orientation"
         or step.type == "cheat"
         or step.type == "cosmetic"

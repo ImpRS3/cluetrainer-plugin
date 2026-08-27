@@ -1,6 +1,23 @@
 -- Unknown types
 
----@alias ScanTree.ScanTree any
+---@class ScanTree.ScanTree
+---@field ordered_spots TileCoordinates[]
+---@field assumed_range integer
+---@field root ScanTree.ScanTreeNode
+
+---@class ScanTree.ScanTreeNode
+---@field path Path.Raw
+---@field region ScanTree.ScanRegion?
+---@field children {key: PulseInformation, value: ScanTree.ScanTreeNode}[]
+
+---@class ScanTree.ScanRegion
+---@field name string
+---@field area TileArea
+
+---@class PulseInformation
+---@field pulse 1 | 2 | 3
+---@field spot TileCoordinates?
+
 ---@alias ClueAssumptions any
 
 ---@alias Method.Kind

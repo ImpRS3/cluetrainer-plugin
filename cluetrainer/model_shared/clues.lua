@@ -74,9 +74,6 @@ clues.ClueTier = {
 ---@field entity string
 ---@field key? Solution.SearchKey
 
-
--- Shared step fields
-
 ---@class StepShared
 ---@field id number
 ---@field type ClueType
@@ -84,9 +81,6 @@ clues.ClueTier = {
 ---@field text string[]
 ---@field challenge? Challenge[]
 ---@field solution? Solution
-
-
--- Step variants
 
 ---@class Anagram : StepShared
 ---@field type "anagram"

@@ -17,6 +17,7 @@ local NpcHighlight         = require "zyklib/highlights/NpcHighlight"
 local PathMesh             = require "model/PathMesh"
 local TileArea             = require "model_shared/TileArea"
 local OverlayConstants     = require "model/OverlayConstants"
+local ScanTreeSolver       = require "solving/ScanTreeSolver"
 
 local packs                = {
   easy_methods,
@@ -72,6 +73,9 @@ end
 
 ---@type zyklib.HighlightGroup?
 local clue_related_highlights = nil
+
+---@type ScanTreeSolver?
+local scan_tree_solver = nil
 
 local cube = MutableMesh.new()
     :add(MutableMesh.cube():faces_only():recolor(0xFFFFFF80))
@@ -141,7 +145,7 @@ local function create_step_highlights(step)
       local spot = step.solution.spot
       ---@cast spot TileRectangle LuaCats does not narrow the type of step.solution to SearchSolution, so we need to cast this
 
-      local LOC_SCALE = 1.05
+      local LOC_SCALE = 2
 
       table.insert(highlights, LocHighlight.new({
           name = step.solution.entity,
@@ -157,7 +161,7 @@ local function create_step_highlights(step)
           return {
             shapeData = cube,
             translation = loc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) -
-            Vector3.new((LOC_SCALE - 1) / 2) * loc.aabb.dimensions,
+                Vector3.new((LOC_SCALE - 1) / 2) * loc.aabb.dimensions,
             scale = Vector3.new(LOC_SCALE) * loc.aabb.dimensions,
             colour = 0x00FFFFA0
           }
@@ -179,11 +183,16 @@ function orchestrator:setStep(step)
     return
   end
 
+  -- Disable existing scan tree solver
+  if scan_tree_solver ~= nil then
+    scan_tree_solver:stop()
+    scan_tree_solver = nil
+  end
+
   if clue_related_highlights ~= nil then
     clue_related_highlights:deactivate()
     clue_related_highlights = nil
   end
-
 
   self.state = {
     step = step,
@@ -200,7 +209,7 @@ function orchestrator:setStep(step)
     if method.type == "general_path" then
       Navigator.instance:set(method.main_path)
     elseif method.type == "scantree" then
-
+      scan_tree_solver = ScanTreeSolver.new(method):start()
     end
   end
 end

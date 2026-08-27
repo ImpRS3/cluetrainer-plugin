@@ -4,6 +4,7 @@ local base64 = require "zyklib/base64"
 ---@field origin TileCoordinates
 ---@field size MyVector2?
 ---@field data string?
+
 local TileArea = {}
 
 ---@class TileArea.Active : TileArea
@@ -19,6 +20,12 @@ function TileArea.centered_on(origin, size)
   return {
     origin = { x = origin.x - half_size.x, y = origin.y - half_size.y, level = origin.level },
     size = size
+  }
+end
+
+function TileArea.tile(origin)
+  return {
+    origin = origin
   }
 end
 

@@ -1,6 +1,8 @@
+local TileArea = require "model_shared/TileArea"
+local lua_util = require "zyklib/lua_util"
 ---@alias Direction any
 ---@alias MovementAbility any
----@alias Transportation.TeleportGroup.SpotId any
+---@alias Transportation.TeleportGroup.SpotId {group: string, spot: string}
 ---@alias EntityTransportation any
 ---@alias CTRIcon.ID any
 ---@alias MyCursorType string
@@ -100,6 +102,46 @@
 ---@field name string
 ---@field kind EntityName.Kind
 
-local path = {}
+local Path = {}
 
-return path
+---@param id Transportation.TeleportGroup.SpotId
+---@return TileArea?
+local function resolve_teleport(id)
+  local teleports = require("data/teleports")
+
+  local group = lua_util.find(teleports, function (value, index)
+    return value.id == id.group
+  end)
+
+  if group == nil then return nil end
+
+  local spot = lua_util.find(group.spots, function (value, index)
+    return value.id == id.spot
+  end)
+
+  if spot == nil then return nil end
+
+  return spot.target
+end
+
+---@param path Path.Raw
+---@return TileArea?
+function Path.ends_up(path)
+  for i = #path, 1, -1 do
+    local step = path[i]
+
+    if step.type == "ability" then
+      return TileArea.tile(step.to)
+    elseif step.type == "run" then
+      return TileArea.tile(step.waypoints[#step.waypoints])
+    elseif step.type == "cheat" then
+      return TileArea.tile(step.target)
+    elseif step.type == "teleport" then
+      return resolve_teleport(step.id)
+    end
+  end
+
+  return nil
+end
+
+return Path

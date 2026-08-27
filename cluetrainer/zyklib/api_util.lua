@@ -49,13 +49,13 @@ end
 ---@param g integer
 ---@param b integer
 ---@param a integer
----@return integer
+---@return ColourRGBA
 function api_util.color_rgba(r, g, b, a)
   return (r & 0xFF) << 24 | (g & 0xFF) << 16 | (b & 0xFF) << 8 | (a & 0xFF)
 end
 
 ---Extracts red, green, blue, and alpha components from a color value
----@param color integer
+---@param color ColourRGBA
 ---@return integer r
 ---@return integer g
 ---@return integer b

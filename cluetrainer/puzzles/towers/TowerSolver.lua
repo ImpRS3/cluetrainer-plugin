@@ -1,6 +1,6 @@
 local abstraction         = require "abstraction"
 local lua_util            = require "zyklib/lua_util"
-local Towers              = require "solvers/towers/Towers"
+local Towers              = require "puzzles/towers/Towers"
 local api_util            = require "zyklib/api_util"
 
 local towers_solver       = {}
