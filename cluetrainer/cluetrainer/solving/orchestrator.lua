@@ -1,23 +1,23 @@
 local lua_util             = require "zyklib/lua_util"
-local easy_methods         = require "data/easy_methods"
-local medium_methods       = require "data/medium_methods"
-local hard_methods         = require "data/hard_methods"
-local compass_methods      = require "data/compass_methods"
-local scan_methods         = require "data/scan_methods"
-local master_methods       = require "data/master_methods"
-local tetracompass_methods = require "data/tetracompass_methods"
-local Navigator            = require "solving/navigator"
+local easy_methods         = require "cluetrainer/data/easy_methods"
+local medium_methods       = require "cluetrainer/data/medium_methods"
+local hard_methods         = require "cluetrainer/data/hard_methods"
+local compass_methods      = require "cluetrainer/data/compass_methods"
+local scan_methods         = require "cluetrainer/data/scan_methods"
+local master_methods       = require "cluetrainer/data/master_methods"
+local tetracompass_methods = require "cluetrainer/data/tetracompass_methods"
+local Navigator            = require "cluetrainer/solving/navigator"
 local TerrainHighlight     = require "zyklib/highlights/TerrainHighlight"
 local MutableMesh          = require "zyklib/MutableMesh"
-local coordinate_adaptor   = require "model_shared/coordinate_adaptor"
+local coordinate_adaptor   = require "cluetrainer/model_shared/coordinate_adaptor"
 local api_util             = require "zyklib/api_util"
 local HighlightGroup       = require "zyklib/highlights/HighlightGroup"
 local LocHighlight         = require "zyklib/highlights/LocHighlight"
 local NpcHighlight         = require "zyklib/highlights/NpcHighlight"
-local PathMesh             = require "model/PathMesh"
-local TileArea             = require "model_shared/TileArea"
-local OverlayConstants     = require "model/OverlayConstants"
-local ScanTreeSolver       = require "solving/ScanTreeSolver"
+local PathMesh             = require "cluetrainer/model/PathMesh"
+local TileArea             = require "cluetrainer/model_shared/TileArea"
+local OverlayConstants     = require "cluetrainer/model/OverlayConstants"
+local ScanTreeSolver       = require "cluetrainer/solving/ScanTreeSolver"
 
 local packs                = {
   easy_methods,
@@ -173,6 +173,73 @@ local function create_step_highlights(step)
   return HighlightGroup.new(highlights)
 end
 
+---@param path Path
+local function teleport_to_start(path)
+  local first = path[1]
+
+  if first.type == "teleport" then
+    local tele = coordinate_adaptor.tile_coordinates_to_coord_grid(first.spot)
+
+    ExecuteConsoleCommand("!tele " ..
+      tele.level .. "," .. tele.mapSquareX .. "," .. tele.mapSquareZ .. "," .. tele.localX .. "," .. tele.localZ)
+  end
+end
+
+local gameArea = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA)
+
+local window = prettyui.Window.new(gameArea, {
+  title = "Clue Trainer",
+  x = -210,
+  y = -150,
+  xAnchor = 0.5,
+  yAnchor = 0.5,
+  width = 470,
+  height = 400,
+  minWidth = 320,
+  minHeight = 220,
+  scrollable = true,
+  rowBackgroundColours = {
+    0x24211EFF,
+    0x2E2825FF,
+  }
+})
+
+local map = prettymap.Map.new(window.content, {
+  x = 0,
+  y = 0,
+  width = 420,
+  height = 300,
+  showFloorControls = true,
+  showZoomControls = true,
+  showPlayerMarker = false,
+  trackPlayer = false,
+  onError = function(message)
+    print("PrettyMap:", message)
+  end,
+})
+
+map.player:SetTrackPlayer(false)
+map.player:ClearPlayerPosition()
+
+window:Show()
+
+---comment
+---@param step Step
+---@return CoordGrid
+local function spot(step)
+  if step.solution ~= nil then
+    if step.solution.type == "talkto" then
+      return coordinate_adaptor.tile_coordinates_to_coord_grid(step.solution.spots[1].range.origin)
+    elseif step.solution.type == "dig" then
+      return coordinate_adaptor.tile_coordinates_to_coord_grid(step.solution.spot)
+    elseif step.solution.type == "search" then
+      return coordinate_adaptor.tile_coordinates_to_coord_grid(step.solution.spot.botright)
+    end
+  end
+end
+
+local marker = nil
+
 ---
 ---@param step Step
 function orchestrator:setStep(step)
@@ -199,6 +266,23 @@ function orchestrator:setStep(step)
     progressIndex = getProgress(step.tier)
   }
 
+  if marker ~= nil then
+    marker:Destroy()
+    marker = nil
+  end
+
+  local target = spot(step)
+
+  if target ~= nil then
+    marker = map.overlays:CreateMarker({
+      position = target,
+      spriteID = id.Sprite.CLUE_SCROLL_ICON,
+      size = 64,
+    })
+
+    map:ZoomToMapSquare(target)
+  end
+
   table.insert(self.history, self.state)
 
   clue_related_highlights = create_step_highlights(step):activate()
@@ -207,9 +291,12 @@ function orchestrator:setStep(step)
 
   if method ~= nil then
     if method.type == "general_path" then
+      teleport_to_start(method.main_path)
+
       Navigator.instance:set(method.main_path)
     elseif method.type == "scantree" then
       scan_tree_solver = ScanTreeSolver.new(method):start()
+      teleport_to_start(method.tree.root.path)
     end
   end
 end

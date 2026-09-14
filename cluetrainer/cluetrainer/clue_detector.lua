@@ -1,9 +1,9 @@
 -- Copyright (c) 2024 ClueTrainer Contributors
 -- See LICENSE file in the project root for full license information.
 
-local clue_map      = require "clue_mapping"
-local clues         = require "data/clues"
-local orchestrator  = require "solving/orchestrator"
+local clue_map      = require "cluetrainer/clue_mapping"
+local clues         = require "cluetrainer/data/clues"
+local orchestrator  = require "cluetrainer/solving/orchestrator"
 local api_util      = require "zyklib/api_util"
 local lua_util      = require "zyklib/lua_util"
 

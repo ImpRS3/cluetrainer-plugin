@@ -1,8 +1,12 @@
 {
   "name": "Clue Trainer",
   "version": "0.1",
-  "dependencies": [],
-  "requiredPermissions": [],
+  "dependencies": [
+    "prettymap",
+    "prettyui"
+  ],
+  "requiredPermissions": [
+  ],
   "optionalPermissions": [],
   "urls": {}
 }

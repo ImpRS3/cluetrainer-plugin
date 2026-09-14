@@ -1,5 +1,5 @@
 local api_util = require "zyklib/api_util"
-local PathMesh = require "model/PathMesh"
+local PathMesh = require "cluetrainer/model/PathMesh"
 local lua_util = require "zyklib/lua_util"
 
 
@@ -52,7 +52,10 @@ end
 
 function Navigator:update_progress()
   for _, value in ipairs(self.path) do
-    value.geometry:setColour(isCompleted(value.step) and 0x80808080 or 0xFFFFFFFF)
+    local completed = isCompleted(value.step)
+
+    value.geometry:setColour(completed and 0x80808080 or 0xFFFFFFFF)
+    value.geometry:setIgnoreDepth(not completed)
   end
 end
 

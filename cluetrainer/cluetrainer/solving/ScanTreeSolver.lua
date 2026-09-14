@@ -1,9 +1,9 @@
-local PathMesh           = require "model/PathMesh"
+local PathMesh           = require "cluetrainer/model/PathMesh"
 local TerrainHighlight   = require "zyklib/highlights/TerrainHighlight"
 local api_util           = require "zyklib/api_util"
-local coordinate_adaptor = require "model_shared/coordinate_adaptor"
-local Path               = require "model_shared/path"
-local Navigator          = require "solving/navigator"
+local coordinate_adaptor = require "cluetrainer/model_shared/coordinate_adaptor"
+local Path               = require "cluetrainer/model_shared/path"
+local Navigator          = require "cluetrainer/solving/navigator"
 local lua_util           = require "zyklib/lua_util"
 
 ---@class ScanTreeSolver

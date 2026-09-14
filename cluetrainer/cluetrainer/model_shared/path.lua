@@ -2,7 +2,7 @@ local TileArea = require "model_shared/TileArea"
 local lua_util = require "zyklib/lua_util"
 ---@alias Direction any
 ---@alias MovementAbility any
----@alias Transportation.TeleportGroup.SpotId {group: string, spot: string}
+---@alias Transportation.TeleportGroup.SpotId {group: string, spot: string, access: string?}
 ---@alias EntityTransportation any
 ---@alias CTRIcon.ID any
 ---@alias MyCursorType string
@@ -107,15 +107,15 @@ local Path = {}
 ---@param id Transportation.TeleportGroup.SpotId
 ---@return TileArea?
 local function resolve_teleport(id)
-  local teleports = require("data/teleports")
+  local teleports = require("cluetrainer/data/teleports")
 
-  local group = lua_util.find(teleports, function (value, index)
+  local group = lua_util.find(teleports, function(value, index)
     return value.id == id.group
   end)
 
   if group == nil then return nil end
 
-  local spot = lua_util.find(group.spots, function (value, index)
+  local spot = lua_util.find(group.spots, function(value, index)
     return value.id == id.spot
   end)
 
