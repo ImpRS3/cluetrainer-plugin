@@ -9,7 +9,7 @@ local Ewent               = {}
 Ewent.__index             = Ewent
 
 ---comment
----@param status_changed_callback fun(status: boolean):nil A call
+---@param status_changed_callback fun(hasActiveListeners: boolean):nil A call
 ---@return zyklib.Ewent<T, RetT>?
 function Ewent.new(status_changed_callback)
   local self = setmetatable({}, Ewent)
@@ -23,9 +23,24 @@ end
 ---@generic T, RetT
 ---@param self zyklib.Ewent<T, RetT>
 ---@param listener fun(payload: T):RetT The function to call when the event is triggered.
+---@param start_suspended boolean? Whether the listener should start in a suspended state to be activated later.
 ---@return zyklib.EwentHandler<T, RetT> The created event handler
-function Ewent:subscribe(listener)
-  return self:addHandler(EwentHandler.new(listener, self))
+function Ewent:subscribe(listener, start_suspended)
+  local handler = EwentHandler.new(listener, self)
+  if not start_suspended then
+    handler:resume()
+  end
+
+  return self:addHandler(handler)
+end
+
+---Subscribe to this event with the given listener.
+---@generic T, RetT
+---@param self zyklib.Ewent<T, RetT>
+---@param listener fun(payload: T):RetT The function to call when the event is triggered.
+---@return zyklib.EwentHandler<T, RetT> The created event handler
+function Ewent:subscribeSuspended(listener)
+  return self:subscribe(listener, true)
 end
 
 --- DO NOT CALL this directly. Use zyklib.Ewent:subscribe instead.

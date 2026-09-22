@@ -16,7 +16,7 @@ function EwentHandler.new(handler, ewent)
   local self = setmetatable({}, EwentHandler)
   self.listener_function = handler
   self.cancelled = false
-  self.suspended = false
+  self.suspended = true
   self.ewent = ewent
   return self
 end

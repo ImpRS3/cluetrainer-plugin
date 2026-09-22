@@ -1,5 +1,5 @@
 local function main()
-  local clue_detector  = require("cluetrainer/clue_detector")
+  local orchestrator   = require("cluetrainer/solving/orchestrator")
   local towers_solver  = require("cluetrainer/puzzles/towers/TowerSolver")
   local lockbox_solver = require("cluetrainer/puzzles/lockbox/LockboxSolver")
   local knot_solver    = require("cluetrainer/puzzles/knots/KnotSolver")
@@ -9,15 +9,15 @@ local function main()
   local LocHighlight   = require("zyklib/highlights/LocHighlight")
   local zyklib         = require("zyklib/init")
 
-  clue_detector:init()
   towers_solver:init()
   lockbox_solver:init()
   knot_solver:init()
+  orchestrator.init()
 
   local shape = MutableMesh.cube():shapeData()
 
 
-  zyklib.ewent.Ewent.native.VarTransmit:subscribe(function (e) 
+  zyklib.ewent.Ewent.native.VarTransmit:subscribe(function(e)
     log(e.var.configName .. " changed from " .. tostring(e.oldValue) .. " to " .. tostring(e.newValue))
   end)
 

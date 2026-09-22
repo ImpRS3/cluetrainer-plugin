@@ -18,6 +18,7 @@ local PathMesh             = require "cluetrainer/model/PathMesh"
 local TileArea             = require "cluetrainer/model_shared/TileArea"
 local OverlayConstants     = require "cluetrainer/model/OverlayConstants"
 local ScanTreeSolver       = require "cluetrainer/solving/ScanTreeSolver"
+local clue_detector        = require "cluetrainer/clue_detector"
 
 local packs                = {
   easy_methods,
@@ -299,6 +300,13 @@ function orchestrator:setStep(step)
       teleport_to_start(method.tree.root.path)
     end
   end
+end
+
+function orchestrator.init()
+  -- Listen for clue detection events
+  clue_detector.clue_detected_ewent:subscribe(function(clue)
+    orchestrator:setStep(clue)
+  end)
 end
 
 return orchestrator
