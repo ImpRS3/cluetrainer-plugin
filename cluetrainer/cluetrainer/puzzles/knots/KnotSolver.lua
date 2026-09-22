@@ -1,4 +1,5 @@
 local api_util = require "zyklib/api_util"
+local zyklib   = require "zyklib/init"
 
 local knot_solver = {}
 
@@ -21,7 +22,7 @@ end
 ---@class ActiveKnotPuzzle
 ---@field knot_type integer
 ---@field canvas Canvas
----@field action_handler zyklib.ApiEventHandler
+---@field action_handler zyklib.EwentHandler
 
 ---@type ActiveKnotPuzzle?
 local active_puzzle = nil
@@ -50,7 +51,7 @@ local function maybeRefreshOverlay()
   draw(active_puzzle.canvas)
 end
 
----@type {handler: zyklib.ApiEventHandler}?
+---@type {handler: zyklib.EwentHandler}?
 knot_solver.instance = nil
 
 ---comment---@return {interface: ui.Interface, knot_type: integer}?
@@ -77,12 +78,12 @@ end
 function knot_solver:init()
   if knot_solver.instance ~= nil then return end
 
-  local handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
+  local handler = zyklib.ewent.Ewent.native.ServerLogic:subscribe(function(event)
     local interface = getInterfaceAndKnotType()
 
     if not interface or (active_puzzle and interface.knot_type ~= active_puzzle.knot_type) then
       if active_puzzle ~= nil then
-        active_puzzle.action_handler.cancel()
+        active_puzzle.action_handler:cancel()
         active_puzzle.canvas:Clear()
         active_puzzle = nil
       end
@@ -97,7 +98,7 @@ function knot_solver:init()
       local canvas = ui.Canvas.new(content)
       canvas:SetSize(content.width, content.height)
 
-      local handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
+      local handler = zyklib.ewent.Ewent.native.ServerLogic:subscribe(function(event)
         maybeRefreshOverlay()
       end)
 

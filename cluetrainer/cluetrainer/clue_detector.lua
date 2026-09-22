@@ -6,16 +6,17 @@ local clues         = require "cluetrainer/data/clues"
 local orchestrator  = require "cluetrainer/solving/orchestrator"
 local api_util      = require "zyklib/api_util"
 local lua_util      = require "zyklib/lua_util"
+local zyklib        = require "zyklib/init"
 
 ---@class ClueDetector
 ---@field initialized boolean
----@field mini_menu_handler zyklib.ApiEventHandler
+---@field mini_menu_handler zyklib.EwentHandler
 local clue_detector = {
   initialized = false,
 }
 
 function clue_detector:init()
-  self.mini_menu_handler = api_util.subscribe_managed(Event.MiniMenuEntrySelected, function(event)
+  self.mini_menu_handler = zyklib.ewent.Ewent.native.MiniMenuEntrySelected:subscribe(function(event)
     -- Only react on relevant clicks on clues
     if not event.entry.componentData then return end
     if not event.entry.componentData.objConfig then return end

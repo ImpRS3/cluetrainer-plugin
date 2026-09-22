@@ -1,10 +1,10 @@
-local UniqueNameGenerator = {}
-UniqueNameGenerator.__index = UniqueNameGenerator
-
----@class UniqueNameGenerator
+---@class zyklib.UniqueNameGenerator
 ---@field prefix string
 ---@field predicate fun(name: string): boolean
 ---@field private counter integer
+local UniqueNameGenerator = {}
+UniqueNameGenerator.__index = UniqueNameGenerator
+
 
 function UniqueNameGenerator.new(prefix, predicate)
   predicate = predicate or function(name) return true end

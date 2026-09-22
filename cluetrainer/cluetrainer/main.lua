@@ -17,11 +17,15 @@ local function main()
   local shape = MutableMesh.cube():shapeData()
 
 
+  zyklib.ewent.Ewent.native.VarTransmit:subscribe(function (e) 
+    log(e.var.configName .. " changed from " .. tostring(e.oldValue) .. " to " .. tostring(e.newValue))
+  end)
+
   -- map:ZoomToMapSquare(CoordGrid.new(0, 49, 54, 29, 31))
 
 
 
-  -- api_util.subscribe_managed(Event.MiniMenuEntrySelected, function(event)
+  -- zyklib.ewent.Ewent.native.MiniMenuEntrySelected:subscribe(function(event)
   --   log(zyklib.api_util.to_plain_table(event))
 
   --   if event.entry.componentData ~= nil then
@@ -31,7 +35,7 @@ local function main()
   --   end
   -- end)
 
-  -- api_util.subscribe_managed(Event.EntityDraw, function(event)
+  -- zyklib.ewent.Ewent.native.EntityDraw:subscribe(function(event)
   --   return not (event.entityType == EntityType.NPC)
   -- end)
 
@@ -47,7 +51,7 @@ local function main()
   --         }
   --     end):activate()
 
-  -- api_util.subscribe_managed(Event.LocAdded, function(event)
+  -- zyklib.ewent.Ewent.native.LocAdded:subscribe(function(event)
   --     log(event.config.configName)
   -- end)
 

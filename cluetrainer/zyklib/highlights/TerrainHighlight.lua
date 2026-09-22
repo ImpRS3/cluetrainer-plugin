@@ -1,6 +1,7 @@
 local api_util = require("zyklib/api_util")
 local Highlight = require "zyklib/highlights/Highlight"
 local HighlightParams = require "zyklib/highlights/HighlightParams"
+local ewent           = require "zyklib/ewent/init"
 
 ---@type table<zyklib.TerrainHighlight, boolean>
 local pending_instances = {}
@@ -74,7 +75,7 @@ function TerrainHighlight:propagate_param_change()
   end
 end
 
-local listener = api_util.subscribe_managed(Event.ServerLogic, function()
+local listener = ewent.Ewent.native.ServerLogic:subscribe(function()
   for instance, _ in pairs(pending_instances) do
     create_if_available(instance)
 

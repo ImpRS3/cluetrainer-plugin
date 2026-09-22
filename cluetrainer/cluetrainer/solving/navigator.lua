@@ -1,6 +1,7 @@
 local api_util = require "zyklib/api_util"
 local PathMesh = require "cluetrainer/model/PathMesh"
 local lua_util = require "zyklib/lua_util"
+local zyklib   = require "zyklib/init"
 
 
 ---@class PathStepEntity
@@ -9,7 +10,7 @@ local lua_util = require "zyklib/lua_util"
 
 ---@class Navigator
 ---@field path PathStepEntity[]
----@field logic_handler zyklib.ApiEventHandler
+---@field logic_handler zyklib.EwentHandler
 local Navigator = {}
 Navigator.__index = Navigator
 
@@ -43,7 +44,7 @@ function Navigator.new()
 
   self.path = {}
 
-  self.logic_handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
+  self.logic_handler = zyklib.ewent.Ewent.native.ServerLogic:subscribe(function(event)
     self:update_progress()
   end)
 
@@ -90,7 +91,7 @@ end
 function Navigator:destroy()
   self:clear()
   if self.logic_handler then
-    self.logic_handler.cancel()
+    self.logic_handler:cancel()
     self.logic_handler = nil
   end
 end

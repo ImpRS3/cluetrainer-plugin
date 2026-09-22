@@ -1,25 +1,26 @@
-local api_util = require "zyklib/api_util"
-local Highlight = require "zyklib/highlights/Highlight"
+local api_util        = require "zyklib/api_util"
+local Highlight       = require "zyklib/highlights/Highlight"
 local HighlightParams = require "zyklib/highlights/HighlightParams"
+local ewent           = require "zyklib/ewent/init"
 
 ---@class zyklib.NpcHighlight : zyklib.Highlight
 ---@field filter fun(npc: NPCEntity): boolean
 ---@field render fun(npc: NPCEntity): ShapeListDrawSettings
 ---@field active boolean
-local NpcHighlight = setmetatable({}, { __index = Highlight })
-NpcHighlight.__index = NpcHighlight
+local NpcHighlight    = setmetatable({}, { __index = Highlight })
+NpcHighlight.__index  = NpcHighlight
 
 ---@type table<zyklib.NpcHighlight, boolean>
-local instances = {}
-local instanceCount = 0
+local instances       = {}
+local instanceCount   = 0
 
----@type zyklib.ApiEventHandler?
-local draw_handler = nil
+---@type zyklib.EwentHandler?
+local draw_handler    = nil
 
 local function update_draw_handler()
   if instanceCount > 0 and draw_handler == nil then
     -- Handler does not exist, but there are active instances, so we create it.
-    draw_handler = api_util.subscribe_managed(Event.EntityDraw, function(event)
+    draw_handler = ewent.Ewent.native.EntityDraw:subscribe(function(event)
       if (event.entityType ~= EntityType.NPC) then return true end
       local npc = event.npcEntity
 
@@ -37,12 +38,12 @@ local function update_draw_handler()
           end
         end
       end
-      
+
       return true
     end)
   elseif instanceCount == 0 and draw_handler ~= nil then
     -- Handler does exist, but there are no active instances, so we remove it.
-    draw_handler.cancel()
+    draw_handler:cancel()
     draw_handler = nil
   end
 end

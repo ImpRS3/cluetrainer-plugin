@@ -1,6 +1,7 @@
 local lua_util       = require "zyklib/lua_util"
 local Lockboxes      = require "puzzles/lockbox/Lockboxes"
 local api_util       = require "zyklib/api_util"
+local zyklib         = require "zyklib/init"
 
 local lockbox_solver = {}
 
@@ -86,7 +87,7 @@ end
 ---@class ActiveLockboxPuzzle
 ---@field canvas Canvas
 ---@field latestState LockboxState?
----@field action_handler zyklib.ApiEventHandler
+---@field action_handler zyklib.EwentHandler
 
 ---@type ActiveLockboxPuzzle?
 local active_puzzle = nil
@@ -108,18 +109,18 @@ local function maybeRefreshOverlay()
   }))
 end
 
----@type {handler: zyklib.ApiEventHandler}?
+---@type {handler: zyklib.EwentHandler}?
 lockbox_solver.instance = nil
 
 function lockbox_solver:init()
   if lockbox_solver.instance ~= nil then return end
 
-  local handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
+  local handler = zyklib.ewent.Ewent.native.ServerLogic:subscribe(function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.LIGHTSOUT)
 
     if not interface then
       if active_puzzle ~= nil then
-        active_puzzle.action_handler.cancel()
+        active_puzzle.action_handler:cancel()
         active_puzzle.canvas:Clear()
         active_puzzle = nil
       end
@@ -136,7 +137,7 @@ function lockbox_solver:init()
 
       log(content.width .. "x" .. content.height)
 
-      local handler = api_util.subscribe_managed(Event.Draw, function(event)
+      local handler = zyklib.ewent.Ewent.native.Draw:subscribe(function(event)
         maybeRefreshOverlay()
       end)
 

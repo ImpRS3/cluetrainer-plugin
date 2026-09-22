@@ -1,26 +1,27 @@
-local api_util = require "zyklib/api_util"
-local Highlight = require "zyklib/highlights/Highlight"
-local HighlightParams = require "zyklib/highlights/HighlightParams"
+local api_util         = require "zyklib/api_util"
+local Highlight        = require "zyklib/highlights/Highlight"
+local HighlightParams  = require "zyklib/highlights/HighlightParams"
+local ewent            = require "zyklib/ewent/init"
 
---- A LocHighlight is a highlight that is drawn for LocEntity objects. You can specify a filter to determine which LocEntity objects should be highlighted, 
+--- A LocHighlight is a highlight that is drawn for LocEntity objects. You can specify a filter to determine which LocEntity objects should be highlighted,
 --- and a render function to determine how each LocEntity highlight should be drawn.
 ---@class zyklib.LocHighlight : zyklib.Highlight
 ---@field filter LocListFilterSettings
 ---@field render fun(npc: LocEntity): ShapeListDrawSettings
 ---@field instances table<LocEntity, {shape_instance: ShapeInstance}>
 ---@field active boolean
-local LocHighlight = setmetatable({}, { __index = Highlight })
-LocHighlight.__index = LocHighlight
+local LocHighlight     = setmetatable({}, { __index = Highlight })
+LocHighlight.__index   = LocHighlight
 
 ---@type table<zyklib.LocHighlight, boolean>
 local active_instances = {}
-local instanceCount = 0
+local instanceCount    = 0
 
----@type zyklib.ApiEventHandler?
-local draw_handler = nil
+---@type zyklib.EwentHandler?
+local draw_handler     = nil
 
 
----Update the ShapeInstances for a given LocHighlight to synchronize existing ShapeEntities with the current set of LocEntity objects that match the filter. 
+---Update the ShapeInstances for a given LocHighlight to synchronize existing ShapeEntities with the current set of LocEntity objects that match the filter.
 ---This will create new ShapeInstances for newly matching LocEntity objects, and destroy ShapeInstances for LocEntity objects that no longer exist or match the filter.
 ---@param instance zyklib.LocHighlight
 local function update_instances(instance)
@@ -71,14 +72,14 @@ end
 local function update_logic_hook()
   if instanceCount > 0 and draw_handler == nil then
     -- Handler does not exist, but there are active instances, so we create it.
-    draw_handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
+    draw_handler = ewent.Ewent.native.ServerLogic:subscribe(function(event)
       for instance, _ in pairs(active_instances) do
         update_instances(instance)
       end
     end)
   elseif instanceCount == 0 and draw_handler ~= nil then
     -- Handler does exist, but there are no active instances, so we remove it.
-    draw_handler.cancel()
+    draw_handler:cancel()
     draw_handler = nil
   end
 end

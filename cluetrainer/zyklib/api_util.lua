@@ -1,33 +1,6 @@
 local UniqueNameGenerator = require "zyklib/UniqueNameGenerator"
 local api_util = {}
 
----@class zyklib.ApiEventHandler
----@field id string
----@field cancel fun(): nil
-
-local handler_name_generator = UniqueNameGenerator.new("api_util_handler_")
-
----@generic T, RetT
----@param event EventSubscription<T, RetT>
----@param handler fun(event: T): RetT
----@return zyklib.ApiEventHandler
-function api_util.subscribe_managed(event, handler)
-  while true do
-    local handler_name = handler_name_generator:next()
-
-    local success = event.Subscribe(handler_name, handler)
-
-    if (success) then
-      return {
-        id = handler_name,
-        cancel = function()
-          event.Unsubscribe(handler_name)
-        end
-      }
-    end
-  end
-end
-
 local shape_instance_name_generator = UniqueNameGenerator.new("shape_instance_")
 
 ---

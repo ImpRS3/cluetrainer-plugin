@@ -1,7 +1,6 @@
-local abstraction         = require "abstraction"
 local lua_util            = require "zyklib/lua_util"
 local Towers              = require "puzzles/towers/Towers"
-local api_util            = require "zyklib/api_util"
+local zyklib              = require "zyklib/init"
 
 local towers_solver       = {}
 
@@ -112,7 +111,7 @@ end
 ---@class ActivePuzzle
 ---@field canvas Canvas
 ---@field solution Towers.PuzzleState
----@field action_handler zyklib.ApiEventHandler
+---@field action_handler zyklib.EwentHandler
 ---@field latestState Towers.Blocks?
 
 ---@type ActivePuzzle?
@@ -132,18 +131,18 @@ local function maybeRefreshOverlay()
     { show_deltas = true, show_should = true })
 end
 
----@type {handler: zyklib.ApiEventHandler}?
+---@type {handler: zyklib.EwentHandler}?
 towers_solver.instance = nil
 
 function towers_solver:init()
   if towers_solver.instance ~= nil then return end
 
-  local handler = api_util.subscribe_managed(Event.ServerLogic, function(event)
+  local handler = zyklib.ewent.Ewent.native.ServerLogic:subscribe(function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.TRAIL17_SKYSCRAPERS)
 
     if not interface then
       if active_puzzle ~= nil then
-        active_puzzle.action_handler.cancel()
+        active_puzzle.action_handler:cancel()
         active_puzzle.canvas:Clear()
         active_puzzle = nil
       end
@@ -162,7 +161,7 @@ function towers_solver:init()
       local canvas = ui.Canvas.new(content)
       canvas:SetSize(content.width, content.height)
 
-      local handler = api_util.subscribe_managed(Event.MiniMenuEntrySelected, function()
+      local handler = zyklib.ewent.Ewent.native.MiniMenuEntrySelected:subscribe(function()
         maybeRefreshOverlay()
       end)
 
