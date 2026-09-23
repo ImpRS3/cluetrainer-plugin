@@ -17,7 +17,7 @@ install_plugin() {
 
 install_plugin "cluetrainer"
 
-for plugin in dependencies/plugins/*; do
+for plugin in dependencies/dynamic/*; do
   if [ -d "$plugin" ]; then
     install_plugin "$plugin"
   fi
