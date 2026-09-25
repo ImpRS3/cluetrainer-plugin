@@ -31,7 +31,7 @@ function Ewent:subscribe(listener, start_suspended)
     handler:resume()
   end
 
-  return self:addHandler(handler)
+  return handler
 end
 
 ---Subscribe to this event with the given listener.
@@ -104,22 +104,24 @@ local handler_name_generator = UniqueNameGenerator.new("api_util_handler_")
 ---@param game_event EventSubscription<T>
 ---@return zyklib.Ewent<T, RetT>?
 function Ewent.forNativeGameEvent(game_event)
-  ---@type string
+  ---@type string?
   local active_native_listener = nil
 
   ---@type zyklib.Ewent<T>
   local ewent = nil
 
   ewent = Ewent.new(function(status)
-    if status then
+    if status and not active_native_listener then
       active_native_listener = handler_name_generator:next()
 
       game_event.Subscribe(active_native_listener, function(payload)
-        ---@cast ewent zyklib.Ewent<T>
-        return ewent:trigger(payload)
+        if ewent then
+          return ewent:trigger(payload)
+        end
       end)
-    else
+    elseif (not status) and active_native_listener ~= nil then
       game_event.Unsubscribe(active_native_listener)
+      active_native_listener = nil
     end
   end)
 
