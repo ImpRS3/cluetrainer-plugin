@@ -390,6 +390,7 @@ clue_map["TRAIL_CLUE_MEDIUM_SEXTANT025"]           = 405
 clue_map["TRAIL_CLUE_MEDIUM_SEXTANT026"]           = 449
 clue_map["TRAIL_CLUE_MEDIUM_SEXTANT027"]           = 416
 
+-- TODO: Implement detection of master clues via ObjVar once they are available
 
 ---@class cluetrainer.ClueDetector
 ---@field clue_detected_ewent zyklib.Ewent<Step, nil>
@@ -407,9 +408,7 @@ local mini_menu_handler = zyklib.ewent.Ewent.native.MiniMenuEntrySelected:subscr
     log(api_util.to_plain_table(event.entry.componentData.objConfig:GetParamValue(value)))
   end
 
-
   if event.entry.verbText ~= "Read" and event.entry.verbText ~= "Start scanning" then return end
-
 
   -- Find corresponding clue id
   local clue_id = clue_map[event.entry.componentData.objConfig.configName]
