@@ -29,12 +29,12 @@ local active_puzzle = nil
 
 
 local function getPuzzleState()
-  log("KNOT "..var.VarPlayer.TRAIL_KNOTS.value)
-  log("KNOT2 "..var.VarPlayer.TRAIL_KNOTS2.value)
-  log("SHUFFLE1 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK0.value)
-  log("SHUFFLE2 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK1.value)
-  log("SHUFFLE3 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK2.value)
-  log("SHUFFLE4 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK3.value)
+  -- log("KNOT "..var.VarPlayer.TRAIL_KNOTS.value)
+  -- log("KNOT2 "..var.VarPlayer.TRAIL_KNOTS2.value)
+  -- log("SHUFFLE1 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK0.value)
+  -- log("SHUFFLE2 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK1.value)
+  -- log("SHUFFLE3 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK2.value)
+  -- log("SHUFFLE4 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK3.value)
 end
 
 
@@ -78,7 +78,7 @@ end
 function knot_solver:init()
   if knot_solver.instance ~= nil then return end
 
-  local handler = zyklib.ewent.Ewent.native.ServerLogic:subscribe(function(event)
+  local handler = zyklib.ewent.Native.ServerLogic:subscribe(function(event)
     local interface = getInterfaceAndKnotType()
 
     if not interface or (active_puzzle and interface.knot_type ~= active_puzzle.knot_type) then
@@ -98,7 +98,7 @@ function knot_solver:init()
       local canvas = ui.Canvas.new(content)
       canvas:SetSize(content.width, content.height)
 
-      local handler = zyklib.ewent.Ewent.native.ServerLogic:subscribe(function(event)
+      local handler = zyklib.ewent.Native.ServerLogic:subscribe(function(event)
         maybeRefreshOverlay()
       end)
 

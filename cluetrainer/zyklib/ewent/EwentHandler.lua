@@ -43,7 +43,7 @@ function EwentHandler:cancel()
   end
 end
 
----Suspend this EwentHandler. It is removed from the target event, but can be resumed later.
+---Suspend this EwentHandler. It is removed from the target event and will not receive events, but can be resumed later.
 function EwentHandler:suspend()
   self:setSuspended(true)
 end

@@ -4,7 +4,7 @@ CACHE_DIR="/mnt/c/ProgramData/Jagex/RuneScape-BETA"
 
 install_plugin() {
   local plugin_name="$1"
-  local target_dir="$CACHE_DIR/$(basename "$plugin_name")"
+  local target_dir="$CACHE_DIR/dev_plugins/$(basename "$plugin_name")"
 
   # Remove existing plugin folder if it exists
   if [ -d "$target_dir" ]; then

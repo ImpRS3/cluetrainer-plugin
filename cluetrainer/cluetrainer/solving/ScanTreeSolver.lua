@@ -22,7 +22,7 @@ function ScanTreeSolver.new(method)
   self.method = method
   self.navigator = Navigator.new()
 
-  zyklib.ewent.Ewent.native.KeyUp:subscribe(function(event)
+  zyklib.ewent.Native.KeyUp:subscribe(function(event)
     if event.modifiers & ModifierKey.SHIFT ~= 0 and event.gameKey == GameKey._1 then
       self:setNode(lua_util.find(self.active_node.children, function(value)
         return value.key.pulse == 1

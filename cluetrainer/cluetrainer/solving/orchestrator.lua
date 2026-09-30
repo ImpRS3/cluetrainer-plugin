@@ -226,7 +226,7 @@ window:Show()
 
 ---comment
 ---@param step Step
----@return CoordGrid
+---@return CoordGrid?
 local function spot(step)
   if step.solution ~= nil then
     if step.solution.type == "talkto" then

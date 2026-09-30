@@ -1,16 +1,15 @@
-local EwentHandler        = require("zyklib/ewent/EwentHandler")
-local UniqueNameGenerator = require("zyklib/UniqueNameGenerator")
+local EwentHandler = require("zyklib/ewent/EwentHandler")
 
 ---@class zyklib.Ewent<T, RetT>
 ---@field private listeners zyklib.EwentHandler<T, RetT>[]
----@field private status_changed_callback fun(status: boolean):nil
+---@field private status_changed_callback fun(status: boolean)
 ---@field private hasActiveListeners boolean
-local Ewent               = {}
-Ewent.__index             = Ewent
+local Ewent        = {}
+Ewent.__index      = Ewent
 
----comment
----@param status_changed_callback fun(hasActiveListeners: boolean):nil A call
----@return zyklib.Ewent<T, RetT>?
+---@generic T, RetT
+---@param status_changed_callback fun(hasActiveListeners: boolean) A callback function that is called whenever the number of active listeners changes from 0 to more than zero or vice versa
+---@return zyklib.Ewent<T, RetT>
 function Ewent.new(status_changed_callback)
   local self = setmetatable({}, Ewent)
   self.listeners = {}
@@ -22,11 +21,12 @@ end
 ---Subscribe to this event with the given listener.
 ---@generic T, RetT
 ---@param self zyklib.Ewent<T, RetT>
----@param listener fun(payload: T):RetT The function to call when the event is triggered.
----@param start_suspended boolean? Whether the listener should start in a suspended state to be activated later.
+---@param listener fun(payload: T): RetT The function to call when the event is triggered.
+---@param start_suspended boolean Whether the subscription should start in a suspended state
 ---@return zyklib.EwentHandler<T, RetT> The created event handler
 function Ewent:subscribe(listener, start_suspended)
   local handler = EwentHandler.new(listener, self)
+
   if not start_suspended then
     handler:resume()
   end
@@ -37,7 +37,7 @@ end
 ---Subscribe to this event with the given listener.
 ---@generic T, RetT
 ---@param self zyklib.Ewent<T, RetT>
----@param listener fun(payload: T):RetT The function to call when the event is triggered.
+---@param listener fun(payload: T): RetT The function to call when the event is triggered.
 ---@return zyklib.EwentHandler<T, RetT> The created event handler
 function Ewent:subscribeSuspended(listener)
   return self:subscribe(listener, true)
@@ -54,10 +54,10 @@ function Ewent:addHandler(handler)
   return handler
 end
 
+--- DO NOT CALL this directly. Use zyklib.EwentHandler:suspend or zyklib.EwentHandler:cancel instead.
 ---@generic T, RetT
 ---@param self zyklib.Ewent<T, RetT>
 ---@param handler zyklib.EwentHandler<T, RetT> The event handler to remove from this event
----@return nil
 function Ewent:removeHandler(handler)
   for i = #self.listeners, 1, -1 do
     if self.listeners[i] == handler then
@@ -72,13 +72,16 @@ end
 ---@generic T, RetT
 ---@param self zyklib.Ewent<T, RetT>
 ---@param payload T
----@return RetT result The result value of the last active listener
+---@return RetT
 function Ewent:trigger(payload)
-  ---@type RetT
   local result_value = nil
 
-  for _, listener in ipairs(self.listeners) do
-    result_value = listener:notify(payload)
+  -- Snapshot the listeners so subscriptions/suspensions/cancellations
+  -- during notification don't affect the current dispatch.
+  for _, listener in ipairs({ table.unpack(self.listeners) }) do
+    if listener:isActive() then
+      result_value = listener:notify(payload)
+    end
   end
 
   return result_value
@@ -97,79 +100,86 @@ function Ewent:update_status()
   end
 end
 
-local handler_name_generator = UniqueNameGenerator.new("api_util_handler_")
-
----Create a new event specifically for game events.
+---Create a filtered event that only triggers when the given predicate function is true for a given event payload.
 ---@generic T, RetT
----@param game_event EventSubscription<T>
----@return zyklib.Ewent<T, RetT>?
-function Ewent.forNativeGameEvent(game_event)
-  ---@type string?
-  local active_native_listener = nil
-
-  ---@type zyklib.Ewent<T>
-  local ewent = nil
-
-  ewent = Ewent.new(function(status)
-    if status and not active_native_listener then
-      active_native_listener = handler_name_generator:next()
-
-      game_event.Subscribe(active_native_listener, function(payload)
-        if ewent then
-          return ewent:trigger(payload)
-        end
-      end)
-    elseif (not status) and active_native_listener ~= nil then
-      game_event.Unsubscribe(active_native_listener)
-      active_native_listener = nil
+---@param self zyklib.Ewent<T, RetT>
+---@param f fun(payload: T): boolean
+---@return zyklib.Ewent<T, RetT>
+function Ewent:filter(f)
+  return self:derive(function(payload, emit)
+    if f(payload) then
+      emit(payload)
     end
   end)
-
-  return ewent
 end
 
--- Define native game event mappings
-Ewent.native = {
-  Logic = Ewent.forNativeGameEvent(Event.Logic),
-  ServerLogic = Ewent.forNativeGameEvent(Event.ServerLogic),
-  Draw = Ewent.forNativeGameEvent(Event.Draw),
-  OptionalDependencyChanged = Ewent.forNativeGameEvent(Event.OptionalDependencyChanged),
-  KeyUp = Ewent.forNativeGameEvent(Event.KeyUp),
-  KeyDown = Ewent.forNativeGameEvent(Event.KeyDown),
-  KeyTyped = Ewent.forNativeGameEvent(Event.KeyTyped),
-  VarTransmit = Ewent.forNativeGameEvent(Event.VarTransmit),
-  ChatMessage = Ewent.forNativeGameEvent(Event.ChatMessage),
-  PlayerEntityAdded = Ewent.forNativeGameEvent(Event.PlayerEntityAdded),
-  PlayerEntityRemoved = Ewent.forNativeGameEvent(Event.PlayerEntityRemoved),
-  NPCEntityAdded = Ewent.forNativeGameEvent(Event.NPCEntityAdded),
-  NPCEntityRemoved = Ewent.forNativeGameEvent(Event.NPCEntityRemoved),
-  ObjStackEntityAdded = Ewent.forNativeGameEvent(Event.ObjStackEntityAdded),
-  ObjStackEntityRemoved = Ewent.forNativeGameEvent(Event.ObjStackEntityRemoved),
-  ObjStackEntityChanged = Ewent.forNativeGameEvent(Event.ObjStackEntityChanged),
-  WindowFocusChanged = Ewent.forNativeGameEvent(Event.WindowFocusChanged),
-  GameStateChanged = Ewent.forNativeGameEvent(Event.GameStateChanged),
-  EntityDraw = Ewent.forNativeGameEvent(Event.EntityDraw),
-  WindowSizeChanged = Ewent.forNativeGameEvent(Event.WindowSizeChanged),
-  SkillTransmit = Ewent.forNativeGameEvent(Event.SkillTransmit),
-  RunEnergyTransmit = Ewent.forNativeGameEvent(Event.RunEnergyTransmit),
-  RunWeightTransmit = Ewent.forNativeGameEvent(Event.RunWeightTransmit),
-  MiniMenuOpened = Ewent.forNativeGameEvent(Event.MiniMenuOpened),
-  MiniMenuClosed = Ewent.forNativeGameEvent(Event.MiniMenuClosed),
-  MiniMenuReady = Ewent.forNativeGameEvent(Event.MiniMenuReady),
-  MiniMenuEntryAdded = Ewent.forNativeGameEvent(Event.MiniMenuEntryAdded),
-  MiniMenuEntrySelected = Ewent.forNativeGameEvent(Event.MiniMenuEntrySelected),
-  LocAdded = Ewent.forNativeGameEvent(Event.LocAdded),
-  LocRemoved = Ewent.forNativeGameEvent(Event.LocRemoved),
-  LocCustomised = Ewent.forNativeGameEvent(Event.LocCustomised),
-  LocAnimation = Ewent.forNativeGameEvent(Event.LocAnimation),
-  InventoryAdded = Ewent.forNativeGameEvent(Event.InventoryAdded),
-  InventoryUpdated = Ewent.forNativeGameEvent(Event.InventoryUpdated),
-  InventoryRemoved = Ewent.forNativeGameEvent(Event.InventoryRemoved),
-  GrandExchangeOfferUpdated = Ewent.forNativeGameEvent(Event.GrandExchangeOfferUpdated),
-  WorldCreated = Ewent.forNativeGameEvent(Event.WorldCreated),
-  WorldUpdated = Ewent.forNativeGameEvent(Event.WorldUpdated),
-  RegionCreated = Ewent.forNativeGameEvent(Event.RegionCreated),
-  RegionUpdated = Ewent.forNativeGameEvent(Event.RegionUpdated),
-}
+---Create a mapped event that transforms the payload of this event using the given function.
+---@generic T, RetT, TargetT
+---@param self zyklib.Ewent<T, RetT>
+---@param f fun(payload: T): TargetT
+---@return zyklib.Ewent<TargetT, RetT>
+function Ewent:map(f)
+  return self:derive(function(payload, emit)
+    emit(f(payload))
+  end)
+end
+
+---Derive a new event from this event using the given function.
+---@generic T, RetT, TargetT
+---@param self zyklib.Ewent<T, RetT>
+---@param f fun(payload: T, trigger_derived: (fun (payload: TargetT))) A function that takes the original payload and a function to trigger the derived event.
+---@return zyklib.Ewent<TargetT, RetT> The filtered and mapped event
+function Ewent:derive(f)
+  local derived_event = nil
+
+  local handler = self:subscribe(function(payload)
+    local target_value = nil
+
+    f(payload, function(target_payload)
+      if derived_event ~= nil then
+        target_value = derived_event:trigger(target_payload)
+      end
+    end)
+
+    return target_value
+  end)
+
+  derived_event = Ewent.new(function(status) handler:setSuspended(status) end)
+
+  return derived_event
+end
+
+---Subscribe a listener that is called at most once.
+---@generic T, RetT
+---@param self zyklib.Ewent<T, RetT>
+---@param listener fun(payload: T): RetT
+---@return zyklib.EwentHandler<T, RetT>
+function Ewent:once(listener)
+  local handler
+
+  handler = self:subscribe(function(payload)
+    handler:cancel()
+    return listener(payload)
+  end)
+
+  return handler
+end
+
+---@generic T, RetT
+---@param self zyklib.Ewent<T, RetT>
+---@param initial_value T
+---@param equals? fun(a: T, b: T): boolean
+---@return zyklib.Observable<T>
+function Ewent:toObservable(initial_value, equals)
+  local Observable = require("zyklib/ewent/Observable") -- Local require to avoid circular dependency
+  local observable = Observable.new(initial_value, equals)
+
+  self:subscribe(function(payload)
+    observable:set(payload)
+    return nil
+  end)
+
+  return observable
+end
 
 return Ewent

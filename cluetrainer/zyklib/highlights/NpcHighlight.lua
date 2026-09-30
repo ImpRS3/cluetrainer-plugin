@@ -14,38 +14,31 @@ NpcHighlight.__index  = NpcHighlight
 local instances       = {}
 local instanceCount   = 0
 
----@type zyklib.EwentHandler?
-local draw_handler    = nil
+---@type zyklib.EwentHandler
+local draw_handler    = ewent.Native.EntityDraw:subscribeSuspended(function(event)
+  if (event.entityType ~= EntityType.NPC) then return true end
+  local npc = event.npcEntity
+
+  -- Ignore all NPCs without a display name. TODO: Is this sensible as a default?
+  if npc.displayName == "" then return true end
+
+  for instance in pairs(instances) do
+    if instance.actual_params.visible ~= false then
+      if instance.filter(npc) then
+        local settings = instance.render(npc)
+
+        HighlightParams.apply_to_draw_call(instance.actual_params, settings)
+
+        ShapeList.Draw(settings)
+      end
+    end
+  end
+
+  return true
+end)
 
 local function update_draw_handler()
-  if instanceCount > 0 and draw_handler == nil then
-    -- Handler does not exist, but there are active instances, so we create it.
-    draw_handler = ewent.Ewent.native.EntityDraw:subscribe(function(event)
-      if (event.entityType ~= EntityType.NPC) then return true end
-      local npc = event.npcEntity
-
-      -- Ignore all NPCs without a display name. TODO: Is this sensible as a default?
-      if npc.displayName == "" then return true end
-
-      for instance in pairs(instances) do
-        if instance.actual_params.visible ~= false then
-          if instance.filter(npc) then
-            local settings = instance.render(npc)
-
-            HighlightParams.apply_to_draw_call(instance.actual_params, settings)
-
-            ShapeList.Draw(settings)
-          end
-        end
-      end
-
-      return true
-    end)
-  elseif instanceCount == 0 and draw_handler ~= nil then
-    -- Handler does exist, but there are no active instances, so we remove it.
-    draw_handler:cancel()
-    draw_handler = nil
-  end
+  draw_handler:setSuspended(instanceCount == 0)
 end
 
 ---@param filter fun(npc: NPCEntity): boolean

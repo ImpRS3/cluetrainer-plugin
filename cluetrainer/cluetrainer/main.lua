@@ -8,16 +8,18 @@ local function main()
   local api_util       = require("zyklib/api_util")
   local LocHighlight   = require("zyklib/highlights/LocHighlight")
   local zyklib         = require("zyklib/init")
+  local ClueProgress   = require("cluetrainer/ClueProgress")
+  local lua_util       = require("zyklib/lua_util")
 
-  towers_solver:init()
-  lockbox_solver:init()
-  knot_solver:init()
-  orchestrator.init()
+  -- towers_solver:init()
+  -- lockbox_solver:init()
+  -- knot_solver:init()
+  -- orchestrator.init()
 
-  local shape = MutableMesh.cube():shapeData()
+  local shape          = MutableMesh.cube():shapeData()
 
 
-  zyklib.ewent.Ewent.native.VarTransmit:subscribe(function(e)
+  zyklib.ewent.Native.VarTransmit:subscribe(function(e)
     log(e.var.configName .. " changed from " .. tostring(e.oldValue) .. " to " .. tostring(e.newValue))
   end)
 
@@ -25,7 +27,7 @@ local function main()
 
 
 
-  -- zyklib.ewent.Ewent.native.MiniMenuEntrySelected:subscribe(function(event)
+  -- zyklib.ewent.Native.MiniMenuEntrySelected:subscribe(function(event)
   --   log(zyklib.api_util.to_plain_table(event))
 
   --   if event.entry.componentData ~= nil then
@@ -35,7 +37,7 @@ local function main()
   --   end
   -- end)
 
-  -- zyklib.ewent.Ewent.native.EntityDraw:subscribe(function(event)
+  -- zyklib.ewent.Native.EntityDraw:subscribe(function(event)
   --   return not (event.entityType == EntityType.NPC)
   -- end)
 
@@ -51,7 +53,7 @@ local function main()
   --         }
   --     end):activate()
 
-  -- zyklib.ewent.Ewent.native.LocAdded:subscribe(function(event)
+  -- zyklib.ewent.Native.LocAdded:subscribe(function(event)
   --     log(event.config.configName)
   -- end)
 

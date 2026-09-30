@@ -115,7 +115,7 @@ lockbox_solver.instance = nil
 function lockbox_solver:init()
   if lockbox_solver.instance ~= nil then return end
 
-  local handler = zyklib.ewent.Ewent.native.ServerLogic:subscribe(function(event)
+  local handler = zyklib.ewent.Native.ServerLogic:subscribe(function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.LIGHTSOUT)
 
     if not interface then
@@ -137,7 +137,7 @@ function lockbox_solver:init()
 
       log(content.width .. "x" .. content.height)
 
-      local handler = zyklib.ewent.Ewent.native.Draw:subscribe(function(event)
+      local handler = zyklib.ewent.Native.Draw:subscribe(function(event)
         maybeRefreshOverlay()
       end)
 

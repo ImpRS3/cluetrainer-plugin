@@ -75,7 +75,8 @@ function TerrainHighlight:propagate_param_change()
   end
 end
 
-local listener = ewent.Ewent.native.ServerLogic:subscribe(function()
+---@type zyklib.EwentHandler
+local listener = ewent.Native.ServerLogic:subscribe(function()
   for instance, _ in pairs(pending_instances) do
     create_if_available(instance)
 

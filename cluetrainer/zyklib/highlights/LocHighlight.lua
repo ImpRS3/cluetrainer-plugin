@@ -17,10 +17,6 @@ LocHighlight.__index   = LocHighlight
 local active_instances = {}
 local instanceCount    = 0
 
----@type zyklib.EwentHandler?
-local draw_handler     = nil
-
-
 ---Update the ShapeInstances for a given LocHighlight to synchronize existing ShapeEntities with the current set of LocEntity objects that match the filter.
 ---This will create new ShapeInstances for newly matching LocEntity objects, and destroy ShapeInstances for LocEntity objects that no longer exist or match the filter.
 ---@param instance zyklib.LocHighlight
@@ -68,20 +64,17 @@ local function update_instances(instance)
   end
 end
 
----Makes sure the logic hook that periodically updates the ShapeInstances for all active LocHighlight instances is created or destroyed as needed.
-local function update_logic_hook()
-  if instanceCount > 0 and draw_handler == nil then
-    -- Handler does not exist, but there are active instances, so we create it.
-    draw_handler = ewent.Ewent.native.ServerLogic:subscribe(function(event)
-      for instance, _ in pairs(active_instances) do
-        update_instances(instance)
-      end
-    end)
-  elseif instanceCount == 0 and draw_handler ~= nil then
-    -- Handler does exist, but there are no active instances, so we remove it.
-    draw_handler:cancel()
-    draw_handler = nil
+
+---@type zyklib.EwentHandler
+local draw_handler = ewent.Native.ServerLogic:subscribe(function(event)
+  for instance, _ in pairs(active_instances) do
+    update_instances(instance)
   end
+end)
+
+local function update_logic_hook()
+  -- The draw_handler is always created at the start, so we only need to suspend or resume it.
+  draw_handler:setSuspended(instanceCount == 0)
 end
 
 ---@param filter LocListFilterSettings The filter object that determines which LocEntity objects should be highlighted.

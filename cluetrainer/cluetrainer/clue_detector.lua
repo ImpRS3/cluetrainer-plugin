@@ -394,35 +394,31 @@ clue_map["TRAIL_CLUE_MEDIUM_SEXTANT027"]           = 416
 
 ---@class cluetrainer.ClueDetector
 ---@field clue_detected_ewent zyklib.Ewent<Step, nil>
-local clue_detector = {}
+local clue_detector                                = {}
 
-local mini_menu_handler = zyklib.ewent.Ewent.native.MiniMenuEntrySelected:subscribeSuspended(function(event)
-  -- Only react on relevant clicks on clues
-  if not event.entry.componentData then return end
-  if not event.entry.componentData.objConfig then return end
+clue_detector.clue_detected_ewent                  = zyklib.ewent.Native.MiniMenuEntrySelected:derive(
+--- @param emit fun(step: Step)
+  function(event, emit)
+    if not event.entry.componentData then return end
+    if not event.entry.componentData.objConfig then return end
 
-  log("Clicked " .. event.entry.componentData.objConfig.configName)
+    log("Clicked " .. event.entry.componentData.objConfig.configName)
 
-  for _, value in pairs(event.entry.componentData.objConfig.params) do
-    log(value.configName)
-    log(api_util.to_plain_table(event.entry.componentData.objConfig:GetParamValue(value)))
-  end
+    for _, value in pairs(event.entry.componentData.objConfig.params) do
+      log(value.configName)
+      log(api_util.to_plain_table(event.entry.componentData.objConfig:GetParamValue(value)))
+    end
 
-  if event.entry.verbText ~= "Read" and event.entry.verbText ~= "Start scanning" then return end
+    if event.entry.verbText ~= "Read" and event.entry.verbText ~= "Start scanning" then return end
 
-  -- Find corresponding clue id
-  local clue_id = clue_map[event.entry.componentData.objConfig.configName]
-  if (not clue_id) then return end
+    -- Find corresponding clue id
+    local clue_id = clue_map[event.entry.componentData.objConfig.configName]
+    if (not clue_id) then return end
 
-  local clue = lua_util.find(clues, function(clue) return clue.id == clue_id end)
+    local clue = lua_util.find(clues, function(clue) return clue.id == clue_id end)
 
-  -- Report clue to orchestrator
-  if (clue) then clue_detector.clue_detected_ewent:trigger(clue) end
-end)
-
-clue_detector.clue_detected_ewent = zyklib.ewent.Ewent.new(function(hasActiveListeners)
-  mini_menu_handler:setSuspended(not hasActiveListeners)
-end)
-
+    -- Report clue to orchestrator
+    if (clue) then emit(clue) end
+  end)
 
 return clue_detector

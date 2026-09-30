@@ -137,7 +137,7 @@ towers_solver.instance = nil
 function towers_solver:init()
   if towers_solver.instance ~= nil then return end
 
-  local handler = zyklib.ewent.Ewent.native.ServerLogic:subscribe(function(event)
+  local handler = zyklib.ewent.Native.ServerLogic:subscribe(function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.TRAIL17_SKYSCRAPERS)
 
     if not interface then
@@ -161,7 +161,7 @@ function towers_solver:init()
       local canvas = ui.Canvas.new(content)
       canvas:SetSize(content.width, content.height)
 
-      local handler = zyklib.ewent.Ewent.native.MiniMenuEntrySelected:subscribe(function()
+      local handler = zyklib.ewent.Native.MiniMenuEntrySelected:subscribe(function()
         maybeRefreshOverlay()
       end)
 
