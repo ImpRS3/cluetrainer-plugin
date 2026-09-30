@@ -22,7 +22,7 @@ end
 ---@generic T, RetT
 ---@param self zyklib.Ewent<T, RetT>
 ---@param listener fun(payload: T): RetT The function to call when the event is triggered.
----@param start_suspended boolean Whether the subscription should start in a suspended state
+---@param start_suspended boolean? Whether the subscription should start in a suspended state
 ---@return zyklib.EwentHandler<T, RetT> The created event handler
 function Ewent:subscribe(listener, start_suspended)
   local handler = EwentHandler.new(listener, self)

@@ -5,5 +5,6 @@ return {
   MutableMesh = require "zyklib/MutableMesh",
   UniqueNameGenerator = require "zyklib/UniqueNameGenerator",
   base64 = require "zyklib/base64",
-  highlights = require "zyklib/highlights/init"
+  highlights = require "zyklib/highlights/init",
+  bit = require "zyklib/bit",
 }

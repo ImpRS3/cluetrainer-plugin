@@ -59,6 +59,22 @@ function lua_util.shallow_copy(orig)
   return copy
 end
 
+---Concatenates multiple lists into a single list.
+---@generic T
+---@param ... T[] Lists to concatenate
+---@return T[] Concatenated list
+function lua_util.concat(...)
+    local result = {}
+
+    for _, t in ipairs({...}) do
+        for _, v in ipairs(t) do
+            result[#result + 1] = v
+        end
+    end
+
+    return result
+end
+
 ---Applies a function to each element of a list and returns a new list of the results.
 ---@generic T Original type of the list elements
 ---@generic U Target type of the list elements after applying the function
