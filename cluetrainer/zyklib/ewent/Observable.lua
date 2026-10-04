@@ -11,10 +11,11 @@ setmetatable(Observable, { __index = Ewent })
 ---@generic T
 ---@param initial_value T
 ---@param equals? fun(a: T, b: T): boolean
+---@param status_changed_callback fun(status: boolean)
 ---@return zyklib.Observable<T>
-function Observable.new(initial_value, equals)
+function Observable.new(initial_value, equals, status_changed_callback)
   ---@type zyklib.Observable<T>
-  local self = Ewent.new(function() end)
+  local self = Ewent.new(status_changed_callback)
   setmetatable(self, Observable)
 
   self.value = initial_value

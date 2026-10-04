@@ -89,4 +89,24 @@ function lua_util.map(list, func)
   return result
 end
 
+---@generic T
+---@param array T[]
+---@param size integer
+---@return T[][]
+function lua_util.grouped(array, size)
+    local chunks = {}
+
+    for i = 1, #array, size do
+        local group = {}
+
+        for j = i, math.min(i + size - 1, #array) do
+            group[#group + 1] = array[j]
+        end
+
+        chunks[#chunks + 1] = group
+    end
+
+    return chunks
+end
+
 return lua_util

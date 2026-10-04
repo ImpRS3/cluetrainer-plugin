@@ -2,13 +2,13 @@ local EwentHandler = require("zyklib/ewent/EwentHandler")
 
 ---@class zyklib.Ewent<T, RetT>
 ---@field private listeners zyklib.EwentHandler<T, RetT>[]
----@field private status_changed_callback fun(status: boolean)
+---@field private status_changed_callback fun(status: boolean)?
 ---@field private hasActiveListeners boolean
 local Ewent        = {}
 Ewent.__index      = Ewent
 
 ---@generic T, RetT
----@param status_changed_callback fun(hasActiveListeners: boolean) A callback function that is called whenever the number of active listeners changes from 0 to more than zero or vice versa
+---@param status_changed_callback fun(hasActiveListeners: boolean)? A callback function that is called whenever the number of active listeners changes from 0 to more than zero or vice versa
 ---@return zyklib.Ewent<T, RetT>
 function Ewent.new(status_changed_callback)
   local self = setmetatable({}, Ewent)
@@ -165,16 +165,23 @@ function Ewent:once(listener)
   return handler
 end
 
+--- Construct an observable from this event. The event payload will become the observable's value, and the observable will be updated whenever the event is triggered.
+--- When the observable has no active listeners, the event listener will also be suspended.
 ---@generic T, RetT
 ---@param self zyklib.Ewent<T, RetT>
 ---@param initial_value T
----@param equals? fun(a: T, b: T): boolean
 ---@return zyklib.Observable<T>
-function Ewent:toObservable(initial_value, equals)
+function Ewent:toObservable(initial_value)
   local Observable = require("zyklib/ewent/Observable") -- Local require to avoid circular dependency
-  local observable = Observable.new(initial_value, equals)
 
-  self:subscribe(function(payload)
+  ---@type zyklib.EwentHandler
+  local handler
+
+  local observable = Observable.new(initial_value, nil, function(status)
+    handler:setSuspended(not status)
+  end)
+
+  handler = self:subscribe(function(payload)
     observable:set(payload)
     return nil
   end)
