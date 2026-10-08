@@ -150,8 +150,7 @@ function towers_solver:init()
       return
     end
 
-    local content = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__SKYSCRAPERS_CONTENT)
-    ---@cast content ui.ComponentCollection
+    local content = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__SKYSCRAPERS_CONTENT) --[[@as ui.ComponentCollection]]
 
     if active_puzzle == nil and content ~= nil then
       local solution = Towers.solve(getPuzzleHints())

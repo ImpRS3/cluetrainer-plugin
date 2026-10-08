@@ -41,8 +41,7 @@ function TileArea.ensure_mutable(tile_area)
     end
   end
 
-  ---@cast tile_area TileArea.Active
-  return tile_area
+  return tile_area --[[@as TileArea.Active]]
 end
 
 ---Queries whether a given coordinate is within the area

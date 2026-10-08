@@ -14,17 +14,13 @@ local function getPuzzleState()
   local rows012 = var.VarClient["TRAIL_LIGHTSOUT_CLIENT_1"].value
   local rows34 = var.VarClient["TRAIL_LIGHTSOUT_CLIENT_2"].value
 
-  local state = {
-    tile_rows = {
-      { getTwoBit(rows012, 0),  getTwoBit(rows012, 1),  getTwoBit(rows012, 2),  getTwoBit(rows012, 3),  getTwoBit(rows012, 4) },
-      { getTwoBit(rows012, 5),  getTwoBit(rows012, 6),  getTwoBit(rows012, 7),  getTwoBit(rows012, 8),  getTwoBit(rows012, 9) },
-      { getTwoBit(rows012, 10), getTwoBit(rows012, 11), getTwoBit(rows012, 12), getTwoBit(rows012, 13), getTwoBit(rows012, 14) },
-      { getTwoBit(rows012, 15), getTwoBit(rows34, 0),   getTwoBit(rows34, 1),   getTwoBit(rows34, 2),   getTwoBit(rows34, 3), },
-      { getTwoBit(rows34, 4),   getTwoBit(rows34, 5),   getTwoBit(rows34, 6),   getTwoBit(rows34, 7),   getTwoBit(rows34, 8) },
-    }
+  return {
+    tile_rows = zyklib.lua_util.grouped(
+      zyklib.lua_util.concat(
+        zyklib.bit.getAll(2, rows012, 16),
+        zyklib.bit.getAll(2, rows34, 9)
+      ), 5)
   }
-
-  return state
 end
 
 local TILE_OFFSET         = 38
@@ -128,8 +124,7 @@ function lockbox_solver:init()
       return
     end
 
-    local content = ui.Interfaces:GetComponent(id.Component.LIGHTSOUT__MAINMODAL_WINDOW_CONTENT)
-    ---@cast content ui.ComponentCollection
+    local content = ui.Interfaces:GetComponent(id.Component.LIGHTSOUT__MAINMODAL_WINDOW_CONTENT) --[[@as ui.ComponentCollection]]
 
     if active_puzzle == nil and content ~= nil then
       local canvas = ui.Canvas.new(content)

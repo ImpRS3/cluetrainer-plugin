@@ -2,33 +2,33 @@
 local Towers = {}
 
 ---@alias Tower 1|2|3|4|5
----@alias Street {[1]: Tower?, [2]: Tower?, [3]: Tower?, [4]: Tower?, [5]: Tower?}
----@alias StreetLabel integer
----@alias LabelPair {[1]: StreetLabel, [2]: StreetLabel}
+---@alias Street [Tower?, Tower?, Tower?, Tower?, Tower?]
+---@alias StreetLabel Tower
+---@alias LabelPair [StreetLabel, StreetLabel]
 
 ---@class LabelledStreet
 ---@field street Street
 ---@field label LabelPair
 
 ---@class Towers.Hints
----@field top StreetLabel[]
----@field bottom StreetLabel[]
----@field left StreetLabel[]
----@field right StreetLabel[]
+---@field top [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
+---@field bottom [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
+---@field left [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
+---@field right [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
 
 ---@class HintPairs
----@field rows {[1]: LabelPair, [2]: LabelPair, [3]: LabelPair, [4]: LabelPair, [5]: LabelPair}
----@field columns {[1]: LabelPair, [2]: LabelPair, [3]: LabelPair, [4]: LabelPair, [5]: LabelPair}
+---@field rows [LabelPair, LabelPair, LabelPair, LabelPair, LabelPair]
+---@field columns [LabelPair, LabelPair, LabelPair, LabelPair, LabelPair]
 
 ---@class Towers.Blocks
----@field rows {[1]: Street, [2]: Street, [3]: Street, [4]: Street, [5]: Street}
+---@field rows [Street, Street, Street, Street, Street]
 
 ---@class Towers.PuzzleState
 ---@field hints Towers.Hints
 ---@field blocks Towers.Blocks
 
 ---@type Tower[]
-Towers.towers = { 1, 2, 3, 4, 5 }
+Towers.all_towers = { 1, 2, 3, 4, 5 }
 
 Towers.Street = {}
 
@@ -37,7 +37,7 @@ local all_streets = nil
 
 ---@return Street
 function Towers.Street.empty()
-    return {0, 0, 0, 0, 0}
+    return { 0, 0, 0, 0, 0 }
 end
 
 ---@generic T
@@ -165,10 +165,10 @@ function Towers.LabelPair.candidateMap()
     ---@type CandidateMap
     local result = {}
 
-    for _, a in ipairs(Towers.towers) do
+    for _, a in ipairs(Towers.all_towers) do
         result[a] = {}
 
-        for _, b in ipairs(Towers.towers) do
+        for _, b in ipairs(Towers.all_towers) do
             result[a][b] = {}
 
             for _, labelled in ipairs(Towers.LabelledStreet.all()) do
@@ -223,7 +223,7 @@ end
 ---@param b Towers.Blocks
 ---@return Towers.Blocks
 function Towers.Blocks.combine(a, b)
-    ---@type Street[]
+    ---@type [Street, Street, Street, Street, Street]
     local rows = {}
 
     for y = 1, 5 do
@@ -239,7 +239,6 @@ function Towers.Blocks.combine(a, b)
         end
     end
 
-    ---@cast rows {[1]: Street, [2]: Street, [3]: Street, [4]: Street, [5]: Street}
     return { rows = rows }
 end
 
@@ -287,9 +286,9 @@ function Towers.Puzzle.solve(puzzle)
                     Towers.Street.label(column(rows, column_index))
 
                 if not Towers.LabelPair.equals(
-                    actual_label,
-                    column_hints[column_index]
-                ) then
+                        actual_label,
+                        column_hints[column_index]
+                    ) then
                     return false
                 end
             end
@@ -307,8 +306,7 @@ function Towers.Puzzle.solve(puzzle)
         end
 
         if hint_index > #puzzle.rows then
-            ---@cast streets_so_far {[1]: Street, [2]: Street, [3]: Street, [4]: Street, [5]: Street}
-            return { rows = streets_so_far }
+            return { rows = streets_so_far --[[@as [Street, Street, Street, Street, Street] ]] }
         end
 
         local hint = puzzle.rows[hint_index]
@@ -338,9 +336,9 @@ function Towers.Puzzle.solve(puzzle)
     return backtrack(1, {})
 end
 
----@param first StreetLabel[]
----@param second StreetLabel[]
----@return LabelPair[]
+---@param first [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
+---@param second [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
+---@return [LabelPair, LabelPair, LabelPair, LabelPair, LabelPair]
 local function zip_labels(first, second)
     ---@type LabelPair[]
     local result = {}
@@ -357,9 +355,6 @@ end
 function Towers.solve(hints)
     local columns = zip_labels(hints.top, hints.bottom)
     local rows = zip_labels(hints.left, hints.right)
-
-    ---@cast columns {[1]: LabelPair, [2]: LabelPair, [3]: LabelPair, [4]: LabelPair, [5]: LabelPair}
-    ---@cast rows {[1]: LabelPair, [2]: LabelPair, [3]: LabelPair, [4]: LabelPair, [5]: LabelPair}
 
     ---@type HintPairs
     local pairs = {

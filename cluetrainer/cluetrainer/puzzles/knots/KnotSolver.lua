@@ -91,8 +91,7 @@ function knot_solver:init()
       return
     end
 
-    local content = getContainer(interface.knot_type)
-    ---@cast content ui.ComponentCollection
+    local content = getContainer(interface.knot_type) --[[@as ui.ComponentCollection]]
 
     if active_puzzle == nil and content ~= nil then
       local canvas = ui.Canvas.new(content)
