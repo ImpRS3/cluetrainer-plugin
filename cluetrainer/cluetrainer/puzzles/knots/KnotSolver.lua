@@ -78,7 +78,7 @@ end
 function knot_solver:init()
   if knot_solver.instance ~= nil then return end
 
-  local handler = zyklib.ewent.Native.ServerLogic:subscribe(function(event)
+  local handler = zyklib.reactive.Native.ServerLogic:subscribe(function(event)
     local interface = getInterfaceAndKnotType()
 
     if not interface or (active_puzzle and interface.knot_type ~= active_puzzle.knot_type) then
@@ -97,7 +97,7 @@ function knot_solver:init()
       local canvas = ui.Canvas.new(content)
       canvas:SetSize(content.width, content.height)
 
-      local handler = zyklib.ewent.Native.ServerLogic:subscribe(function(event)
+      local handler = zyklib.reactive.Native.ServerLogic:subscribe(function(event)
         maybeRefreshOverlay()
       end)
 

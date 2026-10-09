@@ -396,7 +396,7 @@ clue_map["TRAIL_CLUE_MEDIUM_SEXTANT027"]           = 416
 ---@field clue_detected_ewent zyklib.Ewent<Step, nil>
 local clue_detector                                = {}
 
-clue_detector.clue_detected_ewent                  = zyklib.ewent.Native.MiniMenuEntrySelected:derive(
+clue_detector.clue_detected_ewent                  = zyklib.reactive.Native.MiniMenuEntrySelected:derive(
 --- @param emit fun(step: Step)
   function(event, emit)
     if not event.entry.componentData then return end

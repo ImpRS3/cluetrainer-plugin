@@ -1,13 +1,8 @@
 local lua_util       = require "zyklib/lua_util"
 local Lockboxes      = require "cluetrainer/puzzles/lockbox/Lockboxes"
-local api_util       = require "zyklib/api_util"
 local zyklib         = require "zyklib/init"
 
 local lockbox_solver = {}
-
-local function getTwoBit(value, i)
-  return (value >> (i * 2)) & 0x3
-end
 
 ---@return LockboxState
 local function getPuzzleState()
@@ -111,7 +106,7 @@ lockbox_solver.instance = nil
 function lockbox_solver:init()
   if lockbox_solver.instance ~= nil then return end
 
-  local handler = zyklib.ewent.Native.ServerLogic:subscribe(function(event)
+  local handler = zyklib.reactive.Native.ServerLogic:subscribe(function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.LIGHTSOUT)
 
     if not interface then
@@ -132,7 +127,7 @@ function lockbox_solver:init()
 
       log(content.width .. "x" .. content.height)
 
-      local handler = zyklib.ewent.Native.Draw:subscribe(function(event)
+      local handler = zyklib.reactive.Native.Draw:subscribe(function(event)
         maybeRefreshOverlay()
       end)
 

@@ -44,7 +44,7 @@ function Navigator.new()
 
   self.path = {}
 
-  self.logic_handler = zyklib.ewent.Native.ServerLogic:subscribe(function(event)
+  self.logic_handler = zyklib.reactive.Native.ServerLogic:subscribe(function(event)
     self:update_progress()
   end)
 

@@ -5,8 +5,9 @@
 	],
 	"workspace.library": [
 		"dependencies/runescape-api-stubs/types.lua",
-		"dependencies/runescape-api-stubs/generated/"
+		"dependencies/runescape-api-stubs/generated/",
 		//"dependencies/runescape-api-stubs/consts/"
+		"dependencies/zyklib/src/"
 	],
 	"workspace.checkThirdParty": false,
 	"runtime.version": "Lua 5.4",
@@ -21,7 +22,8 @@
 		"debug": "disable"
 	},
 	"runtime.path": [
-		"cluetrainer/?.lua"
+		"cluetrainer/?.lua",
+		"dependencies/zyklib/src/?.lua"
 	],
 	"completion.requireSeparator": "/",
     "diagnostics.disable": [

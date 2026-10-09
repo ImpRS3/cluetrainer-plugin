@@ -1,1 +1,6 @@
 dependencies/dynamic/*
+
+cluetrainer/zyklib/*
+cluetrainer/zyklib.lua
+
+dist/
