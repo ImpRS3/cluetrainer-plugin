@@ -78,7 +78,7 @@ end
 ---@class ActiveLockboxPuzzle
 ---@field canvas Canvas
 ---@field latestState LockboxState?
----@field action_handler zyklib.EwentHandler
+---@field action_handler zyklib.EventHandler
 
 ---@type ActiveLockboxPuzzle?
 local active_puzzle = nil
@@ -100,7 +100,7 @@ local function maybeRefreshOverlay()
   }))
 end
 
----@type {handler: zyklib.EwentHandler}?
+---@type {handler: zyklib.EventHandler}?
 lockbox_solver.instance = nil
 
 function lockbox_solver:init()

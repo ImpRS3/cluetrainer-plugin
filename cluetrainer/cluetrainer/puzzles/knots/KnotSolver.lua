@@ -22,7 +22,7 @@ end
 ---@class ActiveKnotPuzzle
 ---@field knot_type integer
 ---@field canvas Canvas
----@field action_handler zyklib.EwentHandler
+---@field action_handler zyklib.EventHandler
 
 ---@type ActiveKnotPuzzle?
 local active_puzzle = nil
@@ -51,7 +51,7 @@ local function maybeRefreshOverlay()
   draw(active_puzzle.canvas)
 end
 
----@type {handler: zyklib.EwentHandler}?
+---@type {handler: zyklib.EventHandler}?
 knot_solver.instance = nil
 
 ---comment---@return {interface: ui.Interface, knot_type: integer}?

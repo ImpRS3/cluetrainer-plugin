@@ -304,7 +304,7 @@ end
 
 function orchestrator.init()
   -- Listen for clue detection events
-  clue_detector.clue_detected_ewent:subscribe(function(clue)
+  clue_detector.clue_detected_event:subscribe(function(clue)
     orchestrator:setStep(clue)
   end)
 end

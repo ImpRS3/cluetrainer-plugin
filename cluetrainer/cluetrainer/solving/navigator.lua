@@ -10,7 +10,7 @@ local zyklib   = require "zyklib/init"
 
 ---@class Navigator
 ---@field path PathStepEntity[]
----@field logic_handler zyklib.EwentHandler
+---@field logic_handler zyklib.EventHandler
 local Navigator = {}
 Navigator.__index = Navigator
 

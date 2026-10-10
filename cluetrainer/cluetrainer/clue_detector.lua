@@ -1,6 +1,3 @@
--- Copyright (c) 2024 ClueTrainer Contributors
--- See LICENSE file in the project root for full license information.
-
 local clues                                        = require "cluetrainer/data/clues"
 local api_util                                     = require "zyklib/api_util"
 local lua_util                                     = require "zyklib/lua_util"
@@ -393,10 +390,10 @@ clue_map["TRAIL_CLUE_MEDIUM_SEXTANT027"]           = 416
 -- TODO: Implement detection of master clues via ObjVar once they are available
 
 ---@class cluetrainer.ClueDetector
----@field clue_detected_ewent zyklib.Ewent<Step, nil>
+---@field clue_detected_event zyklib.Event<Step, nil>
 local clue_detector                                = {}
 
-clue_detector.clue_detected_ewent                  = zyklib.reactive.Native.MiniMenuEntrySelected:derive(
+clue_detector.clue_detected_event                  = zyklib.reactive.Native.MiniMenuEntrySelected:derive(
 --- @param emit fun(step: Step)
   function(event, emit)
     if not event.entry.componentData then return end

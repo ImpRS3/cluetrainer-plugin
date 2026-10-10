@@ -111,7 +111,7 @@ end
 ---@class ActivePuzzle
 ---@field canvas Canvas
 ---@field solution Towers.PuzzleState
----@field action_handler zyklib.EwentHandler
+---@field action_handler zyklib.EventHandler
 ---@field latestState Towers.Blocks?
 
 ---@type ActivePuzzle?
@@ -131,7 +131,7 @@ local function maybeRefreshOverlay()
     { show_deltas = true, show_should = true })
 end
 
----@type {handler: zyklib.EwentHandler}?
+---@type {handler: zyklib.EventHandler}?
 towers_solver.instance = nil
 
 function towers_solver:init()
