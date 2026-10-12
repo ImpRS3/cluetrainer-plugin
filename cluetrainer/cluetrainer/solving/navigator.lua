@@ -1,7 +1,7 @@
 local api_util = require "zyklib/api_util"
 local PathMesh = require "cluetrainer/model/PathMesh"
-local lua_util = require "zyklib/lua_util"
-local zyklib   = require "zyklib/init"
+local array = require "zyklib/array"
+local zyklib   = require "zyklib"
 
 
 ---@class PathStepEntity
@@ -10,7 +10,7 @@ local zyklib   = require "zyklib/init"
 
 ---@class Navigator
 ---@field path PathStepEntity[]
----@field logic_handler zyklib.EventHandler
+---@field logic_handler zyklib.reactive.EventHandler
 local Navigator = {}
 Navigator.__index = Navigator
 
@@ -44,7 +44,7 @@ function Navigator.new()
 
   self.path = {}
 
-  self.logic_handler = zyklib.reactive.Native.ServerLogic:subscribe(function(event)
+  self.logic_handler = zyklib.game_events.native.ServerLogic:subscribe(function(event)
     self:update_progress()
   end)
 
@@ -65,7 +65,7 @@ end
 function Navigator:set(path)
   self:clear()
 
-  self.path = lua_util.map(path, function(step, index)
+  self.path = array.map(path, function(step, index)
     return {
       step = step,
       geometry = PathMesh.buildStepMesh(step, {

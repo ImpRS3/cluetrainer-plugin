@@ -2,7 +2,7 @@ local MutableMesh        = require("zyklib/MutableMesh")
 local api_util           = require("zyklib/api_util")
 local TerrainHighlight   = require("zyklib/highlights/TerrainHighlight")
 local coordinate_adaptor = require("cluetrainer/model_shared/coordinate_adaptor")
-local lua_util           = require("zyklib/lua_util")
+local array              = require("zyklib/array")
 local HighlightGroup     = require("zyklib/highlights/HighlightGroup")
 local OverlayConstants   = require("cluetrainer/model/OverlayConstants")
 local TileArea           = require("cluetrainer/model_shared/TileArea")
@@ -411,7 +411,7 @@ end
 ---@param tile_coordinates TileCoordinates[]
 ---@return Rect
 local function bounds_from_tile_coordinates(tile_coordinates)
-    return api_util.map_square_rect_from_tiles(lua_util.map(tile_coordinates,
+    return api_util.map_square_rect_from_tiles(array.map(tile_coordinates,
         coordinate_adaptor.tile_coordinates_to_coord_grid))
 end
 

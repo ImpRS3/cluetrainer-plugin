@@ -1,6 +1,6 @@
 local lua_util            = require "zyklib/lua_util"
 local Towers              = require "puzzles/towers/Towers"
-local zyklib              = require "zyklib/init"
+local zyklib              = require "zyklib"
 
 local towers_solver       = {}
 
@@ -111,7 +111,7 @@ end
 ---@class ActivePuzzle
 ---@field canvas Canvas
 ---@field solution Towers.PuzzleState
----@field action_handler zyklib.EventHandler
+---@field action_handler zyklib.reactive.EventHandler
 ---@field latestState Towers.Blocks?
 
 ---@type ActivePuzzle?
@@ -131,13 +131,13 @@ local function maybeRefreshOverlay()
     { show_deltas = true, show_should = true })
 end
 
----@type {handler: zyklib.EventHandler}?
+---@type {handler: zyklib.reactive.EventHandler}?
 towers_solver.instance = nil
 
 function towers_solver:init()
   if towers_solver.instance ~= nil then return end
 
-  local handler = zyklib.reactive.Native.ServerLogic:subscribe(function(event)
+  local handler = zyklib.game_events.native.ServerLogic:subscribe(function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.TRAIL17_SKYSCRAPERS)
 
     if not interface then
@@ -160,7 +160,7 @@ function towers_solver:init()
       local canvas = ui.Canvas.new(content)
       canvas:SetSize(content.width, content.height)
 
-      local handler = zyklib.reactive.Native.MiniMenuEntrySelected:subscribe(function()
+      local handler = zyklib.game_events.native.MiniMenuEntrySelected:subscribe(function()
         maybeRefreshOverlay()
       end)
 

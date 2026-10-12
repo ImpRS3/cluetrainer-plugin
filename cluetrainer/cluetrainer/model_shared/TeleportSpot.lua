@@ -1,4 +1,4 @@
-local lua_util = require "zyklib/lua_util"
+local array = require "zyklib/array"
 ---@class cluetrainer.TeleportSpot
 ---@field private group TeleportGroup
 ---@field private spot TeleportSpot
@@ -24,7 +24,7 @@ function TeleportSpot.new(group, spot, access)
   local self = setmetatable({}, TeleportSpot)
 
   if access == nil then
-    access = lua_util.find(group.access, function (value, index)
+    access = array.find(group.access, function (value, index)
       return teleport_access_is_anywhere(value)
     end)
   end

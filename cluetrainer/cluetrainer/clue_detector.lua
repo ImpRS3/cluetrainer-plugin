@@ -1,7 +1,7 @@
 local clues                                        = require "cluetrainer/data/clues"
 local api_util                                     = require "zyklib/api_util"
-local lua_util                                     = require "zyklib/lua_util"
-local zyklib                                       = require "zyklib/init"
+local array                                        = require "zyklib/array"
+local zyklib                                       = require "zyklib"
 
 ---@type table<string, integer>
 local clue_map                                     = {}
@@ -390,21 +390,14 @@ clue_map["TRAIL_CLUE_MEDIUM_SEXTANT027"]           = 416
 -- TODO: Implement detection of master clues via ObjVar once they are available
 
 ---@class cluetrainer.ClueDetector
----@field clue_detected_event zyklib.Event<Step, nil>
+---@field clue_detected_event zyklib.reactive.Event<Step, nil>
 local clue_detector                                = {}
 
-clue_detector.clue_detected_event                  = zyklib.reactive.Native.MiniMenuEntrySelected:derive(
+clue_detector.clue_detected_event                  = zyklib.game_events.native.MiniMenuEntrySelected:derive(
 --- @param emit fun(step: Step)
   function(event, emit)
     if not event.entry.componentData then return end
     if not event.entry.componentData.objConfig then return end
-
-    log("Clicked " .. event.entry.componentData.objConfig.configName)
-
-    for _, value in pairs(event.entry.componentData.objConfig.params) do
-      log(value.configName)
-      log(api_util.to_plain_table(event.entry.componentData.objConfig:GetParamValue(value)))
-    end
 
     if event.entry.verbText ~= "Read" and event.entry.verbText ~= "Start scanning" then return end
 
@@ -412,7 +405,7 @@ clue_detector.clue_detected_event                  = zyklib.reactive.Native.Mini
     local clue_id = clue_map[event.entry.componentData.objConfig.configName]
     if (not clue_id) then return end
 
-    local clue = lua_util.find(clues, function(clue) return clue.id == clue_id end)
+    local clue = array.find(clues, function(clue) return clue.id == clue_id end)
 
     -- Report clue to orchestrator
     if (clue) then emit(clue) end

@@ -1,6 +1,6 @@
 local lua_util       = require "zyklib/lua_util"
 local Lockboxes      = require "cluetrainer/puzzles/lockbox/Lockboxes"
-local zyklib         = require "zyklib/init"
+local zyklib         = require "zyklib"
 
 local lockbox_solver = {}
 
@@ -10,10 +10,10 @@ local function getPuzzleState()
   local rows34 = var.VarClient["TRAIL_LIGHTSOUT_CLIENT_2"].value
 
   return {
-    tile_rows = zyklib.lua_util.grouped(
-      zyklib.lua_util.concat(
-        zyklib.bit.getAll(2, rows012, 16),
-        zyklib.bit.getAll(2, rows34, 9)
+    tile_rows = zyklib.array.grouped(
+      zyklib.array.flatten(
+        { zyklib.bit.getAll(2, rows012, 16),
+          zyklib.bit.getAll(2, rows34, 9) }
       ), 5)
   }
 end
@@ -78,7 +78,7 @@ end
 ---@class ActiveLockboxPuzzle
 ---@field canvas Canvas
 ---@field latestState LockboxState?
----@field action_handler zyklib.EventHandler
+---@field action_handler zyklib.reactive.EventHandler
 
 ---@type ActiveLockboxPuzzle?
 local active_puzzle = nil
@@ -100,13 +100,13 @@ local function maybeRefreshOverlay()
   }))
 end
 
----@type {handler: zyklib.EventHandler}?
+---@type {handler: zyklib.reactive.EventHandler}?
 lockbox_solver.instance = nil
 
 function lockbox_solver:init()
   if lockbox_solver.instance ~= nil then return end
 
-  local handler = zyklib.reactive.Native.ServerLogic:subscribe(function(event)
+  local handler = zyklib.game_events.native.ServerLogic:subscribe(function(event)
     local interface = ui.Interfaces:GetInterface(id.Interface.LIGHTSOUT)
 
     if not interface then
@@ -127,7 +127,7 @@ function lockbox_solver:init()
 
       log(content.width .. "x" .. content.height)
 
-      local handler = zyklib.reactive.Native.Draw:subscribe(function(event)
+      local handler = zyklib.game_events.native.Draw:subscribe(function(event)
         maybeRefreshOverlay()
       end)
 

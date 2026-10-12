@@ -4,8 +4,8 @@ local api_util           = require "zyklib/api_util"
 local coordinate_adaptor = require "cluetrainer/model_shared/coordinate_adaptor"
 local Path               = require "cluetrainer/model_shared/path"
 local Navigator          = require "cluetrainer/solving/navigator"
-local lua_util           = require "zyklib/lua_util"
-local zyklib             = require "zyklib/init"
+local array              = require "zyklib/array"
+local zyklib             = require "zyklib"
 
 ---@class ScanTreeSolver
 ---@field method Method.ScanTree
@@ -22,14 +22,14 @@ function ScanTreeSolver.new(method)
   self.method = method
   self.navigator = Navigator.new()
 
-  zyklib.reactive.Native.KeyUp:subscribe(function(event)
+  zyklib.game_events.native.KeyUp:subscribe(function(event)
     if event.modifiers & ModifierKey.SHIFT ~= 0 and event.gameKey == GameKey._1 then
-      self:setNode(lua_util.find(self.active_node.children, function(value)
+      self:setNode(array.find(self.active_node.children, function(value)
         return value.key.pulse == 1
       end).value)
     end
     if event.modifiers & ModifierKey.SHIFT ~= 0 and event.gameKey == GameKey._2 then
-      self:setNode(lua_util.find(self.active_node.children, function(value)
+      self:setNode(array.find(self.active_node.children, function(value)
         return value.key.pulse == 2
       end).value)
     end

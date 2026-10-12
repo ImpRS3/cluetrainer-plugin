@@ -14,6 +14,11 @@ local function main()
   slider_solver.setActive(true)
   orchestrator.init()
 
+  zyklib.game.equipment.observableSlot("MAINHAND"):subscribe(function(payload)
+    log("mainhand changed")
+    log(zyklib.api_util.to_plain_table(payload.new))
+  end)
+
   log("clue trainer started")
 end
 
