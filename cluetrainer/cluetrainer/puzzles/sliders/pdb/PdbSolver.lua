@@ -10,7 +10,7 @@ function PdbSolver.solve(start_state, chain)
   local self = {}
 
   ---@param coming_from_reflected_region boolean
-  ---@param current_region RegionGraph.Node
+  ---@param current_region cluetrainer.sliders.pdb.RegionGraph.Node
   local function doregion(coming_from_reflected_region, current_region)
     local indexing = current_region.table.indexing
     local distance_table = current_region.table

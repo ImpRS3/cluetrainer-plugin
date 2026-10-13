@@ -1,4 +1,4 @@
-local lua_util       = require "zyklib/lua_util"
+local lua_util       = require "zyklib/objects"
 local Lockboxes      = require "cluetrainer/puzzles/lockbox/Lockboxes"
 local zyklib         = require "zyklib"
 
@@ -12,8 +12,8 @@ local function getPuzzleState()
   return {
     tile_rows = zyklib.array.grouped(
       zyklib.array.flatten(
-        { zyklib.bit.getAll(2, rows012, 16),
-          zyklib.bit.getAll(2, rows34, 9) }
+        { zyklib.bits.getAll(2, rows012, 16),
+          zyklib.bits.getAll(2, rows34, 9) }
       ), 5)
   }
 end

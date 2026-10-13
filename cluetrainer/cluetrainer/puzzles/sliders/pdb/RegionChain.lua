@@ -1,29 +1,6 @@
 local RegionDistanceTable        = require("cluetrainer/puzzles/sliders/pdb/PdbRegion")
 local Region                     = require("cluetrainer/puzzles/sliders/pdb/Region")
 
----@class cluetrainer.sliders.pdb.RegionChainDistanceTable
----@field data string
----@field tables cluetrainer.sliders.pdb.RegionDistanceTable[]
-local RegionChainDistanceTable   = {}
-RegionChainDistanceTable.__index = RegionChainDistanceTable
-
----Parses the given data into a list of RegionDistanceTable instances.
----@param data string
----@return cluetrainer.sliders.pdb.RegionDistanceTable[]
-local function parseTables(data)
-  local tables = {}
-
-  local offset = 0
-
-  while offset < #data do
-    local region = RegionDistanceTable.new(data, offset)
-
-    tables[#tables + 1] = region
-    offset = offset + region.byte_size
-  end
-
-  return tables
-end
 
 local array = require("zyklib/array")
 
@@ -90,7 +67,26 @@ function RegionGraph.new(databases, include_reflected_nodes)
   return self
 end
 
----@return RegionGraph.Node[]
+
+---Parses the given data into a list of RegionDistanceTable instances.
+---@param data string
+---@return cluetrainer.sliders.pdb.RegionDistanceTable[]
+function RegionGraph.parseTables(data)
+  local tables = {}
+
+  local offset = 0
+
+  while offset < #data do
+    local region = RegionDistanceTable.new(data, offset)
+
+    tables[#tables + 1] = region
+    offset = offset + region.byte_size
+  end
+
+  return tables
+end
+
+---@return cluetrainer.sliders.pdb.RegionGraph.Node[]
 function RegionGraph:getEntryPoints()
   return self.entry_nodes
 end

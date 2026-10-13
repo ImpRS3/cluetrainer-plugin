@@ -8,11 +8,11 @@ local SliderState = {}
 ---@return cluetrainer.sliders.SliderState
 function SliderState.getSliderState()
   return SliderState.fromPermutation(zyklib.array.flatten({
-    zyklib.bit.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT0.value),
-    zyklib.bit.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT1.value),
-    zyklib.bit.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT2.value),
-    zyklib.bit.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT3.value),
-    zyklib.bit.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT4.value, 1)
+    zyklib.bits.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT0.value),
+    zyklib.bits.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT1.value),
+    zyklib.bits.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT2.value),
+    zyklib.bits.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT3.value),
+    zyklib.bits.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT4.value, 1)
   }))
 end
 

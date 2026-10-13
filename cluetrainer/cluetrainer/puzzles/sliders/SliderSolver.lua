@@ -1,9 +1,14 @@
-local zyklib = require("zyklib")
+local zyklib                 = require("zyklib")
+local RegionGraph            = require("cluetrainer/puzzles/sliders/pdb/RegionChain")
+local pdb_data               = require("cluetrainer/puzzles/sliders/pdb/data/Pdb")
+local SliderState            = require("cluetrainer/puzzles/sliders/SliderState")
+local PdbSolver              = require("cluetrainer/puzzles/sliders/pdb/PdbSolver")
 
 ---@class cluetrainer.ActiveSliderSolver
-local active_slider_solver = {}
+local active_slider_solver   = {}
 active_slider_solver.__index = active_slider_solver
 
+local graph                  = RegionGraph.new(RegionGraph.parseTables(pdb_data.pdb), true)
 
 ---@param interface ui.Interface
 local function start(interface)
@@ -27,47 +32,11 @@ local function testComponent(comp)
   end
 end
 
-zyklib.game_events.native.ServerLogic
-    :subscribe(function()
-      -- testComponent("SLIDE_PUZZLE__CHECK_BUTTON_LAYER")
-      -- testComponent("SLIDE_PUZZLE__KEYBOARD_CONTROL")
-      -- testComponent("SLIDE_PUZZLE__RESET_LAYER")
-      -- testComponent("SLIDE_PUZZLE__RESET_GRAPHIC")
-      -- testComponent("SLIDE_PUZZLE__PUZZLE_RESET_TEXT")
-      -- testComponent("SLIDE_PUZZLE__PUZZLE_COMPLETE_LAYER2")
-      -- testComponent("SLIDE_PUZZLE__UP_LAYER")
-      -- testComponent("SLIDE_PUZZLE__DOWN_LAYER")
-      -- testComponent("SLIDE_PUZZLE__LEFT_LAYER")
-      -- testComponent("SLIDE_PUZZLE__RIGHT_LAYER")
-      -- testComponent("SLIDE_PUZZLE__ELITE_VARS")
-      -- testComponent("SLIDE_PUZZLE__UNIVERSE")
-      -- testComponent("SLIDE_PUZZLE__LISTENER_LAYER")
-      -- testComponent("SLIDE_PUZZLE__EXTRA_1_VARS")
-      -- testComponent("SLIDE_PUZZLE__HARD_VARS")
-      -- testComponent("SLIDE_PUZZLE__PUZZLEBACK")
-      -- testComponent("SLIDE_PUZZLE__PUZZLETOP")
-      -- testComponent("SLIDE_PUZZLE__PUZZLE_CHECK")
-      -- testComponent("SLIDE_PUZZLE__PUZZLE_LAYER")
-      -- testComponent("SLIDE_PUZZLE__PUZZLE_HINT")
-      -- testComponent("SLIDE_PUZZLE__TRAIL_CLOSE")
-      -- testComponent("SLIDE_PUZZLE__PUZZLE_WRAPPER")
-      -- testComponent("SLIDE_PUZZLE__PUZZLE_HINT_SCROLL")
-      -- testComponent("SLIDE_PUZZLE__PUZZLE_HINT_TEXT")
-      -- testComponent("SLIDE_PUZZLE__INFO_PANEL")
-      -- testComponent("SLIDE_PUZZLE__KEYBOARD_CONTROL_BUILD")
-      -- testComponent("SLIDE_PUZZLE__KEYBOARD_CONTROL_CLICK")
-      -- testComponent("SLIDE_PUZZLE__INFO_PANEL_BACKGROUND")
-      -- testComponent("SLIDE_PUZZLE__INFO_PANEL_CONTENT")
-      -- testComponent("SLIDE_PUZZLE__INFO_PANEL_BORDER")
-      -- testComponent("SLIDE_PUZZLE__CHECK_BUTTON_ON_LAYER")
-      -- testComponent("SLIDE_PUZZLE__CHECK_BUTTON_OVER_LAYER")
-      -- testComponent("SLIDE_PUZZLE__CHECK_BUTTON_HIT_LAYER")
-      -- testComponent("SLIDE_PUZZLE__CHECK_BUTTON_SELECTED_LAYER")
-      -- testComponent("SLIDE_PUZZLE__CHECK_BUTTON_ACTIVE_LAYER")
-      -- testComponent("SLIDE_PUZZLE__CHECK_BUTTON_DISABLED_LAYER")
-      -- testComponent("SLIDE_PUZZLE__CHECK_BUTTON_TEXT_LAYER")
-      -- testComponent("SLIDE_PUZZLE__CHECK_BUTTON_TEXT")
-      -- testComponent("SLIDE_PUZZLE__RESET_CONFIRM_POPUP")
+local process = zyklib.game_events.native.ServerLogic
+    :subscribeSuspended(function()
+      local state = SliderState.getSliderState()
+
+      log(PdbSolver.solve(state, graph))
     end)
 
 local interface_observable = zyklib.game_events.native.ServerLogic
@@ -83,7 +52,7 @@ local interface_observable = zyklib.game_events.native.ServerLogic
     :toObservable(nil)
 
 local handler = interface_observable:subscribeSuspended(function(payload)
-  log(payload)
+  process:setActive(payload.new ~= nil)
 end)
 
 

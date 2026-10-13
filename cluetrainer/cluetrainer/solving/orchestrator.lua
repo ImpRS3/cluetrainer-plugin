@@ -1,4 +1,4 @@
-local lua_util             = require "zyklib/lua_util"
+local lua_util             = require "zyklib/objects"
 local easy_methods         = require "cluetrainer/data/easy_methods"
 local medium_methods       = require "cluetrainer/data/medium_methods"
 local hard_methods         = require "cluetrainer/data/hard_methods"

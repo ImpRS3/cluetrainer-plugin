@@ -1,4 +1,4 @@
-local lua_util            = require "zyklib/lua_util"
+local lua_util            = require "zyklib/objects"
 local Towers              = require "puzzles/towers/Towers"
 local zyklib              = require "zyklib"
 
