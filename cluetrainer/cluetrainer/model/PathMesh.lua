@@ -1,3 +1,4 @@
+-- PathMesh.lua
 local MutableMesh        = require("zyklib/MutableMesh")
 local api_util           = require("zyklib/api_util")
 local TerrainHighlight   = require("zyklib/highlights/TerrainHighlight")

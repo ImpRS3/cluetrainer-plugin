@@ -1,3 +1,4 @@
+-- compass_methods.lua
 --- @type MethodPack
 local pack = {
   name = "Default Compass Methods",

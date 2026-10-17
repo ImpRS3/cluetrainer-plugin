@@ -1,3 +1,4 @@
+-- TileArea.lua
 local base64 = require "zyklib/base64"
 
 ---@class TileArea

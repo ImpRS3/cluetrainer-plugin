@@ -1,3 +1,4 @@
+-- clues.lua
 local clues = {}
 
 ---@alias Challenge any

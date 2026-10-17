@@ -1,3 +1,4 @@
+-- LockboxSolver.lua
 local lua_util       = require "zyklib/objects"
 local Lockboxes      = require "cluetrainer/puzzles/lockbox/Lockboxes"
 local zyklib         = require "zyklib"

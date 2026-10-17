@@ -1,3 +1,4 @@
+-- clue_detector.lua
 local clues                                        = require "cluetrainer/data/clues"
 local api_util                                     = require "zyklib/api_util"
 local array                                        = require "zyklib/array"

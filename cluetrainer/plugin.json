@@ -5,8 +5,11 @@
     "prettymap": "prettymap",
     "prettyui": "prettyui"
   },
-  "requiredPermissions": [
+  "requiredPermissions": [],
+  "optionalPermissions": [
+    "httpAccess"
   ],
-  "optionalPermissions": [],
-  "urls": {}
+  "urls": {
+    "cluetrainer": "http://cluetrainer.app"
+  }
 }

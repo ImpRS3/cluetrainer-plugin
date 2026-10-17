@@ -1,3 +1,4 @@
+-- Region.lua
 local zyklib = require "zyklib"
 local SliderState = require "cluetrainer/puzzles/sliders/SliderState"
 
@@ -27,7 +28,7 @@ end
 ---@param region2 cluetrainer.sliders.pdb.Region
 ---@return boolean
 function Region.equals(region1, region2)
-  return zyklib.object.deepEquals(region1, region2)
+  return zyklib.objects.deepEquals(region1, region2)
 end
 
 ---@param region cluetrainer.sliders.pdb.Region

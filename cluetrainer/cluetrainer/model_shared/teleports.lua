@@ -1,3 +1,4 @@
+-- teleports.lua
 ---@class TeleportGroup : TeleportProps
 ---@field type "teleport"
 ---@field id string

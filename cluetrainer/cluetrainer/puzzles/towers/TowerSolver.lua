@@ -1,3 +1,4 @@
+-- TowerSolver.lua
 local lua_util            = require "zyklib/objects"
 local Towers              = require "puzzles/towers/Towers"
 local zyklib              = require "zyklib"
@@ -123,7 +124,7 @@ local function maybeRefreshOverlay()
   local current_state = getPuzzleState()
 
   -- Skip if no change detected
-  if lua_util.deep_equals(current_state, active_puzzle.latestState) then return end
+  if lua_util.deepEquals(current_state, active_puzzle.latestState) then return end
 
   active_puzzle.latestState = current_state
 

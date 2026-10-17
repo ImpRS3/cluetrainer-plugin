@@ -1,5 +1,7 @@
-local AllowedMoveTable = require("cluetrainer/puzzles/sliders/pdb/AllowedMoveTable")
-local Region           = require("cluetrainer/puzzles/sliders/pdb/Region")
+-- PdbRegion.lua
+local AllowedMoveTable          = require("cluetrainer/puzzles/sliders/pdb/AllowedMoveTable")
+local Region                    = require("cluetrainer/puzzles/sliders/pdb/Region")
+local Indexing                  = require("cluetrainer/puzzles/sliders/pdb/RegionIndexing")
 
 ---@class cluetrainer.sliders.pdb.RegionDistanceTable
 ---@field region cluetrainer.sliders.pdb.RegionDescription
@@ -8,13 +10,13 @@ local Region           = require("cluetrainer/puzzles/sliders/pdb/Region")
 ---@field data_offset integer
 ---@field description cluetrainer.sliders.pdb.RegionDescription
 ---@field move_table cluetrainer.sliders.pdb.AllowedMoveTable
-local RegionDistanceTable = {}
-RegionDistanceTable.__index = RegionDistanceTable
+local RegionDistanceTable       = {}
+RegionDistanceTable.__index     = RegionDistanceTable
 
-local Description = {}
+local Description               = {}
 RegionDistanceTable.Description = Description
 
-Description.SERIALIZED_SIZE = 26
+Description.SERIALIZED_SIZE     = 26
 
 function Description.serialize(description)
   local bytes = {
@@ -60,7 +62,7 @@ function RegionDistanceTable.new(data, offset)
   self.data_offset = offset
   self.description = Description.deserialize(data, offset)
 
-  self.indexing = Region.Indexing.new(self.description.region)
+  self.indexing = Indexing.new(self.description.region)
   self.move_table = AllowedMoveTable.new(
     self.description.region,
     self.description.multitile,

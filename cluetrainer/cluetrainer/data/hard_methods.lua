@@ -1,3 +1,4 @@
+-- hard_methods.lua
 --- @type MethodPack
 local pack = {
   name = "Default Hard Methods",

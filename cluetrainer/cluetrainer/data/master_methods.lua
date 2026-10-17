@@ -1,3 +1,4 @@
+-- master_methods.lua
 --- @type MethodPack
 local pack = {
   name = "Default Master Methods",

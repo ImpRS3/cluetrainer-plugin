@@ -1,3 +1,4 @@
+-- Knots.lua
 local Knots = {}
 
 ---@class cluetrainer.Knots

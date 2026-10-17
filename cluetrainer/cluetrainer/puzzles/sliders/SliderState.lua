@@ -1,3 +1,4 @@
+-- SliderState.lua
 local zyklib = require "zyklib"
 
 local SliderState = {}
@@ -68,9 +69,10 @@ end
 ---@param state integer[] Any permutation of the numbers 0 through 24
 ---@return cluetrainer.sliders.SliderState
 function SliderState.fromPermutation(state)
+  log(state)
   return {
     table.unpack(state),
-    [SliderState.LASTMOVE_INDEX] = 20,
+    [SliderState.LAST_MOVE_INDEX] = 20,
     [SliderState.BLANK_TILE_INDEX] = zyklib.array.indexOf(state, SliderState.BLANK_TILE)
   }
 end

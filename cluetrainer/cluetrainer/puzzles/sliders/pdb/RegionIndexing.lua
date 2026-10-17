@@ -1,3 +1,4 @@
+-- RegionIndexing.lua
 --- Precomputed table for small factorials
 local factorial_table = { 1 }
 for n = 2, 25 do

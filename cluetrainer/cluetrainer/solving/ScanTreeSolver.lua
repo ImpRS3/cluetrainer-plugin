@@ -1,3 +1,4 @@
+-- ScanTreeSolver.lua
 local PathMesh           = require "cluetrainer/model/PathMesh"
 local TerrainHighlight   = require "zyklib/highlights/TerrainHighlight"
 local api_util           = require "zyklib/api_util"

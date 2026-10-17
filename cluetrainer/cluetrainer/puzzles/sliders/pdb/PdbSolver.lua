@@ -1,4 +1,18 @@
+-- PdbSolver.lua
 local SliderState = require "cluetrainer/puzzles/sliders/SliderState"
+
+--- @class cluetrainer.sliders.SliderSolver
+local SliderSolver = {}
+SliderSolver.__index = SliderSolver
+
+function SliderSolver.new()
+  local self = setmetatable({}, SliderSolver)
+
+
+
+  return self
+end
+
 local PdbSolver = {}
 
 ---@param start_state cluetrainer.sliders.SliderState
@@ -7,6 +21,7 @@ function PdbSolver.solve(start_state, chain)
   local state
   local move_list
   local iterations = 0
+
   local self = {}
 
   ---@param coming_from_reflected_region boolean
@@ -67,7 +82,9 @@ function PdbSolver.solve(start_state, chain)
 
         if #current_region.children == 0 then
           if #move_list > 0 or indexing.solves_puzzle then
-            self:registerSolution({ table.unpack(move_list) })
+            log("Found solution")
+            log(move_list)
+            --self:registerSolution({ table.unpack(move_list) })
           else
             error("Unexpected empty solution")
           end
@@ -98,8 +115,8 @@ function PdbSolver.solve(start_state, chain)
     end
   end
 
-  for _, start in ipairs(self.chain:getEntryPoints()) do
-    state = SliderState.fromPermutation(self.start_state)
+  for _, start in ipairs(chain:getEntryPoints()) do
+    state = SliderState.fromPermutation(start_state)
     move_list = {}
 
     doregion(false, start)

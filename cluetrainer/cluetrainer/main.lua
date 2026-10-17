@@ -1,3 +1,8 @@
+-- main.lua
+local zyklib = require("zyklib")
+
+
+
 local function main()
   local zyklib = require("zyklib")
   zyklib.lifecycle.setupGlobals()
@@ -14,11 +19,16 @@ local function main()
   slider_solver.setActive(true)
   orchestrator.init()
 
-  zyklib.game.equipment.observableSlot("MAINHAND"):subscribe(function(payload)
-    log("mainhand changed")
-    log(zyklib.api_util.to_plain_table(payload.new))
-  end)
+  -- local data = require("cluetrainer/puzzles/sliders/pdb/data/mtm_pdb_data")
 
+  -- local task = zyklib.base64.decodeLargeAsync(data.base64)
+
+  -- task.finished_event:subscribe(function(res)
+  --   log("finished")
+  --   log(res)
+  -- end)
+
+  -- task:start()
   log("clue trainer started")
 end
 

@@ -1,3 +1,4 @@
+-- Move.lua
 ---@alias cluetrainer.sliders.Move integer
 
 local Move = {}

@@ -1,3 +1,4 @@
+-- coordinate_adaptor.lua
 local coordinate_adaptor = {}
 
 ---@param tile_coordinates TileCoordinates

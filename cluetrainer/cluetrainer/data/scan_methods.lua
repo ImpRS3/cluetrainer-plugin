@@ -1,3 +1,4 @@
+-- scan_methods.lua
 --- @type MethodPack
 local pack = {
   type = "default",

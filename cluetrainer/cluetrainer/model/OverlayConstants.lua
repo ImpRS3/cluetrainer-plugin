@@ -1,3 +1,4 @@
+-- OverlayConstants.lua
 local OverlayConstants                          = {}
 
 OverlayConstants.AREA_OVERLAY_HEIGHT            = 64

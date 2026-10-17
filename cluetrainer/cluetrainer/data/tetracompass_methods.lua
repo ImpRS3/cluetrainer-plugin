@@ -1,3 +1,4 @@
+-- tetracompass_methods.lua
 --- @type MethodPack
 local pack = {
   name = "Default Tetra Methods",

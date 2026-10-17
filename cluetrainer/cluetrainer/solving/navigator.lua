@@ -1,3 +1,4 @@
+-- navigator.lua
 local api_util = require "zyklib/api_util"
 local PathMesh = require "cluetrainer/model/PathMesh"
 local array = require "zyklib/array"

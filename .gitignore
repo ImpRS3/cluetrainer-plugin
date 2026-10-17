@@ -4,3 +4,5 @@ cluetrainer/zyklib/*
 cluetrainer/zyklib.lua
 
 dist/
+mre/*
+cluetrainer/prettymap/*

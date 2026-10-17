@@ -1,6 +1,7 @@
-local Move = require("Move")
-local Region = require("Region")
-local SliderState = require("SliderState")
+-- AllowedMoveTable.lua
+local Move = require("cluetrainer/puzzles/sliders/Move")
+local Region = require("cluetrainer/puzzles/sliders/pdb/Region")
+local SliderState = require("cluetrainer/puzzles/sliders/SliderState")
 local zyklib = require("zyklib")
 
 ---@class cluetrainer.sliders.pdb.AllowedMoveTable

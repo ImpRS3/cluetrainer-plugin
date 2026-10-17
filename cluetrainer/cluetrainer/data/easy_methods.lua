@@ -1,3 +1,4 @@
+-- easy_methods.lua
 --- @type MethodPack
 local pack = {
   name = "Default Easy Methods",

@@ -1,3 +1,4 @@
+-- methods.lua
 -- Unknown types
 
 ---@class ScanTree.ScanTree

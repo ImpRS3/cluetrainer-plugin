@@ -1,3 +1,4 @@
+-- coordinates.lua
 ---@alias floor_t 0|1|2|3
 
 ---@class TileCoordinates : MyVector2

@@ -1,3 +1,4 @@
+-- TeleportSpot.lua
 local array = require "zyklib/array"
 ---@class cluetrainer.TeleportSpot
 ---@field private group TeleportGroup

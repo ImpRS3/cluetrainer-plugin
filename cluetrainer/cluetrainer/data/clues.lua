@@ -1,3 +1,4 @@
+-- clues.lua
 ---@type Step[]
 local clues = {
   {

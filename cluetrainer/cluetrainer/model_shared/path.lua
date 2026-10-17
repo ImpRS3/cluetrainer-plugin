@@ -1,3 +1,4 @@
+-- path.lua
 local TileArea = require "model_shared/TileArea"
 local array = require "zyklib/array"
 ---@alias Direction any

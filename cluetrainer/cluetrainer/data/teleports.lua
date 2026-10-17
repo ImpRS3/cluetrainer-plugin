@@ -1,3 +1,4 @@
+-- teleports.lua
 ---@type TeleportGroup[]
 local teleports = {
   {
