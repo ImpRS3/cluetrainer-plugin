@@ -20,7 +20,7 @@ Region.Tile.FIXED = 2
 ---@param region cluetrainer.sliders.pdb.Region
 ---@return cluetrainer.sliders.pdb.Region
 function Region.reflect(region)
-  return zyklib.array.map(SliderState.index_reflection_table, function(i) return region[i] end)
+  return zyklib.array.map(SliderState.tile_reflection_table, function(i) return region[i] end)
 end
 
 ---Checks if the two given regions are equal.

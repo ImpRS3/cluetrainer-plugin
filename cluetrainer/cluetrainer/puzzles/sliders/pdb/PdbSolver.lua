@@ -1,28 +1,46 @@
 -- PdbSolver.lua
 local SliderState = require "cluetrainer/puzzles/sliders/SliderState"
+local SliderSolvingTask = require "cluetrainer/puzzles/sliders/SliderSolvingTask"
+local zyklib = require("zyklib")
 
---- @class cluetrainer.sliders.SliderSolver
-local SliderSolver = {}
-SliderSolver.__index = SliderSolver
+local move_translation_identity = {
+  [21 - 20] = -20,
+  [21 - 15] = -15,
+  [21 - 10] = -10,
+  [21 - 5] = -5,
+  [21 - 4] = -4,
+  [21 - 3] = -3,
+  [21 - 2] = -2,
+  [21 - 1] = -1,
+  [21 - 0] = 0,
+  [21 + 1] = 1,
+  [21 + 2] = 2,
+  [21 + 3] = 3,
+  [21 + 4] = 4,
+  [21 + 5] = 5,
+  [21 + 10] = 10,
+  [21 + 15] = 15,
+  [21 + 20] = 20,
+}
 
-function SliderSolver.new()
-  local self = setmetatable({}, SliderSolver)
-
-
-
-  return self
-end
-
-local PdbSolver = {}
+---@class cluetrainer.sliders.pdb.PdbSolv : cluetrainer.sliders.SliderSolvingTask
+---@field chain cluetrainer.sliders.pdb.RegionGraph
+local PdbSolver = setmetatable({}, { __index = SliderSolvingTask })
+PdbSolver.__index = PdbSolver
 
 ---@param start_state cluetrainer.sliders.SliderState
 ---@param chain cluetrainer.sliders.pdb.RegionGraph
-function PdbSolver.solve(start_state, chain)
+---@return cluetrainer.sliders.pdb.PdbSolv
+function PdbSolver.new(start_state, chain)
+  local self = SliderSolvingTask.new(PdbSolver, start_state)
+  self.chain = chain
+  return self
+end
+
+function PdbSolver:implementation()
   local state
   local move_list
   local iterations = 0
-
-  local self = {}
 
   ---@param coming_from_reflected_region boolean
   ---@param current_region cluetrainer.sliders.pdb.RegionGraph.Node
@@ -32,13 +50,16 @@ function PdbSolver.solve(start_state, chain)
 
     local move_translation = current_region.reflected
         and SliderState.move_translation_reflect
-        or SliderState.move_translation_identity
+        or move_translation_identity
 
     ---@param known_distance integer
     local function dostate(known_distance)
       iterations = iterations + 1
+      if iterations % 2048 == 0 then
+        zyklib.async.Task.maybeYield()
+      end
 
-      local previous_move = state[SliderState.LASTMOVE_INDEX]
+      local previous_move = state[SliderState.LAST_MOVE_INDEX]
 
       if self.best_solution and #move_list > #self.best_solution then
         return
@@ -64,11 +85,8 @@ function PdbSolver.solve(start_state, chain)
         end
 
         SliderState.doMove(state, -move)
-        state[SliderState.LASTMOVE_INDEX] = previous_move
 
-        if self.should_stop then
-          break
-        end
+        state[SliderState.LAST_MOVE_INDEX] = previous_move
 
         if found_optimal_move and indexing.solves_puzzle then
           break
@@ -82,18 +100,12 @@ function PdbSolver.solve(start_state, chain)
 
         if #current_region.children == 0 then
           if #move_list > 0 or indexing.solves_puzzle then
-            log("Found solution")
-            log(move_list)
-            --self:registerSolution({ table.unpack(move_list) })
+            self:registerSolution(move_list)
           else
             error("Unexpected empty solution")
           end
         else
           for _, child in ipairs(current_region.children) do
-            if self.should_stop then
-              break
-            end
-
             doregion(current_region.reflected, child)
           end
         end
@@ -115,13 +127,17 @@ function PdbSolver.solve(start_state, chain)
     end
   end
 
-  for _, start in ipairs(chain:getEntryPoints()) do
-    state = SliderState.fromPermutation(start_state)
+  log("Starting iteration")
+  for _, start in ipairs(self.chain:getEntryPoints()) do
+    state = SliderState.fromPermutation(self.start_state)
     move_list = {}
 
+    log("Starting with entry point")
+
     doregion(false, start)
-    self:checkTime()
   end
+
+  return self.best_solution
 end
 
 return PdbSolver

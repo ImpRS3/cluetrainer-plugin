@@ -64,7 +64,7 @@ end
 ---@param state cluetrainer.sliders.SliderState
 ---@return cluetrainer.sliders.Move[]
 function MoveTable:get(state)
-  return self.move_table[state[SliderState.LASTMOVE_INDEX] + 1][state[SliderState.BLANK_TILE_INDEX]]
+  return self.move_table[state[SliderState.LAST_MOVE_INDEX] + 1][state[SliderState.BLANK_TILE_INDEX]]
 end
 
 return MoveTable

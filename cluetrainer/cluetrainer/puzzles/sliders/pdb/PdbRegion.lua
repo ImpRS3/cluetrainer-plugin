@@ -8,6 +8,8 @@ local Indexing                  = require("cluetrainer/puzzles/sliders/pdb/Regio
 ---@field indexing cluetrainer.sliders.pdb.RegionIndexing
 ---@field underlying_data string
 ---@field data_offset integer
+---@field byte_size integer
+---@field real_data_offset integer
 ---@field description cluetrainer.sliders.pdb.RegionDescription
 ---@field move_table cluetrainer.sliders.pdb.AllowedMoveTable
 local RegionDistanceTable       = {}
@@ -33,12 +35,19 @@ end
 function Description.deserialize(data, offset)
   offset = offset or 0
 
+  log("length: " .. #data)
+  log("offset: " .. offset)
+  log(data:byte(1, 30))
+
   local multitile = data:byte(offset + 1) == 1
   local region = {}
 
   for i = 1, 25 do
+    log("deserializing byte: " .. data:byte(offset + 1 + i) .. "@" .. i)
     region[i] = data:byte(offset + 1 + i)
   end
+
+  log("deserialized region: " .. table.concat(region, ", "))
 
   return {
     multitile = multitile,

@@ -56,6 +56,8 @@ Indexing.__index = Indexing
 function Indexing.new(region)
   local self = setmetatable({}, Indexing)
 
+  log("indexing region "..table.concat(region, ", "))
+
   local zyklib = require("zyklib")
   local Tile = require("cluetrainer/puzzles/sliders/pdb/Region").Tile
   local SliderState = require "cluetrainer/puzzles/sliders/SliderState"
@@ -65,6 +67,8 @@ function Indexing.new(region)
   self.current = zyklib.array.count(region, function(tile) return tile == Tile.CURRENT end)
   self.freedom = zyklib.array.count(region, function(tile) return tile ~= Tile.FIXED end)
 
+  log("current: "..self.current..", freedom: "..self.freedom)
+
   if not self.solves_puzzle then self.current = self.current + 1 end
 
   self.number_of_permutations = factorial_table[self.current]
@@ -73,12 +77,13 @@ function Indexing.new(region)
     math.max(2, self.freedom - self.current)
   )
 
+  log("number_of_permutations: "..self.number_of_permutations..", size: "..self.size)
+
   --- Pre-allocate a reusable array for storing permutations
   self.permutation_array = {}
   for i = 1, self.current do
     self.permutation_array[i] = 0
   end
-
 
   self.combination_relevant_indices = {}
   self.relevant_tile_numbers = {}
@@ -99,16 +104,17 @@ function Indexing.new(region)
         tile == Tile.CURRENT or i == SliderState.BLANK_TILE + 1
 
     if tile == Tile.CURRENT or tile == Tile.FIXED then
-      self.solution_relevant_indices[
-      #self.solution_relevant_indices + 1
-      ] = i
+      self.solution_relevant_indices[#self.solution_relevant_indices + 1] = i
     end
   end
+
+  log("entries before sorting: "..table.concat(zyklib.array.map(entries, function(entry) return entry[1].."@"..entry[2] end), ", "))
 
   table.sort(entries, function(a, b)
     if a[1] == b[1] then
       return a[2] < b[2]
     end
+
     return a[1] > b[1]
   end)
 

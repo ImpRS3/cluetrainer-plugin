@@ -90,7 +90,7 @@ local function maybeRefreshOverlay()
   local current_state = getPuzzleState()
 
   -- Skip if no change detected
-  if lua_util.deep_equals(current_state, active_puzzle.latestState) then return end
+  if lua_util.deepEquals(current_state, active_puzzle.latestState) then return end
 
   active_puzzle.latestState = current_state
 
@@ -125,8 +125,6 @@ function lockbox_solver:init()
     if active_puzzle == nil and content ~= nil then
       local canvas = ui.Canvas.new(content)
       canvas:SetSize(content.width, content.height)
-
-      log(content.width .. "x" .. content.height)
 
       local handler = zyklib.game_events.native.Draw:subscribe(function(event)
         maybeRefreshOverlay()
