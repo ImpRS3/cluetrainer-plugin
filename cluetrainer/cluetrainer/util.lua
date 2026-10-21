@@ -29,4 +29,42 @@ function util.overlayCenteredText(canvas, ref_comp, text, font, colour, shadowCo
   canvas:AddText(ref_comp.x - 25, ref_comp.y - 25, ref_comp.width + 50, ref_comp.height + 50, text, text_config)
 end
 
+---A fixed-capacity buffer that overwrites its oldest element once full.
+---@class cluetrainer.util.RingBuffer<T>
+---@field [integer] T Element slots, stored at indices `1..capacity` in insertion-ring order
+---@field private capacity integer
+---@field private next_index integer
+---@field private count integer
+local RingBuffer = {}
+RingBuffer.__index = RingBuffer
+
+---@generic T
+---@param capacity integer Maximum number of elements to retain
+---@return cluetrainer.util.RingBuffer<T>
+function RingBuffer.new(capacity)
+  return setmetatable({ capacity = capacity, next_index = 1, count = 0 }, RingBuffer)
+end
+
+---Adds an element, overwriting the oldest one if the buffer is full.
+---@generic T
+---@param self cluetrainer.util.RingBuffer<T>
+---@param value T
+function RingBuffer:push(value)
+  self[self.next_index] = value
+  self.next_index = self.next_index % self.capacity + 1
+  self.count = math.min(self.count + 1, self.capacity)
+end
+
+---Removes all elements.
+function RingBuffer:clear()
+  for i = 1, self.capacity do
+    self[i] = nil
+  end
+
+  self.next_index = 1
+  self.count = 0
+end
+
+util.RingBuffer = RingBuffer
+
 return util
