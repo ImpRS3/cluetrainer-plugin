@@ -1,118 +1,126 @@
 -- KnotSolver.lua
-local api_util = require "zyklib/api_util"
-local zyklib   = require "zyklib"
+local zyklib     = require "zyklib"
 
-local knot_solver = {}
+---@class cluetrainer.puzzles.knots.KnotSolver
+local KnotSolver = {}
 
-
----Draws the current state of the towers puzzle.
----@param canvas Canvas
-local function draw(canvas)
-  canvas:Clear()
-
-  canvas:AddOutline(
-    0,
-    0,
-    canvas.width,
-    canvas.height,
-    1,
-    0xFF0000FF
-  )
+local function getSolution()
+  --- Getting the solution is trivial since the variables directly represent the shuffle state.
+  return {
+    var.VarPlayer["TRAIL_SHUFFLE0"].value,
+    var.VarPlayer["TRAIL_SHUFFLE1"].value,
+    var.VarPlayer["TRAIL_SHUFFLE2"].value,
+    var.VarPlayer["TRAIL_SHUFFLE3"].value,
+  }
 end
-
----@class ActiveKnotPuzzle
+---@class ActiveKnotPuzzle: zyklib.disposable.IDisposable
 ---@field knot_type integer
----@field canvas Canvas
----@field action_handler zyklib.reactive.EventHandler
+---@field canvas ui.Canvas
+---@field disposable_group zyklib.disposable.DisposableGroup
+---@field solution zyklib.reactive.Observable<integer[]>
+local ActivePuzzle = {}
+ActivePuzzle.__index = ActivePuzzle
 
----@type ActiveKnotPuzzle?
-local active_puzzle = nil
+---comment
+---@param knot_type integer
+---@return ActiveKnotPuzzle
+function ActivePuzzle.new(knot_type)
+  local self = setmetatable({}, ActivePuzzle)
 
+  self.disposable_group = zyklib.disposable.DisposableGroup.new()
+  self.solution = zyklib.reactive.Observable.new(nil)
+  self.knot_type = knot_type
 
-local function getPuzzleState()
-  -- log("KNOT "..var.VarPlayer.TRAIL_KNOTS.value)
-  -- log("KNOT2 "..var.VarPlayer.TRAIL_KNOTS2.value)
-  -- log("SHUFFLE1 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK0.value)
-  -- log("SHUFFLE2 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK1.value)
-  -- log("SHUFFLE3 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK2.value)
-  -- log("SHUFFLE4 "..var.VarPlayer.TRAIL_SHUFFLESTYLE_TRACK3.value)
+  -- Create the canvas for the solution overlay
+  local interface = ui.Interfaces:GetComponent(id.Component["TRAIL_KNOT_0" .. knot_type .. "__MAINMODAL_WINDOW_CONTENT"]) --[[@as ui.ComponentCollection]]
+  self.canvas = ui.Canvas.new(interface)
+  self.canvas:SetSize(interface.width, interface.height)
+
+  self.disposable_group:add(
+    zyklib.game_events.native.ServerLogic:subscribe(function()
+      self.solution:set(getSolution())
+    end),
+
+    zyklib.game_events.native.MiniMenuEntrySelected:subscribe(function(event)
+      -- TODO: Implement our own client side prediction, at least for the rendered solution
+    end),
+
+    self.solution:subscribe(function(change)
+      self:draw(change.new)
+    end)
+  )
+
+  -- Set initial solution for rendering
+  self.solution:set(getSolution())
+
+  return self
 end
 
+function ActivePuzzle.draw(self, solution)
+  self.canvas:Clear()
 
-local function maybeRefreshOverlay()
-  if active_puzzle == nil then return end
+  if zyklib.array.forAll(solution, function(value) return value == 0 end) then
+    -- Is Solved
+    local unlock_button = ui.Interfaces:GetComponent(id.Component["TRAIL_KNOT_0" .. self.knot_type .. "__UNLOCK_BUTTON"]) --[[@as ui.Sprite]]
 
-  local current_state = getPuzzleState()
+    zyklib.api_util.draw_text_with_shadow(self.canvas, self.canvas.width / 2, self.canvas.height / 2, "Solved!",
+      id.Font.NOTOSANS_28, 0x00FF00FF)
+    self.canvas:AddRectangle(unlock_button.x, unlock_button.y, unlock_button.width, unlock_button.height, 0x00FF0080)
+  else
+    -- Not solved
 
-  -- -- Skip if no change detected
-  -- if util.deepEquals(current_state, active_puzzle.latestState) then return end
+    for i = 1, #solution do
+      local track_id = i - 1
+      local offset = solution[i]
 
-  -- active_puzzle.latestState = current_state
+      if offset ~= 0 then
+        local comp_name = "TRAIL_KNOT_0" .. self.knot_type .. "__TRACK_" .. track_id .. (offset < 0 and "_CCW" or "_CW")
+        local comp = ui.Interfaces:GetComponent(id.Component[comp_name]) --[[@as ui.Sprite]]
 
-  draw(active_puzzle.canvas)
-end
-
----@type {handler: zyklib.reactive.EventHandler}?
-knot_solver.instance = nil
-
----comment---@return {interface: ui.Interface, knot_type: integer}?
-local function getInterfaceAndKnotType()
-  for i = 0, 9, 1 do
-    local interface = ui.Interfaces:GetInterface(id.Interface["TRAIL_KNOT_0" .. i])
-
-    if interface ~= nil then
-      return {
-        interface = interface,
-        knot_type = i
-      }
+        if comp ~= nil then
+          zyklib.api_util.draw_text_with_shadow(self.canvas, comp.x, comp.y, tostring(math.abs(offset)),
+            id.Font.NOTOSANS_28)
+        end
+      end
     end
   end
-
-  return nil
 end
 
-local function getContainer(knot_type)
-  local container_id = id.Component["TRAIL_KNOT_0" .. knot_type .. "__MAINMODAL_WINDOW_CONTENT"]
-  return ui.Interfaces:GetComponent(container_id)
+function ActivePuzzle:dispose()
+  self.disposable_group:dispose()
+  ActivePuzzle.instance = nil
 end
 
-function knot_solver:init()
-  if knot_solver.instance ~= nil then return end
+---@type ActiveKnotPuzzle?
+ActivePuzzle.instance = nil
 
-  local handler = zyklib.game_events.native.ServerLogic:subscribe(function(event)
-    local interface = getInterfaceAndKnotType()
-
-    if not interface or (active_puzzle and interface.knot_type ~= active_puzzle.knot_type) then
-      if active_puzzle ~= nil then
-        active_puzzle.action_handler:cancel()
-        active_puzzle.canvas:Clear()
-        active_puzzle = nil
-      end
-
-      return
-    end
-
-    local content = getContainer(interface.knot_type) --[[@as ui.ComponentCollection]]
-
-    if active_puzzle == nil and content ~= nil then
-      local canvas = ui.Canvas.new(content)
-      canvas:SetSize(content.width, content.height)
-
-      local handler = zyklib.game_events.native.ServerLogic:subscribe(function(event)
-        maybeRefreshOverlay()
+local open_track_type_observable = zyklib.game_events.native.ServerLogic:map(function()
+      local v = zyklib.array.find({ 0, 1, 2, 3, 4, 5, 6, 7, 8 }, function(i)
+        return ui.Interfaces:GetInterface(id.Interface["TRAIL_KNOT_0" .. i]) ~= nil
       end)
 
-      active_puzzle = {
-        canvas = canvas,
-        action_handler = handler,
-        knot_type = interface.knot_type
-      }
+      return v
+    end)
+    :toObservable(nil)
+    :subscribeSuspended(function(value)
+      if ActivePuzzle.instance ~= nil then
+        ActivePuzzle.instance:dispose()
+      end
 
-      maybeRefreshOverlay()
+      -- Handle the suspended subscription here if needed
+      if value.new ~= nil then
+        ActivePuzzle.instance = ActivePuzzle.new(value.new)
+      end
+    end)
+
+function KnotSolver.setActive(active)
+  open_track_type_observable:setActive(active)
+
+  if not active then
+    if ActivePuzzle.instance ~= nil then
+      ActivePuzzle.instance:dispose()
     end
-  end)
-
-  knot_solver.instance = { handler = handler }
+  end
 end
 
-return knot_solver
+return KnotSolver

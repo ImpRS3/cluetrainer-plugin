@@ -15,8 +15,8 @@ local function main()
 
   towers_solver:init()
   lockbox_solver:init()
-  knot_solver:init()
-  slider_solver.setActive(true)
+  knot_solver.setActive(true)
+  --slider_solver.setActive(true)
   orchestrator.init()
 
   -- local data = require("cluetrainer/puzzles/sliders/pdb/data/mtm_pdb_data")
