@@ -69,6 +69,82 @@ function SliderState.doMove(state, move)
   state[blank + move] = SliderState.BLANK_TILE
 end
 
+---Checks whether two states have the same tiles. Only indices 1-25 are compared, not the blank index or last move metadata.
+---@param a cluetrainer.sliders.SliderState
+---@param b cluetrainer.sliders.SliderState
+---@return boolean
+function SliderState.isEqual(a, b)
+  for i = 1, 25 do
+    if a[i] ~= b[i] then return false end
+  end
+
+  return true
+end
+
+---Returns all states reachable from the given state with a single move.
+---@param state cluetrainer.sliders.SliderState
+---@param multitile_allowed boolean? Whether multitile moves are included. Defaults to true.
+---@return cluetrainer.sliders.SliderState[]
+function SliderState.neighbours(state, multitile_allowed)
+  local blank = state[SliderState.BLANK_TILE_INDEX]
+  local x = (blank - 1) % 5
+  local y = (blank - 1) // 5
+
+  ---@type cluetrainer.sliders.Move[]
+  local moves = {}
+
+  for xi = 0, 4 do
+    if xi ~= x then table.insert(moves, xi - x) end
+  end
+
+  for yi = 0, 4 do
+    if yi ~= y then table.insert(moves, (yi - y) * 5) end
+  end
+
+  local result = {}
+
+  for _, move in ipairs(moves) do
+    if multitile_allowed ~= false or math.abs(move) == 1 or math.abs(move) == 5 then
+      local neighbour = zyklib.objects.clone(state)
+      SliderState.doMove(neighbour, move)
+      table.insert(result, neighbour)
+    end
+  end
+
+  return result
+end
+
+---@class cluetrainer.sliders.AugmentedMove
+---@field move cluetrainer.sliders.Move
+---@field pre_states cluetrainer.sliders.SliderState[] States in which this move is the next one to make. The first entry is the exact state before the move, the rest are the neighbours of `post`.
+---@field post cluetrainer.sliders.SliderState State after the move
+
+--- Pairs each move with the set of states it applies to and the state after it. Neither the start state nor the moves are modified.
+--- Each `post` is the same table as the next entry's `pre_states[1]`, so treat the states as read-only.
+---@param start cluetrainer.sliders.SliderState
+---@param moves cluetrainer.sliders.Move[]
+---@return cluetrainer.sliders.AugmentedMove[]
+function SliderState.augmentMoves(start, moves)
+  ---@type cluetrainer.sliders.AugmentedMove[]
+  local result = {}
+  local current = start
+
+  for i, move in ipairs(moves) do
+    local post = zyklib.objects.clone(current)
+    SliderState.doMove(post, move)
+
+    local pre_states = { current }
+    for _, neighbour in ipairs(SliderState.neighbours(post)) do
+      table.insert(pre_states, neighbour)
+    end
+
+    result[i] = { move = move, pre_states = pre_states, post = post }
+    current = post
+  end
+
+  return result
+end
+
 ---Construct an optimized slider state from a given permutation of tiles.
 ---@param state integer[] Any permutation of the numbers 0 through 24
 ---@return cluetrainer.sliders.SliderState

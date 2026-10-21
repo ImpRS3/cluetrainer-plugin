@@ -14,10 +14,8 @@ MoveTable.__index = MoveTable
 
 ---
 ---@param region cluetrainer.sliders.pdb.RegionDescription
----@param multitile boolean
----@param allow_undoing_moves boolean
 ---@return cluetrainer.sliders.pdb.AllowedMoveTable
-function MoveTable.new(region, multitile, allow_undoing_moves)
+function MoveTable.new(region)
   local self = setmetatable({}, MoveTable)
   self.move_table = {}
 
@@ -27,9 +25,7 @@ function MoveTable.new(region, multitile, allow_undoing_moves)
 
     local moves
 
-    if allow_undoing_moves then
-      moves = multitile and Move.multitile_moves or Move.singletile_moves
-    elseif multitile then
+    if region.multitile then
       moves = last_move == 0 and Move.multitile_moves
           or Move.isVertical(last_move) and Move.horizontal_mtm
           or Move.vertical_mtm

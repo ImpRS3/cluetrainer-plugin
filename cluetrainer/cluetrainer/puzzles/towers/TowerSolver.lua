@@ -123,14 +123,12 @@ function ActivePuzzle.new()
 
   self.disposable_group = zyklib.disposable.DisposableGroup.new()
 
-
   -- Create the canvas for the solution overlay
   local content = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__SKYSCRAPERS_PLAYING_BOARD) --[[@as ui.ComponentCollection]]
   self.canvas = ui.Canvas.new(content)
   self.canvas:SetSize(content.width, content.height)
 
   local click_layer = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__CLICK) --[[@as ui.ComponentCollection]]
-
 
   -- local root = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__SKYSCRAPERS_CONTENT) --[[@as ui.ComponentCollection]]
   -- local description = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__DESCRIPTION) --[[@as ui.Text]]

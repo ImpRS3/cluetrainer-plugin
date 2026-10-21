@@ -1,13 +1,14 @@
 -- SliderSolver.lua
-local zyklib                 = require("zyklib")
-local RegionGraph            = require("cluetrainer/puzzles/sliders/pdb/RegionChain")
-local SliderState            = require("cluetrainer/puzzles/sliders/SliderState")
-local PdbSolver              = require("cluetrainer/puzzles/sliders/pdb/PdbSolver")
+local zyklib        = require("zyklib")
+local SliderState   = require("cluetrainer/puzzles/sliders/SliderState")
+local Move          = require("cluetrainer/puzzles/sliders/Move")
+local DummySolver   = require("cluetrainer/puzzles/sliders/DummySolver")
+-- The pattern database solver is disabled for now. To re-enable it, restore these requires, the `graph` below and the PdbSolver call in ActivePuzzle.new.
+-- local RegionGraph            = require("cluetrainer/puzzles/sliders/pdb/RegionChain")
+-- local PdbSolver              = require("cluetrainer/puzzles/sliders/pdb/PdbSolver")
 
----@class cluetrainer.ActiveSliderSolver
-local active_slider_solver   = {}
-active_slider_solver.__index = active_slider_solver
-
+---@class cluetrainer.sliders.SliderSolver
+local slider_solver = {}
 
 --- Downloads a pattern database from cluetrainer.app
 ---@return zyklib.async.Promise<string>
@@ -53,51 +54,159 @@ local function downloadFiles()
   return promise
 end
 
-local pdb_data = downloadFiles()
+-- local pdb_data = downloadFiles()
+--
+-- local graph = pdb_data:map(function(data)
+--   return RegionGraph.new(RegionGraph.parseTables(data), true)
+-- end)
 
-local graph = pdb_data:map(function(data)
-  return RegionGraph.new(RegionGraph.parseTables(data), true)
-end)
+local LOOKAHEAD = 5
+local STROKE = 3
+local CONTRAST_BORDER = 2
+local COLOR_CONTRAST = 0x000000FF
+local COLOR_SQUARE = 0x5ca000FF
+local COLOR_MOVE = 0x41740EFF
 
+---Draws the slider puzzle overlay.
+---@param canvas ui.Canvas
+---@param state cluetrainer.sliders.SliderState The current puzzle state
+---@param solution cluetrainer.sliders.AugmentedMove[] The solution, with pre- and post-states for each move
+local function draw(canvas, state, solution)
+  canvas:Clear()
 
-local interface_observable = zyklib.game_events.native.ServerLogic
-    :map(function()
+  --- Center of a tile index (1-25) in canvas coordinates
+  local function centerOfTile(index)
+    return ((index - 1) % 5) * 56 + 24, ((index - 1) // 5) * 56 + 24
+  end
+
+  local _, position = zyklib.array.findLast(solution, function(move)
+    return zyklib.array.exists(move.pre_states, function(pre) return SliderState.isEqual(pre, state) end)
+  end)
+
+  -- The current state is not on the solution path, so there is nothing meaningful to show
+  if position < 0 then return end
+
+  local last_size = 10
+  local overlap_map = {}
+
+  for i = 0, LOOKAHEAD - 1 do
+    local move_index = position + i
+
+    if move_index > #solution then break end
+
+    local entry = solution[move_index]
+
+    local blank = (move_index > 1 and solution[move_index - 1].post or state)[SliderState.BLANK_TILE_INDEX]
+    local clicked = blank + entry.move
+
+    -- Stop at the first move that would cover a tile already passed over by an earlier move
+    if overlap_map[clicked] then break end
+
+    local passed = blank
+    for _, step in ipairs(Move.split(entry.move)) do
+      passed = passed + step
+      overlap_map[passed] = true
+    end
+
+    local size = 20 * (1 - i / LOOKAHEAD)
+
+    local ax, ay = centerOfTile(blank)
+    local bx, by = centerOfTile(clicked)
+
+    -- Connecting line from the previous marker to this one
+    local dx, dy = bx - ax, by - ay
+    local length = math.sqrt(dx * dx + dy * dy)
+    local ux, uy = dx / length, dy / length
+
+    local x1, y1 = ax + ux * last_size, ay + uy * last_size
+    local x2, y2 = bx - ux * size, by - uy * size
+
+    canvas:AddLine(x1, y1, x2, y2, 2, COLOR_CONTRAST)
+    canvas:AddLine(x1, y1, x2, y2, 1, COLOR_MOVE)
+
+    -- Marker on the clicked tile
+    local outer = size + CONTRAST_BORDER
+    canvas:AddOutline(bx - outer, by - outer, outer * 2, outer * 2, STROKE + 2 * CONTRAST_BORDER, COLOR_CONTRAST)
+    canvas:AddOutline(bx - size, by - size, size * 2, size * 2, STROKE, COLOR_SQUARE)
+
+    last_size = size
+  end
+end
+
+---@class cluetrainer.sliders.ActiveSliderPuzzle: zyklib.disposable.IDisposable
+---@field canvas ui.Canvas
+---@field solution cluetrainer.sliders.AugmentedMove[]
+---@field lifetime zyklib.disposable.DisposableGroup
+local ActivePuzzle = {}
+ActivePuzzle.__index = ActivePuzzle
+
+---@return cluetrainer.sliders.ActiveSliderPuzzle
+function ActivePuzzle.new()
+  local self = setmetatable({}, ActivePuzzle)
+
+  self.lifetime = zyklib.disposable.DisposableGroup.new()
+
+  -- Create the canvas for the solution overlay
+  local puzzle_container = ui.Interfaces:GetComponent(id.Component.SLIDE_PUZZLE__PUZZLE_LAYER) --[[@as ui.ComponentCollection]]
+  self.canvas = ui.Canvas.new(puzzle_container)
+  self.canvas:SetSize(puzzle_container.width, puzzle_container.height)
+
+  -- The puzzle state lives in VarClient variables, which do not trigger transmit events, so it is polled every frame.
+  ---@type zyklib.reactive.Observable<cluetrainer.sliders.SliderState>
+  local observable_slider_state = zyklib.game_events.derived.forClientVariables(function()
+    return SliderState.getSliderState()
+  end)
+
+  -- Temporarily uses a synchronous dummy solver instead of a SliderSolvingTask, since coroutines are broken.
+  local start_state = observable_slider_state:get()
+  self.solution = SliderState.augmentMoves(start_state, DummySolver.solve(start_state))
+
+  self.lifetime:add(
+    zyklib.game_events.native.Draw:subscribe(function()
+      observable_slider_state:set(SliderState.getSliderState())
+    end),
+
+    observable_slider_state:subscribe(function(current_state)
+      draw(self.canvas, current_state, self.solution)
+    end, true)
+  )
+
+  return self
+end
+
+function ActivePuzzle:dispose()
+  self.lifetime:dispose()
+  self.canvas:Destroy()
+  ActivePuzzle.instance = nil
+end
+
+---@type cluetrainer.sliders.ActiveSliderPuzzle?
+ActivePuzzle.instance = nil
+
+local interface_open_handler = zyklib.game_events.native.ServerLogic:map(function()
       local comp = ui.Interfaces:GetComponent(id.Component.SLIDE_PUZZLE__UNIVERSE)
 
-      if comp ~= nil and comp.parent ~= nil then
-        return comp
-      else
-        return nil
+      return comp ~= nil and comp.parent ~= nil
+    end)
+    :toObservable(false)
+    :subscribeSuspended(function(is_open)
+      if ActivePuzzle.instance ~= nil then
+        ActivePuzzle.instance:dispose()
+      end
+
+      if is_open then
+        ActivePuzzle.instance = ActivePuzzle.new()
       end
     end)
-    :toObservable(nil)
 
----@type cluetrainer.sliders.SliderSolvingTask?
-local task = nil
-
-local handler = interface_observable:subscribeSuspended(function(payload)
-  if payload.new ~= nil then
-    log("Interface opened")
-
-    if graph:isSettled() then
-      log("Graph is settled, solving...")
-      task = PdbSolver.new(SliderState.getSliderState(), graph:get()):start()
-    else
-      log("Graph is not settled yet")
-    end
-  else
-    if task ~= nil then
-      task:cancel()
-      task = nil
-    end
-  end
-end)
-
-
-local slider_solver = {}
-
+---Enables or disables the slider solver. Disabling also removes any currently shown overlay.
+---@param active boolean
 function slider_solver.setActive(active)
-  handler:setActive(active)
+  interface_open_handler:setActive(active)
+
+  if not active and ActivePuzzle.instance ~= nil then
+    ActivePuzzle.instance:dispose()
+  end
 end
 
 return slider_solver

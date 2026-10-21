@@ -66,9 +66,7 @@ function RegionDistanceTable.new(data, offset)
 
   self.indexing = Indexing.new(self.description.region)
   self.move_table = AllowedMoveTable.new(
-    self.description.region,
-    self.description.multitile,
-    false
+    self.description
   )
 
   self.byte_size = Description.byteSize(self.indexing)
