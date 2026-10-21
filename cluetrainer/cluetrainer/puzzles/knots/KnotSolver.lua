@@ -1,10 +1,13 @@
 -- KnotSolver.lua
 local zyklib     = require "zyklib"
+local util       = require "cluetrainer/util"
 
 ---@class cluetrainer.puzzles.knots.KnotSolver
 local KnotSolver = {}
 
-local function getSolution()
+---Get the current shuffle state of the knot puzzle from player variables.
+---@return integer[]
+local function getShuffleState()
   --- Getting the solution is trivial since the variables directly represent the shuffle state.
   return {
     var.VarPlayer["TRAIL_SHUFFLE0"].value,
@@ -13,73 +16,160 @@ local function getSolution()
     var.VarPlayer["TRAIL_SHUFFLE3"].value,
   }
 end
+
+
+---Get the shape of the specified knot type from the database. A knot shape is the sequence of track lengths for that knot.
+---@param knot_id integer
+---@return integer[]
+local function getKnotShape(knot_id)
+  return zyklib.array.map(
+    config.DBRow["KNOT0" .. knot_id]:GetColumnValues(2) --[[@as DBRowType[] ]],            -- Get DBRow for the specified knot type
+    function(row) return (row:GetColumnValues(3) --[[@as EnumType[] ]])[1].valueCount end) -- Extract the track lengths
+end
+
+---Minimized the solution from only using clockwise rotations to using the shortest rotation direction.
+---@param shuffle integer[] The current shuffle state.
+---@param shape integer[] The shape of the knot, representing the sequence of track lengths.
+---@return integer[] # The minimized solution using the shortest rotation direction.
+local function minifySolution(shuffle, shape)
+  return zyklib.array.zip(shuffle, shape, function(s, size)
+    if s < size // 2 then
+      return s
+    else
+      return s - size
+    end
+  end)
+end
+
+---comment
+---@param knot_id integer
+---@param shape integer[]
+---@return {track: integer, clockwise: boolean, comp: ui.Component}[]
+local function getComponentMap(knot_id, shape)
+  return zyklib.array.flatMap(shape, function(track_length, track_id)
+    track_id = track_id - 1 -- Adjust for zero-based indexing
+
+    local cw = ui.Interfaces:GetComponent(id.Component["TRAIL_KNOT_0" .. knot_id .. "__TRACK_" .. track_id .. "_CW"])
+    local ccw = ui.Interfaces:GetComponent(id.Component["TRAIL_KNOT_0" .. knot_id .. "__TRACK_" .. track_id .. "_CCW"])
+
+    return {
+      { track = track_id, clockwise = true,  comp = cw },
+      { track = track_id, clockwise = false, comp = ccw },
+    }
+  end)
+end
+
+local STATE_VARIABLE = var.VarPlayer["TRAIL_SHUFFLE0"].baseVar
+
 ---@class ActiveKnotPuzzle: zyklib.disposable.IDisposable
----@field knot_type integer
+---@field knot_id integer
+---@field component_map {track: integer, clockwise: boolean, comp: ui.Component}[]
 ---@field canvas ui.Canvas
 ---@field disposable_group zyklib.disposable.DisposableGroup
----@field solution zyklib.reactive.Observable<integer[]>
 local ActivePuzzle = {}
 ActivePuzzle.__index = ActivePuzzle
 
 ---comment
----@param knot_type integer
+---@param knot_id integer
 ---@return ActiveKnotPuzzle
-function ActivePuzzle.new(knot_type)
-  local self = setmetatable({}, ActivePuzzle)
+function ActivePuzzle.new(knot_id)
+  local self = setmetatable({
+    knot_id = knot_id,
+  }, ActivePuzzle)
+
+  local shape = getKnotShape(knot_id)
+  self.component_map = getComponentMap(knot_id, shape)
 
   self.disposable_group = zyklib.disposable.DisposableGroup.new()
-  self.solution = zyklib.reactive.Observable.new(nil)
-  self.knot_type = knot_type
+
+  ---@type zyklib.reactive.Observable<integer[]>
+  local shuffle_state = zyklib.reactive.Observable.new(getShuffleState())
+  local solution = shuffle_state:map(function(shuffle) return minifySolution(shuffle, shape) end)
 
   -- Create the canvas for the solution overlay
-  local interface = ui.Interfaces:GetComponent(id.Component["TRAIL_KNOT_0" .. knot_type .. "__MAINMODAL_WINDOW_CONTENT"]) --[[@as ui.ComponentCollection]]
+  local interface = ui.Interfaces:GetComponent(id.Component["TRAIL_KNOT_0" .. knot_id .. "__MAINMODAL_WINDOW_CONTENT"]) --[[@as ui.ComponentCollection]]
   self.canvas = ui.Canvas.new(interface)
   self.canvas:SetSize(interface.width, interface.height)
 
+  local CLIENT_SIDE_HISTORY_CAPACITY = 20
+  local next_history_index = 1
+  local client_side_history = {}
+
   self.disposable_group:add(
-    zyklib.game_events.native.ServerLogic:subscribe(function()
-      self.solution:set(getSolution())
+
+    shuffle_state:subscribe(function(shuffle)
+      -- We keep track of the recent state history to avoid server transmissions to wrongly override client-side prediction
+      client_side_history[next_history_index] = shuffle
+      next_history_index = (next_history_index + 1) % CLIENT_SIDE_HISTORY_CAPACITY + 1
     end),
 
+    zyklib.game_events.native.VarTransmit
+    :filter(function(event) return event.var.id == STATE_VARIABLE.id end)
+    :subscribe(function()
+      local state = getShuffleState()
+
+      -- Only override the client side state if this state is actually a new one we haven't seen recently.
+      if not zyklib.array.exists(client_side_history, function(history) return zyklib.objects.deepEquals(history, state) end) then
+        shuffle_state:set(getShuffleState())
+      end
+    end),
+
+    -- Listen to actions to implement custom client-side prediction
     zyklib.game_events.native.MiniMenuEntrySelected:subscribe(function(event)
-      -- TODO: Implement our own client side prediction, at least for the rendered solution
+      if event.entry.componentData ~= nil then
+        local action = zyklib.array.find(self.component_map, function(comp)
+          return comp.comp == event.entry.componentData.component
+        end)
+
+        if action ~= nil then
+          local state = { table.unpack(shuffle_state:get()) }
+
+          local index = action.track + 1
+
+          state[index] = (state[index] + (action.clockwise and -1 or 1)) % shape[index]
+
+          shuffle_state:set(state)
+        end
+      end
     end),
 
-    self.solution:subscribe(function(change)
-      self:draw(change.new)
-    end)
+    solution:subscribe(function(sol) self:draw(sol) end, true)
   )
-
-  -- Set initial solution for rendering
-  self.solution:set(getSolution())
 
   return self
 end
 
+local FONT = id.Font.NOTOSANS_22
+
 function ActivePuzzle.draw(self, solution)
+  if solution == nil then
+    log("Solution is nil")
+    return
+  end
+
   self.canvas:Clear()
 
   if zyklib.array.forAll(solution, function(value) return value == 0 end) then
     -- Is Solved
-    local unlock_button = ui.Interfaces:GetComponent(id.Component["TRAIL_KNOT_0" .. self.knot_type .. "__UNLOCK_BUTTON"]) --[[@as ui.Sprite]]
+    local unlock_button = ui.Interfaces:GetComponent(id.Component["TRAIL_KNOT_0" .. self.knot_id .. "__UNLOCK_BUTTON"]) --[[@as ui.Sprite]]
 
-    zyklib.api_util.draw_text_with_shadow(self.canvas, self.canvas.width / 2, self.canvas.height / 2, "Solved!",
-      id.Font.NOTOSANS_28, 0x00FF00FF)
+    util.overlayCenteredText(self.canvas, self.canvas, "Solved!", FONT, 0x00FF00FF,
+      0x00000080)
+
     self.canvas:AddRectangle(unlock_button.x, unlock_button.y, unlock_button.width, unlock_button.height, 0x00FF0080)
   else
-    -- Not solved
+    -- Not solved, display offsets
 
     for i = 1, #solution do
-      local track_id = i - 1
       local offset = solution[i]
 
       if offset ~= 0 then
-        local comp_name = "TRAIL_KNOT_0" .. self.knot_type .. "__TRACK_" .. track_id .. (offset < 0 and "_CCW" or "_CW")
-        local comp = ui.Interfaces:GetComponent(id.Component[comp_name]) --[[@as ui.Sprite]]
+        local comp = zyklib.array.find(self.component_map,
+          function(c) return c.track == i - 1 and c.clockwise == (offset > 0) end)
 
         if comp ~= nil then
-          zyklib.api_util.draw_text_with_shadow(self.canvas, comp.x, comp.y, tostring(math.abs(offset)),
-            id.Font.NOTOSANS_28)
+          util.overlayCenteredText(self.canvas, comp.comp, tostring(math.abs(offset)), FONT, 0xFFFFFFFF,
+            0x00000080)
         end
       end
     end
@@ -108,8 +198,8 @@ local open_track_type_observable = zyklib.game_events.native.ServerLogic:map(fun
       end
 
       -- Handle the suspended subscription here if needed
-      if value.new ~= nil then
-        ActivePuzzle.instance = ActivePuzzle.new(value.new)
+      if value ~= nil then
+        ActivePuzzle.instance = ActivePuzzle.new(value)
       end
     end)
 
