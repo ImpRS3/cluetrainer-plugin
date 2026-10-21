@@ -1,15 +1,12 @@
 {
   "name": "Clue Trainer",
   "version": "0.1",
-  "dependencies": {
-    "prettymap": "prettymap",
-    "prettyui": "prettyui"
-  },
+  "dependencies": {},
   "requiredPermissions": [],
   "optionalPermissions": [
     "httpAccess"
   ],
   "urls": {
-    "cluetrainer": "http://cluetrainer.app"
+    "cluetrainer": "http://localhost:8000"
   }
 }

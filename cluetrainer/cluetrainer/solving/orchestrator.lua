@@ -181,49 +181,46 @@ local function teleport_to_start(path)
 
   if first.type == "teleport" then
     local tele = coordinate_adaptor.tile_coordinates_to_coord_grid(first.spot)
-
-    ExecuteConsoleCommand("!tele " ..
-      tele.level .. "," .. tele.mapSquareX .. "," .. tele.mapSquareZ .. "," .. tele.localX .. "," .. tele.localZ)
   end
 end
 
 local gameArea = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA)
 
-local window = prettyui.Window.new(gameArea, {
-  title = "Clue Trainer",
-  x = -210,
-  y = -150,
-  xAnchor = 0.5,
-  yAnchor = 0.5,
-  width = 470,
-  height = 400,
-  minWidth = 320,
-  minHeight = 220,
-  scrollable = true,
-  rowBackgroundColours = {
-    0x24211EFF,
-    0x2E2825FF,
-  }
-})
+-- local window = prettyui.Window.new(gameArea, {
+--   title = "Clue Trainer",
+--   x = -210,
+--   y = -150,
+--   xAnchor = 0.5,
+--   yAnchor = 0.5,
+--   width = 470,
+--   height = 400,
+--   minWidth = 320,
+--   minHeight = 220,
+--   scrollable = true,
+--   rowBackgroundColours = {
+--     0x24211EFF,
+--     0x2E2825FF,
+--   }
+-- })
 
-local map = prettymap.Map.new(window.content, {
-  x = 0,
-  y = 0,
-  width = 420,
-  height = 300,
-  showFloorControls = true,
-  showZoomControls = true,
-  showPlayerMarker = false,
-  trackPlayer = false,
-  onError = function(message)
-    print("PrettyMap:", message)
-  end,
-})
+-- local map = prettymap.Map.new(window.content, {
+--   x = 0,
+--   y = 0,
+--   width = 420,
+--   height = 300,
+--   showFloorControls = true,
+--   showZoomControls = true,
+--   showPlayerMarker = false,
+--   trackPlayer = false,
+--   onError = function(message)
+--     print("PrettyMap:", message)
+--   end,
+-- })
 
-map.player:SetTrackPlayer(false)
-map.player:ClearPlayerPosition()
+-- map.player:SetTrackPlayer(false)
+-- map.player:ClearPlayerPosition()
 
-window:Show()
+-- window:Show()
 
 ---comment
 ---@param step Step

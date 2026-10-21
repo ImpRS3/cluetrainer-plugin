@@ -1,6 +1,6 @@
 -- RegionIndexing.lua
 --- Precomputed table for small factorials
-local factorial_table = { 1 }
+local factorial_table = { [0] = 1, 1 }
 for n = 2, 25 do
   factorial_table[n] = factorial_table[n - 1] * n
 end
@@ -56,8 +56,6 @@ Indexing.__index = Indexing
 function Indexing.new(region)
   local self = setmetatable({}, Indexing)
 
-  log("indexing region "..table.concat(region, ", "))
-
   local zyklib = require("zyklib")
   local Tile = require("cluetrainer/puzzles/sliders/pdb/Region").Tile
   local SliderState = require "cluetrainer/puzzles/sliders/SliderState"
@@ -67,17 +65,14 @@ function Indexing.new(region)
   self.current = zyklib.array.count(region, function(tile) return tile == Tile.CURRENT end)
   self.freedom = zyklib.array.count(region, function(tile) return tile ~= Tile.FIXED end)
 
-  log("current: "..self.current..", freedom: "..self.freedom)
-
   if not self.solves_puzzle then self.current = self.current + 1 end
 
   self.number_of_permutations = factorial_table[self.current]
+
   self.size = factorial(
     self.freedom,
     math.max(2, self.freedom - self.current)
   )
-
-  log("number_of_permutations: "..self.number_of_permutations..", size: "..self.size)
 
   --- Pre-allocate a reusable array for storing permutations
   self.permutation_array = {}
@@ -107,8 +102,6 @@ function Indexing.new(region)
       self.solution_relevant_indices[#self.solution_relevant_indices + 1] = i
     end
   end
-
-  log("entries before sorting: "..table.concat(zyklib.array.map(entries, function(entry) return entry[1].."@"..entry[2] end), ", "))
 
   table.sort(entries, function(a, b)
     if a[1] == b[1] then

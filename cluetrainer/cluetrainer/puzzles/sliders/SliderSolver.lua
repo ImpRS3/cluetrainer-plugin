@@ -30,8 +30,8 @@ local function downloadFiles()
       log("All chunks downloaded")
       local final_value = table.concat(chunks)
 
-      -- Cache pdb for next time
-      PersistentDB:Set("workaround_sliderpdb_mtm_huge_v0", { value = final_value })
+      -- Cache pdb for next time. FIXME: Disabled for now
+      -- PersistentDB:Set("workaround_sliderpdb_mtm_huge_v0", { value = final_value })
 
       promise:resolve(final_value)
     else
@@ -48,8 +48,6 @@ local function downloadFiles()
     end
   end
 
-
-
   recur({})
 
   return promise
@@ -61,14 +59,6 @@ local graph = pdb_data:map(function(data)
   return RegionGraph.new(RegionGraph.parseTables(data), true)
 end)
 
----@param interface ui.Interface
-local function start(interface)
-
-end
-
-local function endActive()
-
-end
 
 local interface_observable = zyklib.game_events.native.ServerLogic
     :map(function()
@@ -82,17 +72,24 @@ local interface_observable = zyklib.game_events.native.ServerLogic
     end)
     :toObservable(nil)
 
+---@type cluetrainer.sliders.SliderSolvingTask?
+local task = nil
+
 local handler = interface_observable:subscribeSuspended(function(payload)
   if payload.new ~= nil then
     log("Interface opened")
+
     if graph:isSettled() then
       log("Graph is settled, solving...")
-      PdbSolver.new(SliderState.getSliderState(), graph:get()):start()
+      task = PdbSolver.new(SliderState.getSliderState(), graph:get()):start()
     else
       log("Graph is not settled yet")
     end
   else
-    --process:setActive(false)
+    if task ~= nil then
+      task:cancel()
+      task = nil
+    end
   end
 end)
 

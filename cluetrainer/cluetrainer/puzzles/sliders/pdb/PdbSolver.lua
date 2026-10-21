@@ -32,7 +32,10 @@ PdbSolver.__index = PdbSolver
 ---@param chain cluetrainer.sliders.pdb.RegionGraph
 ---@return cluetrainer.sliders.pdb.PdbSolv
 function PdbSolver.new(start_state, chain)
-  local self = SliderSolvingTask.new(PdbSolver, start_state)
+  local self = SliderSolvingTask.new(start_state)
+  setmetatable(self, PdbSolver)
+  ---@cast self cluetrainer.sliders.pdb.PdbSolv
+
   self.chain = chain
   return self
 end
@@ -112,12 +115,9 @@ function PdbSolver:implementation()
       end
     end
 
-    local needs_reflection =
-        current_region.reflected ~= coming_from_reflected_region
+    local needs_reflection = current_region.reflected ~= coming_from_reflected_region
 
-    if needs_reflection then
-      SliderState.reflect(state)
-    end
+    if needs_reflection then SliderState.reflect(state) end
 
     local index = indexing:stateIndex(state)
     dostate(distance_table:getDistanceByIndex(index))

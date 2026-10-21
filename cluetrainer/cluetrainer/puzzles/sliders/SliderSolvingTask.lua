@@ -8,16 +8,17 @@ local zyklib = require("zyklib")
 local SliderSolvingTask = setmetatable({}, { __index = zyklib.async.Task })
 SliderSolvingTask.__index = SliderSolvingTask
 
----@generic T : cluetrainer.sliders.SliderSolvingTask
----@param subclass T
 ---@param start_state cluetrainer.sliders.SliderState
----@return T
-function SliderSolvingTask.new(subclass, start_state)
+---@return cluetrainer.sliders.SliderSolvingTask
+function SliderSolvingTask.new(start_state)
+  ---@type cluetrainer.sliders.SliderSolvingTask
   local self
+  -- Resolved lazily, so overrides in subclasses are picked up once they re-set the metatable.
   self = zyklib.async.Task.new(function()
     return self:implementation()
   end)
-  setmetatable(self, subclass)
+  setmetatable(self, SliderSolvingTask)
+  ---@cast self cluetrainer.sliders.SliderSolvingTask
 
   self.start_state = start_state
   return self
