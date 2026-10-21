@@ -2,7 +2,7 @@
 local zyklib     = require "zyklib"
 local util       = require "cluetrainer/util"
 
----@class cluetrainer.puzzles.knots.KnotSolver
+---@class ct.knot.KnotSolver
 local KnotSolver = {}
 
 ---Get the current shuffle state of the knot puzzle from player variables.
@@ -61,7 +61,7 @@ end
 
 local STATE_VARIABLE = var.VarPlayer["TRAIL_SHUFFLE0"].baseVar
 
----@class ActiveKnotPuzzle: zyklib.disposable.IDisposable
+---@class ct.knot.ActiveKnotPuzzle: zyklib.disposable.IDisposable
 ---@field knot_id integer
 ---@field component_map {track: integer, clockwise: boolean, comp: ui.Component}[]
 ---@field canvas ui.Canvas
@@ -71,7 +71,7 @@ ActivePuzzle.__index = ActivePuzzle
 
 ---comment
 ---@param knot_id integer
----@return ActiveKnotPuzzle
+---@return ct.knot.ActiveKnotPuzzle
 function ActivePuzzle.new(knot_id)
   local self = setmetatable({
     knot_id = knot_id,
@@ -178,10 +178,11 @@ end
 
 function ActivePuzzle:dispose()
   self.disposable_group:dispose()
+  self.canvas:Destroy()
   ActivePuzzle.instance = nil
 end
 
----@type ActiveKnotPuzzle?
+---@type ct.knot.ActiveKnotPuzzle?
 ActivePuzzle.instance = nil
 
 local open_track_type_observable = zyklib.game_events.native.ServerLogic:map(function()

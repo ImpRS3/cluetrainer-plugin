@@ -1,41 +1,39 @@
 -- Lockboxes.lua
---- Copyright (c) 2026, Lukas Gail
---- All rights reserved.
 
----@class Lockboxes
+---@class ct.lockbox.Lockboxes
 local Lockboxes = {}
 
----@alias Tile 0|1|2
----@alias TileRow {[1]: Tile, [2]: Tile, [3]: Tile, [4]: Tile, [5]: Tile}
----@alias MoveMap {[1]: TileRow, [2]: TileRow, [3]: TileRow, [4]: TileRow, [5]: TileRow}
----@alias MoveMapScorer fun(map: MoveMap): number
+---@alias ct.lockbox.Tile 0|1|2
+---@alias ct.lockbox.TileRow {[1]: ct.lockbox.Tile, [2]: ct.lockbox.Tile, [3]: ct.lockbox.Tile, [4]: ct.lockbox.Tile, [5]: ct.lockbox.Tile}
+---@alias ct.lockbox.MoveMap {[1]: ct.lockbox.TileRow, [2]: ct.lockbox.TileRow, [3]: ct.lockbox.TileRow, [4]: ct.lockbox.TileRow, [5]: ct.lockbox.TileRow}
+---@alias ct.lockbox.MoveMapScorer fun(map: ct.lockbox.MoveMap): number
 
----@class LockboxState
----@field tile_rows {[1]: TileRow, [2]: TileRow, [3]: TileRow, [4]: TileRow, [5]: TileRow}
+---@class ct.lockbox.LockboxState
+---@field tile_rows {[1]: ct.lockbox.TileRow, [2]: ct.lockbox.TileRow, [3]: ct.lockbox.TileRow, [4]: ct.lockbox.TileRow, [5]: ct.lockbox.TileRow}
 
----@class LockboxSolution
----@field moves MoveMap
----@field target LockboxState
+---@class ct.lockbox.LockboxSolution
+---@field moves ct.lockbox.MoveMap
+---@field target ct.lockbox.LockboxState
 
----@class LockboxSolveOptions
----@field target_override? LockboxState
+---@class ct.lockbox.LockboxSolveOptions
+---@field target_override? ct.lockbox.LockboxState
 ---@field modulo_targets_allowed? boolean
 ---@field minimize? boolean
----@field minimize_by? MoveMapScorer
+---@field minimize_by? ct.lockbox.MoveMapScorer
 
 Lockboxes.SIZE = 5
 
 Lockboxes.Tile = {}
 
----@param tile Tile
----@return Tile
+---@param tile ct.lockbox.Tile
+---@return ct.lockbox.Tile
 function Lockboxes.Tile.advance(tile)
     return (tile + 1) % 3
 end
 
 Lockboxes.MoveMap = {}
 
----@return MoveMap
+---@return ct.lockbox.MoveMap
 local function empty_move_map()
     return {
         { 0, 0, 0, 0, 0 },
@@ -46,10 +44,10 @@ local function empty_move_map()
     }
 end
 
----@type MoveMap
+---@type ct.lockbox.MoveMap
 Lockboxes.MoveMap.None = empty_move_map()
 
----@type MoveMap[]
+---@type ct.lockbox.MoveMap[]
 Lockboxes.MoveMap.BASIC_QUIET_PATTERNS = {
     {
         { 1, 0, 0, 0, 2 },
@@ -74,11 +72,11 @@ Lockboxes.MoveMap.BASIC_QUIET_PATTERNS = {
     },
 }
 
----@param moves MoveMap
+---@param moves ct.lockbox.MoveMap
 ---@param repetition integer
----@return MoveMap
+---@return ct.lockbox.MoveMap
 function Lockboxes.MoveMap.repeatMoves(moves, repetition)
-    ---@type MoveMap
+    ---@type ct.lockbox.MoveMap
     local result = empty_move_map()
 
     for row = 1, Lockboxes.SIZE do
@@ -90,10 +88,10 @@ function Lockboxes.MoveMap.repeatMoves(moves, repetition)
     return result
 end
 
----@param moves MoveMap
+---@param moves ct.lockbox.MoveMap
 ---@param row integer Zero-based row index
 ---@param col integer Zero-based column index
----@return Tile
+---@return ct.lockbox.Tile
 function Lockboxes.MoveMap.get(moves, row, col)
     if row < 0
         or row >= Lockboxes.SIZE
@@ -106,12 +104,12 @@ function Lockboxes.MoveMap.get(moves, row, col)
     return moves[row + 1][col + 1]
 end
 
----@param ... MoveMap
----@return MoveMap
+---@param ... ct.lockbox.MoveMap
+---@return ct.lockbox.MoveMap
 function Lockboxes.MoveMap.chain(...)
     local maps = { ... }
 
-    ---@type MoveMap
+    ---@type ct.lockbox.MoveMap
     local result = empty_move_map()
 
     for row = 1, Lockboxes.SIZE do
@@ -130,7 +128,7 @@ function Lockboxes.MoveMap.chain(...)
 end
 
 ---@param profile {[1]: number, [2]: number, [3]: number}
----@return MoveMapScorer
+---@return ct.lockbox.MoveMapScorer
 function Lockboxes.MoveMap.scoring(profile)
     return function(map)
         local score = 0
@@ -145,21 +143,21 @@ function Lockboxes.MoveMap.scoring(profile)
     end
 end
 
----@type MoveMapScorer
+---@type ct.lockbox.MoveMapScorer
 Lockboxes.MoveMap.clickScore =
     Lockboxes.MoveMap.scoring({ 0, 1, 2 })
 
----@type MoveMapScorer
+---@type ct.lockbox.MoveMapScorer
 Lockboxes.MoveMap.tileScore =
     Lockboxes.MoveMap.scoring({ 0, 1, 1 })
 
----@type MoveMapScorer
+---@type ct.lockbox.MoveMapScorer
 Lockboxes.MoveMap.hybridScore =
     Lockboxes.MoveMap.scoring({ 0, 1, 1.3 })
 
 Lockboxes.State = {}
 
----@type LockboxState
+---@type ct.lockbox.LockboxState
 Lockboxes.State.SOLVED = {
     tile_rows = {
         { 0, 0, 0, 0, 0 },
@@ -170,7 +168,7 @@ Lockboxes.State.SOLVED = {
     },
 }
 
----@type LockboxState
+---@type ct.lockbox.LockboxState
 Lockboxes.State.SOLVED_1 = {
     tile_rows = {
         { 1, 1, 1, 1, 1 },
@@ -181,7 +179,7 @@ Lockboxes.State.SOLVED_1 = {
     },
 }
 
----@type LockboxState
+---@type ct.lockbox.LockboxState
 Lockboxes.State.SOLVED_2 = {
     tile_rows = {
         { 2, 2, 2, 2, 2 },
@@ -193,7 +191,7 @@ Lockboxes.State.SOLVED_2 = {
 }
 
 ---A lockbox is solved when all tiles have the same value.
----@param state LockboxState
+---@param state ct.lockbox.LockboxState
 ---@return boolean
 function Lockboxes.State.isSolved(state)
     local reference = state.tile_rows[1][1]
@@ -209,8 +207,8 @@ function Lockboxes.State.isSolved(state)
     return true
 end
 
----@param a LockboxState
----@param b LockboxState
+---@param a ct.lockbox.LockboxState
+---@param b ct.lockbox.LockboxState
 ---@return boolean
 function Lockboxes.State.equals(a, b)
     for row = 1, Lockboxes.SIZE do
@@ -224,11 +222,11 @@ function Lockboxes.State.equals(a, b)
     return true
 end
 
----@param state LockboxState
----@param move MoveMap
----@return LockboxState
+---@param state ct.lockbox.LockboxState
+---@param move ct.lockbox.MoveMap
+---@return ct.lockbox.LockboxState
 function Lockboxes.State.applyMoves(state, move)
-    ---@type LockboxState
+    ---@type ct.lockbox.LockboxState
     local result = {
         tile_rows = empty_move_map(),
     }
@@ -251,7 +249,7 @@ function Lockboxes.State.applyMoves(state, move)
     return result
 end
 
----@param state LockboxState
+---@param state ct.lockbox.LockboxState
 ---@return string
 function Lockboxes.State.toString(state)
     local rows = {}
@@ -269,9 +267,9 @@ function Lockboxes.State.toString(state)
     return table.concat(rows, "\n")
 end
 
----@return LockboxState
+---@return ct.lockbox.LockboxState
 function Lockboxes.State.generate()
-    ---@type LockboxState
+    ---@type ct.lockbox.LockboxState
     local result = {
         tile_rows = empty_move_map(),
     }
@@ -285,11 +283,11 @@ function Lockboxes.State.generate()
     return result
 end
 
----@param a LockboxState
----@param b LockboxState
----@return LockboxState
+---@param a ct.lockbox.LockboxState
+---@param b ct.lockbox.LockboxState
+---@return ct.lockbox.LockboxState
 function Lockboxes.State.add(a, b)
-    ---@type LockboxState
+    ---@type ct.lockbox.LockboxState
     local result = {
         tile_rows = empty_move_map(),
     }
@@ -306,11 +304,11 @@ function Lockboxes.State.add(a, b)
     return result
 end
 
----@param a LockboxState
----@param b LockboxState
----@return LockboxState
+---@param a ct.lockbox.LockboxState
+---@param b ct.lockbox.LockboxState
+---@return ct.lockbox.LockboxState
 function Lockboxes.State.sub(a, b)
-    ---@type LockboxState
+    ---@type ct.lockbox.LockboxState
     local result = {
         tile_rows = empty_move_map(),
     }
@@ -328,7 +326,7 @@ function Lockboxes.State.sub(a, b)
     return result
 end
 
----@param map MoveMap
+---@param map ct.lockbox.MoveMap
 ---@return boolean
 function Lockboxes.MoveMap.isQuiet(map)
     return Lockboxes.State.equals(
@@ -337,16 +335,16 @@ function Lockboxes.MoveMap.isQuiet(map)
     )
 end
 
----@type MoveMap[]?
+---@type ct.lockbox.MoveMap[]?
 local all_quiet_patterns = nil
 
----@return MoveMap[]
+---@return ct.lockbox.MoveMap[]
 function Lockboxes.MoveMap.allQuietPatterns()
     if not all_quiet_patterns then
         -- Based on the JavaScript implementation described at:
         -- https://www.jaapsch.net/puzzles/lights.htm#java2000
 
-        ---@type MoveMap[]
+        ---@type ct.lockbox.MoveMap[]
         local patterns = {}
 
         for a = 0, 2 do
@@ -377,10 +375,10 @@ function Lockboxes.MoveMap.allQuietPatterns()
     return all_quiet_patterns
 end
 
----@param map MoveMap
----@return MoveMap[]
+---@param map ct.lockbox.MoveMap
+---@return ct.lockbox.MoveMap[]
 function Lockboxes.MoveMap.getEquivalents(map)
-    ---@type MoveMap[]
+    ---@type ct.lockbox.MoveMap[]
     local result = {}
 
     for _, quiet in ipairs(Lockboxes.MoveMap.allQuietPatterns()) do
@@ -413,9 +411,9 @@ local function min_by(values, scorer)
     return best
 end
 
----@param map MoveMap
----@param by? MoveMapScorer
----@return MoveMap
+---@param map ct.lockbox.MoveMap
+---@param by? ct.lockbox.MoveMapScorer
+---@return ct.lockbox.MoveMap
 function Lockboxes.MoveMap.minimize(map, by)
     by = by or Lockboxes.MoveMap.clickScore
 
@@ -427,9 +425,9 @@ end
 
 ---@param row integer Zero-based row index
 ---@param column integer Zero-based column index
----@return MoveMap
+---@return ct.lockbox.MoveMap
 function Lockboxes.MoveMap.fromClick(row, column)
-    ---@type MoveMap
+    ---@type ct.lockbox.MoveMap
     local result = empty_move_map()
 
     if row >= 0
@@ -443,8 +441,8 @@ function Lockboxes.MoveMap.fromClick(row, column)
     return result
 end
 
----@param a MoveMap
----@param b MoveMap
+---@param a ct.lockbox.MoveMap
+---@param b ct.lockbox.MoveMap
 ---@return integer
 function Lockboxes.MoveMap.difference(a, b)
     local difference = 0
@@ -460,12 +458,12 @@ function Lockboxes.MoveMap.difference(a, b)
     return difference
 end
 
----@param state LockboxState
----@return MoveMap
+---@param state ct.lockbox.LockboxState
+---@return ct.lockbox.MoveMap
 local function basic_solve(state)
-    ---@param initial_state LockboxState
-    ---@return MoveMap moves
-    ---@return LockboxState final_state
+    ---@param initial_state ct.lockbox.LockboxState
+    ---@return ct.lockbox.MoveMap moves
+    ---@return ct.lockbox.LockboxState final_state
     local function chasing(initial_state)
         local current_state = initial_state
         local moves = empty_move_map()
@@ -493,7 +491,7 @@ local function basic_solve(state)
         chasing(state)
 
     ---If A5 is 1, press B1 twice; if A5 is 2, press B1 once.
-    ---@type Tile
+    ---@type ct.lockbox.Tile
     local B1 = ({
         [0] = 0,
         [1] = 2,
@@ -501,14 +499,14 @@ local function basic_solve(state)
     })[state_after_first_chasing.tile_rows[5][1]]
 
     ---If B5 is 1, press A1 and B1 twice; if B5 is 2, press once.
-    ---@type Tile
+    ---@type ct.lockbox.Tile
     local A1B1 = ({
         [0] = 0,
         [1] = 2,
         [2] = 1,
     })[state_after_first_chasing.tile_rows[5][2]]
 
-    ---@type MoveMap
+    ---@type ct.lockbox.MoveMap
     local magic_solve = {
         { A1B1, (A1B1 + B1) % 3, 0, 0, 0 },
         { 0,    0,               0, 0, 0 },
@@ -533,13 +531,13 @@ local function basic_solve(state)
     )
 end
 
----@param state LockboxState
----@param options? LockboxSolveOptions
----@return LockboxSolution
+---@param state ct.lockbox.LockboxState
+---@param options? ct.lockbox.LockboxSolveOptions
+---@return ct.lockbox.LockboxSolution
 function Lockboxes.solve(state, options)
     options = options or {}
 
-    ---@type LockboxState[]
+    ---@type ct.lockbox.LockboxState[]
     local targets
 
     if options.modulo_targets_allowed then
@@ -564,7 +562,7 @@ function Lockboxes.solve(state, options)
         end
     end
 
-    ---@type LockboxSolution[]
+    ---@type ct.lockbox.LockboxSolution[]
     local candidates = {}
 
     for _, target in ipairs(targets) do
@@ -577,7 +575,7 @@ function Lockboxes.solve(state, options)
     end
 
     if options.minimize then
-        ---@type LockboxSolution[]
+        ---@type ct.lockbox.LockboxSolution[]
         local equivalents = {}
 
         for _, solution in ipairs(candidates) do
@@ -594,7 +592,7 @@ function Lockboxes.solve(state, options)
         candidates = equivalents
     end
 
-    ---@type fun(solution: LockboxSolution): number
+    ---@type fun(solution: ct.lockbox.LockboxSolution): number
     local cost
 
     if options.minimize then

@@ -1,11 +1,11 @@
 -- LockboxSolver.lua
-local lua_util       = require "zyklib/objects"
 local Lockboxes      = require "cluetrainer/puzzles/lockbox/Lockboxes"
 local zyklib         = require "zyklib"
 
+---@class ct.lockbox.LockboxSolver
 local lockbox_solver = {}
 
----@return LockboxState
+---@return ct.lockbox.LockboxState
 local function getPuzzleState()
   local rows012 = var.VarClient["TRAIL_LIGHTSOUT_CLIENT_1"].value
   local rows34 = var.VarClient["TRAIL_LIGHTSOUT_CLIENT_2"].value
@@ -27,7 +27,7 @@ local TL_OFFSET_IN_CANVAS = {
 
 ---Draws the current state of the lockbox puzzle.
 ---@param canvas Canvas
----@param solution LockboxSolution
+---@param solution ct.lockbox.LockboxSolution
 local function draw(canvas, solution)
   canvas:Clear()
 
@@ -76,71 +76,78 @@ local function draw(canvas, solution)
   end
 end
 
----@class ActiveLockboxPuzzle
----@field canvas Canvas
----@field latestState LockboxState?
----@field action_handler zyklib.reactive.EventHandler
+---@class ct.lockbox.ActiveLockboxPuzzle: zyklib.disposable.IDisposable
+---@field canvas ui.Canvas
+---@field disposable_group zyklib.disposable.DisposableGroup
+local ActivePuzzle = {}
+ActivePuzzle.__index = ActivePuzzle
 
----@type ActiveLockboxPuzzle?
-local active_puzzle = nil
+---@return ct.lockbox.ActiveLockboxPuzzle
+function ActivePuzzle.new()
+  local self = setmetatable({}, ActivePuzzle)
 
-local function maybeRefreshOverlay()
-  if active_puzzle == nil then return end
+  self.disposable_group = zyklib.disposable.DisposableGroup.new()
 
-  local current_state = getPuzzleState()
+  -- Create the canvas for the solution overlay
+  local content = ui.Interfaces:GetComponent(id.Component.LIGHTSOUT__MAINMODAL_WINDOW_CONTENT) --[[@as ui.ComponentCollection]]
+  self.canvas = ui.Canvas.new(content)
+  self.canvas:SetSize(content.width, content.height)
 
-  -- Skip if no change detected
-  if lua_util.deepEquals(current_state, active_puzzle.latestState) then return end
-
-  active_puzzle.latestState = current_state
-
-  draw(active_puzzle.canvas, Lockboxes.solve(current_state, {
-    modulo_targets_allowed = true,
-    minimize = true,
-    minimize_by = Lockboxes.MoveMap.hybridScore -- TODO: Update when everything is hooked up to settings
-  }))
-end
-
----@type {handler: zyklib.reactive.EventHandler}?
-lockbox_solver.instance = nil
-
-function lockbox_solver:init()
-  if lockbox_solver.instance ~= nil then return end
-
-  local handler = zyklib.game_events.native.ServerLogic:subscribe(function(event)
-    local interface = ui.Interfaces:GetInterface(id.Interface.LIGHTSOUT)
-
-    if not interface then
-      if active_puzzle ~= nil then
-        active_puzzle.action_handler:cancel()
-        active_puzzle.canvas:Clear()
-        active_puzzle = nil
-      end
-
-      return
-    end
-
-    local content = ui.Interfaces:GetComponent(id.Component.LIGHTSOUT__MAINMODAL_WINDOW_CONTENT) --[[@as ui.ComponentCollection]]
-
-    if active_puzzle == nil and content ~= nil then
-      local canvas = ui.Canvas.new(content)
-      canvas:SetSize(content.width, content.height)
-
-      local handler = zyklib.game_events.native.Draw:subscribe(function(event)
-        maybeRefreshOverlay()
-      end)
-
-      active_puzzle = {
-        canvas = canvas,
-        latestState = nil,
-        action_handler = handler
-      }
-
-      maybeRefreshOverlay()
-    end
+  -- The puzzle state lives in VarClient variables, which do not trigger transmit events, so it is polled every frame.
+  -- The observable's equality check makes sure the solution is only recomputed and redrawn when the state actually changed.
+  local state = zyklib.reactive.Observable.new(getPuzzleState())
+  local solution = state:map(function(current_state)
+    return Lockboxes.solve(current_state, {
+      modulo_targets_allowed = true,
+      minimize = true,
+      minimize_by = Lockboxes.MoveMap.hybridScore -- TODO: Update when everything is hooked up to settings
+    })
   end)
 
-  lockbox_solver.instance = { handler = handler }
+  self.disposable_group:add(
+    zyklib.game_events.native.Draw:subscribe(function()
+      state:set(getPuzzleState())
+    end),
+
+    solution:subscribe(function(sol) draw(self.canvas, sol) end, true)
+  )
+
+  return self
+end
+
+function ActivePuzzle:dispose()
+  self.disposable_group:dispose()
+  self.canvas:Destroy()
+  ActivePuzzle.instance = nil
+end
+
+---@type ct.lockbox.ActiveLockboxPuzzle?
+ActivePuzzle.instance = nil
+
+local interface_open_handler = zyklib.game_events.native.ServerLogic:map(function()
+      local interface = ui.Interfaces:GetInterface(id.Interface.LIGHTSOUT)
+      local comp = ui.Interfaces:GetComponent(id.Component.LIGHTSOUT__MAINMODAL_WINDOW_CONTENT)
+      return interface ~= nil and comp ~= nil and comp.parent ~= nil
+    end)
+    :toObservable(false)
+    :subscribeSuspended(function(is_open)
+      if ActivePuzzle.instance ~= nil then
+        ActivePuzzle.instance:dispose()
+      end
+
+      if is_open then
+        ActivePuzzle.instance = ActivePuzzle.new()
+      end
+    end)
+
+---Enables or disables the lockbox solver. Disabling also removes any currently shown overlay.
+---@param active boolean
+function lockbox_solver.setActive(active)
+  interface_open_handler:setActive(active)
+
+  if not active and ActivePuzzle.instance ~= nil then
+    ActivePuzzle.instance:dispose()
+  end
 end
 
 return lockbox_solver
