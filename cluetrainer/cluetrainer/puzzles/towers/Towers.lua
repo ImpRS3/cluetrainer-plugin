@@ -1,42 +1,42 @@
 -- Towers.lua
----@class Towers
+---@class ct.towers.Towers
 local Towers = {}
 
----@alias Tower 1|2|3|4|5
----@alias Street [Tower?, Tower?, Tower?, Tower?, Tower?]
----@alias StreetLabel Tower
----@alias LabelPair [StreetLabel, StreetLabel]
+---@alias ct.towers.Tower 1|2|3|4|5
+---@alias ct.towers.Street [ct.towers.Tower?, ct.towers.Tower?, ct.towers.Tower?, ct.towers.Tower?, ct.towers.Tower?]
+---@alias ct.towers.StreetLabel ct.towers.Tower
+---@alias ct.towers.LabelPair [ct.towers.StreetLabel, ct.towers.StreetLabel]
 
----@class LabelledStreet
----@field street Street
----@field label LabelPair
+---@class ct.towers.LabelledStreet
+---@field street ct.towers.Street
+---@field label ct.towers.LabelPair
 
----@class Towers.Hints
----@field top [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
----@field bottom [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
----@field left [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
----@field right [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
+---@class ct.towers.Hints
+---@field top [ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel]
+---@field bottom [ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel]
+---@field left [ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel]
+---@field right [ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel]
 
----@class HintPairs
----@field rows [LabelPair, LabelPair, LabelPair, LabelPair, LabelPair]
----@field columns [LabelPair, LabelPair, LabelPair, LabelPair, LabelPair]
+---@class ct.towers.HintPairs
+---@field rows [ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair]
+---@field columns [ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair]
 
----@class Towers.Blocks
----@field rows [Street, Street, Street, Street, Street]
+---@class ct.towers.Blocks
+---@field rows [ct.towers.Street, ct.towers.Street, ct.towers.Street, ct.towers.Street, ct.towers.Street]
 
----@class Towers.PuzzleState
----@field hints Towers.Hints
----@field blocks Towers.Blocks
+---@class ct.towers.PuzzleState
+---@field hints ct.towers.Hints
+---@field blocks ct.towers.Blocks
 
----@type Tower[]
+---@type ct.towers.Tower[]
 Towers.all_towers = { 1, 2, 3, 4, 5 }
 
 Towers.Street = {}
 
----@type Street[]?
+---@type ct.towers.Street[]?
 local all_streets = nil
 
----@return Street
+---@return ct.towers.Street
 function Towers.Street.empty()
     return { 0, 0, 0, 0, 0 }
 end
@@ -77,7 +77,7 @@ local function all_permutations(elements)
     return result
 end
 
----@return Street[]
+---@return ct.towers.Street[]
 function Towers.Street.all()
     if not all_streets then
         all_streets = all_permutations({ 1, 2, 3, 4, 5 })
@@ -86,7 +86,7 @@ function Towers.Street.all()
     return all_streets
 end
 
----@param street Street
+---@param street ct.towers.Street
 ---@return integer
 local function line_of_sight(street)
     local count = 0
@@ -104,10 +104,10 @@ local function line_of_sight(street)
     return count
 end
 
----@param street Street
----@return Street
+---@param street ct.towers.Street
+---@return ct.towers.Street
 function Towers.Street.reverse(street)
-    ---@type Street
+    ---@type ct.towers.Street
     local result = {}
 
     for i = 1, 5 do
@@ -117,8 +117,8 @@ function Towers.Street.reverse(street)
     return result
 end
 
----@param street Street
----@return LabelPair
+---@param street ct.towers.Street
+---@return ct.towers.LabelPair
 function Towers.Street.label(street)
     return {
         line_of_sight(street),
@@ -128,10 +128,10 @@ end
 
 Towers.LabelledStreet = {}
 
----@type LabelledStreet[]?
+---@type ct.towers.LabelledStreet[]?
 local all_labelled_streets = nil
 
----@return LabelledStreet[]
+---@return ct.towers.LabelledStreet[]
 function Towers.LabelledStreet.all()
     if not all_labelled_streets then
         all_labelled_streets = {}
@@ -149,21 +149,21 @@ end
 
 Towers.LabelPair = {}
 
----@param a LabelPair
----@param b LabelPair
+---@param a ct.towers.LabelPair
+---@param b ct.towers.LabelPair
 ---@return boolean
 function Towers.LabelPair.equals(a, b)
     return a[1] == b[1] and a[2] == b[2]
 end
 
----@alias CandidateMap table<StreetLabel, table<StreetLabel, Street[]>>
+---@alias ct.towers.CandidateMap table<ct.towers.StreetLabel, table<ct.towers.StreetLabel, ct.towers.Street[]>>
 
----@type CandidateMap?
+---@type ct.towers.CandidateMap?
 local candidates = nil
 
----@return CandidateMap
+---@return ct.towers.CandidateMap
 function Towers.LabelPair.candidateMap()
-    ---@type CandidateMap
+    ---@type ct.towers.CandidateMap
     local result = {}
 
     for _, a in ipairs(Towers.all_towers) do
@@ -183,8 +183,8 @@ function Towers.LabelPair.candidateMap()
     return result
 end
 
----@param label LabelPair
----@return Street[]
+---@param label ct.towers.LabelPair
+---@return ct.towers.Street[]
 function Towers.LabelPair.getCandidates(label)
     if not candidates then
         candidates = Towers.LabelPair.candidateMap()
@@ -195,7 +195,7 @@ end
 
 Towers.Hints = {}
 
----@return Towers.Hints
+---@return ct.towers.Hints
 function Towers.Hints.empty()
     return {
         top = {},
@@ -207,7 +207,7 @@ end
 
 Towers.Blocks = {}
 
----@return Towers.Blocks
+---@return ct.towers.Blocks
 function Towers.Blocks.empty()
     return {
         rows = {
@@ -220,15 +220,15 @@ function Towers.Blocks.empty()
     }
 end
 
----@param a Towers.Blocks
----@param b Towers.Blocks
----@return Towers.Blocks
+---@param a ct.towers.Blocks
+---@param b ct.towers.Blocks
+---@return ct.towers.Blocks
 function Towers.Blocks.combine(a, b)
-    ---@type [Street, Street, Street, Street, Street]
+    ---@type [ct.towers.Street, ct.towers.Street, ct.towers.Street, ct.towers.Street, ct.towers.Street]
     local rows = {}
 
     for y = 1, 5 do
-        ---@type Street
+        ---@type ct.towers.Street
         rows[y] = {}
 
         for x = 1, 5 do
@@ -260,11 +260,11 @@ local function column(matrix, index)
     return result
 end
 
----@param puzzle HintPairs
----@return Towers.Blocks?
+---@param puzzle ct.towers.HintPairs
+---@return ct.towers.Blocks?
 function Towers.Puzzle.solve(puzzle)
-    ---@param rows Street[]
-    ---@param column_hints LabelPair[]
+    ---@param rows ct.towers.Street[]
+    ---@param column_hints ct.towers.LabelPair[]
     ---@return boolean
     local function valid(rows, column_hints)
         local row_count = #rows
@@ -299,15 +299,15 @@ function Towers.Puzzle.solve(puzzle)
     end
 
     ---@param hint_index integer
-    ---@param streets_so_far Street[]
-    ---@return Towers.Blocks?
+    ---@param streets_so_far ct.towers.Street[]
+    ---@return ct.towers.Blocks?
     local function backtrack(hint_index, streets_so_far)
         if not valid(streets_so_far, puzzle.columns) then
             return nil
         end
 
         if hint_index > #puzzle.rows then
-            return { rows = streets_so_far --[[@as [Street, Street, Street, Street, Street] ]] }
+            return { rows = streets_so_far --[[@as [ct.towers.Street, ct.towers.Street, ct.towers.Street, ct.towers.Street, ct.towers.Street] ]] }
         end
 
         local hint = puzzle.rows[hint_index]
@@ -315,7 +315,7 @@ function Towers.Puzzle.solve(puzzle)
         for _, candidate in ipairs(
             Towers.LabelPair.getCandidates(hint)
         ) do
-            ---@type Street[]
+            ---@type ct.towers.Street[]
             local next_streets = {}
 
             for i, street in ipairs(streets_so_far) do
@@ -337,11 +337,11 @@ function Towers.Puzzle.solve(puzzle)
     return backtrack(1, {})
 end
 
----@param first [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
----@param second [StreetLabel, StreetLabel, StreetLabel, StreetLabel, StreetLabel]
----@return [LabelPair, LabelPair, LabelPair, LabelPair, LabelPair]
+---@param first [ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel]
+---@param second [ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel]
+---@return [ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair]
 local function zip_labels(first, second)
-    ---@type LabelPair[]
+    ---@type ct.towers.LabelPair[]
     local result = {}
 
     for i = 1, 5 do
@@ -351,13 +351,13 @@ local function zip_labels(first, second)
     return result
 end
 
----@param hints Towers.Hints
----@return Towers.PuzzleState?
+---@param hints ct.towers.Hints
+---@return ct.towers.PuzzleState?
 function Towers.solve(hints)
     local columns = zip_labels(hints.top, hints.bottom)
     local rows = zip_labels(hints.left, hints.right)
 
-    ---@type HintPairs
+    ---@type ct.towers.HintPairs
     local pairs = {
         columns = columns,
         rows = rows,

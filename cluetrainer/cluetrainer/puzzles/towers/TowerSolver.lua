@@ -1,8 +1,8 @@
 -- TowerSolver.lua
-local lua_util            = require "zyklib/objects"
-local Towers              = require "puzzles/towers/Towers"
+local Towers              = require "cluetrainer/puzzles/towers/Towers"
 local zyklib              = require "zyklib"
 
+---@class ct.towers.TowerSolver
 local towers_solver       = {}
 
 local TILE_OFFSET         = 44
@@ -15,9 +15,9 @@ local TR_OVERLAY_OFFSET   = { x = 16, y = -10 }
 local TL_OVERLAY_OFFSET   = { x = -5, y = -10 }
 
 ---Draws the current state of the towers puzzle.
----@param canvas Canvas
----@param is_state Towers.Blocks
----@param should_state Towers.Blocks
+---@param canvas ui.Canvas
+---@param is_state ct.towers.Blocks
+---@param should_state ct.towers.Blocks
 ---@param settings { show_deltas: boolean, show_should: boolean }
 local function draw(canvas, is_state, should_state, settings)
   canvas:Clear()
@@ -60,7 +60,7 @@ local function draw(canvas, is_state, should_state, settings)
 end
 
 --- Gets the hints of the current puzzle
----@return Towers.Hints
+---@return ct.towers.Hints
 local function getPuzzleHints()
   return {
     top = {
@@ -94,7 +94,7 @@ local function getPuzzleHints()
   }
 end
 
----@return Towers.Blocks
+---@return ct.towers.Blocks
 local function getPuzzleState()
   local current_state = Towers.Blocks.empty()
 
@@ -109,77 +109,82 @@ local function getPuzzleState()
   return current_state
 end
 
----@class ActivePuzzle
----@field canvas Canvas
----@field solution Towers.PuzzleState
----@field action_handler zyklib.reactive.EventHandler
----@field latestState Towers.Blocks?
+---@class ct.towers.ActiveTowersPuzzle: zyklib.disposable.IDisposable
+---@field canvas ui.Canvas
+---@field solution ct.towers.PuzzleState
+---@field disposable_group zyklib.disposable.DisposableGroup
+local ActivePuzzle = {}
+ActivePuzzle.__index = ActivePuzzle
 
----@type ActivePuzzle?
-local active_puzzle = nil
+---@return ct.towers.ActiveTowersPuzzle? # `nil` if the puzzle has no solution for the current hints
+function ActivePuzzle.new()
+  local solution = Towers.solve(getPuzzleHints())
 
-local function maybeRefreshOverlay()
-  if active_puzzle == nil then return end
+  if not solution then return nil end
 
-  local current_state = getPuzzleState()
+  local self = setmetatable({ solution = solution }, ActivePuzzle)
 
-  -- Skip if no change detected
-  if lua_util.deepEquals(current_state, active_puzzle.latestState) then return end
+  self.disposable_group = zyklib.disposable.DisposableGroup.new()
 
-  active_puzzle.latestState = current_state
+  -- Create the canvas for the solution overlay
+  local content = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__SKYSCRAPERS_CONTENT) --[[@as ui.ComponentCollection]]
+  self.canvas = ui.Canvas.new(content)
+  self.canvas:SetSize(content.width, content.height)
 
-  draw(active_puzzle.canvas, current_state, active_puzzle.solution.blocks,
-    { show_deltas = true, show_should = true })
+  ---@type zyklib.reactive.Observable<ct.towers.Blocks>
+  local state = zyklib.reactive.Observable.new(getPuzzleState())
+
+  local function refresh()
+    state:set(getPuzzleState())
+  end
+
+  self.disposable_group:add(
+  -- TODO: Replace these with a client-side trigger once the client-side puzzle state can be read
+    zyklib.game_events.native.MiniMenuEntrySelected:subscribe(refresh),
+    zyklib.game_events.native.ServerLogic:subscribe(refresh),
+
+    state:subscribe(function(current_state)
+      draw(self.canvas, current_state, self.solution.blocks, { show_deltas = true, show_should = true })
+    end, true)
+  )
+
+  return self
 end
 
----@type {handler: zyklib.reactive.EventHandler}?
-towers_solver.instance = nil
+function ActivePuzzle:dispose()
+  self.disposable_group:dispose()
+  self.canvas:Clear()
+  ActivePuzzle.instance = nil
+end
 
-function towers_solver:init()
-  if towers_solver.instance ~= nil then return end
+---@type ct.towers.ActiveTowersPuzzle?
+ActivePuzzle.instance = nil
 
-  local handler = zyklib.game_events.native.ServerLogic:subscribe(function(event)
-    local interface = ui.Interfaces:GetInterface(id.Interface.TRAIL17_SKYSCRAPERS)
+local interface_open_handler = zyklib.game_events.native.ServerLogic:map(function()
+      local interface = ui.Interfaces:GetInterface(id.Interface.TRAIL17_SKYSCRAPERS)
+      local comp = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__SKYSCRAPERS_CONTENT)
 
-    if not interface then
-      if active_puzzle ~= nil then
-        active_puzzle.action_handler:cancel()
-        active_puzzle.canvas:Clear()
-        active_puzzle = nil
+      return interface ~= nil and comp ~= nil and comp.parent ~= nil
+    end)
+    :toObservable(false)
+    :subscribeSuspended(function(is_open)
+      if ActivePuzzle.instance ~= nil then
+        ActivePuzzle.instance:dispose()
       end
 
-      return
-    end
+      if is_open then
+        ActivePuzzle.instance = ActivePuzzle.new()
+      end
+    end)
 
-    local content = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__SKYSCRAPERS_CONTENT) --[[@as ui.ComponentCollection]]
+---Enables or disables the towers solver. Disabling also removes any currently shown overlay.
+---@param active boolean
+function towers_solver.setActive(active)
+  interface_open_handler:setActive(active)
 
-    if active_puzzle == nil and content ~= nil then
-      local solution = Towers.solve(getPuzzleHints())
-
-      if not solution then return end
-
-      local canvas = ui.Canvas.new(content)
-      canvas:SetSize(content.width, content.height)
-
-      local handler = zyklib.game_events.native.MiniMenuEntrySelected:subscribe(function()
-        maybeRefreshOverlay()
-      end)
-
-      active_puzzle = {
-        canvas = canvas,
-        solution = solution,
-        action_handler = handler,
-        latestState = nil
-      }
-
-      maybeRefreshOverlay()
-    end
-
-    -- TODO: The following call should be placed somewhere client-side when we figure out how to read client-side puzzle state
-    maybeRefreshOverlay()
-  end)
-
-  towers_solver.instance = { handler = handler }
+  if not active and ActivePuzzle.instance ~= nil then
+    ActivePuzzle.instance:dispose()
+  end
 end
 
 return towers_solver

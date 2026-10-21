@@ -11,7 +11,7 @@ local function main()
   local knot_solver    = require("cluetrainer/puzzles/knot/KnotSolver")
   local slider_solver  = require("cluetrainer/puzzles/sliders/SliderSolver")
 
-  towers_solver:init()
+  towers_solver.setActive(true)
   lockbox_solver.setActive(true)
   knot_solver.setActive(true)
   --slider_solver.setActive(true)
