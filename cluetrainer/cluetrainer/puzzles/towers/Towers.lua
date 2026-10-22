@@ -38,6 +38,11 @@ Towers.Street = {}
 ---@type ct.towers.Street[]?
 local all_streets = nil
 
+---@return ct.towers.Street
+function Towers.Street.empty()
+    return { 0, 0, 0, 0, 0 }
+end
+
 ---@generic T
 ---@param elements T[]
 ---@return T[][]
@@ -191,16 +196,6 @@ function Towers.LabelPair.getCandidates(label)
 end
 
 Towers.Hints = {}
-
----@return ct.towers.Hints
-function Towers.Hints.empty()
-    return {
-        top = {},
-        bottom = {},
-        left = {},
-        right = {},
-    }
-end
 
 Towers.Blocks = {}
 
