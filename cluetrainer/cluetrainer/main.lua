@@ -2,7 +2,6 @@
 local zyklib = require("zyklib")
 
 local function main()
-  local zyklib = require("zyklib")
   zyklib.lifecycle.setupGlobals()
 
   local orchestrator   = require("cluetrainer/solving/orchestrator")
@@ -10,6 +9,7 @@ local function main()
   local lockbox_solver = require("cluetrainer/puzzles/lockbox/LockboxSolver")
   local knot_solver    = require("cluetrainer/puzzles/knot/KnotSolver")
   local slider_solver  = require("cluetrainer/puzzles/sliders/SliderSolver")
+  local settings       = require("cluetrainer/ui/SettingsDialog")
 
   towers_solver.setActive(true)
   lockbox_solver.setActive(true)
@@ -17,6 +17,8 @@ local function main()
   slider_solver.setActive(true)
   orchestrator.init()
 
+  settings.open()
+  
   -- local data = require("cluetrainer/puzzles/sliders/pdb/data/mtm_pdb_data")
 
   -- local task = zyklib.base64.decodeLargeAsync(data.base64)
