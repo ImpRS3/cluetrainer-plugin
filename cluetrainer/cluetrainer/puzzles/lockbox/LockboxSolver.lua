@@ -1,9 +1,17 @@
 -- LockboxSolver.lua
-local Lockboxes      = require "cluetrainer/puzzles/lockbox/Lockboxes"
-local zyklib         = require "zyklib"
+local Lockboxes         = require "cluetrainer/puzzles/lockbox/Lockboxes"
+local zyklib            = require "zyklib"
+local schema            = require "cluetrainer/util/schema"
+local storage           = require "cluetrainer/util/storage"
 
 ---@class ct.lockbox.LockboxSolver
-local lockbox_solver = {}
+local lockbox_solver    = {}
+
+lockbox_solver.settings = {
+  enabled = storage.variable("lockboxes/enabled", schema.bool({ default = true })),
+  optimization_coefficient = storage.variable("lockboxes/optimization_coefficient",
+    schema.int({ min = 10, max = 50, default = 13 })),
+}
 
 ---@return ct.lockbox.LockboxState
 local function getPuzzleState()
@@ -96,15 +104,22 @@ function ActivePuzzle.new()
   -- The puzzle state lives in VarClient variables, which do not trigger transmit events, so it is polled every frame.
   -- The observable's equality check makes sure the solution is only recomputed and redrawn when the state actually changed.
   local state = zyklib.reactive.Observable.new(getPuzzleState())
-  local solution = state:map(function(current_state)
-    return Lockboxes.solve(current_state, {
+  ---@type zyklib.reactive.Observable<ct.lockbox.LockboxSolution?>
+  local solution = zyklib.reactive.Observable.new(nil)
+
+
+  local function refreshSolution()
+    solution:set(Lockboxes.solve(getPuzzleState(), {
       modulo_targets_allowed = true,
       minimize = true,
-      minimize_by = Lockboxes.MoveMap.hybridScore -- TODO: Update when everything is hooked up to settings
-    })
-  end)
+      minimize_by = Lockboxes.MoveMap.scoring({ 0, 1, lockbox_solver.settings.optimization_coefficient:get() / 10 }),
+    }))
+  end
+
+  state:subscribe(refreshSolution, true)
 
   self.disposable_group:add(
+    lockbox_solver.settings.optimization_coefficient:subscribe(refreshSolution),
     zyklib.game_events.native.Draw:subscribe(function()
       state:set(getPuzzleState())
     end),
@@ -142,12 +157,22 @@ local interface_open_handler = zyklib.game_events.native.ServerLogic:map(functio
 
 ---Enables or disables the lockbox solver. Disabling also removes any currently shown overlay.
 ---@param active boolean
-function lockbox_solver.setActive(active)
+local function setActive(active)
   interface_open_handler:setActive(active)
 
   if not active and ActivePuzzle.instance ~= nil then
     ActivePuzzle.instance:dispose()
   end
+end
+
+local initialized = false
+
+--- Activates the solver whenever it is enabled in the settings and deactivates it otherwise. Only the first call has an effect.
+function lockbox_solver.init()
+  if initialized then return end
+  initialized = true
+
+  lockbox_solver.settings.enabled:subscribe(setActive, true)
 end
 
 return lockbox_solver

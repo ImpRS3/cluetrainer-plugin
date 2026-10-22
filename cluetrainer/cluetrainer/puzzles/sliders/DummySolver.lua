@@ -12,10 +12,10 @@ local MOVE_COUNT  = 20
 local DummySolver = {}
 
 --- Generates a random walk of the blank tile, so every move is valid and no move directly undoes the previous one.
----@param start_state cluetrainer.sliders.SliderState
----@return cluetrainer.sliders.Move[]
+---@param start_state ct.sliders.SliderState
+---@return ct.sliders.Move[]
 function DummySolver.solve(start_state)
-  ---@type cluetrainer.sliders.Move[]
+  ---@type ct.sliders.Move[]
   local moves = {}
 
   local move_table = AllowedMoveTable.new({

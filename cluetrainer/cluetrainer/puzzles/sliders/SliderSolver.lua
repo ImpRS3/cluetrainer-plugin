@@ -1,14 +1,29 @@
 -- SliderSolver.lua
-local zyklib        = require("zyklib")
-local SliderState   = require("cluetrainer/puzzles/sliders/SliderState")
-local Move          = require("cluetrainer/puzzles/sliders/Move")
-local DummySolver   = require("cluetrainer/puzzles/sliders/DummySolver")
+local zyklib           = require("zyklib")
+local schema           = require("cluetrainer/util/schema")
+local storage          = require("cluetrainer/util/storage")
+local SliderState      = require("cluetrainer/puzzles/sliders/SliderState")
+local Move             = require("cluetrainer/puzzles/sliders/Move")
+local DummySolver      = require("cluetrainer/puzzles/sliders/DummySolver")
 -- The pattern database solver is disabled for now. To re-enable it, restore these requires, the `graph` below and the PdbSolver call in ActivePuzzle.new.
 -- local RegionGraph            = require("cluetrainer/puzzles/sliders/pdb/RegionChain")
 -- local PdbSolver              = require("cluetrainer/puzzles/sliders/pdb/PdbSolver")
 
----@class cluetrainer.sliders.SliderSolver
-local slider_solver = {}
+---@class ct.sliders.SliderSolver
+local slider_solver    = {}
+
+slider_solver.settings = {
+  enabled = storage.variable("sliders/enabled", schema.bool({ default = true })),
+  mode = storage.variable("sliders/mode",
+    schema.choices({ choices = { "keyboard", "mouse", "hybrid" }, default = "mouse" })),
+  prevent_overlap = storage.variable("sliders/prevent_overlap", schema.bool({ default = true })),
+  lookahead = storage.variable("sliders/lookahead", schema.int({ min = 2, max = 10, default = 5 })),
+  show_recovery_moves = storage.variable("sliders/show_recovery_moves", schema.bool({ default = true })),
+  color_mainline = storage.variable("sliders/color_mainline", schema.colour({ default = 0x00FF00FF })),
+  color_recovery = storage.variable("sliders/color_recovery", schema.colour({ default = 0xFFA500FF })),
+  solve_time = storage.variable("sliders/solve_time", schema.int({ min = 100, max = 5000, default = 200 })),
+  estimate_slider_speed = storage.variable("sliders/estimate_slider_speed", schema.bool({ default = true })),
+}
 
 --- Downloads a pattern database from cluetrainer.app
 ---@return zyklib.async.Promise<string>
@@ -69,8 +84,8 @@ local COLOR_MOVE = 0x41740EFF
 
 ---Draws the slider puzzle overlay.
 ---@param canvas ui.Canvas
----@param state cluetrainer.sliders.SliderState The current puzzle state
----@param solution cluetrainer.sliders.AugmentedMove[] The solution, with pre- and post-states for each move
+---@param state ct.sliders.SliderState The current puzzle state
+---@param solution ct.sliders.AugmentedMove[] The solution, with pre- and post-states for each move
 local function draw(canvas, state, solution)
   canvas:Clear()
 
@@ -133,14 +148,14 @@ local function draw(canvas, state, solution)
   end
 end
 
----@class cluetrainer.sliders.ActiveSliderPuzzle: zyklib.disposable.IDisposable
+---@class ct.sliders.ActiveSliderPuzzle: zyklib.disposable.IDisposable
 ---@field canvas ui.Canvas
----@field solution cluetrainer.sliders.AugmentedMove[]
+---@field solution ct.sliders.AugmentedMove[]
 ---@field lifetime zyklib.disposable.DisposableGroup
 local ActivePuzzle = {}
 ActivePuzzle.__index = ActivePuzzle
 
----@return cluetrainer.sliders.ActiveSliderPuzzle
+---@return ct.sliders.ActiveSliderPuzzle
 function ActivePuzzle.new()
   local self = setmetatable({}, ActivePuzzle)
 
@@ -152,7 +167,7 @@ function ActivePuzzle.new()
   self.canvas:SetSize(puzzle_container.width, puzzle_container.height)
 
   -- The puzzle state lives in VarClient variables, which do not trigger transmit events, so it is polled every frame.
-  ---@type zyklib.reactive.Observable<cluetrainer.sliders.SliderState>
+  ---@type zyklib.reactive.Observable<ct.sliders.SliderState>
   local observable_slider_state = zyklib.game_events.derived.forClientVariables(function()
     return SliderState.getSliderState()
   end)
@@ -180,7 +195,7 @@ function ActivePuzzle:dispose()
   ActivePuzzle.instance = nil
 end
 
----@type cluetrainer.sliders.ActiveSliderPuzzle?
+---@type ct.sliders.ActiveSliderPuzzle?
 ActivePuzzle.instance = nil
 
 local interface_open_handler = zyklib.game_events.native.ServerLogic:map(function()
@@ -201,12 +216,22 @@ local interface_open_handler = zyklib.game_events.native.ServerLogic:map(functio
 
 ---Enables or disables the slider solver. Disabling also removes any currently shown overlay.
 ---@param active boolean
-function slider_solver.setActive(active)
+local function setActive(active)
   interface_open_handler:setActive(active)
 
   if not active and ActivePuzzle.instance ~= nil then
     ActivePuzzle.instance:dispose()
   end
+end
+
+local initialized = false
+
+--- Activates the solver whenever it is enabled in the settings and deactivates it otherwise. Only the first call has an effect.
+function slider_solver.init()
+  if initialized then return end
+  initialized = true
+
+  slider_solver.settings.enabled:subscribe(setActive, true)
 end
 
 return slider_solver

@@ -2,9 +2,18 @@
 local Towers            = require "cluetrainer/puzzles/towers/Towers"
 local zyklib            = require "zyklib"
 local util              = require "cluetrainer/util"
+local schema            = require "cluetrainer/util/schema"
+local storage           = require "cluetrainer/util/storage"
 
 ---@class ct.towers.TowerSolver
 local towers_solver     = {}
+
+towers_solver.settings  = {
+  enabled = storage.variable("towers/enabled", schema.bool({ default = true })),
+  info = storage.variable("towers/info",
+    schema.choices({ choices = { "delta", "target", "both" }, default = "both" })),
+  highlight_completed_tiles = storage.variable("towers/highlight_completed_tiles", schema.bool({ default = true })),
+}
 
 local TILE_OFFSET       = 44
 
@@ -15,45 +24,8 @@ local TL_OVERLAY_OFFSET = { x = -5, y = -10 }
 ---@param canvas ui.Canvas
 ---@param is_state ct.towers.Blocks
 ---@param should_state ct.towers.Blocks
----@param settings { show_deltas: boolean, show_should: boolean }
-local function draw(canvas, is_state, should_state, settings)
-  canvas:Clear()
+local function draw(canvas, is_state, should_state)
 
-  for x = 1, 5, 1 do
-    for y = 1, 5, 1 do
-      local correct = should_state and should_state.rows[y][x] == is_state.rows[y][x]
-
-      if correct then
-        canvas:AddRectangle(
-          TILE_OFFSET * (x - 1) + 1,
-          TILE_OFFSET * (y - 1) + 1,
-          TILE_OFFSET - 2,
-          TILE_OFFSET - 2,
-          0x00FF0080)
-      else
-        local delta = (6 + should_state.rows[y][x] - is_state.rows[y][x]) % 6
-
-        if settings.show_deltas then
-          canvas:AddText(
-            TR_OVERLAY_OFFSET.x + TILE_OFFSET * (x - 1) + 10,
-            TR_OVERLAY_OFFSET.y + TILE_OFFSET * (y - 1) + 10,
-            "+" .. tostring(delta),
-            id.Font.NOTOSANS_12,
-            0xFFFFFFFF)
-        end
-
-        if settings.show_should then
-          canvas:AddText(
-            TL_OVERLAY_OFFSET.x + TILE_OFFSET * (x - 1) + 10,
-            TL_OVERLAY_OFFSET.y + TILE_OFFSET * (y - 1) + 10,
-            tostring(should_state.rows[y][x]),
-            id.Font.NOTOSANS_12,
-            0xFFFFFFFF
-          )
-        end
-      end
-    end
-  end
 end
 
 --- Gets the hints of the current puzzle
@@ -170,7 +142,56 @@ function ActivePuzzle.new()
     end
   end
 
+  local function draw()
+    self.canvas:Clear()
+    local is_state = state:get()
+    local should_state = self.solution.blocks
+
+    for x = 1, 5, 1 do
+      for y = 1, 5, 1 do
+        local correct = should_state and should_state.rows[y][x] == is_state.rows[y][x]
+
+        if correct then
+          if towers_solver.settings.highlight_completed_tiles:get() then
+            self.canvas:AddRectangle(
+              TILE_OFFSET * (x - 1) + 1,
+              TILE_OFFSET * (y - 1) + 1,
+              TILE_OFFSET - 2,
+              TILE_OFFSET - 2,
+              0x00FF0080)
+          end
+        else
+          local delta = (6 + should_state.rows[y][x] - is_state.rows[y][x]) % 6
+
+          if towers_solver.settings.info:get() == "delta" or towers_solver.settings.info:get() == "both" then
+            self.canvas:AddText(
+              TR_OVERLAY_OFFSET.x + TILE_OFFSET * (x - 1) + 10,
+              TR_OVERLAY_OFFSET.y + TILE_OFFSET * (y - 1) + 10,
+              "+" .. tostring(delta),
+              id.Font.NOTOSANS_12,
+              0xFFFFFFFF)
+          end
+
+          if towers_solver.settings.info:get() == "target" or towers_solver.settings.info:get() == "both" then
+            self.canvas:AddText(
+              TL_OVERLAY_OFFSET.x + TILE_OFFSET * (x - 1) + 10,
+              TL_OVERLAY_OFFSET.y + TILE_OFFSET * (y - 1) + 10,
+              tostring(should_state.rows[y][x]),
+              id.Font.NOTOSANS_12,
+              0xFFFFFFFF
+            )
+          end
+        end
+      end
+    end
+  end
+
   self.disposable_group:add(
+    towers_solver.settings.info:subscribe(draw),
+    towers_solver.settings.highlight_completed_tiles:subscribe(function(value)
+      log("change received")
+      draw()
+    end),
     zyklib.lifecycle.shutdown_event:subscribe(function() self.disposable_group:dispose() end),
     state:subscribe(function(puzzle_state) client_side_history:push(puzzle_state) end, true),
     zyklib.game_events.native.MiniMenuEntrySelected:subscribe(function(payload)
@@ -206,9 +227,7 @@ function ActivePuzzle.new()
     end),
     zyklib.game_events.native.ServerLogic:subscribe(refresh),
 
-    state:subscribe(function(current_state)
-      draw(self.canvas, current_state, self.solution.blocks, { show_deltas = true, show_should = true })
-    end, true)
+    state:subscribe(draw, true)
   )
 
   return self
@@ -242,12 +261,22 @@ local interface_open_handler = zyklib.game_events.native.ServerLogic:map(functio
 
 ---Enables or disables the towers solver. Disabling also removes any currently shown overlay.
 ---@param active boolean
-function towers_solver.setActive(active)
+local function setActive(active)
   interface_open_handler:setActive(active)
 
   if not active and ActivePuzzle.instance ~= nil then
     ActivePuzzle.instance:dispose()
   end
+end
+
+local initialized = false
+
+--- Activates the solver whenever it is enabled in the settings and deactivates it otherwise. Only the first call has an effect.
+function towers_solver.init()
+  if initialized then return end
+  initialized = true
+
+  towers_solver.settings.enabled:subscribe(setActive, true)
 end
 
 return towers_solver

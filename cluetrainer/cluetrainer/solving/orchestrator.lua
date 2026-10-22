@@ -120,7 +120,7 @@ local function create_step_highlights(step)
   if step.solution ~= nil then
     if step.solution.type == "dig" then
       local spot = step.solution
-      .spot --[[@as TileCoordinates]]                           -- LuaCats does not narrow the type of step.solution to DigSolution, so we need to cast this
+          .spot --[[@as TileCoordinates]] -- LuaCats does not narrow the type of step.solution to DigSolution, so we need to cast this
 
       table.insert(highlights, TerrainHighlight.new(
         api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(spot) }),
@@ -270,17 +270,17 @@ function orchestrator:setStep(step)
     marker = nil
   end
 
-  local target = spot(step)
+  -- local target = spot(step)
 
-  if target ~= nil then
-    marker = map.overlays:CreateMarker({
-      position = target,
-      spriteID = id.Sprite.CLUE_SCROLL_ICON,
-      size = 64,
-    })
+  -- if target ~= nil then
+  --   marker = map.overlays:CreateMarker({
+  --     position = target,
+  --     spriteID = id.Sprite.CLUE_SCROLL_ICON,
+  --     size = 64,
+  --   })
 
-    map:ZoomToMapSquare(target)
-  end
+  --   map:ZoomToMapSquare(target)
+  -- end
 
   table.insert(self.history, self.state)
 

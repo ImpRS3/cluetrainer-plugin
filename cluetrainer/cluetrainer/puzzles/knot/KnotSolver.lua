@@ -1,9 +1,15 @@
 -- KnotSolver.lua
 local zyklib     = require "zyklib"
 local util       = require "cluetrainer/util"
+local schema     = require "cluetrainer/util/schema"
+local storage    = require "cluetrainer/util/storage"
 
 ---@class ct.knot.KnotSolver
 local KnotSolver = {}
+
+KnotSolver.settings = {
+  enabled = storage.variable("knots/enabled", schema.bool({ default = true })),
+}
 
 ---Get the current shuffle state of the knot puzzle from player variables.
 ---@return integer[]
@@ -204,7 +210,7 @@ local open_track_type_observable = zyklib.game_events.native.ServerLogic:map(fun
       end
     end)
 
-function KnotSolver.setActive(active)
+local function setActive(active)
   open_track_type_observable:setActive(active)
 
   if not active then
@@ -212,6 +218,16 @@ function KnotSolver.setActive(active)
       ActivePuzzle.instance:dispose()
     end
   end
+end
+
+local initialized = false
+
+--- Activates the solver whenever it is enabled in the settings and deactivates it otherwise. Only the first call has an effect.
+function KnotSolver.init()
+  if initialized then return end
+  initialized = true
+
+  KnotSolver.settings.enabled:subscribe(setActive, true)
 end
 
 return KnotSolver

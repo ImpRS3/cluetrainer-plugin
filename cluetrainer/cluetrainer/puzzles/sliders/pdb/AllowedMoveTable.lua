@@ -4,17 +4,17 @@ local Region = require("cluetrainer/puzzles/sliders/pdb/Region")
 local SliderState = require("cluetrainer/puzzles/sliders/SliderState")
 local zyklib = require("zyklib")
 
----@class cluetrainer.sliders.pdb.AllowedMoveTable
----@field region cluetrainer.sliders.pdb.RegionDescription
+---@class ct.sliders.pdb.AllowedMoveTable
+---@field region ct.sliders.pdb.RegionDescription
 ---@field multitile boolean
 ---@field allow_undoing_moves boolean
----@field move_table cluetrainer.sliders.Move[][][]
+---@field move_table ct.sliders.Move[][][]
 local MoveTable = {}
 MoveTable.__index = MoveTable
 
 ---
----@param region cluetrainer.sliders.pdb.RegionDescription
----@return cluetrainer.sliders.pdb.AllowedMoveTable
+---@param region ct.sliders.pdb.RegionDescription
+---@return ct.sliders.pdb.AllowedMoveTable
 function MoveTable.new(region)
   local self = setmetatable({}, MoveTable)
   self.move_table = {}
@@ -57,8 +57,8 @@ function MoveTable.new(region)
 end
 
 ---
----@param state cluetrainer.sliders.SliderState
----@return cluetrainer.sliders.Move[]
+---@param state ct.sliders.SliderState
+---@return ct.sliders.Move[]
 function MoveTable:get(state)
   return self.move_table[state[SliderState.LAST_MOVE_INDEX] + 1][state[SliderState.BLANK_TILE_INDEX]]
 end

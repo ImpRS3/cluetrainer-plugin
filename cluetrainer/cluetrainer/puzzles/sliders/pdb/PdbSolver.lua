@@ -23,18 +23,18 @@ local move_translation_identity = {
   [21 + 20] = 20,
 }
 
----@class cluetrainer.sliders.pdb.PdbSolv : cluetrainer.sliders.SliderSolvingTask
----@field chain cluetrainer.sliders.pdb.RegionGraph
+---@class ct.sliders.pdb.PdbSolv : ct.sliders.SliderSolvingTask
+---@field chain ct.sliders.pdb.RegionGraph
 local PdbSolver = setmetatable({}, { __index = SliderSolvingTask })
 PdbSolver.__index = PdbSolver
 
----@param start_state cluetrainer.sliders.SliderState
----@param chain cluetrainer.sliders.pdb.RegionGraph
----@return cluetrainer.sliders.pdb.PdbSolv
+---@param start_state ct.sliders.SliderState
+---@param chain ct.sliders.pdb.RegionGraph
+---@return ct.sliders.pdb.PdbSolv
 function PdbSolver.new(start_state, chain)
   local self = SliderSolvingTask.new(start_state)
   setmetatable(self, PdbSolver)
-  ---@cast self cluetrainer.sliders.pdb.PdbSolv
+  ---@cast self ct.sliders.pdb.PdbSolv
 
   self.chain = chain
   return self
@@ -46,7 +46,7 @@ function PdbSolver:implementation()
   local iterations = 0
 
   ---@param coming_from_reflected_region boolean
-  ---@param current_region cluetrainer.sliders.pdb.RegionGraph.Node
+  ---@param current_region ct.sliders.pdb.RegionGraph.Node
   local function doregion(coming_from_reflected_region, current_region)
     local indexing = current_region.table.indexing
     local distance_table = current_region.table

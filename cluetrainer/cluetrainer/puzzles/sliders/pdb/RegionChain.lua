@@ -5,21 +5,21 @@ local Region                     = require("cluetrainer/puzzles/sliders/pdb/Regi
 
 local array = require("zyklib/array")
 
----@class cluetrainer.sliders.pdb.RegionGraph.Node
+---@class ct.sliders.pdb.RegionGraph.Node
 ---@field reflected boolean
----@field effective_region cluetrainer.sliders.pdb.Region
----@field table cluetrainer.sliders.pdb.RegionDistanceTable
----@field children cluetrainer.sliders.pdb.RegionGraph.Node[]
+---@field effective_region ct.sliders.pdb.Region
+---@field table ct.sliders.pdb.RegionDistanceTable
+---@field children ct.sliders.pdb.RegionGraph.Node[]
 
----@class cluetrainer.sliders.pdb.RegionGraph
----@field private nodes cluetrainer.sliders.pdb.RegionGraph.Node[]
----@field private entry_nodes cluetrainer.sliders.pdb.RegionGraph.Node[]
+---@class ct.sliders.pdb.RegionGraph
+---@field private nodes ct.sliders.pdb.RegionGraph.Node[]
+---@field private entry_nodes ct.sliders.pdb.RegionGraph.Node[]
 local RegionGraph = {}
 RegionGraph.__index = RegionGraph
 
----@param databases cluetrainer.sliders.pdb.RegionDistanceTable[]
+---@param databases ct.sliders.pdb.RegionDistanceTable[]
 ---@param include_reflected_nodes boolean
----@return cluetrainer.sliders.pdb.RegionGraph
+---@return ct.sliders.pdb.RegionGraph
 function RegionGraph.new(databases, include_reflected_nodes)
   local self = setmetatable({}, RegionGraph)
 
@@ -71,7 +71,7 @@ end
 
 ---Parses the given data into a list of RegionDistanceTable instances.
 ---@param data string
----@return cluetrainer.sliders.pdb.RegionDistanceTable[]
+---@return ct.sliders.pdb.RegionDistanceTable[]
 function RegionGraph.parseTables(data)
   local tables = {}
 
@@ -87,7 +87,7 @@ function RegionGraph.parseTables(data)
   return tables
 end
 
----@return cluetrainer.sliders.pdb.RegionGraph.Node[]
+---@return ct.sliders.pdb.RegionGraph.Node[]
 function RegionGraph:getEntryPoints()
   return self.entry_nodes
 end

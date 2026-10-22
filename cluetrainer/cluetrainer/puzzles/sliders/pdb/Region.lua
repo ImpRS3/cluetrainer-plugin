@@ -2,10 +2,10 @@
 local zyklib = require "zyklib"
 local SliderState = require "cluetrainer/puzzles/sliders/SliderState"
 
---- @alias cluetrainer.sliders.pdb.Region (0 | 1 | 2)[]
+--- @alias ct.sliders.pdb.Region (0 | 1 | 2)[]
 
---- @class (exact) cluetrainer.sliders.pdb.RegionDescription
---- @field region cluetrainer.sliders.pdb.Region
+--- @class (exact) ct.sliders.pdb.RegionDescription
+--- @field region ct.sliders.pdb.Region
 --- @field multitile boolean
 
 local Region = {}
@@ -17,21 +17,21 @@ Region.Tile.CURRENT = 1
 Region.Tile.FIXED = 2
 
 ---Reflects the given region.
----@param region cluetrainer.sliders.pdb.Region
----@return cluetrainer.sliders.pdb.Region
+---@param region ct.sliders.pdb.Region
+---@return ct.sliders.pdb.Region
 function Region.reflect(region)
   return zyklib.array.map(SliderState.tile_reflection_table, function(i) return region[i] end)
 end
 
 ---Checks if the two given regions are equal.
----@param region1 cluetrainer.sliders.pdb.Region
----@param region2 cluetrainer.sliders.pdb.Region
+---@param region1 ct.sliders.pdb.Region
+---@param region2 ct.sliders.pdb.Region
 ---@return boolean
 function Region.equals(region1, region2)
   return zyklib.objects.deepEquals(region1, region2)
 end
 
----@param region cluetrainer.sliders.pdb.Region
+---@param region ct.sliders.pdb.Region
 ---@return boolean
 function Region.isFirst(region)
   for i = 1, #region do
@@ -42,8 +42,8 @@ function Region.isFirst(region)
   return true
 end
 
----@param parent cluetrainer.sliders.pdb.Region
----@param child cluetrainer.sliders.pdb.Region
+---@param parent ct.sliders.pdb.Region
+---@param child ct.sliders.pdb.Region
 ---@return boolean
 function Region.isChild(parent, child)
   return zyklib.array.forAll(child, function(child_tile, i)

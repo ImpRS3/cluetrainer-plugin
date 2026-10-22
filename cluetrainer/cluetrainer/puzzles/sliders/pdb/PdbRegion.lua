@@ -3,15 +3,15 @@ local AllowedMoveTable          = require("cluetrainer/puzzles/sliders/pdb/Allow
 local Region                    = require("cluetrainer/puzzles/sliders/pdb/Region")
 local Indexing                  = require("cluetrainer/puzzles/sliders/pdb/RegionIndexing")
 
----@class cluetrainer.sliders.pdb.RegionDistanceTable
----@field region cluetrainer.sliders.pdb.RegionDescription
----@field indexing cluetrainer.sliders.pdb.RegionIndexing
+---@class ct.sliders.pdb.RegionDistanceTable
+---@field region ct.sliders.pdb.RegionDescription
+---@field indexing ct.sliders.pdb.RegionIndexing
 ---@field underlying_data string
 ---@field data_offset integer
 ---@field byte_size integer
 ---@field real_data_offset integer
----@field description cluetrainer.sliders.pdb.RegionDescription
----@field move_table cluetrainer.sliders.pdb.AllowedMoveTable
+---@field description ct.sliders.pdb.RegionDescription
+---@field move_table ct.sliders.pdb.AllowedMoveTable
 local RegionDistanceTable       = {}
 RegionDistanceTable.__index     = RegionDistanceTable
 
@@ -56,7 +56,7 @@ end
 ---Creates a new RegionDistanceTable instance from the given data and offset.
 ---@param data string
 ---@param offset integer 0-based offset where the data starts
----@return cluetrainer.sliders.pdb.RegionDistanceTable
+---@return ct.sliders.pdb.RegionDistanceTable
 function RegionDistanceTable.new(data, offset)
   local self = setmetatable({}, RegionDistanceTable)
 

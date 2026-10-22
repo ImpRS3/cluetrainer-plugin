@@ -25,6 +25,17 @@ install:
 
 package: (package_into "dist/cluetrainer")
 
+package-zip: (package_into "dist/cluetrainer")
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    rm -f dist/cluetrainer.zip
+    (
+      cd dist/cluetrainer
+      shopt -s dotglob nullglob
+      zip -r ../cluetrainer.zip *
+    )
+
 [private]
 package_into target:
     rm -rf "{{target}}"

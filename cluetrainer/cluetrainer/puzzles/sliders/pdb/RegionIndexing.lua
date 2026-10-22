@@ -37,8 +37,8 @@ local function factorial(n, lower)
 end
 
 --- This class provides efficient indexing to find slider states within a region by utilizing precomputed tables.
---- @class cluetrainer.sliders.pdb.RegionIndexing
---- @field region cluetrainer.sliders.pdb.RegionDescription
+--- @class ct.sliders.pdb.RegionIndexing
+--- @field region ct.sliders.pdb.RegionDescription
 --- @field current integer
 --- @field freedom integer
 --- @field solves_puzzle boolean
@@ -52,7 +52,7 @@ local Indexing = {}
 Indexing.__index = Indexing
 
 ---@param region integer[]
----@return cluetrainer.sliders.pdb.RegionIndexing
+---@return ct.sliders.pdb.RegionIndexing
 function Indexing.new(region)
   local self = setmetatable({}, Indexing)
 
@@ -119,7 +119,7 @@ function Indexing.new(region)
 end
 
 --- Compute the index for a given state within the region.
----@param state cluetrainer.sliders.SliderState
+---@param state ct.sliders.SliderState
 ---@return integer A 0-based index representing the position of the state within the binary data for the distance table of this region
 function Indexing:stateIndex(state)
   -- Buckle in, because things are about to get combinatorial.

@@ -1,13 +1,13 @@
 -- SliderState.lua
 local zyklib = require "zyklib"
 
----@class cluetrainer.sliders.sliderstate
+---@class ct.sliders.sliderstate
 local SliderState = {}
 
----@class cluetrainer.sliders.SliderState : integer[]
+---@class ct.sliders.SliderState : integer[]
 
 ---Gets the current state of all sliders.
----@return cluetrainer.sliders.SliderState
+---@return ct.sliders.SliderState
 function SliderState.getSliderState()
   return SliderState.fromPermutation(zyklib.array.flatten({
     zyklib.bits.getAll(5, var.VarClient.SLIDE_PUZZLE_CLIENT0.value),
@@ -53,8 +53,8 @@ local partial_moves = {
 }
 
 --- Applies a move to this slider state in-place.
----@param state cluetrainer.sliders.SliderState
----@param move cluetrainer.sliders.Move
+---@param state ct.sliders.SliderState
+---@param move ct.sliders.Move
 function SliderState.doMove(state, move)
   local partials = partial_moves[move]
 
@@ -70,8 +70,8 @@ function SliderState.doMove(state, move)
 end
 
 ---Checks whether two states have the same tiles. Only indices 1-25 are compared, not the blank index or last move metadata.
----@param a cluetrainer.sliders.SliderState
----@param b cluetrainer.sliders.SliderState
+---@param a ct.sliders.SliderState
+---@param b ct.sliders.SliderState
 ---@return boolean
 function SliderState.isEqual(a, b)
   for i = 1, 25 do
@@ -82,15 +82,15 @@ function SliderState.isEqual(a, b)
 end
 
 ---Returns all states reachable from the given state with a single move.
----@param state cluetrainer.sliders.SliderState
+---@param state ct.sliders.SliderState
 ---@param multitile_allowed boolean? Whether multitile moves are included. Defaults to true.
----@return cluetrainer.sliders.SliderState[]
+---@return ct.sliders.SliderState[]
 function SliderState.neighbours(state, multitile_allowed)
   local blank = state[SliderState.BLANK_TILE_INDEX]
   local x = (blank - 1) % 5
   local y = (blank - 1) // 5
 
-  ---@type cluetrainer.sliders.Move[]
+  ---@type ct.sliders.Move[]
   local moves = {}
 
   for xi = 0, 4 do
@@ -114,18 +114,18 @@ function SliderState.neighbours(state, multitile_allowed)
   return result
 end
 
----@class cluetrainer.sliders.AugmentedMove
----@field move cluetrainer.sliders.Move
----@field pre_states cluetrainer.sliders.SliderState[] States in which this move is the next one to make. The first entry is the exact state before the move, the rest are the neighbours of `post`.
----@field post cluetrainer.sliders.SliderState State after the move
+---@class ct.sliders.AugmentedMove
+---@field move ct.sliders.Move
+---@field pre_states ct.sliders.SliderState[] States in which this move is the next one to make. The first entry is the exact state before the move, the rest are the neighbours of `post`.
+---@field post ct.sliders.SliderState State after the move
 
 --- Pairs each move with the set of states it applies to and the state after it. Neither the start state nor the moves are modified.
 --- Each `post` is the same table as the next entry's `pre_states[1]`, so treat the states as read-only.
----@param start cluetrainer.sliders.SliderState
----@param moves cluetrainer.sliders.Move[]
----@return cluetrainer.sliders.AugmentedMove[]
+---@param start ct.sliders.SliderState
+---@param moves ct.sliders.Move[]
+---@return ct.sliders.AugmentedMove[]
 function SliderState.augmentMoves(start, moves)
-  ---@type cluetrainer.sliders.AugmentedMove[]
+  ---@type ct.sliders.AugmentedMove[]
   local result = {}
   local current = start
 
@@ -147,7 +147,7 @@ end
 
 ---Construct an optimized slider state from a given permutation of tiles.
 ---@param state integer[] Any permutation of the numbers 0 through 24
----@return cluetrainer.sliders.SliderState
+---@return ct.sliders.SliderState
 function SliderState.fromPermutation(state)
   local result = { table.unpack(state) }
   result[SliderState.LAST_MOVE_INDEX] = 20
@@ -178,7 +178,7 @@ SliderState.move_translation_reflect = {
 }
 
 ---Reflects the state in place along the main diagonal.
----@param state cluetrainer.sliders.SliderState
+---@param state ct.sliders.SliderState
 function SliderState.reflect(state)
   -- Swap tiles on opposing sides of the main diagonal
   -- The indices are hardcoded here sincce this is reasonably performance critical and avoids the overhead of looping through a table.
