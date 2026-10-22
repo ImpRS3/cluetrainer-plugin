@@ -2,6 +2,8 @@
 ---@class ct.towers.Towers
 local Towers = {}
 
+local zyklib = require("zyklib")
+
 ---@alias ct.towers.Tower 1|2|3|4|5
 ---@alias ct.towers.Street [ct.towers.Tower?, ct.towers.Tower?, ct.towers.Tower?, ct.towers.Tower?, ct.towers.Tower?]
 ---@alias ct.towers.StreetLabel ct.towers.Tower
@@ -35,11 +37,6 @@ Towers.Street = {}
 
 ---@type ct.towers.Street[]?
 local all_streets = nil
-
----@return ct.towers.Street
-function Towers.Street.empty()
-    return { 0, 0, 0, 0, 0 }
-end
 
 ---@generic T
 ---@param elements T[]
@@ -220,29 +217,6 @@ function Towers.Blocks.empty()
     }
 end
 
----@param a ct.towers.Blocks
----@param b ct.towers.Blocks
----@return ct.towers.Blocks
-function Towers.Blocks.combine(a, b)
-    ---@type [ct.towers.Street, ct.towers.Street, ct.towers.Street, ct.towers.Street, ct.towers.Street]
-    local rows = {}
-
-    for y = 1, 5 do
-        ---@type ct.towers.Street
-        rows[y] = {}
-
-        for x = 1, 5 do
-            if a.rows[y][x] ~= nil then
-                rows[y][x] = a.rows[y][x]
-            else
-                rows[y][x] = b.rows[y][x]
-            end
-        end
-    end
-
-    return { rows = rows }
-end
-
 Towers.Puzzle = {}
 
 ---@generic T
@@ -337,25 +311,11 @@ function Towers.Puzzle.solve(puzzle)
     return backtrack(1, {})
 end
 
----@param first [ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel]
----@param second [ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel, ct.towers.StreetLabel]
----@return [ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair, ct.towers.LabelPair]
-local function zip_labels(first, second)
-    ---@type ct.towers.LabelPair[]
-    local result = {}
-
-    for i = 1, 5 do
-        result[i] = { first[i], second[i] }
-    end
-
-    return result
-end
-
 ---@param hints ct.towers.Hints
 ---@return ct.towers.PuzzleState?
 function Towers.solve(hints)
-    local columns = zip_labels(hints.top, hints.bottom)
-    local rows = zip_labels(hints.left, hints.right)
+    local columns = zyklib.array.zip(hints.top, hints.bottom)
+    local rows = zyklib.array.zip(hints.left, hints.right)
 
     ---@type ct.towers.HintPairs
     local pairs = {
