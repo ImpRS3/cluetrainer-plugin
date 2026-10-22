@@ -27,6 +27,8 @@ local function getPuzzleState()
   }
 end
 
+local FONT                = config.Font.NOTOSANS_28
+
 local TILE_OFFSET         = 38
 local TL_OFFSET_IN_CANVAS = {
   x = 50,
@@ -39,9 +41,13 @@ local TL_OFFSET_IN_CANVAS = {
 local function draw(canvas, solution)
   canvas:Clear()
 
+  local width = {
+    FONT:GetStringWidth("1"),
+    FONT:GetStringWidth("2"),
+  }
   for x = 1, 5, 1 do
     for y = 1, 5, 1 do
-      local delta = solution.moves[y][x]
+      local delta = solution[y][x]
 
       if delta ~= 0 then
         -- Draw text with a shadow to make it more readable
@@ -49,35 +55,35 @@ local function draw(canvas, solution)
           TL_OFFSET_IN_CANVAS.x + TILE_OFFSET * (x - 1) + 1,
           TL_OFFSET_IN_CANVAS.y + TILE_OFFSET * (y - 1) + 1,
           tostring(delta),
-          id.Font.NOTOSANS_28,
+          FONT.id,
           0x00000080)
 
         canvas:AddText(
           TL_OFFSET_IN_CANVAS.x + TILE_OFFSET * (x - 1) - 1,
           TL_OFFSET_IN_CANVAS.y + TILE_OFFSET * (y - 1) - 1,
           tostring(delta),
-          id.Font.NOTOSANS_28,
+          FONT.id,
           0x00000080)
 
         canvas:AddText(
           TL_OFFSET_IN_CANVAS.x + TILE_OFFSET * (x - 1) + 1,
           TL_OFFSET_IN_CANVAS.y + TILE_OFFSET * (y - 1) - 1,
           tostring(delta),
-          id.Font.NOTOSANS_28,
+          FONT.id,
           0x00000080)
 
         canvas:AddText(
           TL_OFFSET_IN_CANVAS.x + TILE_OFFSET * (x - 1) - 1,
           TL_OFFSET_IN_CANVAS.y + TILE_OFFSET * (y - 1) + 1,
           tostring(delta),
-          id.Font.NOTOSANS_28,
+          FONT.id,
           0x00000080)
 
         canvas:AddText(
           TL_OFFSET_IN_CANVAS.x + TILE_OFFSET * (x - 1),
           TL_OFFSET_IN_CANVAS.y + TILE_OFFSET * (y - 1),
           tostring(delta),
-          id.Font.NOTOSANS_28,
+          FONT.id,
           0xFFFFFFFF)
       end
     end
@@ -110,8 +116,6 @@ function ActivePuzzle.new()
 
   local function refreshSolution()
     solution:set(Lockboxes.solve(getPuzzleState(), {
-      modulo_targets_allowed = true,
-      minimize = true,
       minimize_by = Lockboxes.MoveMap.scoring({ 0, 1, lockbox_solver.settings.optimization_coefficient:get() / 10 }),
     }))
   end

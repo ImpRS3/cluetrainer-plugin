@@ -7,7 +7,8 @@
 		"dependencies/runescape-api-stubs/types.lua",
 		"dependencies/runescape-api-stubs/generated/",
 		//"dependencies/runescape-api-stubs/consts/"
-		"dependencies/zyklib/src/"
+		"dependencies/zyklib/src/",
+		"dependencies/prettyui/"
 	],
 	"workspace.checkThirdParty": false,
 	"runtime.version": "Lua 5.4",
@@ -23,10 +24,15 @@
 	},
 	"runtime.path": [
 		"cluetrainer/?.lua",
-		"dependencies/zyklib/src/?.lua"
+		"dependencies/zyklib/src/?.lua",
+		"dependencies/prettyui/?.lua"
 	],
 	"completion.requireSeparator": "/",
-    "diagnostics.disable": [
-        "different-requires"
-    ]
+	"diagnostics.disable": [
+		"different-requires"
+	],
+	"diagnostics.severity": {
+		"undefined-field": "Warning",
+		"missing-fields": "Warning"
+	}
 }

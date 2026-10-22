@@ -9,16 +9,20 @@ local function main()
   local lockbox_solver = require("cluetrainer/puzzles/lockbox/LockboxSolver")
   local knot_solver    = require("cluetrainer/puzzles/knot/KnotSolver")
   local slider_solver  = require("cluetrainer/puzzles/sliders/SliderSolver")
-  local settings       = require("cluetrainer/ui/SettingsDialog")
+  local settings_dialog = require("cluetrainer/ui/SettingsDialog")
 
-  towers_solver.setActive(true)
-  lockbox_solver.setActive(true)
-  knot_solver.setActive(true)
-  slider_solver.setActive(true)
+  towers_solver.init()
+  lockbox_solver.init()
+  knot_solver.init()
+  slider_solver.init()
   orchestrator.init()
 
-  settings.open()
-  
+  settings_dialog.open()
+
+  zyklib.game_events.native.SettingsLayerReady:subscribe(function(payload)
+    settings_dialog.mount(payload.component)
+  end)
+
   -- local data = require("cluetrainer/puzzles/sliders/pdb/data/mtm_pdb_data")
 
   -- local task = zyklib.base64.decodeLargeAsync(data.base64)
