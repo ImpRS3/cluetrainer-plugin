@@ -1,4 +1,3 @@
--- teleports.lua
 ---@type TeleportGroup[]
 local teleports = {
   {
@@ -14,7 +13,8 @@ local teleports = {
         code = "A",
         name = "Al Kharid",
         target = { origin = { x = 3297, y = 3184, level = 0 } },
-        facing = 4
+        facing = 4,
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_12" }
       },
       {
         id = "anachronia",
@@ -22,7 +22,8 @@ local teleports = {
         img = { url = "lode_anachronia.png", height = 28 },
         code = "Alt+D",
         target = { origin = { x = 5431, y = 2338, level = 0 } },
-        facing = 4
+        facing = 4,
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_27" }
       },
       {
         id = "ardougne",
@@ -30,7 +31,8 @@ local teleports = {
         code = "Alt+A",
         target = { origin = { x = 2634, y = 3348, level = 0 } },
         facing = 4,
-        name = "Ardougne"
+        name = "Ardougne",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_3" }
       },
       {
         id = "ashdale",
@@ -38,7 +40,8 @@ local teleports = {
         img = { url = "lode_ashdale.png", height = 28 },
         code = "Shift+A",
         target = { origin = { x = 2474, y = 2708, level = 2 } },
-        facing = 4
+        facing = 4,
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_22" }
       },
       {
         id = "banditcamp",
@@ -46,7 +49,8 @@ local teleports = {
         code = "Alt+B",
         target = { origin = { x = 3214, y = 2954, level = 0 } },
         facing = 4,
-        name = "Bandit Camp"
+        name = "Bandit Camp",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_13" }
       },
       {
         id = "burthorpe",
@@ -54,7 +58,8 @@ local teleports = {
         code = "B",
         target = { origin = { x = 2899, y = 3544, level = 0 } },
         facing = 4,
-        name = "Burthorpe"
+        name = "Burthorpe",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_5" }
       },
       {
         id = "canifis",
@@ -62,7 +67,8 @@ local teleports = {
         code = "Alt+C",
         target = { origin = { x = 3517, y = 3515, level = 0 } },
         facing = 4,
-        name = "Canifis"
+        name = "Canifis",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_15" }
       },
       {
         id = "catherby",
@@ -70,7 +76,8 @@ local teleports = {
         code = "C",
         target = { origin = { x = 2811, y = 3449, level = 0 } },
         facing = 4,
-        name = "Catherby"
+        name = "Catherby",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_6" }
       },
       {
         id = "draynor",
@@ -78,7 +85,8 @@ local teleports = {
         code = "D",
         target = { origin = { x = 3105, y = 3298, level = 0 } },
         facing = 4,
-        name = "Draynor"
+        name = "Draynor",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_9" }
       },
       {
         id = "eaglespeak",
@@ -86,7 +94,8 @@ local teleports = {
         code = "Alt+E",
         target = { origin = { x = 2366, y = 3479, level = 0 } },
         facing = 4,
-        name = "Eagles` Peak"
+        name = "Eagles` Peak",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_16" }
       },
       {
         id = "edgeville",
@@ -94,7 +103,8 @@ local teleports = {
         code = "E",
         target = { origin = { x = 3067, y = 3505, level = 0 } },
         facing = 4,
-        name = "Edgeville"
+        name = "Edgeville",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_11" }
       },
       {
         id = "falador",
@@ -102,7 +112,8 @@ local teleports = {
         code = "F",
         target = { origin = { x = 2967, y = 3403, level = 0 } },
         facing = 4,
-        name = "Falador"
+        name = "Falador",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_2" }
       },
       {
         id = "fortforinthry",
@@ -110,7 +121,8 @@ local teleports = {
         code = "Shift+F",
         target = { origin = { x = 3298, y = 3525, level = 0 } },
         facing = 4,
-        name = "Fort Forinthry"
+        name = "Fort Forinthry",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_28" }
       },
       {
         id = "fremmenik",
@@ -118,7 +130,8 @@ local teleports = {
         code = "Alt+F",
         target = { origin = { x = 2712, y = 3677, level = 0 } },
         facing = 4,
-        name = "Fremennik Province"
+        name = "Fremennik Province",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_18" }
       },
       {
         id = "karamja",
@@ -126,7 +139,8 @@ local teleports = {
         code = "K",
         target = { origin = { x = 2761, y = 3147, level = 0 } },
         facing = 4,
-        name = "Karamja"
+        name = "Karamja",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_19" }
       },
       {
         id = "lumbridge",
@@ -134,7 +148,8 @@ local teleports = {
         code = "L",
         target = { origin = { x = 3233, y = 3221, level = 0 } },
         facing = 4,
-        name = "Lumbridge"
+        name = "Lumbridge",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_0" }
       },
       {
         id = "lunarisle",
@@ -142,7 +157,8 @@ local teleports = {
         code = "Alt+L",
         target = { origin = { x = 2088, y = 3911, level = 0 } },
         facing = 4,
-        name = "Lunar Isle"
+        name = "Lunar Isle",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_14" }
       },
       {
         id = "menaphos",
@@ -150,7 +166,8 @@ local teleports = {
         code = "M",
         target = { origin = { x = 3216, y = 2716, level = 0 } },
         facing = 4,
-        name = "Menaphos"
+        name = "Menaphos",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_26" }
       },
       {
         id = "ooglog",
@@ -158,7 +175,8 @@ local teleports = {
         code = "O",
         target = { origin = { x = 2532, y = 2871, level = 0 } },
         facing = 4,
-        name = "Oo´glog"
+        name = "Oo´glog",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_17" }
       },
       {
         id = "portsarim",
@@ -166,7 +184,8 @@ local teleports = {
         code = "P",
         target = { origin = { x = 3011, y = 3215, level = 0 } },
         facing = 4,
-        name = "Port Sarim"
+        name = "Port Sarim",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_8" }
       },
       {
         id = "prifddinas",
@@ -174,7 +193,8 @@ local teleports = {
         code = "Alt+P",
         target = { origin = { x = 2208, y = 3360, level = 1 } },
         facing = 4,
-        name = "Prifddinas"
+        name = "Prifddinas",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_23" }
       },
       {
         id = "seersvillage",
@@ -182,7 +202,8 @@ local teleports = {
         code = "S",
         target = { origin = { x = 2689, y = 3482, level = 0 } },
         facing = 4,
-        name = "Seers´ Village"
+        name = "Seers´ Village",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_7" }
       },
       {
         id = "taverley",
@@ -190,7 +211,8 @@ local teleports = {
         code = "T",
         target = { origin = { x = 2878, y = 3442, level = 0 } },
         facing = 4,
-        name = "Taverley"
+        name = "Taverley",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_4" }
       },
       {
         id = "tirannwn",
@@ -198,7 +220,8 @@ local teleports = {
         code = "Alt+T",
         target = { origin = { x = 2254, y = 3149, level = 0 } },
         facing = 4,
-        name = "Tirannwn"
+        name = "Tirannwn",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_20" }
       },
       {
         id = "varrock",
@@ -206,7 +229,8 @@ local teleports = {
         code = "V",
         target = { origin = { x = 3214, y = 3376, level = 0 } },
         facing = 4,
-        name = "Varrock"
+        name = "Varrock",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_1" }
       },
       {
         id = "wilderness",
@@ -214,7 +238,8 @@ local teleports = {
         code = "W",
         target = { origin = { x = 3143, y = 3635, level = 0 } },
         facing = 4,
-        name = "Wilderness"
+        name = "Wilderness",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_21" }
       },
       {
         id = "yanille",
@@ -222,7 +247,8 @@ local teleports = {
         code = "Y",
         target = { origin = { x = 2529, y = 3094, level = 0 } },
         facing = 4,
-        name = "Yanille"
+        name = "Yanille",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_10" }
       },
       {
         id = "cityofum",
@@ -230,7 +256,8 @@ local teleports = {
         code = "U",
         target = { origin = { x = 1084, y = 1768, level = 1 } },
         facing = 3,
-        name = "City of Um"
+        name = "City of Um",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_29" }
       },
       {
         id = "wendlewick",
@@ -238,12 +265,13 @@ local teleports = {
         code = "Alt+W",
         target = { origin = { x = 3462, y = 1520, level = 0 } },
         facing = 3,
-        name = "Wendlewick"
+        name = "Wendlewick",
+        cache_data = { sprite = "RS3_ICON_LODESTONE_INSIGNIA_SMALL_30" }
       }
     },
     access = {
-      { id = "map",       type = "spellbook", name = "Lodestone Network Map", menu_ticks = 1 },
-      { id = "spellbook", type = "spellbook", name = "Any Spellbook",         menu_ticks = 0 }
+      { id = "map", type = "spellbook", name = "Lodestone Network Map", menu_ticks = 1 },
+      { id = "spellbook", type = "spellbook", name = "Any Spellbook", menu_ticks = 0 }
     }
   },
   {
