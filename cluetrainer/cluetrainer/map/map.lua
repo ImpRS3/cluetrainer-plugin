@@ -2,6 +2,8 @@ local prettymap = require("prettymap")
 local zyklib = require("zyklib")
 local teleport_layer = require("cluetrainer/map/teleport_layer")
 
+local elements = require("prettymap/elements")
+
 -- Mirrors the PrettyUI window chrome, which is not exposed.
 local WINDOW_BORDER = 8
 local WINDOW_TITLE_HEIGHT = 32
@@ -73,7 +75,9 @@ function GameMap.new()
     )
   end
 
-  teleport_layer.new(self)
+  self.map:AddElement(elements.SpriteElement.new{coordinate = CoordGrid.new(0, 51, 47, 0, 56), spriteID = id.Sprite.CLUE_SCROLL_ICON, size = 8})
+
+  self.map:AddElement(teleport_layer.new())
 
   zyklib.lifecycle.shutdown_event:subscribe(function() self.window:Destroy() end)
 

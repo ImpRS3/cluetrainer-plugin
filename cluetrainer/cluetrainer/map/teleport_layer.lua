@@ -1,29 +1,19 @@
 local teleports = require("cluetrainer/data/teleports")
-local coordinate_adaptor = require("cluetrainer/model_shared/coordinate_adaptor")
+local elements = require("prettymap/elements")
+local TeleportElement = require("cluetrainer/map/elements/TeleportElement")
 
-local TeleportLayer = {}
-TeleportLayer.__index = {}
+--- A coordinate-less element without a visual: it only owns the teleport spot elements.
+---@class cluetrainer.TeleportLayer: prettymap.Element
+local TeleportLayer = setmetatable({}, { __index = elements.Element })
+TeleportLayer.__index = TeleportLayer
 
----@param map ct.GameMap
-function TeleportLayer.new(map)
-  local self = setmetatable({}, TeleportLayer)
+---@return cluetrainer.TeleportLayer
+function TeleportLayer.new()
+  local self = setmetatable(elements.Element.new(), TeleportLayer)
 
   for _, teleport in ipairs(teleports) do
-    -- Initialize teleport on the map
-
     for _, spot in ipairs(teleport.spots) do
-      -- Initialize each spot on the map
-      local sprite_id = (spot.cache_data and spot.cache_data.sprite) or
-      (teleport.cache_data and teleport.cache_data.sprite)
-      if sprite_id then
-        -- Use sprite_id to initialize the spot on the map
-        map.map.overlays:CreateSprite({
-          coordinate = coordinate_adaptor.tile_coordinates_to_coord_grid(spot.target.origin),
-          sprite = id.Sprite[sprite_id],
-          width = 28,
-          height = 28
-        })
-      end
+      self:Add(TeleportElement.new(teleport, spot))
     end
   end
 

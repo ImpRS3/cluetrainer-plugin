@@ -3,6 +3,7 @@ local Controls = require("prettymap/controls")
 local Helpers = require("prettymap/map_helpers")
 local TileRenderer = require("prettymap/tile_renderer")
 local MapOverlays = require("prettymap/map_overlays")
+local ElementManager = require("prettymap/element_manager")
 
 ---@class prettymap.MapView 
 local MapView = {}
@@ -110,6 +111,9 @@ function MapView.new(parent, options)
     self.tileLayer = ui.Layer.new(self.viewport)
     self.iconTileLayer = ui.Layer.new(self.viewport)
     self.mapOverlayLayer = ui.Layer.new(self.viewport)
+    self.elementLayer = ui.Layer.new(self.viewport)
+    self.elementLayer.clickthrough = true
+    self.elements = ElementManager.new(self, self.elementLayer)
     self.screenOverlayLayer = ui.Layer.new(self.root)
     self.screenMarkerLayer = ui.Layer.new(self.root)
     self.chromeLayer = ui.Layer.new(self.root)
@@ -211,6 +215,7 @@ function MapView:_RefreshView(category)
     if work.tiles then TileRenderer._RefreshTiles(self) end
     if work.sprites then MapOverlays._RefreshCustomSprites(self) end
     if work.drawing then MapOverlays._DrawCustomOverlay(self) end
+    if work.destroyTiles then self.elements:Refresh() end
     if work.edgeMarkers then MapOverlays._DrawEdgeMarkers(self) end
     if work.notify then MapOverlays._NotifyViewChanged(self) end
 end
@@ -265,6 +270,7 @@ function MapView:_ApplyZoom(index, centreNormalX, centreNormalY, scaleOverride)
     for _, canvas in ipairs(self.customCanvases) do
         canvas:SetSize(self.contentWidth, self.contentHeight)
     end
+    self.elementLayer:SetSize(self.contentWidth, self.contentHeight)
     self:_SetScroll(
         self.mapOffsetX + centreNormalX * self.mapWidth - self.viewportWidth / 2,
         self.mapOffsetY + centreNormalY * self.mapHeight - self.viewportHeight / 2,
@@ -338,6 +344,16 @@ end
 function MapView:GetPlane()
     return self.plane
 end
+
+--- Adds an element, with its children, to the map (see prettymap/elements).
+---@param item prettymap.Element
+---@return prettymap.Element
+function MapView:AddElement(item) return self.elements:Add(item) end
+
+--- Removes an element, with its children, from the map.
+---@param item prettymap.Element
+---@return boolean removed
+function MapView:RemoveElement(item) return self.elements:Remove(item) end
 
 function MapView:_ClickAt(x, y)
     if not self.imageAvailable then return end
@@ -429,6 +445,7 @@ end
 function MapView:Destroy()
     if not self.root then return false end
     TileRenderer._DestroyTiles(self)
+    self.elements:Destroy()
     for _, marker in ipairs(self.edgeMarkers) do
         marker.map = nil
         marker.component = nil
@@ -453,6 +470,7 @@ function MapView:Destroy()
     self.tileLayer = nil
     self.iconTileLayer = nil
     self.mapOverlayLayer = nil
+    self.elementLayer = nil
     self.screenOverlayLayer = nil
     self.screenMarkerLayer = nil
     self.chromeLayer = nil

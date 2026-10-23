@@ -289,32 +289,37 @@ local teleports = {
           data = "7n3vAQ=="
         },
         img = { url = "tele-cam.png" },
-        name = "Camelot"
+        name = "Camelot",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_CAMELOT" }
       },
       {
         id = "camelot-seers",
         target = { origin = { x = 2704, y = 3481, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-cam-seers.png" },
-        name = "Camelot (Seer's Village)"
+        name = "Camelot (Seer's Village)",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_CAMELOT" }
       },
       {
         id = "varrock",
         target = { origin = { x = 3210, y = 3432, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-var.png" },
-        name = "Varrock"
+        name = "Varrock",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_VARROCK" }
       },
       {
         id = "varrock-ge",
         target = { origin = { x = 3162, y = 3462, level = 0 }, size = { x = 2, y = 5 } },
         icon_position_override = { x = 3162, y = 3462, level = 0 },
         img = { url = "tele-var-ge.png" },
-        name = "Varrock (Grand Exchange)"
+        name = "Varrock (Grand Exchange)",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_VARROCK" }
       },
       {
         id = "varrock-church",
         target = { origin = { x = 3245, y = 3478, level = 0 }, size = { x = 4, y = 5 } },
         img = { url = "tele-var-church.png" },
-        name = "Varrock (Church)"
+        name = "Varrock (Church)",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_VARROCK" }
       },
       {
         id = "watchtower",
@@ -324,13 +329,15 @@ local teleports = {
           data = "88w="
         },
         img = { url = "tele-watch.png" },
-        name = "Watchtower"
+        name = "Watchtower",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_WATCHTOWER" }
       },
       {
         id = "watchtower-yanille",
         target = { origin = { x = 2573, y = 3087, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-watch-center.png" },
-        name = "Watchtower (Yanille)"
+        name = "Watchtower (Yanille)",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_WATCHTOWER" }
       },
       {
         id = "lumbridge",
@@ -340,13 +347,15 @@ local teleports = {
           data = "/3/vAQ=="
         },
         img = { url = "tele-lum.png" },
-        name = "Lumbridge"
+        name = "Lumbridge",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_LUMBRIDGE" }
       },
       {
         id = "falador",
         target = { origin = { x = 2963, y = 3376, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-fal.png" },
-        name = "Falador"
+        name = "Falador",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_FALADOR" }
       },
       {
         id = "ardougne",
@@ -356,7 +365,8 @@ local teleports = {
           data = "/v//AQ=="
         },
         img = { url = "tele-ard.png" },
-        name = "Ardougne"
+        name = "Ardougne",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_ARDOUGNE" }
       },
       {
         id = "southfeldiphills",
@@ -367,19 +377,22 @@ local teleports = {
         },
         icon_position_override = { x = 2411, y = 2847, level = 0 },
         img = { url = "tele-mob.png" },
-        name = "South Feldip Hills"
+        name = "South Feldip Hills",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_SOUTH_FELDIP_HILLS" }
       },
       {
         id = "taverley",
         target = { origin = { x = 2910, y = 3421, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-taverley.png" },
-        name = "Taverley"
+        name = "Taverley",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_TAVERLY" }
       },
       {
         id = "godwars",
         target = { origin = { x = 2908, y = 3712, level = 0 }, size = { x = 3, y = 4 } },
         img = { url = "tele-god.png" },
-        name = "God Wars"
+        name = "God Wars",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_GWD" }
       },
       {
         id = "trollheim",
@@ -389,19 +402,22 @@ local teleports = {
           data = "//v/AQ=="
         },
         img = { url = "tele-troll.png" },
-        name = "Trollheim"
+        name = "Trollheim",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_TROLLHEIM" }
       },
       {
         id = "apeatoll",
         target = { origin = { x = 2795, y = 2797, level = 1 }, size = { x = 5, y = 3 } },
         img = { url = "tele-ape.png" },
-        name = "Ape Atoll"
+        name = "Ape Atoll",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_APE_ATOLL" }
       },
       {
         id = "mazcab",
         target = { origin = { x = 4314, y = 817, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-mazcab.png" },
-        name = "Mazcab"
+        name = "Mazcab",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_MAZCAB" }
       },
       {
         id = "northwesternanachronia",
@@ -411,13 +427,15 @@ local teleports = {
           data = "573PAQ=="
         },
         img = { url = "tele-northwesternanachronia.png" },
-        name = "Western Anachronia"
+        name = "Western Anachronia",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_DINO_WEST" }
       },
       {
         id = "easternanachronia",
         target = { origin = { x = 5598, y = 2329, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-easternanachronia.png" },
-        name = "Eastern Anachronia"
+        name = "Eastern Anachronia",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_DINO_EAST" }
       },
       {
         id = "northlostgrove",
@@ -427,7 +445,8 @@ local teleports = {
           data = "/3vvAQ=="
         },
         img = { url = "tele-northlostgrove.png" },
-        name = "Lost Grove"
+        name = "Lost Grove",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_LOST_GROVE" }
       },
       {
         id = "wendlewick",
@@ -437,13 +456,15 @@ local teleports = {
           data = "///fAQ=="
         },
         img = { url = "tele-wendlewick.png" },
-        name = "Wendlewick"
+        name = "Wendlewick",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_WENDLEWICK" }
       },
       {
         id = "wendlewick-marigold",
         target = { origin = { x = 3560, y = 1486, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-wendlewick-marigold-farm.png" },
-        name = "Wendlewick (Marigold Farm)"
+        name = "Wendlewick (Marigold Farm)",
+        cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_WENDLEWICK" }
       }
     },
     access = { { id = "spellbook", type = "spellbook", name = "Normal Spellbook" } }
@@ -460,13 +481,15 @@ local teleports = {
         id = "paddewwa",
         target = { origin = { x = 3096, y = 9880, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-paddewwa.png", width = 28, height = 28 },
-        name = "Paddewwa"
+        name = "Paddewwa",
+        cache_data = { sprite = "SPELL_ICON_ZAROS_TELEPORT_PADDEWWA" }
       },
       {
         id = "senntisten",
         target = { origin = { x = 3375, y = 3400, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-senntisten.png" },
-        name = "Senntisten"
+        name = "Senntisten",
+        cache_data = { sprite = "SPELL_ICON_ZAROS_TELEPORT_SENNTISTEN" }
       },
       {
         id = "kharyll",
@@ -476,13 +499,15 @@ local teleports = {
           data = "/38E"
         },
         img = { url = "tele-kharyrll.png" },
-        name = "Kharyrll"
+        name = "Kharyrll",
+        cache_data = { sprite = "SPELL_ICON_ZAROS_TELEPORT_KHARYRLL" }
       },
       {
         id = "lassar",
         target = { origin = { x = 3002, y = 3468, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-lassar.png" },
-        name = "Lassar"
+        name = "Lassar",
+        cache_data = { sprite = "SPELL_ICON_ZAROS_TELEPORT_LASSAR" }
       },
       {
         id = "dareeyak",
@@ -492,7 +517,8 @@ local teleports = {
           data = "///PAA=="
         },
         img = { url = "tele-dareeyak.png" },
-        name = "Dareeyak"
+        name = "Dareeyak",
+        cache_data = { sprite = "SPELL_ICON_ZAROS_TELEPORT_DAREEYAK" }
       },
       {
         id = "carallaner",
@@ -502,7 +528,8 @@ local teleports = {
           data = "zv9zAA=="
         },
         img = { url = "tele-carrallaner.png" },
-        name = "Carrallanger"
+        name = "Carrallanger",
+        cache_data = { sprite = "SPELL_ICON_ZAROS_TELEPORT_CARRALLANGAR" }
       },
       {
         id = "annakarl",
@@ -512,13 +539,15 @@ local teleports = {
           data = "f3cP"
         },
         img = { url = "tele-annakarl.png" },
-        name = "Annakarl"
+        name = "Annakarl",
+        cache_data = { sprite = "SPELL_ICON_ZAROS_TELEPORT_ANNAKARL" }
       },
       {
         id = "ghorrock",
         target = { origin = { x = 2974, y = 3870, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-ghorrock.png" },
-        name = "Ghorrock"
+        name = "Ghorrock",
+        cache_data = { sprite = "SPELL_ICON_ZAROS_TELEPORT_GHORROCK" }
       }
     },
     access = { { id = "spellbook", type = "spellbook", name = "Ancient Spellbook" } }

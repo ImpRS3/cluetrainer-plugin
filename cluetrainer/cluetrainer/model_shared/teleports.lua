@@ -1,6 +1,6 @@
 -- teleports.lua
 ---@class TeleportGroup : TeleportProps
----@field type "teleport"
+---@field type "teleports"
 ---@field id string
 ---@field name string
 ---@field spots TeleportSpot[]
@@ -17,6 +17,7 @@
 ---@field animation_ticks integer?
 ---@field code string?
 ---@field hidden boolean?
+---@field cache_data { sprite?: string, obj?: string }?
 
 ---@alias TeleportAccess TeleportAccess.item|TeleportAccess.entity|TeleportAccess.spellbook
 
