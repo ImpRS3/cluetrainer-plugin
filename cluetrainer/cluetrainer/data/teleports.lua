@@ -272,7 +272,8 @@ local teleports = {
     access = {
       { id = "map", type = "spellbook", name = "Lodestone Network Map", menu_ticks = 1 },
       { id = "spellbook", type = "spellbook", name = "Any Spellbook", menu_ticks = 0 }
-    }
+    },
+    cache_data = { sprite = "SPELL_ICON_STANDARD_TELEPORT_HOME" }
   },
   {
     type = "teleports",
@@ -473,7 +474,6 @@ local teleports = {
     type = "teleports",
     id = "ancientspellook",
     name = "Ancient Spellbook",
-    img = { url = "" },
     menu_ticks = 0,
     animation_ticks = 3,
     spots = {
@@ -567,7 +567,8 @@ local teleports = {
           data = "/88E"
         },
         img = { url = "tele-moonclan.png" },
-        name = "Moonclan"
+        name = "Moonclan",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_1" }
       },
       {
         id = "ourania",
@@ -577,7 +578,8 @@ local teleports = {
           data = "3v//AQ=="
         },
         img = { url = "tele-ourania.png" },
-        name = "Ourania Altar"
+        name = "Ourania Altar",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_40" }
       },
       {
         id = "southfalador",
@@ -587,19 +589,22 @@ local teleports = {
           data = "+f9PAQ=="
         },
         img = { url = "tele-southfalador.png" },
-        name = "South Falador"
+        name = "South Falador",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_42" }
       },
       {
         id = "waterbirth",
         target = { origin = { x = 2544, y = 3754, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-waterbirth.png" },
-        name = "Waterbirth"
+        name = "Waterbirth",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_2" }
       },
       {
         id = "barbarian",
         target = { origin = { x = 2541, y = 3567, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-barbarian.png" },
-        name = "Barbarian"
+        name = "Barbarian",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_4" }
       },
       {
         id = "northardougne",
@@ -609,7 +614,8 @@ local teleports = {
           data = "ZnYP"
         },
         img = { url = "tele-northardougne.png" },
-        name = "North Ardougne"
+        name = "North Ardougne",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_44" }
       },
       {
         id = "khazard",
@@ -619,13 +625,15 @@ local teleports = {
           data = "8P//AQ=="
         },
         img = { url = "tele-khazard.png" },
-        name = "Khazard"
+        name = "Khazard",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_6" }
       },
       {
         id = "fishing",
         target = { origin = { x = 2611, y = 3381, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-fishing.png" },
-        name = "Fishing Guild"
+        name = "Fishing Guild",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_12" }
       },
       {
         id = "catherby",
@@ -635,19 +643,22 @@ local teleports = {
           data = "/v/vAQ=="
         },
         img = { url = "tele-catherby.png" },
-        name = "Catherby"
+        name = "Catherby",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_13" }
       },
       {
         id = "iceplateu",
         target = { origin = { x = 2973, y = 3936, level = 0 }, size = { x = 4, y = 5 } },
         img = { url = "tele-iceplateau.png" },
-        name = "Ice Plateau"
+        name = "Ice Plateau",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_14" }
       },
       {
         id = "trollheim",
         target = { origin = { x = 2815, y = 3674, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "tele-trollheim.png" },
-        name = "Trollheim Farm"
+        name = "Trollheim Farm",
+        cache_data = { sprite = "AIF_MAGIC_LUNAR_ICONS_51" }
       },
       {
         id = "westernkharazi",
@@ -657,7 +668,8 @@ local teleports = {
           data = "cf//AQ=="
         },
         img = { url = "tele-westernkharazi.png" },
-        name = "Western Kharazi Jungle"
+        name = "Western Kharazi Jungle",
+        cache_data = { sprite = "SPELL_ICON_LUNAR_TELEPORT_KHARAZI_JUNGLE" }
       },
       {
         id = "mountaincamp",
@@ -667,7 +679,8 @@ local teleports = {
           data = "EL8NAQ=="
         },
         img = { url = "tele-mountaincamp.png" },
-        name = "Mountain Camp"
+        name = "Mountain Camp",
+        cache_data = { sprite = "SPELL_ICON_LUNAR_TELEPORT_MOUNTAIN_CAMP" }
       }
     },
     access = { { id = "spellbook", type = "spellbook", name = "Lunar Spellbook" } }
@@ -687,7 +700,8 @@ local teleports = {
         img = { url = "monastery.png" },
         name = "Kandarin Monastery",
         menu_ticks = 0,
-        animation_ticks = 5
+        animation_ticks = 5,
+        cache_data = { sprite = "SPELL_ICON_TELEPORT_KANDARIN_MONASTERY" }
       },
       {
         id = "wars",
@@ -696,7 +710,8 @@ local teleports = {
         facing = 2,
         name = "Wars Retreat",
         menu_ticks = 0,
-        animation_ticks = 3
+        animation_ticks = 3,
+        cache_data = { sprite = "SPELL_ICON_TELEPORT_PVM_HUB" }
       },
       {
         id = "manorfarm",
@@ -708,7 +723,8 @@ local teleports = {
         img = { url = "pof.png" },
         name = "Manor Farm",
         menu_ticks = 0,
-        animation_ticks = 5
+        animation_ticks = 5,
+        cache_data = { sprite = "SPELL_ICON_TELEPORT_MANOR_FARM" }
       },
       {
         id = "maxguild",
@@ -717,7 +733,8 @@ local teleports = {
         img = { url = "max.png" },
         name = "Max guild",
         menu_ticks = 0,
-        animation_ticks = 7
+        animation_ticks = 7,
+        cache_data = { sprite = "SPELL_ICON_TELEPORT_MAX_GUILD" }
       },
       {
         id = "maxguild-garden",
@@ -726,7 +743,8 @@ local teleports = {
         img = { url = "max.png" },
         name = "Max guild",
         menu_ticks = 0,
-        animation_ticks = 7
+        animation_ticks = 7,
+        cache_data = { sprite = "SPELL_ICON_TELEPORT_MAX_GUILD" }
       },
       {
         id = "skelettalhorror",
@@ -734,7 +752,8 @@ local teleports = {
         img = { url = "skhorror.png" },
         name = "Skeletal Horror",
         menu_ticks = 0,
-        animation_ticks = 3
+        animation_ticks = 3,
+        cache_data = { sprite = "SPELL_ICON_TELEPORT_SKELETAL_HORROR" }
       }
     },
     access = { { id = "spellbook", type = "spellbook", name = "Any Spellbook" } }
@@ -838,7 +857,8 @@ local teleports = {
         name = "Normal Spellbook",
         img = { url = "tele-house.png" },
         menu_ticks = 0,
-        animation_ticks = 3
+        animation_ticks = 3,
+        cache_data = { sprite = "SPELL_ICON_TELEPORT_POH_FREE" }
       },
       {
         id = "tablets",
@@ -847,7 +867,8 @@ local teleports = {
         img = { url = "modhouse.png" },
         action_name = "Break",
         menu_ticks = 0,
-        animation_ticks = 5
+        animation_ticks = 5,
+        cache_data = { obj = "POH_TABLET_TELEPORTTOHOUSE" }
       }
     }
   },
@@ -866,14 +887,16 @@ local teleports = {
         },
         img = { url = "scroll-grandexchange.png" },
         name = "Grand Exchange",
-        code = "1"
+        code = "1",
+        cache_data = { obj = "TRAIL_SCROLL_TRAILHUBTELEPORT" }
       },
       {
         id = "banditcamp",
         target = { origin = { x = 3168, y = 2980, level = 0 }, size = { x = 5, y = 5 } },
         img = { url = "scroll-banditcamp.png" },
         name = "Bandit Camp",
-        code = "2"
+        code = "2",
+        cache_data = { obj = "TRAIL_SCROLL_BANDITCAMPTELEPORT" }
       },
       {
         id = "clocktower",
@@ -884,7 +907,8 @@ local teleports = {
         },
         img = { url = "scroll-clocktower.png" },
         name = "Clocktower",
-        code = "3"
+        code = "3",
+        cache_data = { obj = "TRAIL_SCROLL_ARDOUGNECLOCKTOWERTELEPORT" }
       },
       {
         id = "gutanoth",
@@ -895,7 +919,8 @@ local teleports = {
         },
         img = { url = "scroll-gutanoth.png" },
         name = "Gu'Tanoth",
-        code = "4"
+        code = "4",
+        cache_data = { obj = "TRAIL_SCROLL_GUTANOTHTELEPORT" }
       },
       {
         id = "lighthouse",
@@ -906,7 +931,8 @@ local teleports = {
         },
         img = { url = "scroll-lighthouse.png" },
         name = "Lighthouse",
-        code = "5"
+        code = "5",
+        cache_data = { obj = "TRAIL_SCROLL_LIGHTHOUSETELEPORT" }
       },
       {
         id = "fortforinthry",
@@ -917,7 +943,8 @@ local teleports = {
         },
         img = { url = "scroll-fortforinthry.png" },
         name = "Forintry Teleport",
-        code = "6"
+        code = "6",
+        cache_data = { obj = "TRAIL_SCROLL_LUMBERYARDTELEPORT" }
       },
       {
         id = "miscellania",
@@ -928,7 +955,8 @@ local teleports = {
         },
         img = { url = "scroll-miscellania.png" },
         name = "Miscellania",
-        code = "7"
+        code = "7",
+        cache_data = { obj = "TRAIL_SCROLL_MISCELLANIATELEPORT" }
       },
       {
         id = "phoenixlair",
@@ -939,7 +967,8 @@ local teleports = {
         },
         img = { url = "scroll-phoenixlair.png" },
         name = "Phoenix Lair",
-        code = "8"
+        code = "8",
+        cache_data = { obj = "TRAIL_SCROLL_PHOENIXLAIRTELEPORT" }
       },
       {
         id = "pollnivneach",
@@ -950,7 +979,8 @@ local teleports = {
         },
         img = { url = "scroll-pollnivneach.png" },
         name = "Pollnivneach",
-        code = "9"
+        code = "9",
+        cache_data = { obj = "TRAIL_SCROLL_NARDAHTELEPORT" }
       },
       {
         id = "taibwowannai",
@@ -961,7 +991,8 @@ local teleports = {
         },
         img = { url = "scroll-taibwowannai.png" },
         name = "Tai Bwo Wannai",
-        code = "0"
+        code = "0",
+        cache_data = { obj = "TRAIL_SCROLL_TAIBWOWANNAITELEPORT" }
       }
     },
     access = {
@@ -1069,13 +1100,13 @@ local teleports = {
         name = { name = "Attuned crystal teleport seed", kind = "item" },
         action_name = "Activate"
       }
-    }
+    },
+    cache_data = { obj = "MOURNING_TELEPORT_CRYSTAL_PERM" }
   },
   {
     type = "teleports",
     id = "menaphostablets",
     name = "Menaphos Tablets",
-    img = { url = "" },
     menu_ticks = 0,
     animation_ticks = 5,
     spots = {
@@ -1085,7 +1116,8 @@ local teleports = {
         img = { url = "imperialdistrict.gif" },
         icon_position_override = { x = 3174, y = 2731, level = 0 },
         name = "Imperial district",
-        code = "1"
+        code = "1",
+        cache_data = { obj = "MENAPHOS_FACTION_TELEPORT_IMPERIAL" }
       },
       {
         id = "merchant",
@@ -1096,7 +1128,8 @@ local teleports = {
         },
         img = { url = "merchantdistrict.gif" },
         name = "Merchant district",
-        code = "2"
+        code = "2",
+        cache_data = { obj = "MENAPHOS_FACTION_TELEPORT_MERCHANT" }
       },
       {
         id = "port",
@@ -1107,7 +1140,8 @@ local teleports = {
         },
         img = { url = "portdistrict.gif" },
         name = "Port district",
-        code = "3"
+        code = "3",
+        cache_data = { obj = "MENAPHOS_FACTION_TELEPORT_PORT" }
       },
       {
         id = "worker",
@@ -1119,7 +1153,8 @@ local teleports = {
         img = { url = "workerdistrict.gif" },
         icon_position_override = { x = 3154, y = 2798, level = 0 },
         name = "Worker district",
-        code = "4"
+        code = "4",
+        cache_data = { obj = "MENAPHOS_FACTION_TELEPORT_WORKER" }
       },
       {
         id = "sophanem",
@@ -1130,7 +1165,8 @@ local teleports = {
         },
         img = { url = "sophanemdungeon.gif" },
         name = "Sophanem Slayer Dungeon",
-        code = "5"
+        code = "5",
+        cache_data = { obj = "MENAPHOS_TELEPORT_SLAYER_DUNGEON" }
       },
       {
         id = "shiftingtombs",
@@ -1142,7 +1178,8 @@ local teleports = {
         icon_position_override = { x = 2078, y = 6954, level = 0 },
         img = { url = "shiftingtombs.webp" },
         name = "Menaphos shifting tombs",
-        code = "6"
+        code = "6",
+        cache_data = { obj = "MENAPHOS_TELEPORT_SHIFTING_TOMBS" }
       }
     },
     access = {
@@ -1230,7 +1267,8 @@ local teleports = {
         action_name = "Teleport",
         menu_ticks = 1
       }
-    }
+    },
+    cache_data = { obj = "CONSTRUCTION_HOUSE_FURNITURE_SPIRIT_TREE" }
   },
   {
     type = "teleports",
@@ -1589,7 +1627,8 @@ local teleports = {
         action_name = "Teleport",
         menu_ticks = 2
       }
-    }
+    },
+    cache_data = { obj = "INVENT_FAIRY_RING" }
   },
   {
     type = "teleports",
@@ -1716,7 +1755,8 @@ local teleports = {
         type = "item",
         name = { name = "Slayer cape", kind = "item" },
         img = { url = "capeslay.png" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "SKILLCAPE_SLAYER" }
       }
     }
   },
@@ -1944,7 +1984,8 @@ local teleports = {
         type = "item",
         name = { name = "Dungeoneering cape", kind = "item" },
         img = { url = "capedung.png" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "DUMMY_SKILLCAPE_DUNGEONEERING" }
       }
     }
   },
@@ -2051,7 +2092,8 @@ local teleports = {
         type = "item",
         name = { name = "Quest cape", kind = "item" },
         img = { url = "capequest.png" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "SKILLCAPE_QP" }
       }
     }
   },
@@ -2089,7 +2131,8 @@ local teleports = {
         type = "item",
         name = { name = "Desert amulet", kind = "item" },
         img = { url = "desertamulet.png" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "ATDES_AMULET_ELITE" }
       }
     }
   },
@@ -2133,7 +2176,8 @@ local teleports = {
         name = { name = "Big Book o´ Piracy", kind = "item" },
         action_name = "Teleport"
       }
-    }
+    },
+    cache_data = { obj = "PIRATEFINALE_TELEPORT" }
   },
   {
     type = "teleports",
@@ -2176,7 +2220,8 @@ local teleports = {
         action_name = "Rub",
         can_be_in_pota = true
       }
-    }
+    },
+    cache_data = { obj = "AMULET_OF_GLORY" }
   },
   {
     type = "teleports",
@@ -2217,7 +2262,8 @@ local teleports = {
         name = { name = "Combat bracelet", kind = "item" },
         img = { url = "jewellry_combatbracelet.png" },
         action_name = "Rub",
-        can_be_in_pota = true
+        can_be_in_pota = true,
+        cache_data = { obj = "JEWL_BRACELET_OF_COMBAT" }
       }
     }
   },
@@ -2254,7 +2300,8 @@ local teleports = {
         name = { name = "Dig Site pendant", kind = "item" },
         img = { url = "jewellry_digsitependant.png" },
         action_name = "Rub",
-        can_be_in_pota = true
+        can_be_in_pota = true,
+        cache_data = { obj = "NECKLACE_OF_DIGSITE_5" }
       }
     }
   },
@@ -2299,7 +2346,8 @@ local teleports = {
         name = { name = "Enlightened amulet", kind = "item" },
         img = { url = "jewellry_enlightenedamulet.png" },
         action_name = "Rub",
-        can_be_in_pota = true
+        can_be_in_pota = true,
+        cache_data = { obj = "ENCHANTED_TOPAZ_AMULET_NEW" }
       }
     }
   },
@@ -2362,7 +2410,8 @@ local teleports = {
         action_name = "Rub",
         can_be_in_pota = true
       }
-    }
+    },
+    cache_data = { obj = "NECKLACE_OF_MINIGAMES_8" }
   },
   {
     type = "teleports",
@@ -2418,7 +2467,8 @@ local teleports = {
         action_name = "Rub",
         can_be_in_pota = true
       }
-    }
+    },
+    cache_data = { obj = "RING_OF_DUELING_8" }
   },
   {
     type = "teleports",
@@ -2485,7 +2535,8 @@ local teleports = {
         name = { name = "Ring of respawn", kind = "item" },
         img = { url = "jewellry_ringofrespawn.png" },
         action_name = "Rub",
-        can_be_in_pota = true
+        can_be_in_pota = true,
+        cache_data = { obj = "ENCHANTED_JADE_RING_USED" }
       }
     }
   },
@@ -2540,7 +2591,8 @@ local teleports = {
         name = { name = "Ring of slaying", kind = "item" },
         img = { url = "jewellry_ringofslaying.png" },
         action_name = "Rub",
-        can_be_in_pota = true
+        can_be_in_pota = true,
+        cache_data = { obj = "SMKI_RING_OF_SLAYING_8" }
       }
     }
   },
@@ -2571,7 +2623,8 @@ local teleports = {
         name = { name = "Ring of Wealth", kind = "item" },
         img = { url = "jewellry_ringofwealth.png" },
         action_name = "Rub",
-        can_be_in_pota = true
+        can_be_in_pota = true,
+        cache_data = { obj = "RING_OF_WEALTH" }
       }
     }
   },
@@ -2609,7 +2662,8 @@ local teleports = {
         type = "item",
         name = { name = "Luck of the Dwarves", kind = "item" },
         img = { url = "luck_of_the_dwarves.png" },
-        action_name = "Rub"
+        action_name = "Rub",
+        cache_data = { obj = "LUCKY_RING_DWARVES" }
       }
     }
   },
@@ -2637,7 +2691,8 @@ local teleports = {
         type = "item",
         name = { name = "Hazelmere's signet ring", kind = "item" },
         img = { url = "Hazelmeres_signet_ring.webp" },
-        action_name = "Rub"
+        action_name = "Rub",
+        cache_data = { obj = "LUCKY_HAZELMERES_RING" }
       }
     }
   },
@@ -2698,7 +2753,8 @@ local teleports = {
         name = { name = "Skills necklace", kind = "item" },
         img = { url = "jewellry_skillsnecklace.png" },
         action_name = "Rub",
-        can_be_in_pota = true
+        can_be_in_pota = true,
+        cache_data = { obj = "JEWL_NECKLACE_OF_SKILLS" }
       }
     }
   },
@@ -2743,7 +2799,8 @@ local teleports = {
         name = { name = "Traveller's necklace", kind = "item" },
         img = { url = "jewellry_travellersnecklace.png" },
         action_name = "Rub",
-        can_be_in_pota = true
+        can_be_in_pota = true,
+        cache_data = { obj = "ENCHANTED_JADE_NECKLACE_NEW" }
       }
     }
   },
@@ -2798,9 +2855,11 @@ local teleports = {
         name = { kind = "item", name = "Dave's spellbook" },
         action_name = "Teleport",
         menu_ticks = 2,
-        animation_ticks = 3
+        animation_ticks = 3,
+        cache_data = { obj = "DAVE_REWARD_BOOK" }
       }
-    }
+    },
+    cache_data = { obj = "DAVE_REWARD_BOOK" }
   },
   {
     type = "teleports",
@@ -2864,7 +2923,8 @@ local teleports = {
         name = { kind = "item", name = "Drakan's medallion" },
         action_name = "Teleport"
       }
-    }
+    },
+    cache_data = { obj = "MYQ5_DRAKAN_PENDANT" }
   },
   {
     type = "teleports",
@@ -3070,7 +3130,8 @@ local teleports = {
         name = { name = "Arc journal", kind = "item" },
         action_name = "Teleport"
       }
-    }
+    },
+    cache_data = { obj = "ELR1_WAIKO_TOURIST_BROCHURE" }
   },
   {
     type = "teleports",
@@ -3154,7 +3215,8 @@ local teleports = {
         type = "item",
         img = { url = "quiver.png" },
         name = { name = "Tirannwn quiver", kind = "item" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "ATELF_QUIVER_ELITE" }
       }
     }
   },
@@ -3197,7 +3259,8 @@ local teleports = {
         name = { name = "Sceptre of the gods", kind = "item" },
         img = { url = "sotg.png" },
         action_name = "Teleport",
-        menu_ticks = 1
+        menu_ticks = 1,
+        cache_data = { obj = "HLR4M_SCEPTRE" }
       }
     }
   },
@@ -3427,7 +3490,8 @@ local teleports = {
         type = "item",
         name = { name = "Wicked hood", kind = "item" },
         img = { url = "wicked.png" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "HOOKS3_HOOD" }
       }
     }
   },
@@ -3472,7 +3536,8 @@ local teleports = {
         action_name = "Max garden portal",
         menu_ticks = 1
       }
-    }
+    },
+    cache_data = { obj = "ALCH_ONYX_SKILL_NECKLACE" }
   },
   {
     type = "teleports",
@@ -3530,7 +3595,8 @@ local teleports = {
         name = { name = "Dorgesh-kaan sphere", kind = "item" },
         action_name = "Break"
       }
-    }
+    },
+    cache_data = { obj = "DORGESH_TELEPORT_ARTIFACT" }
   },
   {
     type = "teleports",
@@ -3557,7 +3623,8 @@ local teleports = {
         name = { name = "Goblin village sphere", kind = "item" },
         action_name = "Break"
       }
-    }
+    },
+    cache_data = { obj = "SLICE_TELEPORT_ARTIFACT" }
   },
   {
     type = "teleports",
@@ -3957,7 +4024,8 @@ local teleports = {
         type = "item",
         name = { name = "Nature's sentinel helm", kind = "item" },
         action_name = "Teleport",
-        img = { url = "sentinel.png" }
+        img = { url = "sentinel.png" },
+        cache_data = { obj = "TRH113_ELITE_WOODCUTTING_V4_HEAD" }
       }
     }
   },
@@ -3981,7 +4049,8 @@ local teleports = {
         type = "item",
         name = { name = "Volcanic trapper head", kind = "item" },
         action_name = "Teleport",
-        img = { url = "Volcanic_trapper_head.webp" }
+        img = { url = "Volcanic_trapper_head.webp" },
+        cache_data = { obj = "TRH127_VOLCANIC_HEAD" }
       }
     }
   },
@@ -4136,7 +4205,8 @@ local teleports = {
         type = "item",
         img = { url = "archteleport.png" },
         name = { name = "Archaeology teleport", kind = "item" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "ARCH_TELETAB" }
       }
     }
   },
@@ -4163,7 +4233,8 @@ local teleports = {
         type = "item",
         img = { url = "ringofkinship.png" },
         name = { name = "Ring of kinship", kind = "item" },
-        action_name = "Teleport to Daemonheim"
+        action_name = "Teleport to Daemonheim",
+        cache_data = { obj = "RAND_MISSION_CONTRACT" }
       }
     }
   },
@@ -4188,7 +4259,8 @@ local teleports = {
         name = { name = "Witchdoctor mask", kind = "item" },
         action_name = "Teleport"
       }
-    }
+    },
+    cache_data = { obj = "ECO_SHAMAN_MASK" }
   },
   {
     type = "teleports",
@@ -4213,7 +4285,8 @@ local teleports = {
         type = "item",
         img = { url = "ectophial.png" },
         name = { name = "Ectophial", kind = "item" },
-        action_name = "Empty"
+        action_name = "Empty",
+        cache_data = { obj = "ECTOPHIAL" }
       }
     }
   },
@@ -4238,7 +4311,8 @@ local teleports = {
         name = { name = "Explorer's ring 4", kind = "item" },
         action_name = "Cabbage-port"
       }
-    }
+    },
+    cache_data = { obj = "ATLUM_RING_ELITE" }
   },
   {
     type = "teleports",
@@ -4265,7 +4339,8 @@ local teleports = {
         name = { name = "Karamja gloves 4", kind = "item" },
         action_name = "Teleport"
       }
-    }
+    },
+    cache_data = { obj = "ATJUN_GLOVES_ELITE" }
   },
   {
     type = "teleports",
@@ -4288,7 +4363,8 @@ local teleports = {
         name = { name = "The Heart teleport", kind = "item" },
         action_name = "Break"
       }
-    }
+    },
+    cache_data = { obj = "POH_TABLET_GODWARS2TELEPORT" }
   },
   {
     type = "teleports",
@@ -4316,7 +4392,8 @@ local teleports = {
         name = { kind = "item", name = "Fremennik sea boots 4" },
         action_name = "Rellekka teleport"
       }
-    }
+    },
+    cache_data = { obj = "ATFREM_BOOTS_ELITE" }
   },
   {
     type = "teleports",
@@ -4339,7 +4416,8 @@ local teleports = {
         name = { kind = "item", name = "Cape of legends" },
         menu_ticks = 1
       }
-    }
+    },
+    cache_data = { obj = "CAPE_OF_LEGENDS" }
   },
   {
     type = "teleports",
@@ -4401,7 +4479,8 @@ local teleports = {
         img = { url = "skullsceptre.png" },
         name = { kind = "item", name = "Skull sceptre" },
         action_name = "Teleport",
-        id = "tablet"
+        id = "tablet",
+        cache_data = { obj = "SOS_SKULL_SCEPTRE" }
       }
     }
   },
@@ -4428,7 +4507,8 @@ local teleports = {
         img = { url = "dragonkin.png" },
         name = { kind = "item", name = "Dragonkin Laboratory teleport" },
         action_name = "Break",
-        id = "tablet"
+        id = "tablet",
+        cache_data = { obj = "DUNGEON_DRAGONFORT_TELETAB" }
       }
     }
   },
@@ -4482,7 +4562,8 @@ local teleports = {
         type = "item",
         name = { name = "Portable obelisk", kind = "item" },
         img = { url = "portableobelisk.png" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "WILDY_EVENTS_REWARDS_PORTABLE_OBELISK" }
       }
     }
   },
@@ -4548,7 +4629,8 @@ local teleports = {
         name = { name = "Wilderness Sword 4", kind = "item" },
         action_name = "Operate"
       }
-    }
+    },
+    cache_data = { obj = "ATWILD_REWARD_ELITE" }
   },
   {
     type = "teleports",
@@ -4629,7 +4711,8 @@ local teleports = {
         type = "item",
         name = { name = "Enchanted lyre", kind = "item" },
         img = { url = "enchantedlyre.png" },
-        action_name = "Play"
+        action_name = "Play",
+        cache_data = { obj = "VIKING_ENCHANTED_STRUNG_LYRE" }
       }
     }
   },
@@ -4826,7 +4909,8 @@ local teleports = {
         type = "item",
         name = { name = "Dragon trinkets", kind = "item" },
         img = { url = "dragontrinkets.png" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "TRH56_DRAGON_PENDANT" }
       }
     }
   },
@@ -4880,7 +4964,8 @@ local teleports = {
         type = "item",
         name = { name = "Metallic dragon trinkets", kind = "item" },
         img = { url = "metallicdragontrinkets.png" },
-        action_name = "Teleport"
+        action_name = "Teleport",
+        cache_data = { obj = "TRH56_DRAGON_PENDANT_ADVANCED" }
       }
     }
   },
@@ -4957,7 +5042,8 @@ local teleports = {
         type = "item",
         action_name = "Teleport",
         img = { url = "amuletofnature.png" },
-        name = { kind = "item", name = "Amulet of nature" }
+        name = { kind = "item", name = "Amulet of nature" },
+        cache_data = { obj = "NATURE_AMULET" }
       }
     }
   },
@@ -5023,7 +5109,8 @@ local teleports = {
         name = { kind = "item", name = "TokKul-Zo" },
         action_name = "Teleport"
       }
-    }
+    },
+    cache_data = { obj = "TZHAAR2_REWARD_RING" }
   },
   {
     type = "teleports",
@@ -5044,7 +5131,8 @@ local teleports = {
         id = "pod",
         name = { name = "Grand seed pod", kind = "item" },
         img = { url = "Grand_seed_pod.png" },
-        action_name = "Squash"
+        action_name = "Squash",
+        cache_data = { obj = "ALUFT_SEED_POD" }
       }
     }
   },
@@ -5067,7 +5155,8 @@ local teleports = {
         id = "seed",
         name = { name = "Mystical sand seed", kind = "item" },
         img = { url = "Mystical_sand_seed.png" },
-        action_name = "Plant"
+        action_name = "Plant",
+        cache_data = { obj = "DESERT_FARM_TELEPORT_PERMANENT" }
       }
     }
   },
@@ -5106,7 +5195,8 @@ local teleports = {
         id = "bracelet",
         name = { name = "Passing bracelet", kind = "item" },
         img = { url = "Passing_bracelet.png" },
-        action_name = "Rub"
+        action_name = "Rub",
+        cache_data = { obj = "MOONSTONE_PASSING_BRACELET" }
       }
     }
   },
@@ -5140,7 +5230,8 @@ local teleports = {
         id = "tome",
         name = { name = "Tome of Um", kind = "item" },
         img = { url = "Tome_of_Um_2.webp" },
-        action_name = "Operate"
+        action_name = "Operate",
+        cache_data = { obj = "ATUM_REWARD_ELITE" }
       }
     }
   },
@@ -5163,7 +5254,8 @@ local teleports = {
         type = "item",
         name = { name = "Camulet", kind = "item" },
         img = { url = "Camulet.png" },
-        action_name = "Rub"
+        action_name = "Rub",
+        cache_data = { obj = "CAMULET" }
       }
     }
   },
@@ -5193,7 +5285,8 @@ local teleports = {
         type = "item",
         name = { name = "Disk of returning", kind = "item" },
         img = { url = "Disk_of_returning_(Gower_Quest).png" },
-        action_name = "Scan"
+        action_name = "Scan",
+        cache_data = { obj = "GOWER_DISC_OF_RETURNING" }
       }
     }
   },
@@ -5217,7 +5310,8 @@ local teleports = {
         name = { name = "Magic whistle", kind = "item" },
         img = { url = "Magic_whistle.webp" },
         action_name = "Blow",
-        area_restriction = { origin = { x = 2624, y = 4672, level = 0 }, size = { x = 64, y = 64 } }
+        area_restriction = { origin = { x = 2624, y = 4672, level = 0 }, size = { x = 64, y = 64 } },
+        cache_data = { obj = "MAGIC_WHISTLE" }
       }
     }
   },
@@ -5378,7 +5472,8 @@ local teleports = {
         type = "item",
         name = { kind = "item", name = "Shattered Worlds teleport" },
         action_name = "Teleport",
-        img = { url = "Shattered_Worlds_teleport_scroll.webp" }
+        img = { url = "Shattered_Worlds_teleport_scroll.webp" },
+        cache_data = { obj = "SWORLDS_TELEPORT_SCROLL" }
       }
     }
   },
@@ -5409,7 +5504,8 @@ local teleports = {
         type = "item",
         name = { kind = "item", name = "Clan vexillum" },
         action_name = "Teleport",
-        img = { url = "clanvex.webp" }
+        img = { url = "clanvex.webp" },
+        cache_data = { obj = "CLAN_FLAG" }
       }
     }
   },
@@ -5432,7 +5528,8 @@ local teleports = {
         type = "item",
         name = { kind = "item", name = "Memory stands" },
         action_name = "Teleport",
-        img = { url = "memory_strand.webp" }
+        img = { url = "memory_strand.webp" },
+        cache_data = { obj = "HOG_MOTE" }
       }
     }
   },
@@ -5486,7 +5583,8 @@ local teleports = {
         type = "item",
         name = { kind = "item", name = "Leela's favour" },
         action_name = "Teleport",
-        img = { url = "Leelas_favour.webp" }
+        img = { url = "Leelas_favour.webp" },
+        cache_data = { obj = "QUEST_DESERT_LEELA_REWARD_BRACELET" }
       }
     }
   },
@@ -5525,7 +5623,8 @@ local teleports = {
         action_name = "Rub",
         can_be_in_pota = true
       }
-    }
+    },
+    cache_data = { obj = "PLATINUM_DELVERS_ANKLET" }
   },
   {
     type = "teleports",
@@ -5549,7 +5648,8 @@ local teleports = {
         id = "stardust",
         name = { name = "Stardust", kind = "item" },
         action_name = "Teleport",
-        img = { url = "Stardust_175.png" }
+        img = { url = "Stardust_175.png" },
+        cache_data = { obj = "STAR_DUST" }
       }
     }
   }

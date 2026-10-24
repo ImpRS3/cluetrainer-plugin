@@ -1,4 +1,5 @@
 local teleports = require("cluetrainer/data/teleports")
+local TeleportSpot = require("cluetrainer/model_shared/TeleportSpot")
 local elements = require("prettymap/elements")
 local TeleportElement = require("cluetrainer/map/elements/TeleportElement")
 
@@ -13,7 +14,7 @@ function TeleportLayer.new()
 
   for _, teleport in ipairs(teleports) do
     for _, spot in ipairs(teleport.spots) do
-      self:Add(TeleportElement.new(teleport, spot))
+      self:Add(TeleportElement.new(TeleportSpot.new(teleport, spot)))
     end
   end
 

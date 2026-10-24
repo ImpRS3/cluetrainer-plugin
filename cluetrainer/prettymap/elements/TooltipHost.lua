@@ -146,6 +146,8 @@ function TooltipHost:Show(element)
         self.holding = true
     end
     self.root:MoveToFront()
+    -- Re-raised explicitly: the frame's own rectangles must never end up above the content.
+    entry.layer:MoveToFront()
 end
 
 --- Hides the tooltip and destroys its content.

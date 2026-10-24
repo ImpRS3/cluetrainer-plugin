@@ -1,6 +1,7 @@
 local elements = require("prettymap/elements")
 local coordinate_adaptor = require("cluetrainer/model_shared/coordinate_adaptor")
 local FontFamily = require("cluetrainer/util/FontFamily")
+local TeleportTooltip = require("cluetrainer/map/elements/TeleportTooltip")
 
 local HOVER_FACTOR = 1.5 -- of the largest zoom step
 -- Pixel size per map zoom step: icons are small while the map is crowded and
@@ -25,6 +26,7 @@ local function zoom_size(mapScale)
 end
 
 ---@class cluetrainer.TeleportElement: prettymap.Element
+---@field teleport cluetrainer.TeleportSpot
 ---@field overlay_text ui.Text?
 local TeleportElement = setmetatable({}, { __index = elements.Element })
 TeleportElement.__index = TeleportElement
@@ -45,51 +47,55 @@ end
 ---@param layer ui.Layer
 ---@return boolean added
 function TeleportElement:CreateComponent(layer)
-  local element = self
+  local teleport = self.teleport
 
-  local sprite_name = (element.spot.cache_data and element.spot.cache_data.sprite)
-      or (element.group.cache_data and element.group.cache_data.sprite)
   -- Without a sprite nothing is added and the layer is discarded.
-  if not sprite_name then return false end
+  if not teleport.props.cache_data then return false end
 
   local sprite = ui.Sprite.new(layer)
   sprite:SetSize(0, 0, 1.0, 1.0)
-  sprite.sprite = id.Sprite[sprite_name]
+
+  if teleport.props.cache_data.sprite then
+    sprite.sprite = id.Sprite[teleport.props.cache_data.sprite]
+  elseif teleport.props.cache_data.obj then
+    sprite:SetAssociatedObject(id.Obj[teleport.props.cache_data.obj])
+  end
+
   sprite.clickthrough = true
 
   -- Spots without a code only show the sprite.
-  if element.spot.code then
+  if teleport:code() ~= "" then
     local overlay_text = ui.Text.new(layer)
     overlay_text:SetSize(0, 0, 1.0, 1.0)
-    overlay_text.content = element.spot.code
+    overlay_text.content = teleport:code()
     overlay_text.rgba = 0xFFFFFFFF
     overlay_text.isShadowed = true
     overlay_text.alignHorizontal = ui.AlignMode.CENTRE
     overlay_text.alignVertical = ui.AlignMode.CENTRE
     overlay_text.clickthrough = true
 
-    element.overlay_text = overlay_text
-    element:_UpdateSize()
+    self.overlay_text = overlay_text
+    self:_UpdateSize()
   end
 
   return true
 end
 
----@param group TeleportGroup
----@param spot TeleportSpot
+---@param teleport cluetrainer.TeleportSpot
 ---@return cluetrainer.TeleportElement
-function TeleportElement.new(group, spot)
+function TeleportElement.new(teleport)
   ---@class cluetrainer.TeleportElement
   local self = elements.Element.new({
-    coordinate = coordinate_adaptor.tile_coordinates_to_coord_grid(spot.target.origin),
+    coordinate = coordinate_adaptor.tile_coordinates_to_coord_grid(teleport:center_of_target()),
     size = 1, -- scaled to `zoom_size` pixels by the zoom step
     zoomScale = zoom_size,
     hoverSize = ZOOM_STEPS[#ZOOM_STEPS].size * HOVER_FACTOR,
     zLayer = "marker",
   })
-  self.group = group
-  self.spot = spot
-  return setmetatable(self, TeleportElement)
+  self.teleport = teleport
+  setmetatable(self, TeleportElement)
+  self:SetTooltip(TeleportTooltip.new(teleport))
+  return self
 end
 
 return TeleportElement

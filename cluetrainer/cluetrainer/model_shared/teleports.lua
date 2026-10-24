@@ -13,6 +13,8 @@
 ---@field name string
 
 ---@class TeleportProps
+---@field id string?
+---@field per_spot_props table<string, TeleportProps>?
 ---@field menu_ticks integer?
 ---@field animation_ticks integer?
 ---@field code string?
