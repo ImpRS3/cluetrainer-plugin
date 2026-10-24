@@ -25,21 +25,19 @@ local function zoom_size(mapScale)
   return size
 end
 
----@class cluetrainer.TeleportElement: prettymap.ComponentElement
+---@class cluetrainer.TeleportElement: prettymap.Element
 ---@field overlay_text ui.Text?
-local TeleportElement = setmetatable({}, { __index = elements.ComponentElement })
+local TeleportElement = setmetatable({}, { __index = elements.Element })
 TeleportElement.__index = TeleportElement
 
 function TeleportElement:_UpdateSize()
-  elements.ComponentElement._UpdateSize(self)
+  elements.Element._UpdateSize(self)
   -- Spots without a sprite have no text.
   local text = self.overlay_text
   if not text then return end
   local scale = self.height / BASE_ICON_HEIGHT -- active zoom and hover scale
   -- The largest bold font not exceeding the scaled size; hidden if none is small enough.
   local font = FontFamily.NOTOSANS:Get(BASE_FONT_SIZE * scale, "bold")
-
-  log("Selected font:", font and font.configName or "nil")
 
   text.hidden = font == nil
   if font then text.font = font.id end
@@ -83,7 +81,7 @@ end
 ---@return cluetrainer.TeleportElement
 function TeleportElement.new(group, spot)
   ---@class cluetrainer.TeleportElement
-  local self = elements.ComponentElement.new({
+  local self = elements.Element.new({
     coordinate = coordinate_adaptor.tile_coordinates_to_coord_grid(spot.target.origin),
     size = 1, -- scaled to `zoom_size` pixels by the zoom step
     zoomScale = zoom_size,

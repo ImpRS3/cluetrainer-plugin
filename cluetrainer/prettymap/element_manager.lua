@@ -17,11 +17,7 @@ end
 ---@param element prettymap.Element
 function ElementManager:_Position(element)
     if not element.component then return end
-    element:_ApplyZoom(self.map.currentScale, self.map)
-    element.component:SetSize(element.width, element.height)
-    if element.coordinate then
-        element:_ApplyPosition(self.map:WorldToCanvas(element.coordinate))
-    end
+    element:_Layout(self.map)
 end
 
 --- Adds an element together with all of its children.
@@ -39,11 +35,11 @@ function ElementManager:Add(element)
         -- The layer must receive mouse events for the hover growth to work.
         layer.clickthrough = false
         layer:Subscribe(ui.Hook.ONMOUSEOVER, function()
-            element:SetHovered(true)
+            element:_SetHovered(true)
             return true
         end)
         layer:Subscribe(ui.Hook.ONMOUSELEAVE, function()
-            element:SetHovered(false)
+            element:_SetHovered(false)
             return true
         end)
     end

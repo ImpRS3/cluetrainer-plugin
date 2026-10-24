@@ -79,6 +79,16 @@ function GameMap.new()
 
   self.map:AddElement(teleport_layer.new())
 
+  -- Example: a filled triangle with a 2px outline, drawn as one polygon element.
+  local triangle = { CoordGrid.new(0, 50, 46, 0, 52), CoordGrid.new(0, 50, 46, 10, 52), CoordGrid.new(0, 50, 46, 5, 62) }
+  self.map:AddElement(
+    elements.PolygonElement.new()
+      :AddTriangle(triangle[1], triangle[2], triangle[3], 0xFF000080)
+      :AddLine(triangle[1], triangle[2], 2, 0xFFFFFFFF)
+      :AddLine(triangle[2], triangle[3], 2, 0xFFFFFFFF)
+      :AddLine(triangle[3], triangle[1], 2, 0xFFFFFFFF)
+  )
+
   zyklib.lifecycle.shutdown_event:subscribe(function() self.window:Destroy() end)
 
   return self

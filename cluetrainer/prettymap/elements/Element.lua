@@ -78,6 +78,17 @@ function Element:_UpdateSize()
     end
 end
 
+--- Called by the manager whenever the component must be sized and placed (only while it has a
+--- component). Subclasses with their own geometry override this.
+---@param map prettymap.MapView
+function Element:_Layout(map)
+    self:_ApplyZoom(map.currentScale, map)
+    self.component:SetSize(self.width, self.height)
+    if self.coordinate then
+        self:_ApplyPosition(map:WorldToCanvas(self.coordinate))
+    end
+end
+
 --- Called by the manager on every layout change with the map's pixels-per-tile scale.
 ---@param mapScale number
 ---@param map prettymap.MapView
@@ -93,7 +104,7 @@ end
 --- Grows or restores the element by `hoverScale`.
 ---@param hovered boolean
 ---@return nil
-function Element:SetHovered(hovered)
+function Element:_SetHovered(hovered)
     if self.hovered == hovered then return end
     self.hovered = hovered
     self:_UpdateSize()
@@ -102,8 +113,8 @@ end
 --- Attaches a child. Children keep their own coordinates and are placed on the map like any
 --- element; the parent only controls their lifetime (they are added to and removed from the
 --- map together with it).
----@param child prettymap.Element
----@return prettymap.Element
+---@param child prettymap.Element The child element
+---@return prettymap.Element # 
 function Element:Add(child)
     if child.parent == self then return child end
     if child.parent then child.parent:Remove(child) end
