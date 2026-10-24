@@ -3,20 +3,20 @@
 ---@field width number? Width in map tiles (pixels if `zoomScale` is false).
 ---@field height number? Height in map tiles (pixels if `zoomScale` is false).
 ---@field size number? Shorthand for width and height.
----@field hoverScale number? Size multiplier applied while hovered. Default 1.
----@field hoverSize number? Fixed pixel size (width and height) while hovered; overrides `hoverScale`.
+---@field hoverSize number? Fixed pixel size (width and height) while hovered. Makes the element hoverable.
 ---@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number)? Size factor from map zoom. Default is tile-proportional; false keeps a fixed pixel size.
 ---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id of the map. The map's topmost pane if nil.
 
 ---@class prettymap.Element
 ---@field zLayer (string|prettymap.PaneID)?
+---@field tooltip prettymap.Tooltip?
 ---@field coordinate CoordGrid?
 ---@field width integer Current size in pixels.
 ---@field height integer Current size in pixels.
 ---@field baseWidth number
 ---@field baseHeight number
----@field hoverScale number
----@field hoverSize number?---@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number)
+---@field hoverSize number?
+---@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number)
 ---@field zoomFactor number
 ---@field hovered boolean
 ---@field screenX integer?
@@ -60,7 +60,6 @@ function Element.new(options)
         height = height,
         baseWidth = width,
         baseHeight = height,
-        hoverScale = options.hoverScale or 1,
         hoverSize = options.hoverSize,
         zoomScale = options.zoomScale == nil and TileProportional or options.zoomScale,
         zoomFactor = 1,
@@ -70,14 +69,14 @@ function Element.new(options)
 end
 
 --- Recomputes the size from the base size, zoom factor and hover state, keeping the element centred.
---- While hovered, `hoverSize` (fixed pixels) wins over the zoomed size multiplied by `hoverScale`.
+--- While hovered, `hoverSize` (fixed pixels) replaces the zoomed size.
 --- Children of the component should use relative sizes to follow the resize.
 function Element:_UpdateSize()
     local width, height
     if self.hovered and self.hoverSize then
         width, height = self.hoverSize, self.hoverSize
     else
-        local scale = self.zoomFactor * (self.hovered and self.hoverScale or 1)
+        local scale = self.zoomFactor
         width = math.max(1, math.floor(self.baseWidth * scale + 0.5))
         height = math.max(1, math.floor(self.baseHeight * scale + 0.5))
     end
@@ -112,7 +111,25 @@ function Element:_ApplyZoom(mapScale, map)
     self:_UpdateSize()
 end
 
---- Grows or restores the element by `hoverScale`.
+--- True if the element reacts to hovering (grows on hover); only such elements can have tooltips.
+---@return boolean
+function Element:IsHoverable()
+    return self.hoverSize ~= nil
+end
+
+--- Sets (or, with nil, removes) the tooltip shown while the element is hovered. Its content is
+--- built on every hover and destroyed when the tooltip disappears.
+---@param tooltip prettymap.Tooltip?
+---@return nil
+function Element:SetTooltip(tooltip)
+    if tooltip and not self:IsHoverable() then
+        error("Only hoverable elements (hoverSize) can have a tooltip", 2)
+    end
+    if self.manager then self.manager:_ForgetTooltip(self) end
+    self.tooltip = tooltip
+end
+
+--- Resizes the element to `hoverSize` while hovered and restores it afterwards.
 ---@param hovered boolean
 ---@return nil
 function Element:_SetHovered(hovered)

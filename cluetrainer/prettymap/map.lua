@@ -3,7 +3,7 @@ local Controls = require("prettymap/controls")
 local Helpers = require("prettymap/map_helpers")
 local TileRenderer = require("prettymap/tile_renderer")
 local MapOverlays = require("prettymap/map_overlays")
-local ElementManager = require("prettymap/element_manager")
+local ElementManager = require("prettymap/elements/ElementManager")
 
 ---@class prettymap.MapView 
 local MapView = {}
@@ -113,7 +113,7 @@ function MapView.new(parent, options)
     self.mapOverlayLayer = ui.Layer.new(self.viewport)
     self.elementLayer = ui.Layer.new(self.viewport)
     self.elementLayer.clickthrough = true
-    self.elements = ElementManager.new(self, self.elementLayer, options.zLayers)
+    self.elements = ElementManager.new(self, self.elementLayer, options.zLayers, options.tooltipParent)
     self.screenOverlayLayer = ui.Layer.new(self.root)
     self.screenMarkerLayer = ui.Layer.new(self.root)
     self.chromeLayer = ui.Layer.new(self.root)

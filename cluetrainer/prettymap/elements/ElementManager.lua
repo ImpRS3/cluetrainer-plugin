@@ -9,8 +9,13 @@
 ---@field paneIDs table<string, prettymap.PaneID> Named z-layers.
 ---@field topPane prettymap.PaneID Highest pane id; the fallback for elements without a z-layer.
 ---@field elements table<prettymap.Element, true>
+---@field hovered prettymap.Element? The single hovered element, if any.
+---@field tooltipParent ui.Component? Component tooltips are placed in; defaults to the game area.
+---@field tooltips prettymap.TooltipHost? Created on the first tooltip.
 local ElementManager = {}
 ElementManager.__index = ElementManager
+
+local TooltipHost = require("prettymap/elements/TooltipHost")
 
 ---@type table<string, prettymap.PaneID>
 ElementManager.DEFAULT_Z_LAYERS = { overlay = 100, marker = 200 }
@@ -21,8 +26,9 @@ ElementManager.DEFAULT_Z_LAYERS = { overlay = 100, marker = 200 }
 ---@param map prettymap.MapView
 ---@param layer ui.Layer Parent layer in canvas (content) coordinates.
 ---@param zLayers table<string, prettymap.PaneID>? Defaults to `DEFAULT_Z_LAYERS`.
+---@param tooltipParent ui.Component? Defaults to the game area; tooltips may extend past the map inside it.
 ---@return prettymap.ElementManager
-function ElementManager.new(map, layer, zLayers)
+function ElementManager.new(map, layer, zLayers, tooltipParent)
     zLayers = zLayers or ElementManager.DEFAULT_Z_LAYERS
 
     local ids, seen = {}, {}
@@ -49,6 +55,7 @@ function ElementManager.new(map, layer, zLayers)
         panes = panes,
         paneIDs = zLayers,
         topPane = ids[#ids],
+        tooltipParent = tooltipParent,
     }, ElementManager)
 end
 
@@ -74,6 +81,49 @@ function ElementManager:_Position(element)
     element:_Layout(self.map)
 end
 
+--- Hovers `element` unless another element is already hovered; the first hover holds the slot
+--- until it is cleared, so a new hover never evicts it.
+---@param element prettymap.Element
+function ElementManager:_Hover(element)
+    if self.hovered then return end
+    self.hovered = element
+    element.component:MoveToFront() -- on top within its z-layer
+    element:_SetHovered(true)
+    if element.tooltip then self:_Tooltips():Show(element) end
+end
+
+--- An interactive tooltip keeps the element hovered until the cursor leaves its region.
+---@param element prettymap.Element
+function ElementManager:_Unhover(element)
+    if self.hovered ~= element then return end
+    if self.tooltips and self.tooltips.holding then return end
+    self:_Release()
+end
+
+---@return nil
+function ElementManager:_Release()
+    local element = self.hovered
+    if self.tooltips then self.tooltips:Hide() end
+    self.hovered = nil
+    if element then element:_SetHovered(false) end
+end
+
+---@return prettymap.TooltipHost
+function ElementManager:_Tooltips()
+    if not self.tooltips then
+        local parent = self.tooltipParent
+            or ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA)
+        self.tooltips = TooltipHost.new(parent, self.map.viewport, function() self:_Release() end)
+    end
+    return self.tooltips
+end
+
+--- Drops the cached tooltip content of `element`.
+---@param element prettymap.Element
+function ElementManager:_ForgetTooltip(element)
+    if self.tooltips then self.tooltips:Forget(element) end
+end
+
 --- Adds an element together with all of its children.
 --- The element's component is a fresh layer filled by `CreateComponent`; the layer is destroyed
 --- again if `CreateComponent` reports that it added nothing, leaving `component` nil.
@@ -86,14 +136,13 @@ function ElementManager:Add(element)
     local layer = ui.Layer.new(self:_ContainerFor(element))
     -- Stays clickthrough: hover hooks are subscribed without blocking clicks to the map below.
     layer.clickthrough = true
-    if element.hoverScale ~= 1 or element.hoverSize then
+    if element:IsHoverable() then
         layer:Subscribe(ui.Hook.ONMOUSEOVER, function()
-            layer:MoveToFront() -- on top within its z-layer
-            element:_SetHovered(true)
+            self:_Hover(element)
             return true
         end)
         layer:Subscribe(ui.Hook.ONMOUSELEAVE, function()
-            element:_SetHovered(false)
+            self:_Unhover(element)
             return true
         end)
     end
@@ -123,6 +172,8 @@ function ElementManager:_RemoveSubtree(element)
     for _, child in ipairs(element.children) do self:_RemoveSubtree(child) end
     self.elements[element] = nil
     element.manager = nil
+    if self.hovered == element then self:_Release() end
+    self:_ForgetTooltip(element)
     if element.component then
         element.component:Destroy()
         element.component = nil
@@ -137,6 +188,11 @@ end
 
 ---@return nil
 function ElementManager:Destroy()
+    self.hovered = nil
+    if self.tooltips then
+        self.tooltips:Destroy()
+        self.tooltips = nil
+    end
     for element in pairs(self.elements) do
         element.manager = nil
         element.component = nil
