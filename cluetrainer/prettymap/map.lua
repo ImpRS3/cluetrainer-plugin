@@ -113,7 +113,7 @@ function MapView.new(parent, options)
     self.mapOverlayLayer = ui.Layer.new(self.viewport)
     self.elementLayer = ui.Layer.new(self.viewport)
     self.elementLayer.clickthrough = true
-    self.elements = ElementManager.new(self, self.elementLayer)
+    self.elements = ElementManager.new(self, self.elementLayer, options.zLayers)
     self.screenOverlayLayer = ui.Layer.new(self.root)
     self.screenMarkerLayer = ui.Layer.new(self.root)
     self.chromeLayer = ui.Layer.new(self.root)
@@ -404,6 +404,23 @@ function MapView:WorldToCanvas(coordinate)
         x, z, self.mapWidth, self.mapHeight, WorldMap, level)
     if not pixelX then return nil, nil end
     return rounded(self.mapOffsetX + pixelX), rounded(self.mapOffsetY + pixelY)
+end
+
+--- Converts a CoordFine (512 fine units per tile) to canvas pixels, keeping sub-tile precision.
+--- A CoordGrid is accepted too and resolves to the centre of its tile.
+--- Returns nil if the coordinate is on another plane or outside the world map.
+---@param coordinate CoordFine|CoordGrid
+---@return number? x
+---@return number? y
+function MapView:FineToCanvas(coordinate)
+    if coordinate.position == nil then
+        coordinate = CoordFine.new(coordinate, true)
+    end
+    if coordinate.level ~= self.plane then return nil, nil end
+    local tileX, tileZ = coordinate.x / 512, coordinate.z / 512
+    if not WorldMap.Contains(tileX, tileZ, coordinate.level) then return nil, nil end
+    return self.mapOffsetX + (tileX - WorldMap.minX) * self.mapWidth / WorldMap.width,
+        self.mapOffsetY + (WorldMap.maxZ - tileZ) * self.mapHeight / WorldMap.height
 end
 
 function MapView:WorldToScreen(coordinate)

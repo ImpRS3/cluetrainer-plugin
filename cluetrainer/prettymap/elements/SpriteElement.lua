@@ -15,6 +15,7 @@ SpriteElement.__index = SpriteElement
 ---@param options prettymap.SpriteElementOptions
 ---@return prettymap.SpriteElement
 function SpriteElement.new(options)
+    options.zLayer = options.zLayer or "marker"
     local self = setmetatable(Element.new(options), SpriteElement)
     ---@cast self prettymap.SpriteElement
     self.spriteID = options.spriteID

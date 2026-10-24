@@ -1,17 +1,71 @@
 --- Owns all elements placed on a map. Composed into MapView, which only
 --- forwards layout changes via Refresh().
+---@alias prettymap.PaneID integer Determines the stacking order of a z-layer; lower is further behind.
+
 ---@class prettymap.ElementManager
 ---@field map prettymap.MapView
 ---@field layer ui.Layer
+---@field panes table<prettymap.PaneID, ui.Layer> Clickthrough containers, one per distinct pane id.
+---@field paneIDs table<string, prettymap.PaneID> Named z-layers.
+---@field topPane prettymap.PaneID Highest pane id; the fallback for elements without a z-layer.
 ---@field elements table<prettymap.Element, true>
 local ElementManager = {}
 ElementManager.__index = ElementManager
 
+---@type table<string, prettymap.PaneID>
+ElementManager.DEFAULT_Z_LAYERS = { overlay = 100, marker = 200 }
+
+--- The z-layers are fixed at construction. Elements in a higher pane are always drawn above
+--- elements in a lower one; within a pane, later additions are on top (and hovered elements
+--- are raised). Names sharing a pane id share a pane.
 ---@param map prettymap.MapView
 ---@param layer ui.Layer Parent layer in canvas (content) coordinates.
+---@param zLayers table<string, prettymap.PaneID>? Defaults to `DEFAULT_Z_LAYERS`.
 ---@return prettymap.ElementManager
-function ElementManager.new(map, layer)
-    return setmetatable({ map = map, layer = layer, elements = {} }, ElementManager)
+function ElementManager.new(map, layer, zLayers)
+    zLayers = zLayers or ElementManager.DEFAULT_Z_LAYERS
+
+    local ids, seen = {}, {}
+    for _, paneID in pairs(zLayers) do
+        if not seen[paneID] then
+            seen[paneID] = true
+            ids[#ids + 1] = paneID
+        end
+    end
+    table.sort(ids)
+
+    local panes = {}
+    for _, paneID in ipairs(ids) do
+        local container = ui.Layer.new(layer)
+        container:SetSize(0, 0, 1.0, 1.0)
+        container.clickthrough = true
+        panes[paneID] = container
+    end
+
+    return setmetatable({
+        map = map,
+        layer = layer,
+        elements = {},
+        panes = panes,
+        paneIDs = zLayers,
+        topPane = ids[#ids],
+    }, ElementManager)
+end
+
+---@param element prettymap.Element
+---@return ui.Layer
+function ElementManager:_ContainerFor(element)
+    local key = element.zLayer or self.topPane
+    local paneID = type(key) == "string" and self.paneIDs[key] or key
+    local container = self.panes[paneID]
+    if not container then
+        local names = {}
+        for name, id in pairs(self.paneIDs) do names[#names + 1] = ("%s=%s"):format(name, id) end
+        table.sort(names)
+        error(("Unknown z-layer '%s'; valid layers: %s"):format(
+            tostring(key), table.concat(names, ", ")), 3)
+    end
+    return container
 end
 
 ---@param element prettymap.Element
@@ -29,12 +83,12 @@ function ElementManager:Add(element)
     if self.elements[element] then return element end
     self.elements[element] = true
     element.manager = self
-    local layer = ui.Layer.new(self.layer)
+    local layer = ui.Layer.new(self:_ContainerFor(element))
+    -- Stays clickthrough: hover hooks are subscribed without blocking clicks to the map below.
     layer.clickthrough = true
-    if element.hoverScale ~= 1 then
-        -- The layer must receive mouse events for the hover growth to work.
-        layer.clickthrough = false
+    if element.hoverScale ~= 1 or element.hoverSize then
         layer:Subscribe(ui.Hook.ONMOUSEOVER, function()
+            layer:MoveToFront() -- on top within its z-layer
             element:_SetHovered(true)
             return true
         end)

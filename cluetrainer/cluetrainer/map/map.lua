@@ -80,7 +80,8 @@ function GameMap.new()
   self.map:AddElement(teleport_layer.new())
 
   -- Example: a filled triangle with a 2px outline, drawn as one polygon element.
-  local triangle = { CoordGrid.new(0, 50, 46, 0, 52), CoordGrid.new(0, 50, 46, 10, 52), CoordGrid.new(0, 50, 46, 5, 62) }
+  local function fine(x, z) return CoordFine.new(CoordGrid.new(0, 50, 46, x, z), false) end
+  local triangle = { fine(2, 2), fine(10, 2), fine(6, 10) }
   self.map:AddElement(
     elements.PolygonElement.new()
       :AddTriangle(triangle[1], triangle[2], triangle[3], 0xFF000080)

@@ -1,10 +1,10 @@
 local Element = require("prettymap/elements/Element")
 
 ---@alias prettymap.Primitive
----| { kind: "line", a: CoordGrid, b: CoordGrid, thickness: number, colour: integer }
----| { kind: "rect", a: CoordGrid, b: CoordGrid, colour: integer }
----| { kind: "outline", a: CoordGrid, b: CoordGrid, thickness: number, colour: integer }
----| { kind: "triangle", a: CoordGrid, b: CoordGrid, c: CoordGrid, colour: integer }
+---| { kind: "line", a: CoordFine|CoordGrid, b: CoordFine|CoordGrid, thickness: number, colour: integer }
+---| { kind: "rect", a: CoordFine|CoordGrid, b: CoordFine|CoordGrid, colour: integer }
+---| { kind: "outline", a: CoordFine|CoordGrid, b: CoordFine|CoordGrid, thickness: number, colour: integer }
+---| { kind: "triangle", a: CoordFine|CoordGrid, b: CoordFine|CoordGrid, c: CoordFine|CoordGrid, colour: integer }
 
 --- Draws any number of lines, rectangles, outlines and filled triangles on a canvas. All geometry
 --- is given in map coordinates and follows the map when zooming; stroke widths are fixed pixels.
@@ -18,7 +18,7 @@ PolygonElement.__index = PolygonElement
 ---@return prettymap.PolygonElement
 function PolygonElement.new()
     ---@class prettymap.PolygonElement
-    local self = setmetatable(Element.new({ zoomScale = false }), PolygonElement)
+    local self = setmetatable(Element.new({ zoomScale = false, zLayer = "overlay" }), PolygonElement)
     self.primitives = {}
     return self
 end
@@ -32,8 +32,8 @@ function PolygonElement:_AddPrimitive(primitive)
 end
 
 --- Adds a line.
----@param a CoordGrid
----@param b CoordGrid
+---@param a CoordFine|CoordGrid
+---@param b CoordFine|CoordGrid
 ---@param thickness number Stroke width in pixels.
 ---@param colour integer RGBA colour.
 ---@return prettymap.PolygonElement self
@@ -42,8 +42,8 @@ function PolygonElement:AddLine(a, b, thickness, colour)
 end
 
 --- Adds a filled rectangle spanning two opposite corners.
----@param a CoordGrid
----@param b CoordGrid
+---@param a CoordFine|CoordGrid
+---@param b CoordFine|CoordGrid
 ---@param colour integer RGBA colour.
 ---@return prettymap.PolygonElement self
 function PolygonElement:AddRectangle(a, b, colour)
@@ -51,8 +51,8 @@ function PolygonElement:AddRectangle(a, b, colour)
 end
 
 --- Adds an unfilled rectangle spanning two opposite corners.
----@param a CoordGrid
----@param b CoordGrid
+---@param a CoordFine|CoordGrid
+---@param b CoordFine|CoordGrid
 ---@param thickness number Stroke width in pixels.
 ---@param colour integer RGBA colour.
 ---@return prettymap.PolygonElement self
@@ -61,9 +61,9 @@ function PolygonElement:AddOutline(a, b, thickness, colour)
 end
 
 --- Adds a filled triangle.
----@param a CoordGrid
----@param b CoordGrid
----@param c CoordGrid
+---@param a CoordFine|CoordGrid
+---@param b CoordFine|CoordGrid
+---@param c CoordFine|CoordGrid
 ---@param colour integer RGBA colour.
 ---@return prettymap.PolygonElement self
 function PolygonElement:AddTriangle(a, b, c, colour)
@@ -104,11 +104,13 @@ function PolygonElement:_Layout(map)
         local points = {}
         for _, key in ipairs(POINT_KEYS) do
             if p[key] then
-                local x, y = map:WorldToCanvas(p[key])
+                local x, y = map:FineToCanvas(p[key])
                 if not x then
                     component.hidden = true
                     return
                 end
+                -- The canvas takes integer pixels.
+                x, y = math.floor(x + 0.5), math.floor(y + 0.5)
                 points[key] = { x, y }
                 minX, minY = math.min(minX, x), math.min(minY, y)
                 maxX, maxY = math.max(maxX, x), math.max(maxY, y)

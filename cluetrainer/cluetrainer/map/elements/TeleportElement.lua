@@ -2,14 +2,13 @@ local elements = require("prettymap/elements")
 local coordinate_adaptor = require("cluetrainer/model_shared/coordinate_adaptor")
 local FontFamily = require("cluetrainer/util/FontFamily")
 
-local HOVER_SCALE = 1.5
-
+local HOVER_FACTOR = 1.5 -- of the largest zoom step
 -- Pixel size per map zoom step: icons are small while the map is crowded and
 -- stop growing once they are readable. `minScale` is the map's pixels per tile.
 local ZOOM_STEPS = {
   { minScale = 0,   size = 24 },
-  { minScale = 1.5, size = 36 },
-  { minScale = 4,   size = 48 },
+  { minScale = 1.5, size = 30 },
+  { minScale = 4,   size = 36 },
 }
 -- The text uses BASE_FONT_SIZE when the icon is BASE_ICON_HEIGHT pixels tall and scales with the icon.
 local BASE_ICON_HEIGHT = 15
@@ -85,7 +84,8 @@ function TeleportElement.new(group, spot)
     coordinate = coordinate_adaptor.tile_coordinates_to_coord_grid(spot.target.origin),
     size = 1, -- scaled to `zoom_size` pixels by the zoom step
     zoomScale = zoom_size,
-    hoverScale = HOVER_SCALE,
+    hoverSize = ZOOM_STEPS[#ZOOM_STEPS].size * HOVER_FACTOR,
+    zLayer = "marker",
   })
   self.group = group
   self.spot = spot

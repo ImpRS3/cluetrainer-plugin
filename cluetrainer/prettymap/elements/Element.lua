@@ -4,16 +4,19 @@
 ---@field height number? Height in map tiles (pixels if `zoomScale` is false).
 ---@field size number? Shorthand for width and height.
 ---@field hoverScale number? Size multiplier applied while hovered. Default 1.
+---@field hoverSize number? Fixed pixel size (width and height) while hovered; overrides `hoverScale`.
 ---@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number)? Size factor from map zoom. Default is tile-proportional; false keeps a fixed pixel size.
+---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id of the map. The map's topmost pane if nil.
 
 ---@class prettymap.Element
+---@field zLayer (string|prettymap.PaneID)?
 ---@field coordinate CoordGrid?
 ---@field width integer Current size in pixels.
 ---@field height integer Current size in pixels.
 ---@field baseWidth number
 ---@field baseHeight number
 ---@field hoverScale number
----@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number)
+---@field hoverSize number?---@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number)
 ---@field zoomFactor number
 ---@field hovered boolean
 ---@field screenX integer?
@@ -51,12 +54,14 @@ function Element.new(options)
     ---@class prettymap.Element
     local self = setmetatable({
         coordinate = options.coordinate,
+        zLayer = options.zLayer,
         children = {},
         width = width,
         height = height,
         baseWidth = width,
         baseHeight = height,
         hoverScale = options.hoverScale or 1,
+        hoverSize = options.hoverSize,
         zoomScale = options.zoomScale == nil and TileProportional or options.zoomScale,
         zoomFactor = 1,
         hovered = false,
@@ -64,12 +69,18 @@ function Element.new(options)
     return self
 end
 
---- Recomputes the size from the base size, zoom factor and hover scale, keeping the element centred.
+--- Recomputes the size from the base size, zoom factor and hover state, keeping the element centred.
+--- While hovered, `hoverSize` (fixed pixels) wins over the zoomed size multiplied by `hoverScale`.
 --- Children of the component should use relative sizes to follow the resize.
 function Element:_UpdateSize()
-    local scale = self.zoomFactor * (self.hovered and self.hoverScale or 1)
-    local width = math.max(1, math.floor(self.baseWidth * scale + 0.5))
-    local height = math.max(1, math.floor(self.baseHeight * scale + 0.5))
+    local width, height
+    if self.hovered and self.hoverSize then
+        width, height = self.hoverSize, self.hoverSize
+    else
+        local scale = self.zoomFactor * (self.hovered and self.hoverScale or 1)
+        width = math.max(1, math.floor(self.baseWidth * scale + 0.5))
+        height = math.max(1, math.floor(self.baseHeight * scale + 0.5))
+    end
     if width == self.width and height == self.height then return end
     self.width, self.height = width, height
     if self.component then
