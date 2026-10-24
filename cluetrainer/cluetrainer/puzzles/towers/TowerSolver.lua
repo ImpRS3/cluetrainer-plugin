@@ -188,10 +188,7 @@ function ActivePuzzle.new()
 
   self.disposable_group:add(
     towers_solver.settings.info:subscribe(draw),
-    towers_solver.settings.highlight_completed_tiles:subscribe(function(value)
-      log("change received")
-      draw()
-    end),
+    towers_solver.settings.highlight_completed_tiles:subscribe(draw),
     zyklib.lifecycle.shutdown_event:subscribe(function() self.disposable_group:dispose() end),
     state:subscribe(function(puzzle_state) client_side_history:push(puzzle_state) end, true),
     zyklib.game_events.native.MiniMenuEntrySelected:subscribe(function(payload)

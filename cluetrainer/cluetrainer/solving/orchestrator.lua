@@ -1,5 +1,4 @@
 -- orchestrator.lua
-local lua_util             = require "zyklib/objects"
 local easy_methods         = require "cluetrainer/data/easy_methods"
 local medium_methods       = require "cluetrainer/data/medium_methods"
 local hard_methods         = require "cluetrainer/data/hard_methods"
@@ -184,43 +183,6 @@ local function teleport_to_start(path)
   end
 end
 
-local gameArea = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA)
-
--- local window = prettyui.Window.new(gameArea, {
---   title = "Clue Trainer",
---   x = -210,
---   y = -150,
---   xAnchor = 0.5,
---   yAnchor = 0.5,
---   width = 470,
---   height = 400,
---   minWidth = 320,
---   minHeight = 220,
---   scrollable = true,
---   rowBackgroundColours = {
---     0x24211EFF,
---     0x2E2825FF,
---   }
--- })
-
--- local map = prettymap.Map.new(window.content, {
---   x = 0,
---   y = 0,
---   width = 420,
---   height = 300,
---   showFloorControls = true,
---   showZoomControls = true,
---   showPlayerMarker = false,
---   trackPlayer = false,
---   onError = function(message)
---     print("PrettyMap:", message)
---   end,
--- })
-
--- map.player:SetTrackPlayer(false)
--- map.player:ClearPlayerPosition()
-
--- window:Show()
 
 ---comment
 ---@param step Step

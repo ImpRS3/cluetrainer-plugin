@@ -12,8 +12,6 @@ local NpcHighlight       = require("zyklib/highlights/NpcHighlight")
 
 local PathMesh           = {}
 
-
-
 ---@class AbilityColors
 ---@field [any] ColourRGBA
 local ABILITY_COLORS = {

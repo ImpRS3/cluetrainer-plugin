@@ -1,7 +1,5 @@
 -- clue_detector.lua
 local clues                                        = require "cluetrainer/data/clues"
-local api_util                                     = require "zyklib/api_util"
-local array                                        = require "zyklib/array"
 local zyklib                                       = require "zyklib"
 
 ---@type table<string, integer>
@@ -406,7 +404,7 @@ clue_detector.clue_detected_event                  = zyklib.game_events.native.M
     local clue_id = clue_map[event.entry.componentData.objConfig.configName]
     if (not clue_id) then return end
 
-    local clue = array.find(clues, function(clue) return clue.id == clue_id end)
+    local clue = zyklib.array.find(clues, function(clue) return clue.id == clue_id end)
 
     -- Report clue to orchestrator
     if (clue) then emit(clue) end

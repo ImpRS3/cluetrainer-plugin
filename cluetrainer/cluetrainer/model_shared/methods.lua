@@ -1,5 +1,4 @@
 -- methods.lua
--- Unknown types
 
 ---@class ScanTree.ScanTree
 ---@field ordered_spots TileCoordinates[]

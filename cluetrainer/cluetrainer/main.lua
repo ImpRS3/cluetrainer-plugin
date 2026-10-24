@@ -25,15 +25,6 @@ local function main()
     settings_dialog.mount(payload.component)
   end)
 
-  -- local data = require("cluetrainer/puzzles/sliders/pdb/data/mtm_pdb_data")
-
-  -- local task = zyklib.base64.decodeLargeAsync(data.base64)
-
-  -- task.finished_event:subscribe(function(res)
-  --   log("finished")
-  --   log(res)
-  -- end)
-
   -- task:start()
   log("clue trainer started")
 end

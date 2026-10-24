@@ -148,11 +148,6 @@ end
 local FONT = id.Font.NOTOSANS_22
 
 function ActivePuzzle.draw(self, solution)
-  if solution == nil then
-    log("Solution is nil")
-    return
-  end
-
   self.canvas:Clear()
 
   if zyklib.array.forAll(solution, function(value) return value == 0 end) then

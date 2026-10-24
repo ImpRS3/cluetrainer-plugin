@@ -107,8 +107,6 @@ local function addToggle(page, label, description, setting)
     offsetY = centeredOffset(title, text, CHECKBOX_HEIGHT),
     rowBackgroundGroup = group,
     onChange = function(group, values, value, selected)
-      log(setting:get())
-      log(selected)
       setting:set(selected)
     end,
   })

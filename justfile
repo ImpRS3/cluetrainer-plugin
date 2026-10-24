@@ -23,6 +23,30 @@ install:
       fi
     done
 
+# Replaces everything in the installed plugin except the resources folder.
+install-light:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    TARGET="/mnt/c/ProgramData/Jagex/RuneScape-BETA/dev_plugins/cluetrainer"
+
+    mkdir -p "$TARGET"
+    find "$TARGET" -mindepth 1 -maxdepth 1 ! -name resources -exec rm -rf {} +
+
+    copy_without_resources() {
+      local src="$1"
+      (
+        cd "$src"
+        find . -path ./resources -prune -o -type f -print0 | while IFS= read -r -d '' f; do
+          mkdir -p "$TARGET/$(dirname "$f")"
+          cp -f "$f" "$TARGET/$f"
+        done
+      )
+    }
+
+    copy_without_resources cluetrainer
+    copy_without_resources dependencies/zyklib/src
+
 package: (package_into "dist/cluetrainer")
 
 package-zip: (package_into "dist/cluetrainer")
