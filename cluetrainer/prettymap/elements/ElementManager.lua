@@ -9,7 +9,7 @@
 ---@field paneIDs table<string, prettymap.PaneID> Named z-layers.
 ---@field topPane prettymap.PaneID Highest pane id; the fallback for elements without a z-layer.
 ---@field elements table<prettymap.Element, true>
----@field hovered prettymap.Element? The single hovered element, if any.
+---@field hoverQueue prettymap.Element[] Elements under the cursor in order of entry; the first one is hovered.
 ---@field tooltipParent ui.Component? Component tooltips are placed in; defaults to the game area.
 ---@field tooltips prettymap.TooltipHost? Created on the first tooltip.
 local ElementManager = {}
@@ -52,6 +52,7 @@ function ElementManager.new(map, layer, zLayers, tooltipParent)
         map = map,
         layer = layer,
         elements = {},
+        hoverQueue = {},
         panes = panes,
         paneIDs = zLayers,
         topPane = ids[#ids],
@@ -81,31 +82,54 @@ function ElementManager:_Position(element)
     element:_Layout(self.map)
 end
 
---- Hovers `element` unless another element is already hovered; the first hover holds the slot
---- until it is cleared, so a new hover never evicts it.
+--- The cursor entered `element`. The first element of the queue is the hovered one; others wait
+--- behind it (a new hover never evicts the current one) and take over in order once it leaves,
+--- provided the cursor is still on them.
 ---@param element prettymap.Element
 function ElementManager:_Hover(element)
-    if self.hovered then return end
-    self.hovered = element
+    for _, queued in ipairs(self.hoverQueue) do
+        if queued == element then return end
+    end
+    self.hoverQueue[#self.hoverQueue + 1] = element
+    if #self.hoverQueue == 1 then self:_Activate(element) end
+end
+
+---@param element prettymap.Element
+function ElementManager:_Activate(element)
     element.component:MoveToFront() -- on top within its z-layer
     element:_SetHovered(true)
     if element.tooltip then self:_Tooltips():Show(element) end
 end
 
---- An interactive tooltip keeps the element hovered until the cursor leaves its region.
+--- The cursor left `element`. An interactive tooltip keeps the hovered element until the cursor
+--- leaves its region.
 ---@param element prettymap.Element
 function ElementManager:_Unhover(element)
-    if self.hovered ~= element then return end
-    if self.tooltips and self.tooltips.holding then return end
-    self:_Release()
+    if self.hoverQueue[1] == element and self.tooltips and self.tooltips.holding then return end
+    self:_Leave(element)
 end
 
+--- Releases the hovered element regardless of its tooltip.
 ---@return nil
 function ElementManager:_Release()
-    local element = self.hovered
-    if self.tooltips then self.tooltips:Hide() end
-    self.hovered = nil
-    if element then element:_SetHovered(false) end
+    local element = self.hoverQueue[1]
+    if element then self:_Leave(element) end
+end
+
+--- Removes `element` from the queue; if it was hovered, un-hovers it and hands over to the next.
+---@param element prettymap.Element
+function ElementManager:_Leave(element)
+    for i, queued in ipairs(self.hoverQueue) do
+        if queued == element then
+            table.remove(self.hoverQueue, i)
+            if i ~= 1 then return end
+            if self.tooltips then self.tooltips:Hide() end
+            element:_SetHovered(false)
+            local nextElement = self.hoverQueue[1]
+            if nextElement then self:_Activate(nextElement) end
+            return
+        end
+    end
 end
 
 ---@return prettymap.TooltipHost
@@ -172,7 +196,7 @@ function ElementManager:_RemoveSubtree(element)
     for _, child in ipairs(element.children) do self:_RemoveSubtree(child) end
     self.elements[element] = nil
     element.manager = nil
-    if self.hovered == element then self:_Release() end
+    self:_Leave(element)
     self:_ForgetTooltip(element)
     if element.component then
         element.component:Destroy()
@@ -188,7 +212,7 @@ end
 
 ---@return nil
 function ElementManager:Destroy()
-    self.hovered = nil
+    self.hoverQueue = {}
     if self.tooltips then
         self.tooltips:Destroy()
         self.tooltips = nil
