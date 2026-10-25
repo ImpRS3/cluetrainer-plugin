@@ -10,6 +10,9 @@
 		"dependencies/zyklib/src/",
 		"dependencies/prettyui/"
 	],
+  "Lua.workspace.diagnostics.workspaceDelay": 0,
+  "Lua.diagnostics.workspaceEvent": "OnSave",
+  "Lua.diagnostics.neededFileStatus": {},
 	"workspace.checkThirdParty": false,
 	"runtime.version": "Lua 5.4",
 	"runtime.builtin": {
@@ -29,7 +32,8 @@
 	],
 	"completion.requireSeparator": "/",
 	"diagnostics.disable": [
-		"different-requires"
+		"different-requires",
+        "lowercase-global"
 	],
 	"diagnostics.severity": {
 		"undefined-field": "Warning",

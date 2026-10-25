@@ -16,6 +16,15 @@ function geometry.corner(tile)
   return CoordFine.new(geometry.grid(tile), false)
 end
 
+--- A point given in the clue model's fractional tile space, where integer coordinates are tile centres.
+---@param x number
+---@param y number
+---@param level integer
+---@return CoordFine
+function geometry.point(x, y, level)
+  return CoordFine.new(level, (x + 0.5) * 512, (y + 0.5) * 512)
+end
+
 ---@param area TileArea
 ---@return TileCoordinates origin
 ---@return TileCoordinates opposite First tile outside the area on both axes.

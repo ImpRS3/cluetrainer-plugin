@@ -51,7 +51,7 @@ function ScanTreeSolver:setNode(node)
     self.target_region_highlight = nil
   end
 
-  local target_area = (self.active_node.region and self.active_node.region.area) or Path.ends_up(self.active_node.path)
+  local target_area = (self.active_node.region and self.active_node.region.area) or Path.endsUpArea(self.active_node.path)
 
   if target_area ~= nil then
     self.target_region_highlight = TerrainHighlight.new(

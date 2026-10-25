@@ -14,6 +14,8 @@ local InteractionMarker      = require "cluetrainer/map/elements/InteractionMark
 local Bounds                 = require "cluetrainer/util/Bounds"
 local methods                = require "cluetrainer/solving/methods"
 local Navigator              = require "cluetrainer/solving/navigator"
+local Path                   = require "cluetrainer/model/shared/path"
+local MapNavigator           = require "cluetrainer/solving/map_navigator/MapNavigator"
 local SimpleClueSolver       = {}
 local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
@@ -206,6 +208,7 @@ end
 --- An ActiveSimpleClue is the instance that manages everything about a single simple clue currently in progress.
 ---@class ActiveSimpleClue : zyklib.disposable.IDisposable
 ---@field private navigator Navigator?
+---@field private map_navigator ct.MapNavigator?
 local ActiveSimpleClue = {}
 
 ---@param clue Step
@@ -244,9 +247,16 @@ function ActiveSimpleClue:setMethod(method)
     self.navigator = nil
   end
 
+  if self.map_navigator ~= nil then
+    self.map_navigator:dispose()
+    self.map_navigator = nil
+  end
+
   if method then
     self.navigator = Navigator.new()
     self.navigator:set(stitch_path(method))
+
+    self.map_navigator = MapNavigator.new(map.ensure_open(), Path.split_into_sections(stitch_path(method)))
   end
 end
 

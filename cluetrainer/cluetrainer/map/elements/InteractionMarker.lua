@@ -11,6 +11,7 @@ local CURSOR_SPRITES = {
   search = id.Cursor["CURSOR_SEARCH"],
   shovel = id.Cursor["CURSOR_DIG"],
   equip = id.Cursor["CURSOR_EQUIP"],
+  generic = id.Cursor["CURSOR_DEFAULT"],
 }
 
 ---@class cluetrainer.InteractionMarkerOptions
@@ -27,11 +28,9 @@ InteractionMarker.__index = InteractionMarker
 function InteractionMarker.new(options)
   local size = MARKER_SIZE
 
-  log(options.cursor)
-
   local self = setmetatable(elements.SpriteElement.new({
     coordinate = options.coordinate,
-    spriteID = config.Cursor.FromID(CURSOR_SPRITES[options.cursor]).spriteID,
+    spriteID = config.Cursor.FromID(CURSOR_SPRITES[options.cursor] or CURSOR_SPRITES.generic).spriteID,
     size = size,
     zoomScale = false,
     hoverSize = size * HOVER_FACTOR,

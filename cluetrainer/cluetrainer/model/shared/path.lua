@@ -1,5 +1,6 @@
 -- path.lua
-local TileArea = require "model_shared/TileArea"
+local TileArea = require "cluetrainer/model/shared/TileArea"
+local TeleportSpot = require "cluetrainer/model/shared/TeleportSpot"
 local array = require "zyklib/array"
 ---@alias Direction any
 ---@alias MovementAbility any
@@ -127,7 +128,7 @@ end
 
 ---@param path Path.Raw
 ---@return TileArea?
-function Path.ends_up(path)
+function Path.endsUpArea(path)
   for i = #path, 1, -1 do
     local step = path[i]
 
@@ -143,6 +144,152 @@ function Path.ends_up(path)
   end
 
   return nil
+end
+
+--- Finds the movement of `action` that applies at `tile`: the first whose `valid_from` area contains it.
+---@param action table
+---@param tile TileCoordinates?
+---@return table? movement
+function Path.find_applicable_movement(action, tile)
+  if tile then
+    for _, movement in ipairs(action.movement) do
+      if movement.valid_from and TileArea.ensure_mutable(movement.valid_from):query(tile) then
+        return movement
+      end
+    end
+  end
+
+  return action.movement[1]
+end
+
+--- The tile a path ends up on, scanning backwards for the last step that moves the player.
+---@param path Path.Raw
+---@return TileCoordinates?
+function Path.endsUp(path)
+  for i = #path, 1, -1 do
+    local step = path[i]
+
+    if step.type == "cheat" then
+      return step.target
+    elseif step.type == "ability" then
+      return step.to
+    elseif step.type == "run" then
+      return step.waypoints[#step.waypoints]
+    elseif step.type == "teleport" then
+      if step.spot then return step.spot end
+
+      local spot = TeleportSpot.resolve(step.id)
+      return spot and spot:center_of_target() or nil
+    elseif step.type == "transport" then
+      local start_tile = step.assumed_start
+      local action = step.internal.actions[1]
+      local movement = Path.find_applicable_movement(action, start_tile)
+
+      if movement and movement.offset and start_tile then
+        return {
+          x = start_tile.x + movement.offset.x,
+          y = start_tile.y + movement.offset.y,
+          level = start_tile.level + movement.offset.level,
+        }
+      elseif movement and movement.fixed_target then
+        local target = movement.fixed_target.target
+        return TileArea.ensure_mutable(target):center(target)
+      end
+    end
+  end
+
+  return nil
+end
+
+local FAR_TRANSPORT_THRESHOLD = 16
+
+--- Whether a step moves far enough to start a new section.
+---@param step Path.Step
+---@param context {path: Path.Raw, position: integer}? Position is 0-based, as in `split_into_sections`.
+---@param threshold number?
+---@return boolean
+function Path.isFar(step, context, threshold)
+  threshold = threshold or FAR_TRANSPORT_THRESHOLD
+
+  if step.type == "transport" or step.type == "cheat" then
+    local new_pos = Path.endsUp({ step })
+    local start = step.assumed_start
+    if not new_pos or not start then return false end
+
+    return math.max(math.abs(start.x - new_pos.x), math.abs(start.y - new_pos.y)) > threshold
+  elseif step.type == "teleport" then
+    if context then
+      return context.position > 0 and context.path[context.position].type == "orientation"
+    end
+    return false
+  end
+
+  return false
+end
+
+--- Splits a path into sections. A far transport or cheat arrives in the section it ends and is repeated
+--- as an arrival-only step at the start of the next one.
+---@param path Path.Raw
+---@param far_threshold number?
+---@return {name: string, steps: Path.Step[]}[] sections
+function Path.split_into_sections(path, far_threshold)
+  -- Section ends as 0-based exclusive indices into the path, as in the original.
+  local dividers = {}
+
+  local function division(i)
+    if i > 0 and (#dividers == 0 or dividers[#dividers] ~= i) then
+      dividers[#dividers + 1] = i
+    end
+  end
+
+  local pos = nil
+
+  for i = 0, #path - 1 do
+    local step = path[i + 1]
+    local new_pos = Path.endsUp({ step })
+
+    if step.type == "teleport" then
+      if i >= 1 and path[i].type == "orientation" then
+        division(i - 1)
+      else
+        division(i)
+      end
+    elseif (step.type == "transport" or step.type == "cheat") and pos then
+      if (new_pos and new_pos.level ~= pos.level) or Path.isFar(step) then
+        division(i + 1)
+      end
+    end
+
+    if new_pos then pos = new_pos end
+  end
+
+  division(#path)
+
+  ---@type {name: string, steps: Path.Step[]}[]
+  local sections = {}
+  local bleeding_arrival = nil
+
+  for i, finish in ipairs(dividers) do
+    local begin = i == 1 and 0 or dividers[i - 1]
+
+    local section = {}
+    if bleeding_arrival then section[1] = bleeding_arrival end
+    for j = begin + 1, finish do section[#section + 1] = path[j] end
+    sections[#sections + 1] = { name = "Section " .. #sections + 1, steps = section }
+
+    bleeding_arrival = nil
+
+    local last = section[#section]
+    if last and Path.isFar(last, { path = path, position = finish - 1 }, far_threshold) then
+      bleeding_arrival = {}
+      for key, value in pairs(last) do bleeding_arrival[key] = value end
+      bleeding_arrival.is_arrival_only = true
+    end
+  end
+
+  if bleeding_arrival then sections[#sections + 1] = { name = "Section " .. #sections + 1, steps = { bleeding_arrival } } end
+
+  return sections
 end
 
 return Path

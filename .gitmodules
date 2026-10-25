@@ -6,4 +6,4 @@
 	url = https://codeberg.org/ZyklopMarco/runescape-api-zyklib.git
 [submodule "dependencies/prettyui"]
 	path = dependencies/prettyui
-	url = git@github.com:PrettyRS/prettyui.git
+	url = git@github.com:Leridon/prettyui.git
