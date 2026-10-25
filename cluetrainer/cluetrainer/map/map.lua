@@ -68,6 +68,22 @@ function GameMap.new()
 
   self.map:AddElement(teleport_layer.new())
 
+  -- Example of a static element: plain text fixed to the top left corner of the viewport.
+  local label = elements.StaticElement.new({ anchor = "topleft", offsetX = 8, offsetY = 8, width = 160, height = 20 })
+  local FontFamily = require("cluetrainer/util/FontFamily")
+  function label:CreateComponent(layer)
+    local text = ui.Text.new(layer)
+    text:SetSize(0, 0, 1.0, 1.0)
+    text.content = "Static text"
+    local font = FontFamily.NOTOSANS:Get(14, "bold")
+    if font then text.font = font.id end
+    text.rgba = 0xFFFFFFFF
+    text.isShadowed = true
+    text.clickthrough = true
+    return true
+  end
+  self.map:AddElement(label)
+
   zyklib.lifecycle.shutdown_event:subscribe(function() self.window:Destroy() end)
 
   return self

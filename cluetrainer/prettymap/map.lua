@@ -114,15 +114,18 @@ function MapView.new(parent, options)
     self.mapOverlayLayer = ui.Layer.new(self.viewport)
     self.elementLayer = ui.Layer.new(self.viewport)
     self.elementLayer.clickthrough = true
-    self.elements = ElementManager.new(self, self.elementLayer, options.zLayers, options.tooltipParent)
     self.screenOverlayLayer = ui.Layer.new(self.root)
     self.screenMarkerLayer = ui.Layer.new(self.root)
     self.chromeLayer = ui.Layer.new(self.root)
+    -- Created last so that static elements are always on top of everything else.
+    self.staticElementLayer = ui.Layer.new(self.root)
+    self.elements = ElementManager.new(self, self.elementLayer, options.zLayers, options.tooltipParent,
+        self.staticElementLayer)
     for _, layer in ipairs({ self.tileLayer, self.iconTileLayer,self.mapOverlayLayer }) do
         layer.clickthrough = true
     end
     for _, layer in ipairs({ self.screenOverlayLayer, self.screenMarkerLayer,
-        self.chromeLayer }) do
+        self.chromeLayer, self.staticElementLayer }) do
         layer:SetSize(0, 0, 1.0, 1.0)
         layer.clickthrough = true
     end

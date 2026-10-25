@@ -9,6 +9,7 @@
 ---@field allPlanes boolean? Show the element on every plane at its x/z position instead of hiding it on other planes. Use `_OnPlaneChanged` to restyle it.
 
 ---@class prettymap.Element : zyklib.disposable.IDisposable
+---@field static boolean? True for elements fixed to the viewport instead of the map; see StaticElement.
 ---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id the element is drawn in; the map's topmost pane if nil.
 ---@field allPlanes boolean? If true, the element is shown on every plane instead of being hidden on other planes.
 ---@field tooltip prettymap.Tooltip? Tooltip shown while hovered; set with `SetTooltip`.

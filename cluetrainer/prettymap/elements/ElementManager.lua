@@ -8,6 +8,7 @@
 ---@field panes table<prettymap.PaneID, ui.Layer> Clickthrough containers, one per distinct pane id.
 ---@field paneIDs table<string, prettymap.PaneID> Named z-layers.
 ---@field topPane prettymap.PaneID Highest pane id; the fallback for elements without a z-layer.
+---@field staticLayer ui.Layer Parent of static elements; they have no z-layers and are drawn above everything.
 ---@field elements table<prettymap.Element, true>
 ---@field hoverQueue prettymap.Element[] Elements under the cursor in order of entry; the first one is hovered.
 ---@field tooltipParent ui.Component? Component tooltips are placed in; defaults to the game area.
@@ -27,8 +28,9 @@ ElementManager.DEFAULT_Z_LAYERS = { overlay = 100, marker = 200 }
 ---@param layer ui.Layer Parent layer in canvas (content) coordinates.
 ---@param zLayers table<string, prettymap.PaneID>? Defaults to `DEFAULT_Z_LAYERS`.
 ---@param tooltipParent ui.Component? Defaults to the game area; tooltips may extend past the map inside it.
+---@param staticLayer ui.Layer Non-scrolling layer covering the viewport, parent of static elements.
 ---@return prettymap.ElementManager
-function ElementManager.new(map, layer, zLayers, tooltipParent)
+function ElementManager.new(map, layer, zLayers, tooltipParent, staticLayer)
     zLayers = zLayers or ElementManager.DEFAULT_Z_LAYERS
 
     local ids, seen = {}, {}
@@ -51,6 +53,7 @@ function ElementManager.new(map, layer, zLayers, tooltipParent)
     return setmetatable({
         map = map,
         layer = layer,
+        staticLayer = staticLayer,
         elements = {},
         hoverQueue = {},
         panes = panes,
@@ -63,6 +66,7 @@ end
 ---@param element prettymap.Element
 ---@return ui.Layer
 function ElementManager:_ContainerFor(element)
+    if element.static then return self.staticLayer end
     local key = element.zLayer or self.topPane
     local paneID = type(key) == "string" and self.paneIDs[key] or key
     local container = self.panes[paneID]
