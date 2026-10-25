@@ -9,7 +9,6 @@ local DIG_RADIUS = 1
 
 --- The spot to dig at: a shaded dig area plus a shovel marker, with an explanatory tooltip.
 ---@class cluetrainer.DigSolutionEntity : prettymap.Element
----@field solution Solution.Dig
 ---@field marker cluetrainer.InteractionMarker
 local DigSolutionEntity = setmetatable({}, { __index = elements.Element })
 DigSolutionEntity.__index = DigSolutionEntity
@@ -28,19 +27,15 @@ function DigSolutionEntity.area_graphics(spot, single_tile)
 end
 
 ---@param solution Solution.Dig
----@param options cluetrainer.EntityOptions?
 ---@return cluetrainer.DigSolutionEntity
-function DigSolutionEntity.new(solution, options)
-  local highlight = options ~= nil and options.highlight == true
+function DigSolutionEntity.new(solution)
   local self = setmetatable(elements.Element.new(), DigSolutionEntity)
   ---@cast self cluetrainer.DigSolutionEntity
-  self.solution = solution
 
   self:Add(DigSolutionEntity.area_graphics(solution.spot))
   self.marker = InteractionMarker.new({
     coordinate = geometry.grid(solution.spot),
     cursor = "shovel",
-    highlight = highlight,
   })
   self:Add(self.marker)
 

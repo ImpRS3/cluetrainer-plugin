@@ -6,6 +6,7 @@ local base64 = require "zyklib/base64"
 ---@field size MyVector2?
 ---@field data string?
 
+---@class TileArea.module
 local TileArea = {}
 
 ---@class TileArea.Active : TileArea
@@ -30,6 +31,18 @@ function TileArea.tile(origin)
   }
 end
 
+---@param self TileArea
+---@return ct.Rectangle
+function TileArea.toRect(self)
+  local origin = self.origin
+  local size = self.size or { x = 1, y = 1 }
+  return {
+    topleft = { x = origin.x, y = origin.y },
+    botright = { x = origin.x + size.x - 1, y = origin.y + size.y - 1 },
+    level = origin.level
+  }
+end
+
 ---@param tile_area TileArea
 ---@return TileArea.Active
 function TileArea.ensure_mutable(tile_area)
@@ -43,6 +56,17 @@ function TileArea.ensure_mutable(tile_area)
   end
 
   return tile_area --[[@as TileArea.Active]]
+end
+
+---@return TileCoordinates
+function ActiveTileArea:center(tile_area)
+  local sz = TileArea.ensure_mutable(tile_area):getSize()
+  local origin = tile_area.origin
+  return {
+    x = origin.x + math.floor(sz.x / 2),
+    y = origin.y + math.floor(sz.y / 2),
+    level = origin.level
+  }
 end
 
 ---Queries whether a given coordinate is within the area

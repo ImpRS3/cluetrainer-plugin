@@ -3,20 +3,17 @@ local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
 
 --- The hidey-hole of an emote clue. The tooltip needs the equip marker, so pass `with_cursor` to see it.
 ---@class cluetrainer.HideyHoleEntity : cluetrainer.ObjectEntity
----@field clue Emote
 local HideyHoleEntity = setmetatable({}, { __index = ObjectEntity })
 HideyHoleEntity.__index = HideyHoleEntity
 
 ---@param clue Emote Must have a hidey-hole.
 ---@param with_cursor boolean? Show the equip marker.
----@param options cluetrainer.EntityOptions?
 ---@return cluetrainer.HideyHoleEntity
-function HideyHoleEntity.new(clue, with_cursor, options)
+function HideyHoleEntity.new(clue, with_cursor)
   local hole = assert(clue.hidey_hole, "the emote clue has no hidey-hole")
-  local self = setmetatable(ObjectEntity.new(hole.name, hole.location, with_cursor and "equip" or nil, options),
+  ---@class cluetrainer.HideyHoleEntity
+  local self = setmetatable(ObjectEntity.new(hole.name, hole.location, nil),
     HideyHoleEntity)
-  ---@cast self cluetrainer.HideyHoleEntity
-  self.clue = clue
 
   if self.marker then
     self.marker:SetTooltip(PropertiesTooltip.new()

@@ -6,9 +6,11 @@
 ---@field hoverSize number? Fixed pixel size (width and height) while hovered. Makes the element hoverable.
 ---@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number)? Size factor from map zoom. Default is tile-proportional; false keeps a fixed pixel size.
 ---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id of the map. The map's topmost pane if nil.
+---@field allPlanes boolean? Show the element on every plane at its x/z position instead of hiding it on other planes. Use `_OnPlaneChanged` to restyle it.
 
----@class prettymap.Element
+---@class prettymap.Element : zyklib.disposable.IDisposable
 ---@field zLayer (string|prettymap.PaneID)?
+---@field allPlanes boolean?
 ---@field tooltip prettymap.Tooltip?
 ---@field coordinate CoordGrid?
 ---@field width integer Current size in pixels.
@@ -55,6 +57,7 @@ function Element.new(options)
     local self = setmetatable({
         coordinate = options.coordinate,
         zLayer = options.zLayer,
+        allPlanes = options.allPlanes,
         children = {},
         width = width,
         height = height,
@@ -95,8 +98,14 @@ function Element:_Layout(map)
     self:_ApplyZoom(map.currentScale, map)
     self.component:SetSize(self.width, self.height)
     if self.coordinate then
-        self:_ApplyPosition(map:WorldToCanvas(self.coordinate))
+        self:_ApplyPosition(map:WorldToCanvas(self.coordinate, self.allPlanes))
     end
+end
+
+--- Called when the element's component is created and whenever the map's plane changes.
+--- Subclasses override this to restyle the element for the plane.
+---@param plane integer
+function Element:_OnPlaneChanged(plane)
 end
 
 --- Called by the manager on every layout change with the map's pixels-per-tile scale.
@@ -142,14 +151,23 @@ end
 --- element; the parent only controls their lifetime (they are added to and removed from the
 --- map together with it).
 ---@param child prettymap.Element The child element
----@return prettymap.Element # 
+---@return prettymap.Element #
 function Element:Add(child)
     if child.parent == self then return child end
     if child.parent then child.parent:Remove(child) end
     child.parent = self
     self.children[#self.children + 1] = child
+    --- If this element is already managed by a map, add the child to the same manager.
     if self.manager then self.manager:Add(child) end
     return child
+end
+
+--- Adds this element to a parent element or to an element manager.
+---@param target prettymap.Element|prettymap.ElementManager
+---@return prettymap.Element self
+function Element:AddTo(target)
+    target:Add(self)
+    return self
 end
 
 ---@param child prettymap.Element
@@ -175,6 +193,10 @@ function Element:Detach()
     elseif self.manager then
         self.manager:Remove(self)
     end
+end
+
+function Element:dispose()
+    self:Detach()
 end
 
 --- Moves the element; it is repositioned immediately if it is on a map.

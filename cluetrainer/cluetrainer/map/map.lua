@@ -9,7 +9,8 @@ local WINDOW_BORDER = 8
 local WINDOW_TITLE_HEIGHT = 32
 
 -- Mirrors prettymap's internal zoom steps and world size, which are not exposed.
-local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 192 }
+local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+local MIN_ZOOM_INDEX = 5
 local WORLD_WIDTH = 12800
 local WORLD_HEIGHT = 12800
 
@@ -33,7 +34,7 @@ function GameMap.new()
     minHeight = 220,
     resizable = true,
     scrollable = false,
-    destroyOnClose = true,
+    destroyOnClose = false,
     rowBackgroundColours = {
       0x24211EFF,
       0x2E2825FF,
@@ -53,16 +54,6 @@ function GameMap.new()
     end,
   })
 
-  local clueMarker = self.map.overlays:CreateSprite({
-    coordinate = CoordGrid.new(0, 50, 46, 0, 56),
-    spriteID = id.Sprite.CLUE_SCROLL_ICON,
-    size = 32,
-  })
-
-  prettyui.Tooltip.attach(clueMarker, clueMarker.parent, {text = "Test"})
-
-  self.map:CentreOn(CoordGrid.new(0, 50, 46, 0, 56))
-
   -- Window has no resize callback, so hook SetSize, which the resize handle calls on every drag step.
   local windowSetSize = self.window.SetSize
 
@@ -75,32 +66,23 @@ function GameMap.new()
     )
   end
 
-  self.map:AddElement(elements.SpriteElement.new{coordinate = CoordGrid.new(0, 51, 47, 0, 56), spriteID = id.Sprite.CLUE_SCROLL_ICON, size = 8})
-
   self.map:AddElement(teleport_layer.new())
-
-  -- Example: a filled triangle with a 2px outline, drawn as one polygon element.
-  local function fine(x, z) return CoordFine.new(CoordGrid.new(0, 50, 46, x, z), false) end
-  local triangle = { fine(2, 2), fine(10, 2), fine(6, 10) }
-  self.map:AddElement(
-    elements.PolygonElement.new()
-      :AddTriangle(triangle[1], triangle[2], triangle[3], 0xFF000080)
-      :AddLine(triangle[1], triangle[2], 2, 0xFFFFFFFF)
-      :AddLine(triangle[2], triangle[3], 2, 0xFFFFFFFF)
-      :AddLine(triangle[3], triangle[1], 2, 0xFFFFFFFF)
-  )
 
   zyklib.lifecycle.shutdown_event:subscribe(function() self.window:Destroy() end)
 
   return self
 end
 
----comment
----@param bounds {tl:CoordGrid, br:CoordGrid}
+---@param bounds ct.Bounds
 function GameMap:fitBounds(bounds)
+  local rect = bounds:get()
+  if rect == nil then return end
+
   local map = self.map
-  local x1, z1, level = bounds.tl.x, bounds.tl.z, bounds.tl.level
-  local x2, z2 = bounds.br.x, bounds.br.z
+  local level = rect.level
+  -- Bounds uses x/y tile coordinates, the map uses x/z
+  local x1, z1 = rect.topleft.x, rect.topleft.y
+  local x2, z2 = rect.botright.x, rect.botright.y
   local minX, maxX = math.min(x1, x2), math.max(x1, x2)
   local minZ, maxZ = math.min(z1, z2), math.max(z1, z2)
 
@@ -117,11 +99,15 @@ function GameMap:fitBounds(bounds)
     map.viewportWidth / WORLD_WIDTH,
     map.viewportHeight / WORLD_HEIGHT
   )
+  targetScale = math.max(
+    fitScale * ZOOM_LEVELS[MIN_ZOOM_INDEX],
+    math.min(fitScale * ZOOM_LEVELS[#ZOOM_LEVELS], targetScale)
+  )
   local targetMultiplier = targetScale / fitScale
 
-  local nearestIndex, nearestDistance = 1, math.huge
-  for index, multiplier in ipairs(ZOOM_LEVELS) do
-    local distance = math.abs(multiplier - targetMultiplier)
+  local nearestIndex, nearestDistance = MIN_ZOOM_INDEX, math.huge
+  for index = MIN_ZOOM_INDEX, #ZOOM_LEVELS do
+    local distance = math.abs(ZOOM_LEVELS[index] - targetMultiplier)
     if distance < nearestDistance then
       nearestIndex, nearestDistance = index, distance
     end
@@ -134,12 +120,19 @@ end
 ---@type ct.GameMap
 local instance = nil
 
-function GameMap.show()
+--- Ensures the map exists and its window is visible, then returns it.
+---@return ct.GameMap
+function GameMap.ensure_open()
   if not instance then
     instance = GameMap.new()
   end
 
   instance.window:Show()
+  return instance
+end
+
+function GameMap.show()
+  GameMap.ensure_open()
 end
 
 return GameMap

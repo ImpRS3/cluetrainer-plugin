@@ -174,6 +174,7 @@ function ElementManager:Add(element)
     if element:CreateComponent(layer) then
         element.component = layer
         self:_Position(element)
+        element:_OnPlaneChanged(self.map:GetPlane())
     else
         layer:Destroy()
     end
@@ -201,6 +202,14 @@ function ElementManager:_RemoveSubtree(element)
     if element.component then
         element.component:Destroy()
         element.component = nil
+    end
+end
+
+--- Notifies all elements with a component that the map's plane changed.
+---@param plane integer
+function ElementManager:_PlaneChanged(plane)
+    for element in pairs(self.elements) do
+        if element.component then element:_OnPlaneChanged(plane) end
     end
 end
 

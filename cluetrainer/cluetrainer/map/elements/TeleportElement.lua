@@ -14,6 +14,8 @@ local ZOOM_STEPS = {
 -- The text uses BASE_FONT_SIZE when the icon is BASE_ICON_HEIGHT pixels tall and scales with the icon.
 local BASE_ICON_HEIGHT = 15
 local BASE_FONT_SIZE = 7
+-- Tint (RGBA) approximating a slight grayscale filter for spots on other planes.
+local OFF_PLANE_TINT = 0xA0A0A0B4
 
 ---@param mapScale number
 ---@return number pixels
@@ -28,6 +30,8 @@ end
 ---@class cluetrainer.TeleportElement: prettymap.Element
 ---@field teleport cluetrainer.TeleportSpot
 ---@field overlay_text ui.Text?
+---@field sprite ui.Sprite?
+---@field home_level integer The plane the teleport is on.
 local TeleportElement = setmetatable({}, { __index = elements.Element })
 TeleportElement.__index = TeleportElement
 
@@ -44,6 +48,14 @@ function TeleportElement:_UpdateSize()
   if font then text.font = font.id end
 end
 
+---@param plane integer
+function TeleportElement:_OnPlaneChanged(plane)
+  -- Spots on other planes are still drawn at their x/z position, but dimmed.
+  local tint = self.home_level == plane and 0xFFFFFFFF or OFF_PLANE_TINT
+  self.sprite.rgba = tint
+  if self.overlay_text then self.overlay_text.rgba = tint end
+end
+
 ---@param layer ui.Layer
 ---@return boolean added
 function TeleportElement:CreateComponent(layer)
@@ -53,6 +65,7 @@ function TeleportElement:CreateComponent(layer)
   if not teleport.props.cache_data then return false end
 
   local sprite = ui.Sprite.new(layer)
+  self.sprite = sprite
   sprite:SetSize(0, 0, 1.0, 1.0)
 
   if teleport.props.cache_data.sprite then
@@ -91,8 +104,10 @@ function TeleportElement.new(teleport)
     zoomScale = zoom_size,
     hoverSize = ZOOM_STEPS[#ZOOM_STEPS].size * HOVER_FACTOR,
     zLayer = "marker",
+    allPlanes = true,
   })
   self.teleport = teleport
+  self.home_level = self.coordinate.level
   setmetatable(self, TeleportElement)
   self:SetTooltip(TeleportTooltip.new(teleport))
   return self

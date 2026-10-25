@@ -3,6 +3,6 @@
 ---@field x number
 ---@field y number
 
----@class Rectangle
+---@class ct.Rectangle
 ---@field topleft MyVector2
 ---@field botright MyVector2
