@@ -1,4 +1,4 @@
-local coordinate_adaptor = require("cluetrainer/model_shared/coordinate_adaptor")
+local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
 
 --- Conversions from the clue data model (tile coordinates, areas, rectangles) to map coordinates.
 local geometry = {}

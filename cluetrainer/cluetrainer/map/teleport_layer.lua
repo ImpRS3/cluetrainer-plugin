@@ -1,5 +1,5 @@
 local teleports = require("cluetrainer/data/teleports")
-local TeleportSpot = require("cluetrainer/model_shared/TeleportSpot")
+local TeleportSpot = require("cluetrainer/model/shared/TeleportSpot")
 local elements = require("prettymap/elements")
 local TeleportElement = require("cluetrainer/map/elements/TeleportElement")
 
@@ -10,6 +10,7 @@ TeleportLayer.__index = TeleportLayer
 
 ---@return cluetrainer.TeleportLayer
 function TeleportLayer.new()
+  ---@class cluetrainer.TeleportLayer
   local self = setmetatable(elements.Element.new(), TeleportLayer)
 
   for _, teleport in ipairs(teleports) do

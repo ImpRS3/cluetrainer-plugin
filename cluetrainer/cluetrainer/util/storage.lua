@@ -9,7 +9,6 @@ local PREFIX = "settings/"
 ---@param key string
 ---@param schema ct.util.schema.Schema<T>
 ---@return zyklib.reactive.Observable<T>
----@return zyklib.reactive.Observable<T>
 function storage.variable(key, schema)
   ---@type string
   local full_key

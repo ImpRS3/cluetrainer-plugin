@@ -1,7 +1,7 @@
 local clue_detector          = require "cluetrainer/clue_detector"
-local coordinate_adaptor     = require "cluetrainer/model_shared/coordinate_adaptor"
+local coordinate_adaptor     = require "cluetrainer/model/shared/coordinate_adaptor"
 local PathMesh               = require "cluetrainer/model/PathMesh"
-local TileArea               = require "cluetrainer/model_shared/TileArea"
+local TileArea               = require "cluetrainer/model/shared/TileArea"
 local OverlayConstants       = require "cluetrainer/model/OverlayConstants"
 local map                    = require "cluetrainer/map/map"
 local Element                = require "prettymap/elements/Element"
@@ -12,14 +12,13 @@ local EmoteAreaEntity        = require "cluetrainer/map/elements/EmoteAreaEntity
 local HideyHoleEntity        = require "cluetrainer/map/elements/HideyHoleEntity"
 local InteractionMarker      = require "cluetrainer/map/elements/InteractionMarker"
 local Bounds                 = require "cluetrainer/util/Bounds"
+local methods                = require "cluetrainer/solving/methods"
+local Navigator              = require "cluetrainer/solving/navigator"
 local SimpleClueSolver       = {}
 local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
 
 SimpleClueSolver.initialized = false
-
----@class ActiveSimpleClue : zyklib.disposable.IDisposable
-local ActiveSimpleClue       = {}
 
 ---@param step Step
 ---@return Solution?
@@ -197,6 +196,18 @@ local function clue_map_bounds(step)
   return bounds
 end
 
+---@param method Method.GenericPath
+---@return Path.Step[]
+local function stitch_path(method)
+  local all = zyklib.array.filter({ method.pre_path, method.main_path }, function(step) return step ~= nil end)
+  return zyklib.array.flatten(all)
+end
+
+--- An ActiveSimpleClue is the instance that manages everything about a single simple clue currently in progress.
+---@class ActiveSimpleClue : zyklib.disposable.IDisposable
+---@field private navigator Navigator?
+local ActiveSimpleClue = {}
+
 ---@param clue Step
 ---@return ActiveSimpleClue
 function ActiveSimpleClue.new(clue)
@@ -210,22 +221,37 @@ function ActiveSimpleClue.new(clue)
   self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.elements))
 
   ---@type Method.GenericPath?
-  local method = nil -- TODO: Fetch method
+  local method = methods.resolve({ clue = clue.id })
+
+  self:setMethod(method)
+
+  -- TODO: Hook up to some sort of method selector
 
   local bounds = clue_map_bounds(clue)
 
-  map.ensure_open():fitBounds(bounds)
-
-
-
-
-  -- TODO: Fetch method. Fit map. Start a navigator if appliccable.
-
+  if not method then
+    --- Only fit to the basic clue target bounds if there is no method available initially
+    map.ensure_open():fitBounds(bounds)
+  end
 
   return self
 end
 
+---@param method Method.GenericPath?
+function ActiveSimpleClue:setMethod(method)
+  if self.navigator ~= nil then
+    self.navigator:dispose()
+    self.navigator = nil
+  end
+
+  if method then
+    self.navigator = Navigator.new()
+    self.navigator:set(stitch_path(method))
+  end
+end
+
 function ActiveSimpleClue.dispose(self)
+  self:setMethod(nil)
   self.disposable_group:dispose()
 end
 

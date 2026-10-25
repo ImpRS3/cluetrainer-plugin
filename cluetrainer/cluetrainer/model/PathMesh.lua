@@ -2,11 +2,11 @@
 local MutableMesh        = require("zyklib/MutableMesh")
 local api_util           = require("zyklib/api_util")
 local TerrainHighlight   = require("zyklib/highlights/TerrainHighlight")
-local coordinate_adaptor = require("cluetrainer/model_shared/coordinate_adaptor")
+local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
 local array              = require("zyklib/array")
 local HighlightGroup     = require("zyklib/highlights/HighlightGroup")
 local OverlayConstants   = require("cluetrainer/model/OverlayConstants")
-local TileArea           = require("cluetrainer/model_shared/TileArea")
+local TileArea           = require("cluetrainer/model/shared/TileArea")
 local LocHighlight       = require("zyklib/highlights/LocHighlight")
 local NpcHighlight       = require("zyklib/highlights/NpcHighlight")
 

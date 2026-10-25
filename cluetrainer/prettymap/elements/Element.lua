@@ -9,24 +9,24 @@
 ---@field allPlanes boolean? Show the element on every plane at its x/z position instead of hiding it on other planes. Use `_OnPlaneChanged` to restyle it.
 
 ---@class prettymap.Element : zyklib.disposable.IDisposable
----@field zLayer (string|prettymap.PaneID)?
----@field allPlanes boolean?
----@field tooltip prettymap.Tooltip?
----@field coordinate CoordGrid?
----@field width integer Current size in pixels.
----@field height integer Current size in pixels.
----@field baseWidth number
----@field baseHeight number
----@field hoverSize number?
----@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number)
----@field zoomFactor number
----@field hovered boolean
----@field screenX integer?
----@field screenY integer?
+---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id the element is drawn in; the map's topmost pane if nil.
+---@field allPlanes boolean? If true, the element is shown on every plane instead of being hidden on other planes.
+---@field tooltip prettymap.Tooltip? Tooltip shown while hovered; set with `SetTooltip`.
+---@field coordinate CoordGrid? Tile the element is centred on; nil means it has no position.
+---@field width integer Current width in pixels, including zoom and hover effects.
+---@field height integer Current height in pixels, including zoom and hover effects.
+---@field baseWidth number Unscaled width: map tiles, or pixels if `zoomScale` is false.
+---@field baseHeight number Unscaled height: map tiles, or pixels if `zoomScale` is false.
+---@field hoverSize number? Fixed pixel size (width and height) while hovered; makes the element hoverable.
+---@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number) Size factor from the map zoom; false keeps a fixed pixel size.
+---@field zoomFactor number Current result of `zoomScale`, multiplied with the base size.
+---@field hovered boolean Whether the element is currently the hovered one.
+---@field screenX integer? Last pixel position (centre, in canvas coordinates); nil while hidden or unplaced.
+---@field screenY integer? Last pixel position (centre, in canvas coordinates); nil while hidden or unplaced.
 ---@field component ui.Layer? Layer filled by CreateComponent; nil if the element has no visual.
----@field manager prettymap.ElementManager?
----@field parent prettymap.Element?
----@field children prettymap.Element[]
+---@field manager prettymap.ElementManager? The manager the element is added to; nil while not on a map.
+---@field parent prettymap.Element? Element this one is a child of; nil for top-level elements.
+---@field children prettymap.Element[] Child elements, added to and removed from the map together with this one.
 local Element = {}
 Element.__index = Element
 

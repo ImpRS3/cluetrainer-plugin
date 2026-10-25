@@ -1,5 +1,5 @@
 local elements = require("prettymap/elements")
-local coordinate_adaptor = require("cluetrainer/model_shared/coordinate_adaptor")
+local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
 local FontFamily = require("cluetrainer/util/FontFamily")
 local TeleportTooltip = require("cluetrainer/map/elements/TeleportTooltip")
 

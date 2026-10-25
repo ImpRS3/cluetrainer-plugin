@@ -67,4 +67,16 @@ end
 
 util.RingBuffer = RingBuffer
 
+function util.lazy(f)
+  local evaluated = false
+  local result
+  return function()
+    if not evaluated then
+      result = f()
+      evaluated = true
+    end
+    return result
+  end
+end
+
 return util

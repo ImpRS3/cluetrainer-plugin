@@ -1,18 +1,16 @@
 -- navigator.lua
-local api_util = require "zyklib/api_util"
-local PathMesh = require "cluetrainer/model/PathMesh"
-local array = require "zyklib/array"
-local zyklib   = require "zyklib"
-
+local PathMesh    = require "cluetrainer/model/PathMesh"
+local array       = require "zyklib/array"
+local zyklib      = require "zyklib"
 
 ---@class PathStepEntity
 ---@field step Path.Step
 ---@field geometry zyklib.Highlight
 
----@class Navigator
+---@class Navigator : zyklib.disposable.IDisposable
 ---@field path PathStepEntity[]
 ---@field logic_handler zyklib.reactive.EventHandler
-local Navigator = {}
+local Navigator   = {}
 Navigator.__index = Navigator
 
 local function isCompleted(step)
@@ -89,14 +87,12 @@ function Navigator:clear()
   self.path = {}
 end
 
-function Navigator:destroy()
+function Navigator:dispose()
   self:clear()
   if self.logic_handler then
     self.logic_handler:cancel()
     self.logic_handler = nil
   end
 end
-
-Navigator.instance = Navigator.new()
 
 return Navigator
