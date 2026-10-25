@@ -9,8 +9,9 @@ local ElementManager = require("prettymap/elements/ElementManager")
 local MapView = {}
 MapView.__index = MapView
 
-local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 192 }
-local MIN_ZOOM_INDEX = 6
+local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+local MIN_ZOOM_INDEX = 5
+local DEFAULT_ZOOM_INDEX = 6
 local MAPSQUARE_SIZE = 64
 local DRAG_THRESHOLD = 5
 local NULL_TILE_COLOUR = 0x000000FF
@@ -69,7 +70,7 @@ function MapView.new(parent, options)
         drawCallback = optionalCallback(options, "onDraw"),
         viewportWidth = Helpers.PositiveInteger(options.width or 500, "width"),
         viewportHeight = Helpers.PositiveInteger(options.height or 460, "height"),
-        zoomIndex = MIN_ZOOM_INDEX,
+        zoomIndex = DEFAULT_ZOOM_INDEX,
         zoomLevelMinimum = MIN_ZOOM_INDEX,
         maximumZoomIndex = #ZOOM_LEVELS,
         plane = clamp(Helpers.Integer(options.plane or 0, "plane"), 0, 3),
@@ -173,7 +174,7 @@ function MapView.new(parent, options)
     end)
 
     if onClick then self:AddClickListener(onClick) end
-    self:_ApplyZoom(Helpers.Integer(options.zoom or MIN_ZOOM_INDEX, "zoom"))
+    self:_ApplyZoom(Helpers.Integer(options.zoom or DEFAULT_ZOOM_INDEX, "zoom"))
     if options.showFloorControls == true then
         self.floorControls = Controls.Floor(self.chromeLayer, self)
     end
@@ -336,6 +337,7 @@ function MapView:SetPlane(level)
     self.plane = level
     self.reportedMissingImage = false
     self:_RefreshView("plane")
+    self.elements:_PlaneChanged(level)
     if self.floorControls then self.floorControls:Refresh() end
     self:_InvokeCallback("onPlaneChanged", self.onPlaneChanged, level, self)
     return true
@@ -397,9 +399,15 @@ function MapView:RemoveClickListener(token)
     self.clickListeners[token] = nil
 end
 
-function MapView:WorldToCanvas(coordinate)
+---@param coordinate CoordGrid
+---@param anyPlane boolean? Resolve the coordinate on the current plane regardless of its own level.
+function MapView:WorldToCanvas(coordinate, anyPlane)
     local x, z, level = Helpers.CoordGridValues(coordinate)
-    if level ~= self.plane then return nil, nil end
+    if anyPlane then
+        level = self.plane
+    elseif level ~= self.plane then
+        return nil, nil
+    end
     local pixelX, pixelY = WorldMap.ToPixel(
         x, z, self.mapWidth, self.mapHeight, WorldMap, level)
     if not pixelX then return nil, nil end
