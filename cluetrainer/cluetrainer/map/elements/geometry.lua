@@ -1,6 +1,7 @@
 local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
+local luaflet = require("prettymap/luaflet")
 
---- Conversions from the clue data model (tile coordinates, areas, rectangles) to map coordinates.
+--- Conversions from the clue data model (tile coordinates, areas, rectangles) to luaflet coordinates.
 local geometry = {}
 
 ---@param tile TileCoordinates
@@ -9,20 +10,27 @@ function geometry.grid(tile)
   return coordinate_adaptor.tile_coordinates_to_coord_grid(tile)
 end
 
+--- The centre of a tile.
+---@param tile TileCoordinates
+---@return prettymap.luaflet.Coord
+function geometry.coord(tile)
+  return luaflet.coord(geometry.grid(tile))
+end
+
 --- The south-west corner of a tile.
 ---@param tile TileCoordinates
----@return CoordFine
+---@return prettymap.luaflet.Coord
 function geometry.corner(tile)
-  return CoordFine.new(geometry.grid(tile), false)
+  return luaflet.coordinates_helper.new(tile.x - 0.5, tile.y - 0.5, tile.level)
 end
 
 --- A point given in the clue model's fractional tile space, where integer coordinates are tile centres.
 ---@param x number
 ---@param y number
 ---@param level integer
----@return CoordFine
+---@return prettymap.luaflet.Coord
 function geometry.point(x, y, level)
-  return CoordFine.new(level, (x + 0.5) * 512, (y + 0.5) * 512)
+  return luaflet.coordinates_helper.new(x, y, level)
 end
 
 ---@param area TileArea
@@ -35,18 +43,18 @@ end
 
 --- Opposite corners spanning every tile of the area. Areas with a tile mask are covered by their bounding box.
 ---@param area TileArea
----@return CoordFine a
----@return CoordFine b
+---@return prettymap.luaflet.Coord a
+---@return prettymap.luaflet.Coord b
 function geometry.area_corners(area)
   local origin, opposite = area_extent(area)
   return geometry.corner(origin), geometry.corner(opposite)
 end
 
 ---@param area TileArea
----@return CoordGrid
+---@return prettymap.luaflet.Coord
 function geometry.area_center(area)
   local size = area.size or { x = 1, y = 1 }
-  return geometry.grid({
+  return geometry.coord({
     x = area.origin.x + math.floor(size.x / 2),
     y = area.origin.y + math.floor(size.y / 2),
     level = area.origin.level,
@@ -64,18 +72,18 @@ local function rect_extent(rect)
 end
 
 ---@param rect TileRectangle
----@return CoordFine a
----@return CoordFine b
+---@return prettymap.luaflet.Coord a
+---@return prettymap.luaflet.Coord b
 function geometry.rect_corners(rect)
   local min, opposite = rect_extent(rect)
   return geometry.corner(min), geometry.corner(opposite)
 end
 
 ---@param rect TileRectangle
----@return CoordGrid
+---@return prettymap.luaflet.Coord
 function geometry.rect_center(rect)
   local min, opposite = rect_extent(rect)
-  return geometry.grid({
+  return geometry.coord({
     x = math.floor((min.x + opposite.x - 1) / 2),
     y = math.floor((min.y + opposite.y - 1) / 2),
     level = rect.level,

@@ -1,5 +1,5 @@
----@class prettymap.ElementOptions
----@field coordinate CoordGrid? Tile the element is centred on. Elements without one have no position.
+---@class prettymap.luaflet.TwigOptions
+---@field coordinate prettymap.luaflet.Coord? Position the element is centred on. Elements without one have no position.
 ---@field width number? Width in map tiles (pixels if `zoomScale` is false).
 ---@field height number? Height in map tiles (pixels if `zoomScale` is false).
 ---@field size number? Shorthand for width and height.
@@ -8,12 +8,12 @@
 ---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id of the map. The map's topmost pane if nil.
 ---@field allPlanes boolean? Show the element on every plane at its x/z position instead of hiding it on other planes. Use `_OnPlaneChanged` to restyle it.
 
----@class prettymap.Element : zyklib.disposable.IDisposable
+---@class prettymap.luaflet.Twig : zyklib.disposable.IDisposable
 ---@field static boolean? True for elements fixed to the viewport instead of the map; see StaticElement.
 ---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id the element is drawn in; the map's topmost pane if nil.
 ---@field allPlanes boolean? If true, the element is shown on every plane instead of being hidden on other planes.
 ---@field tooltip prettymap.Tooltip? Tooltip shown while hovered; set with `SetTooltip`.
----@field coordinate CoordGrid? Tile the element is centred on; nil means it has no position.
+---@field coordinate prettymap.luaflet.Coord? Position the element is centred on; nil means it has no position.
 ---@field width integer Current width in pixels, including zoom and hover effects.
 ---@field height integer Current height in pixels, including zoom and hover effects.
 ---@field baseWidth number Unscaled width: map tiles, or pixels if `zoomScale` is false.
@@ -26,8 +26,8 @@
 ---@field screenY integer? Last pixel position (centre, in canvas coordinates); nil while hidden or unplaced.
 ---@field component ui.Layer? Layer filled by CreateComponent; nil if the element has no visual.
 ---@field manager prettymap.ElementManager? The manager the element is added to; nil while not on a map.
----@field parent prettymap.Element? Element this one is a child of; nil for top-level elements.
----@field children prettymap.Element[] Child elements, added to and removed from the map together with this one.
+---@field parent prettymap.luaflet.Twig? Element this one is a child of; nil for top-level elements.
+---@field children prettymap.luaflet.Twig[] Child elements, added to and removed from the map together with this one.
 local Element = {}
 Element.__index = Element
 
@@ -48,13 +48,13 @@ local function TileProportional(mapScale)
     return mapScale
 end
 
----@param options prettymap.ElementOptions?
----@return prettymap.Element
+---@param options prettymap.luaflet.TwigOptions?
+---@return prettymap.luaflet.Twig
 function Element.new(options)
     options = options or {}
     local width = options.width or options.size or 32
     local height = options.height or options.size or 32
-    ---@class prettymap.Element
+    ---@class prettymap.luaflet.Twig
     local self = setmetatable({
         coordinate = options.coordinate,
         zLayer = options.zLayer,
@@ -99,7 +99,7 @@ function Element:_Layout(map)
     self:_ApplyZoom(map.currentScale, map)
     self.component:SetSize(self.width, self.height)
     if self.coordinate then
-        self:_ApplyPosition(map:WorldToCanvas(self.coordinate, self.allPlanes))
+        self:_ApplyPosition(map:CoordToCanvas(self.coordinate, self.allPlanes))
     end
 end
 
@@ -151,27 +151,31 @@ end
 --- Attaches a child. Children keep their own coordinates and are placed on the map like any
 --- element; the parent only controls their lifetime (they are added to and removed from the
 --- map together with it).
----@param child prettymap.Element The child element
----@return prettymap.Element #
-function Element:Add(child)
-    if child.parent == self then return child end
+---@generic T: prettymap.luaflet.Twig
+---@param self T
+---@param child prettymap.luaflet.Twig The child element
+---@return T self
+function Element.Add(self, child)
+    if child.parent == self then return self end
     if child.parent then child.parent:Remove(child) end
     child.parent = self
     self.children[#self.children + 1] = child
     --- If this element is already managed by a map, add the child to the same manager.
     if self.manager then self.manager:Add(child) end
-    return child
+    return self
 end
 
 --- Adds this element to a parent element or to an element manager.
----@param target prettymap.Element|prettymap.ElementManager
----@return prettymap.Element self
-function Element:AddTo(target)
+---@generic T: prettymap.luaflet.Twig
+---@param self T
+---@param target prettymap.luaflet.Twig|prettymap.ElementManager
+---@return T self
+function Element.AddTo(self, target)
     target:Add(self)
     return self
 end
 
----@param child prettymap.Element
+---@param child prettymap.luaflet.Twig
 ---@return boolean removed False if `child` was not a child of this element.
 function Element:Remove(child)
     if child.parent ~= self then return false end
@@ -201,7 +205,7 @@ function Element:dispose()
 end
 
 --- Moves the element; it is repositioned immediately if it is on a map.
----@param coordinate CoordGrid?
+---@param coordinate prettymap.luaflet.Coord?
 ---@return nil
 function Element:SetCoordinate(coordinate)
     self.coordinate = coordinate

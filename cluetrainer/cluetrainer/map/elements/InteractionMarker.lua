@@ -1,4 +1,4 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 
 local MARKER_SIZE = 24 -- pixels
 local HOVER_FACTOR = 1.5
@@ -15,12 +15,12 @@ local CURSOR_SPRITES = {
 }
 
 ---@class cluetrainer.InteractionMarkerOptions
----@field coordinate CoordGrid
+---@field coordinate prettymap.luaflet.Coord
 ---@field cursor string Key of the cursor sprite: "talk", "search", "shovel", "equip" or "emote".
 
 --- A fixed-size icon showing how an entity is interacted with. Grows on hover; attach a tooltip with `SetTooltip`.
----@class cluetrainer.InteractionMarker : prettymap.SpriteElement
-local InteractionMarker = setmetatable({}, { __index = elements.SpriteElement })
+---@class cluetrainer.InteractionMarker : prettymap.luaflet.SpriteTwig
+local InteractionMarker = setmetatable({}, { __index = luaflet.twigs.SpriteTwig })
 InteractionMarker.__index = InteractionMarker
 
 ---@param options cluetrainer.InteractionMarkerOptions
@@ -28,7 +28,7 @@ InteractionMarker.__index = InteractionMarker
 function InteractionMarker.new(options)
   local size = MARKER_SIZE
 
-  local self = setmetatable(elements.SpriteElement.new({
+  local self = setmetatable(luaflet.twigs.SpriteTwig.new({
     coordinate = options.coordinate,
     spriteID = config.Cursor.FromID(CURSOR_SPRITES[options.cursor] or CURSOR_SPRITES.generic).spriteID,
     size = size,
@@ -44,7 +44,7 @@ end
 ---@return boolean added
 function InteractionMarker:CreateComponent(layer)
   if not self.spriteID then return false end
-  return elements.SpriteElement.CreateComponent(self, layer)
+  return luaflet.twigs.SpriteTwig.CreateComponent(self, layer)
 end
 
 return InteractionMarker

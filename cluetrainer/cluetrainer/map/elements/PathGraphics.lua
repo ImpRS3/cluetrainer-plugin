@@ -1,7 +1,7 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 local geometry = require("cluetrainer/map/elements/geometry")
 
---- Arrows, polylines and marks for rendering paths, as polygon elements.
+--- Arrows, nd marks for rendering paths, as polygon elements.
 --- Points are tile coordinates; integer coordinates are tile centres.
 local PathGraphics = {}
 
@@ -34,7 +34,7 @@ function PathGraphics.offset_towards(from, to, distance)
   return { x = from.x + dx / length * distance, y = from.y + dy / length * distance, level = from.level }
 end
 
----@param polygon prettymap.PolygonElement
+---@param polygon prettymap.luaflet.PolygonTwig
 ---@param ax number
 ---@param ay number
 ---@param bx number
@@ -46,7 +46,7 @@ local function line(polygon, ax, ay, bx, by, level, weight, colour)
   polygon:AddLine(geometry.point(ax, ay, level), geometry.point(bx, by, level), weight, colour)
 end
 
----@param polygon prettymap.PolygonElement
+---@param polygon prettymap.luaflet.PolygonTwig
 ---@param ax number
 ---@param ay number
 ---@param bx number
@@ -69,9 +69,9 @@ end
 ---@param from TileCoordinates
 ---@param to TileCoordinates
 ---@param style cluetrainer.ArrowStyle
----@return prettymap.PolygonElement
+---@return prettymap.luaflet.PolygonTwig
 function PathGraphics.arrow(from, to, style)
-  local polygon = elements.PolygonElement.new()
+  local polygon = luaflet.twigs.PolygonTwig.new()
   local weight, level = style.weight or 3, to.level
   local head = style.head or "tip"
   local arm = style.arm_length or (head == "x" and 0.25 or 0.5)
@@ -96,26 +96,14 @@ function PathGraphics.arrow(from, to, style)
   return polygon
 end
 
----@param points TileCoordinates[]
----@param colour integer RGBA colour.
----@param weight number? Default 3.
----@return prettymap.PolygonElement
-function PathGraphics.polyline(points, colour, weight)
-  local polygon = elements.PolygonElement.new()
-  for i = 1, #points - 1 do
-    line(polygon, points[i].x, points[i].y, points[i + 1].x, points[i + 1].y, points[i].level, weight or 3, colour)
-  end
-  return polygon
-end
-
 --- A cross centred on `at`, `half_size` tiles in each direction.
 ---@param at TileCoordinates
 ---@param half_size number
 ---@param colour integer RGBA colour.
 ---@param weight number
----@return prettymap.PolygonElement
+---@return prettymap.luaflet.PolygonTwig
 function PathGraphics.cross(at, half_size, colour, weight)
-  local polygon = elements.PolygonElement.new()
+  local polygon = luaflet.twigs.PolygonTwig.new()
   line(polygon, at.x - half_size, at.y - half_size, at.x + half_size, at.y + half_size, at.level, weight, colour)
   line(polygon, at.x - half_size, at.y + half_size, at.x + half_size, at.y - half_size, at.level, weight, colour)
   return polygon
@@ -126,9 +114,9 @@ end
 ---@param radius number In tiles.
 ---@param colour integer RGBA colour.
 ---@param weight number
----@return prettymap.PolygonElement
+---@return prettymap.luaflet.PolygonTwig
 function PathGraphics.circle(at, radius, colour, weight)
-  local polygon = elements.PolygonElement.new()
+  local polygon = luaflet.twigs.PolygonTwig.new()
   local segments = 12
   for i = 0, segments - 1 do
     local a0, a1 = i / segments * 2 * math.pi, (i + 1) / segments * 2 * math.pi

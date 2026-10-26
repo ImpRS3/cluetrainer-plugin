@@ -9,14 +9,14 @@
 ---@field paneIDs table<string, prettymap.PaneID> Named z-layers.
 ---@field topPane prettymap.PaneID Highest pane id; the fallback for elements without a z-layer.
 ---@field staticLayer ui.Layer Parent of static elements; they have no z-layers and are drawn above everything.
----@field elements table<prettymap.Element, true>
----@field hoverQueue prettymap.Element[] Elements under the cursor in order of entry; the first one is hovered.
+---@field elements table<prettymap.luaflet.Twig, true>
+---@field hoverQueue prettymap.luaflet.Twig[] Elements under the cursor in order of entry; the first one is hovered.
 ---@field tooltipParent ui.Component? Component tooltips are placed in; defaults to the game area.
 ---@field tooltips prettymap.TooltipHost? Created on the first tooltip.
 local ElementManager = {}
 ElementManager.__index = ElementManager
 
-local TooltipHost = require("prettymap/elements/TooltipHost")
+local TooltipHost = require("prettymap/luaflet/TooltipHost")
 
 ---@type table<string, prettymap.PaneID>
 ElementManager.DEFAULT_Z_LAYERS = { overlay = 100, marker = 200 }
@@ -63,7 +63,7 @@ function ElementManager.new(map, layer, zLayers, tooltipParent, staticLayer)
     }, ElementManager)
 end
 
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 ---@return ui.Layer
 function ElementManager:_ContainerFor(element)
     if element.static then return self.staticLayer end
@@ -80,7 +80,7 @@ function ElementManager:_ContainerFor(element)
     return container
 end
 
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 function ElementManager:_Position(element)
     if not element.component then return end
     element:_Layout(self.map)
@@ -89,7 +89,7 @@ end
 --- The cursor entered `element`. The first element of the queue is the hovered one; others wait
 --- behind it (a new hover never evicts the current one) and take over in order once it leaves,
 --- provided the cursor is still on them.
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 function ElementManager:_Hover(element)
     for _, queued in ipairs(self.hoverQueue) do
         if queued == element then return end
@@ -98,7 +98,7 @@ function ElementManager:_Hover(element)
     if #self.hoverQueue == 1 then self:_Activate(element) end
 end
 
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 function ElementManager:_Activate(element)
     element.component:MoveToFront() -- on top within its z-layer
     element:_SetHovered(true)
@@ -107,7 +107,7 @@ end
 
 --- The cursor left `element`. An interactive tooltip keeps the hovered element until the cursor
 --- leaves its region.
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 function ElementManager:_Unhover(element)
     if self.hoverQueue[1] == element and self.tooltips and self.tooltips.holding then return end
     self:_Leave(element)
@@ -121,7 +121,7 @@ function ElementManager:_Release()
 end
 
 --- Removes `element` from the queue; if it was hovered, un-hovers it and hands over to the next.
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 function ElementManager:_Leave(element)
     for i, queued in ipairs(self.hoverQueue) do
         if queued == element then
@@ -147,7 +147,7 @@ function ElementManager:_Tooltips()
 end
 
 --- Drops the cached tooltip content of `element`.
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 function ElementManager:_ForgetTooltip(element)
     if self.tooltips then self.tooltips:Forget(element) end
 end
@@ -155,8 +155,8 @@ end
 --- Adds an element together with all of its children.
 --- The element's component is a fresh layer filled by `CreateComponent`; the layer is destroyed
 --- again if `CreateComponent` reports that it added nothing, leaving `component` nil.
----@param element prettymap.Element
----@return prettymap.Element
+---@param element prettymap.luaflet.Twig
+---@return prettymap.luaflet.Twig
 function ElementManager:Add(element)
     if self.elements[element] then return element end
     self.elements[element] = true
@@ -187,7 +187,7 @@ function ElementManager:Add(element)
 end
 
 --- Removes an element together with all of its children.
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 ---@return boolean removed
 function ElementManager:Remove(element)
     if element.parent then return element.parent:Remove(element) end
@@ -196,7 +196,7 @@ function ElementManager:Remove(element)
     return true
 end
 
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 function ElementManager:_RemoveSubtree(element)
     for _, child in ipairs(element.children) do self:_RemoveSubtree(child) end
     self.elements[element] = nil

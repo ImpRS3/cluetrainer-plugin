@@ -4,7 +4,6 @@ local PathMesh               = require "cluetrainer/model/PathMesh"
 local TileArea               = require "cluetrainer/model/shared/TileArea"
 local OverlayConstants       = require "cluetrainer/model/OverlayConstants"
 local map                    = require "cluetrainer/map/map"
-local Element                = require "prettymap/elements/Element"
 local TalkSolutionNpcEntity  = require "cluetrainer/map/elements/TalkSolutionNpcEntity"
 local SearchSolutionEntity   = require "cluetrainer/map/elements/SearchSolutionEntity"
 local DigSolutionEntity      = require "cluetrainer/map/elements/DigSolutionEntity"
@@ -16,6 +15,7 @@ local methods                = require "cluetrainer/solving/methods"
 local Navigator              = require "cluetrainer/solving/navigator"
 local Path                   = require "cluetrainer/model/shared/path"
 local MapNavigator           = require "cluetrainer/solving/map_navigator/MapNavigator"
+local luaflet                = require "prettymap/luaflet"
 local SimpleClueSolver       = {}
 local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
@@ -136,9 +136,9 @@ end
 
 ---Construct the map elements that are relevant for the given step
 ---@param step Step
----@return prettymap.Element
+---@return prettymap.luaflet.Twig
 local function create_step_map_layer(step)
-  local layer = Element.new()
+  local layer = luaflet.twigs.Twig.new()
 
   local solution = inferSolution(step)
 
@@ -162,7 +162,7 @@ local function create_step_map_layer(step)
 
   if step.type == "skilling" then
     InteractionMarker.new({
-      coordinate = coordinate_adaptor.tile_coordinates_to_coord_grid(TileArea.ensure_mutable(step.areas[0]):center()),
+      coordinate = require("cluetrainer/map/elements/geometry").coord(TileArea.ensure_mutable(step.areas[0]):center()),
       cursor = step.cursor
     })
   end
@@ -221,7 +221,7 @@ function ActiveSimpleClue.new(clue)
   }, { __index = ActiveSimpleClue })
 
   self.disposable_group:add(create_step_highlights(clue):activate())
-  self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.elements))
+  self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.twigs))
 
   ---@type Method.GenericPath?
   local method = methods.resolve({ clue = clue.id })

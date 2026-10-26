@@ -2,7 +2,7 @@ local prettymap = require("prettymap")
 local zyklib = require("zyklib")
 local teleport_layer = require("cluetrainer/map/teleport_layer")
 
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 
 -- Mirrors the PrettyUI window chrome, which is not exposed.
 local WINDOW_BORDER = 8
@@ -10,7 +10,7 @@ local WINDOW_TITLE_HEIGHT = 32
 
 -- Mirrors prettymap's internal zoom steps and world size, which are not exposed.
 local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
-local MIN_ZOOM_INDEX = 5
+local MIN_ZOOM_INDEX = 4
 local WORLD_WIDTH = 12800
 local WORLD_HEIGHT = 12800
 
@@ -46,7 +46,7 @@ function GameMap.new()
     y = 0,
     width = self.window.contentWidth,
     height = self.window.content.height,
-    showFloorControls = true,
+    showFloorControls = false,
     showZoomControls = false,
     showPlayerMarker = false,
     trackPlayer = false,
@@ -68,21 +68,8 @@ function GameMap.new()
 
   self.map:AddElement(teleport_layer.new())
 
-  -- Example of a static element: plain text fixed to the top left corner of the viewport.
-  local label = elements.StaticElement.new({ anchor = "topleft", offsetX = 8, offsetY = 8, width = 160, height = 20 })
-  local FontFamily = require("cluetrainer/util/FontFamily")
-  function label:CreateComponent(layer)
-    local text = ui.Text.new(layer)
-    text:SetSize(0, 0, 1.0, 1.0)
-    text.content = "Static text"
-    local font = FontFamily.NOTOSANS:Get(14, "bold")
-    if font then text.font = font.id end
-    text.rgba = 0xFFFFFFFF
-    text.isShadowed = true
-    text.clickthrough = true
-    return true
-  end
-  self.map:AddElement(label)
+  luaflet.twigs.prefab.FloorControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
+  --luaflet.twigs.prefab.ZoomControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
 
   zyklib.lifecycle.shutdown_event:subscribe(function() self.window:Destroy() end)
 

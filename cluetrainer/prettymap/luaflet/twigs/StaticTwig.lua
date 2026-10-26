@@ -1,4 +1,4 @@
-local Element = require("prettymap/elements/Element")
+local Twig = require("prettymap/luaflet/twigs/Twig")
 
 --- Fractions of the free viewport space (horizontal, vertical) per anchor.
 ---@type table<string, {[1]: number, [2]: number}>
@@ -29,26 +29,24 @@ local ANCHORS = {
 
 --- An element fixed to the viewport (a UI control) that does not move with the map. It is placed
 --- relative to an edge or corner of the viewport and is always drawn above map elements, outside of
---- the z-layers. Elements sharing an anchor overlap. Subclasses create their component with
---- `CreateComponent`; the layer is clickthrough by default, set `layer.clickthrough = false` to
---- receive clicks.
----@class prettymap.StaticElement : prettymap.Element
+--- the z-layers. Use this for UI elements that can be grouped with the rest of the twig system.
+---@class prettymap.StaticElement : prettymap.luaflet.Twig
 ---@field anchor prettymap.Anchor
 ---@field offsetX number
 ---@field offsetY number
-local StaticElement = setmetatable({}, { __index = Element })
-StaticElement.__index = StaticElement
+local StaticTwig = setmetatable({}, { __index = Twig })
+StaticTwig.__index = StaticTwig
 
 ---@param options prettymap.StaticElementOptions
 ---@return prettymap.StaticElement
-function StaticElement.new(options)
+function StaticTwig.new(options)
     assert(ANCHORS[options.anchor], "unknown anchor: " .. tostring(options.anchor))
-    local self = setmetatable(Element.new({
+    local self = setmetatable(Twig.new({
         width = options.width,
         height = options.height,
         size = options.size,
         zoomScale = false,
-    }), StaticElement)
+    }), StaticTwig)
     ---@cast self prettymap.StaticElement
     self.static = true
     self.anchor = options.anchor
@@ -61,7 +59,7 @@ end
 ---@param offsetX number?
 ---@param offsetY number?
 ---@return nil
-function StaticElement:SetAnchor(anchor, offsetX, offsetY)
+function StaticTwig:SetAnchor(anchor, offsetX, offsetY)
     assert(ANCHORS[anchor], "unknown anchor: " .. tostring(anchor))
     self.anchor = anchor
     self.offsetX = offsetX or 0
@@ -70,18 +68,18 @@ function StaticElement:SetAnchor(anchor, offsetX, offsetY)
 end
 
 ---@param map prettymap.MapView
-function StaticElement:_Layout(map)
+function StaticTwig:_Layout(map)
     self.component:SetSize(self.width, self.height)
     self:_Place()
 end
 
 --- Static elements only depend on the viewport, so the coordinates given by the base class are ignored.
-function StaticElement:_ApplyPosition()
+function StaticTwig:_ApplyPosition()
     self:_Place()
 end
 
 ---@return nil
-function StaticElement:_Place()
+function StaticTwig:_Place()
     local component = self.component
     local map = self.manager.map
     local fraction = ANCHORS[self.anchor]
@@ -95,7 +93,7 @@ function StaticElement:_Place()
 end
 
 ---@param plane integer
-function StaticElement:_OnPlaneChanged(plane)
+function StaticTwig:_OnPlaneChanged(plane)
 end
 
-return StaticElement
+return StaticTwig

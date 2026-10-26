@@ -1,4 +1,4 @@
----@alias prettymap.TooltipBuilder fun(layer: ui.Layer, element: prettymap.Element): boolean?
+---@alias prettymap.TooltipBuilder fun(layer: ui.Layer, element: prettymap.luaflet.Twig): boolean?
 
 ---@class prettymap.TooltipOptions
 ---@field interactive boolean? The element stays hovered while the cursor is in the tooltip. Default false.
@@ -28,7 +28,7 @@ end
 --- Abstract. Fills `layer` with the tooltip content, sizes it with `layer:SetSize` and returns true.
 --- Returning a falsy value shows no tooltip. Called on every show; the layer is destroyed on hide.
 ---@param layer ui.Layer
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 ---@return boolean?
 function Tooltip:Build(layer, element)
     error("Tooltip:Build is abstract; override it or use Tooltip.of", 2)

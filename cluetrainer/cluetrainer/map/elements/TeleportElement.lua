@@ -1,4 +1,4 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
 local FontFamily = require("cluetrainer/util/FontFamily")
 local TeleportTooltip = require("cluetrainer/map/elements/TeleportTooltip")
@@ -27,16 +27,16 @@ local function zoom_size(mapScale)
   return size
 end
 
----@class cluetrainer.TeleportElement: prettymap.Element
+---@class cluetrainer.TeleportElement: prettymap.luaflet.Twig
 ---@field teleport cluetrainer.TeleportSpot
 ---@field overlay_text ui.Text?
 ---@field sprite ui.Sprite?
 ---@field home_level integer The plane the teleport is on.
-local TeleportElement = setmetatable({}, { __index = elements.Element })
+local TeleportElement = setmetatable({}, { __index = luaflet.twigs.Twig })
 TeleportElement.__index = TeleportElement
 
 function TeleportElement:_UpdateSize()
-  elements.Element._UpdateSize(self)
+  luaflet.twigs.Twig._UpdateSize(self)
   -- Spots without a sprite have no text.
   local text = self.overlay_text
   if not text then return end
@@ -98,8 +98,8 @@ end
 ---@return cluetrainer.TeleportElement
 function TeleportElement.new(teleport)
   ---@class cluetrainer.TeleportElement
-  local self = elements.Element.new({
-    coordinate = coordinate_adaptor.tile_coordinates_to_coord_grid(teleport:center_of_target()),
+  local self = luaflet.twigs.Twig.new({
+    coordinate = luaflet.coord(coordinate_adaptor.tile_coordinates_to_coord_grid(teleport:center_of_target())),
     size = 1, -- scaled to `zoom_size` pixels by the zoom step
     zoomScale = zoom_size,
     hoverSize = ZOOM_STEPS[#ZOOM_STEPS].size * HOVER_FACTOR,
@@ -107,7 +107,7 @@ function TeleportElement.new(teleport)
     allPlanes = true,
   })
   self.teleport = teleport
-  self.home_level = self.coordinate.level
+  self.home_level = self.coordinate.floor
   setmetatable(self, TeleportElement)
   self:SetTooltip(TeleportTooltip.new(teleport))
   return self

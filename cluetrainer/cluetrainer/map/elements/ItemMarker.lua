@@ -1,19 +1,19 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 
 local MARKER_SIZE = 24 -- pixels
 local HOVER_FACTOR = 1.5
 
 --- A fixed-size icon of an item. Grows on hover; attach a tooltip with `SetTooltip`.
----@class cluetrainer.ItemMarker : prettymap.Element
+---@class cluetrainer.ItemMarker : prettymap.luaflet.Twig
 ---@field obj integer Obj id of the item.
-local ItemMarker = setmetatable({}, { __index = elements.Element })
+local ItemMarker = setmetatable({}, { __index = luaflet.twigs.Twig })
 ItemMarker.__index = ItemMarker
 
----@param coordinate CoordGrid
+---@param coordinate prettymap.luaflet.Coord
 ---@param obj integer
 ---@return cluetrainer.ItemMarker
 function ItemMarker.new(coordinate, obj)
-  local self = setmetatable(elements.Element.new({
+  local self = setmetatable(luaflet.twigs.Twig.new({
     coordinate = coordinate,
     size = MARKER_SIZE,
     zoomScale = false,

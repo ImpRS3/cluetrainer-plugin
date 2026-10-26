@@ -1,7 +1,8 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 local Bounds = require("cluetrainer/util/Bounds")
 local Path = require("cluetrainer/model/shared/path")
 local PathStepEntity = require("cluetrainer/solving/map_navigator/PathStepEntity")
+local SectionControl = require("cluetrainer/solving/map_navigator/SectionControl")
 
 ---@param bounds ct.Bounds
 ---@param step Path.Step
@@ -32,7 +33,8 @@ end
 ---@class ct.MapNavigator
 ---@field map ct.GameMap
 ---@field sections {name: string, steps: Path.Step[]}[]
----@field element prettymap.Element Group element holding one entity per step.
+---@field twig prettymap.luaflet.Twig Group element holding one entity per step.
+---@field section_control ct.SectionControl?
 local MapNavigator = {}
 MapNavigator.__index = MapNavigator
 
@@ -46,25 +48,29 @@ function MapNavigator.new(map, sections)
   self.map = map
   self.sections = sections
 
-  self.element = elements.Element.new()
+  self.twig = luaflet.twigs.Twig.new()
+      :AddTo(map.map.twigs)
+
   for _, section in ipairs(sections) do
     for _, step in ipairs(section.steps) do
-      self.element:Add(PathStepEntity.new(step))
+      self.twig:Add(PathStepEntity.new(step))
     end
   end
 
-  log("Creating MapNavigator")
+  self.section_control = SectionControl.new({
+    names = zyklib.array.map(sections, function(section) return section.name end)
+  }):AddTo(self.twig)
 
-  map.map:AddElement(self.element)
+  self.section_control.section_changed:subscribe(function(index) self:fitSection(index) end)
 
-  self:fit_last_section()
+  self:fitSection(#self.sections)
 
   return self
 end
 
---- Zooms the map to fit the last section of the path.
-function MapNavigator:fit_last_section()
-  local section = self.sections[#self.sections]
+--- @param index integer The index of the section to fit. Defaults to the last section.
+function MapNavigator:fitSection(index)
+  local section = self.sections[index]
   if not section then return end
 
   local bounds = Bounds.new()
@@ -74,8 +80,7 @@ end
 
 --- Removes the path from the map.
 function MapNavigator:dispose()
-  self.element:Detach()
+  self.twig:Detach()
 end
-
 
 return MapNavigator

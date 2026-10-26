@@ -3,13 +3,13 @@ local Controls = require("prettymap/controls")
 local Helpers = require("prettymap/map_helpers")
 local TileRenderer = require("prettymap/tile_renderer")
 local MapOverlays = require("prettymap/map_overlays")
-local ElementManager = require("prettymap/elements/ElementManager")
+local LuafletManager = require("prettymap/luaflet/TwigManager")
 
----@class prettymap.MapView 
+---@class prettymap.MapView
 local MapView = {}
 MapView.__index = MapView
 
-local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 }
 local MIN_ZOOM_INDEX = 5
 local DEFAULT_ZOOM_INDEX = 6
 local MAPSQUARE_SIZE = 64
@@ -119,9 +119,9 @@ function MapView.new(parent, options)
     self.chromeLayer = ui.Layer.new(self.root)
     -- Created last so that static elements are always on top of everything else.
     self.staticElementLayer = ui.Layer.new(self.root)
-    self.elements = ElementManager.new(self, self.elementLayer, options.zLayers, options.tooltipParent,
+    self.twigs = LuafletManager.new(self, self.elementLayer, options.zLayers, options.tooltipParent,
         self.staticElementLayer)
-    for _, layer in ipairs({ self.tileLayer, self.iconTileLayer,self.mapOverlayLayer }) do
+    for _, layer in ipairs({ self.tileLayer, self.iconTileLayer, self.mapOverlayLayer }) do
         layer.clickthrough = true
     end
     for _, layer in ipairs({ self.screenOverlayLayer, self.screenMarkerLayer,
@@ -219,7 +219,7 @@ function MapView:_RefreshView(category)
     if work.tiles then TileRenderer._RefreshTiles(self) end
     if work.sprites then MapOverlays._RefreshCustomSprites(self) end
     if work.drawing then MapOverlays._DrawCustomOverlay(self) end
-    if work.destroyTiles then self.elements:Refresh() end
+    if work.destroyTiles then self.twigs:Refresh() end
     if work.edgeMarkers then MapOverlays._DrawEdgeMarkers(self) end
     if work.notify then MapOverlays._NotifyViewChanged(self) end
 end
@@ -340,7 +340,7 @@ function MapView:SetPlane(level)
     self.plane = level
     self.reportedMissingImage = false
     self:_RefreshView("plane")
-    self.elements:_PlaneChanged(level)
+    self.twigs:_PlaneChanged(level)
     if self.floorControls then self.floorControls:Refresh() end
     self:_InvokeCallback("onPlaneChanged", self.onPlaneChanged, level, self)
     return true
@@ -350,15 +350,15 @@ function MapView:GetPlane()
     return self.plane
 end
 
---- Adds an element, with its children, to the map (see prettymap/elements).
----@param item prettymap.Element
----@return prettymap.Element
-function MapView:AddElement(item) return self.elements:Add(item) end
+--- Adds an element, with its children, to the map (see prettymap/luaflet).
+---@param item prettymap.luaflet.Twig
+---@return prettymap.luaflet.Twig
+function MapView:AddElement(item) return self.twigs:Add(item) end
 
 --- Removes an element, with its children, from the map.
----@param item prettymap.Element
+---@param item prettymap.luaflet.Twig
 ---@return boolean removed
-function MapView:RemoveElement(item) return self.elements:Remove(item) end
+function MapView:RemoveElement(item) return self.twigs:Remove(item) end
 
 function MapView:_ClickAt(x, y)
     if not self.imageAvailable then return end
@@ -417,19 +417,21 @@ function MapView:WorldToCanvas(coordinate, anyPlane)
     return rounded(self.mapOffsetX + pixelX), rounded(self.mapOffsetY + pixelY)
 end
 
---- Converts a CoordFine (512 fine units per tile) to canvas pixels, keeping sub-tile precision.
---- A CoordGrid is accepted too and resolves to the centre of its tile.
---- Returns nil if the coordinate is on another plane or outside the world map.
----@param coordinate CoordFine|CoordGrid
+--- Converts a luaflet coordinate to canvas pixels, keeping sub-tile precision.
+--- Returns nil if the coordinate is on another floor or outside the world map.
+---@param coordinate prettymap.luaflet.Coord
+---@param anyPlane boolean? Resolve the coordinate on the current plane regardless of its own floor.
 ---@return number? x
 ---@return number? y
-function MapView:FineToCanvas(coordinate)
-    if coordinate.position == nil then
-        coordinate = CoordFine.new(coordinate, true)
+function MapView:CoordToCanvas(coordinate, anyPlane)
+    local floor = coordinate.floor
+    if anyPlane or floor == nil then
+        floor = self.plane
+    elseif floor ~= self.plane then
+        return nil, nil
     end
-    if coordinate.level ~= self.plane then return nil, nil end
-    local tileX, tileZ = coordinate.x / 512, coordinate.z / 512
-    if not WorldMap.Contains(tileX, tileZ, coordinate.level) then return nil, nil end
+    local tileX, tileZ = coordinate.x + 0.5, coordinate.y + 0.5
+    if not WorldMap.Contains(tileX, tileZ, floor) then return nil, nil end
     return self.mapOffsetX + (tileX - WorldMap.minX) * self.mapWidth / WorldMap.width,
         self.mapOffsetY + (WorldMap.maxZ - tileZ) * self.mapHeight / WorldMap.height
 end
@@ -473,7 +475,7 @@ end
 function MapView:Destroy()
     if not self.root then return false end
     TileRenderer._DestroyTiles(self)
-    self.elements:Destroy()
+    self.twigs:Destroy()
     for _, marker in ipairs(self.edgeMarkers) do
         marker.map = nil
         marker.component = nil

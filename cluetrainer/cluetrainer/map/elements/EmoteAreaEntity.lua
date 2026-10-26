@@ -1,4 +1,4 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 local AreaGraphics = require("cluetrainer/map/elements/AreaGraphics")
 local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
 
@@ -12,14 +12,14 @@ local function join(values, last_separator)
 end
 
 --- The area of an emote clue: an outline with an emote marker in the centre and a tooltip.
----@class cluetrainer.EmoteAreaEntity : prettymap.Element
-local EmoteAreaEntity = setmetatable({}, { __index = elements.Element })
+---@class cluetrainer.EmoteAreaEntity : prettymap.luaflet.Twig
+local EmoteAreaEntity = setmetatable({}, { __index = luaflet.twigs.Twig })
 EmoteAreaEntity.__index = EmoteAreaEntity
 
 ---@param clue Emote
 ---@return cluetrainer.EmoteAreaEntity
 function EmoteAreaEntity.new(clue)
-  local self = setmetatable(elements.Element.new(), EmoteAreaEntity)
+  local self = setmetatable(luaflet.twigs.Twig.new(), EmoteAreaEntity)
   ---@cast self cluetrainer.EmoteAreaEntity
 
   self:Add(AreaGraphics.area(clue.area, {

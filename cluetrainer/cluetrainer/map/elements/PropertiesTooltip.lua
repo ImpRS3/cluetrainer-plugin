@@ -1,4 +1,4 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 local FontFamily = require("cluetrainer/util/FontFamily")
 
 local MAX_WIDTH = 280
@@ -17,13 +17,13 @@ local TEXT_RGBA = 0xFFFFFFFF
 --- A simple tooltip made of headers, wrapped paragraphs and label/value rows.
 ---@class cluetrainer.PropertiesTooltip : prettymap.Tooltip
 ---@field lines cluetrainer.PropertiesLine[]
-local PropertiesTooltip = setmetatable({}, { __index = elements.Tooltip })
+local PropertiesTooltip = setmetatable({}, { __index = luaflet.Tooltip })
 PropertiesTooltip.__index = PropertiesTooltip
 
 ---@param options prettymap.TooltipOptions?
 ---@return cluetrainer.PropertiesTooltip
 function PropertiesTooltip.new(options)
-  local self = setmetatable(elements.Tooltip.new(options), PropertiesTooltip)
+  local self = setmetatable(luaflet.Tooltip.new(options), PropertiesTooltip)
   self.lines = {}
   return self
 end

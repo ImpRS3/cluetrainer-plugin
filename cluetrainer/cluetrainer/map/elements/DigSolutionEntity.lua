@@ -1,4 +1,4 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 local geometry = require("cluetrainer/map/elements/geometry")
 local AreaGraphics = require("cluetrainer/map/elements/AreaGraphics")
 local InteractionMarker = require("cluetrainer/map/elements/InteractionMarker")
@@ -8,15 +8,15 @@ local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
 local DIG_RADIUS = 1
 
 --- The spot to dig at: a shaded dig area plus a shovel marker, with an explanatory tooltip.
----@class cluetrainer.DigSolutionEntity : prettymap.Element
+---@class cluetrainer.DigSolutionEntity : prettymap.luaflet.Twig
 ---@field marker cluetrainer.InteractionMarker
-local DigSolutionEntity = setmetatable({}, { __index = elements.Element })
+local DigSolutionEntity = setmetatable({}, { __index = luaflet.twigs.Twig })
 DigSolutionEntity.__index = DigSolutionEntity
 
 --- The shaded dig area around `spot`.
 ---@param spot TileCoordinates
 ---@param single_tile boolean? Shade only the spot's tile instead of the dig area.
----@return prettymap.PolygonElement
+---@return prettymap.luaflet.PolygonTwig
 function DigSolutionEntity.area_graphics(spot, single_tile)
   local radius = single_tile and 0 or DIG_RADIUS
   return AreaGraphics.rect({
@@ -29,12 +29,12 @@ end
 ---@param solution Solution.Dig
 ---@return cluetrainer.DigSolutionEntity
 function DigSolutionEntity.new(solution)
-  local self = setmetatable(elements.Element.new(), DigSolutionEntity)
+  local self = setmetatable(luaflet.twigs.Twig.new(), DigSolutionEntity)
   ---@cast self cluetrainer.DigSolutionEntity
 
   self:Add(DigSolutionEntity.area_graphics(solution.spot))
   self.marker = InteractionMarker.new({
-    coordinate = geometry.grid(solution.spot),
+    coordinate = geometry.coord(solution.spot),
     cursor = "shovel",
   })
   self:Add(self.marker)

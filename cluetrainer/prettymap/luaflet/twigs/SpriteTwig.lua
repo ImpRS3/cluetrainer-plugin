@@ -1,23 +1,23 @@
-local Element = require("prettymap/elements/Element")
+local twig = require("prettymap/luaflet/twigs/Twig")
 
----@class prettymap.SpriteElementOptions : prettymap.ElementOptions
+---@class prettymap.luaflet.SpriteTwigOptions : prettymap.luaflet.TwigOptions
 ---@field spriteID integer?
 ---@field sprite any?
 ---@field colour integer? RGBA tint.
 
----@class prettymap.SpriteElement : prettymap.Element
+---@class prettymap.luaflet.SpriteTwig : prettymap.luaflet.Twig
 ---@field spriteID integer?
 ---@field sprite any?
 ---@field colour integer?
-local SpriteElement = setmetatable({}, { __index = Element })
-SpriteElement.__index = SpriteElement
+local SpriteTwig = setmetatable({}, { __index = twig })
+SpriteTwig.__index = SpriteTwig
 
----@param options prettymap.SpriteElementOptions
----@return prettymap.SpriteElement
-function SpriteElement.new(options)
+---@param options prettymap.luaflet.SpriteTwigOptions
+---@return prettymap.luaflet.SpriteTwig
+function SpriteTwig.new(options)
     options.zLayer = options.zLayer or "marker"
-    local self = setmetatable(Element.new(options), SpriteElement)
-    ---@cast self prettymap.SpriteElement
+    local self = setmetatable(twig.new(options), SpriteTwig)
+    ---@cast self prettymap.luaflet.SpriteTwig
     self.spriteID = options.spriteID
     self.sprite = options.sprite
     self.colour = options.colour
@@ -26,7 +26,7 @@ end
 
 ---@param layer ui.Layer
 ---@return boolean added
-function SpriteElement:CreateComponent(layer)
+function SpriteTwig:CreateComponent(layer)
     local sprite = ui.Sprite.new(layer)
     sprite:SetSize(0, 0, 1.0, 1.0)
     if self.spriteID then sprite.spriteID = self.spriteID end
@@ -36,4 +36,4 @@ function SpriteElement:CreateComponent(layer)
     return true
 end
 
-return SpriteElement
+return SpriteTwig

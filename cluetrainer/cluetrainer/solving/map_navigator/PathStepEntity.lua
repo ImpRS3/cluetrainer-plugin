@@ -1,4 +1,4 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 local Path = require("cluetrainer/model/shared/path")
 local TeleportSpot = require("cluetrainer/model/shared/TeleportSpot")
 local geometry = require("cluetrainer/map/elements/geometry")
@@ -9,7 +9,7 @@ local ItemMarker = require("cluetrainer/map/elements/ItemMarker")
 local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
 local TeleportElement = require("cluetrainer/map/elements/TeleportElement")
 
-local WEIGHT = 3
+local WEIGHT = 2
 local TRANSPORT_COLOUR = 0x069334
 local RUN_COLOUR = 0xB4B4B4
 local RUN_END_COLOUR = 0xB0E019
@@ -19,14 +19,14 @@ local FAR_ARROW_THRESHOLD = 16
 -- TODO: verify against the original ability colours.
 ---@type table<string, integer>
 local ABILITY_COLOURS = {
-  surge = 0x00BFFF,
-  escape = 0x32CD32,
-  dive = 0xFFA500,
-  barge = 0xFF6347,
+  surge = 0x0091f2,
+  escape = 0x56ba0f,
+  dive = 0xe7d82c,
+  barge = 0xa97104,
 }
 local DEFAULT_ABILITY_COLOUR = 0xFFFFFF
 local RUN_AREA_COLOUR = 0xFFFF00
-local COSMETIC_AREA_COLOUR = 0x808080 -- TODO: Path.COSMETIC_DEFAULT_COLORS.area
+local COSMETIC_AREA_COLOUR = 0x808080  -- TODO: Path.COSMETIC_DEFAULT_COLORS.area
 local COSMETIC_ARROW_COLOUR = 0x808080 -- TODO: Path.COSMETIC_DEFAULT_COLORS.arrow
 
 -- TODO: map more CTR icon ids to Obj ids; steps with an unknown icon get no marker.
@@ -62,17 +62,17 @@ local function step_tooltip(step)
 end
 
 --- A step of a path rendered as map elements: arrows, markers and areas, with a tooltip on its markers.
----@class cluetrainer.PathStepEntity : prettymap.Element
+---@class cluetrainer.PathStepEntity : prettymap.luaflet.Twig
 ---@field step Path.Step
-local PathStepEntity = setmetatable({}, { __index = elements.Element })
+local PathStepEntity = setmetatable({}, { __index = luaflet.twigs.Twig })
 PathStepEntity.__index = PathStepEntity
 
 ---@param tile TileCoordinates
----@return CoordGrid
-local grid = geometry.grid
+---@return prettymap.luaflet.Coord
+local grid = geometry.coord
 
 ---@param self cluetrainer.PathStepEntity
----@param marker prettymap.Element
+---@param marker prettymap.luaflet.Twig
 local function add_marker(self, marker)
   marker:SetTooltip(step_tooltip(self.step))
   self:Add(marker)
@@ -110,7 +110,11 @@ local function build_run(self, step)
   for i, waypoint in ipairs(waypoints) do
     points[i] = (i == 1 and #waypoints >= 2) and PathGraphics.offset_towards(waypoint, waypoints[2], 0.2) or waypoint
   end
-  self:Add(PathGraphics.polyline(points, PathGraphics.rgba(RUN_COLOUR, 1), WEIGHT))
+
+  luaflet.twigs.PolygonTwig.new()
+      :AddPolyline(points, WEIGHT, PathGraphics.rgba(RUN_COLOUR, 1)):AddTo(self)
+
+      
   self:Add(PathGraphics.cross(last, 0.1, PathGraphics.rgba(RUN_END_COLOUR, 1), 5))
 end
 
@@ -232,7 +236,7 @@ local BUILDERS = {
 ---@param step Path.Step
 ---@return cluetrainer.PathStepEntity
 function PathStepEntity.new(step)
-  local self = setmetatable(elements.Element.new(), PathStepEntity)
+  local self = setmetatable(luaflet.twigs.Twig.new(), PathStepEntity)
   ---@cast self cluetrainer.PathStepEntity
   self.step = step
 

@@ -1,4 +1,4 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 local FontFamily = require("cluetrainer/util/FontFamily")
 
 local LABEL_RGBA = 0xBFBFBFFF
@@ -10,14 +10,15 @@ local ROW_GAP = 2
 --- Tooltip describing a teleport: header with icon and name, then label/value rows.
 ---@class cluetrainer.TeleportTooltip: prettymap.Tooltip
 ---@field teleport cluetrainer.TeleportSpot
-local TeleportTooltip = setmetatable({}, { __index = elements.Tooltip })
+local TeleportTooltip = setmetatable({}, { __index = luaflet.Tooltip })
 TeleportTooltip.__index = TeleportTooltip
 
 ---@param teleport cluetrainer.TeleportSpot
 ---@param options prettymap.TooltipOptions?
 ---@return cluetrainer.TeleportTooltip
 function TeleportTooltip.new(teleport, options)
-  local self = setmetatable(elements.Tooltip.new(options), TeleportTooltip)
+  ---@class cluetrainer.TeleportTooltip
+  local self = setmetatable(luaflet.Tooltip.new(options), TeleportTooltip)
   self.teleport = teleport
   return self
 end

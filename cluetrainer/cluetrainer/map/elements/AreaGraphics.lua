@@ -1,4 +1,4 @@
-local elements = require("prettymap/elements")
+local luaflet = require("prettymap/luaflet")
 local geometry = require("cluetrainer/map/elements/geometry")
 
 --- Outlined and tinted areas as polygon elements, in the style of the original map's area polygons.
@@ -17,12 +17,12 @@ local function rgba(rgb, opacity)
   return rgb * 256 + math.floor(opacity * 255 + 0.5)
 end
 
----@param a CoordFine
----@param b CoordFine
+---@param a prettymap.luaflet.Coord
+---@param b prettymap.luaflet.Coord
 ---@param style cluetrainer.AreaStyle
----@return prettymap.PolygonElement
+---@return prettymap.luaflet.PolygonTwig
 local function box(a, b, style)
-  local polygon = elements.PolygonElement.new()
+  local polygon = luaflet.twigs.PolygonTwig.new()
   local fill = style.fillOpacity or 0.1
   if fill > 0 then polygon:AddRectangle(a, b, rgba(style.colour, fill)) end
   local opacity = style.opacity or 0.5
@@ -32,7 +32,7 @@ end
 
 ---@param area TileArea
 ---@param style cluetrainer.AreaStyle
----@return prettymap.PolygonElement
+---@return prettymap.luaflet.PolygonTwig
 function AreaGraphics.area(area, style)
   local a, b = geometry.area_corners(area)
   return box(a, b, style)
@@ -40,7 +40,7 @@ end
 
 ---@param rect TileRectangle
 ---@param style cluetrainer.AreaStyle
----@return prettymap.PolygonElement
+---@return prettymap.luaflet.PolygonTwig
 function AreaGraphics.rect(rect, style)
   local a, b = geometry.rect_corners(rect)
   return box(a, b, style)

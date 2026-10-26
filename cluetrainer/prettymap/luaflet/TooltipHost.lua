@@ -17,7 +17,7 @@ local BORDER_RGBA = 0x6E6450FF
 ---@field root ui.Layer
 ---@field region ui.Layer Invisible hover area covering element, gap and tooltip while interactive.
 ---@field content prettymap.TooltipEntry? Content of the currently shown tooltip.
----@field current prettymap.Element?
+---@field current prettymap.luaflet.Twig?
 ---@field holding boolean True while an interactive tooltip keeps its element hovered.
 ---@field inside {region: boolean, frame: boolean}
 ---@field onRelease fun()
@@ -78,7 +78,7 @@ function TooltipHost:_Track(component, key)
 end
 
 --- Builds the content of `element`'s tooltip into a fresh layer.
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 ---@return prettymap.TooltipEntry?
 function TooltipHost:_Build(element)
     local config = element.tooltip
@@ -102,7 +102,7 @@ local function clamp(value, minimum, maximum)
 end
 
 --- Shows `element`'s tooltip above it (below if there is no room), anchored to its current rect.
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 ---@return nil
 function TooltipHost:Show(element)
     if not element.tooltip or not element.screenX then return end
@@ -163,7 +163,7 @@ function TooltipHost:Hide()
 end
 
 --- Hides the tooltip if it belongs to `element`.
----@param element prettymap.Element
+---@param element prettymap.luaflet.Twig
 ---@return nil
 function TooltipHost:Forget(element)
     if self.current == element then self:Hide() end
