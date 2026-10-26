@@ -14,8 +14,12 @@ local Bounds                 = require "cluetrainer/util/Bounds"
 local methods                = require "cluetrainer/solving/methods"
 local Navigator              = require "cluetrainer/solving/navigator"
 local Path                   = require "cluetrainer/model/shared/path"
-local MapNavigator           = require "cluetrainer/solving/map_navigator/MapNavigator"
+local MapSectionControl           = require "cluetrainer/solving/map_navigator/MapSectionControl"
+local path_sections          = require "cluetrainer/solving/map_navigator/path_sections"
 local luaflet                = require "prettymap/luaflet"
+local cluestate              = require "cluetrainer/interfaces/cluestate/cluestate"
+local RichText               = require "cluetrainer/util/RichText"
+local PathStepEntity         = require "cluetrainer/solving/map_navigator/PathStepEntity"
 local SimpleClueSolver       = {}
 local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
@@ -205,10 +209,25 @@ local function stitch_path(method)
   return zyklib.array.flatten(all)
 end
 
+---@class ct.SimpleClueActions
+---@field talk? ct.interfaces.cluestate.ClueStateAction
+---@field dig? ct.interfaces.cluestate.ClueStateAction
+---@field obtain_key? ct.interfaces.cluestate.ClueStateAction
+---@field search? ct.interfaces.cluestate.ClueStateAction
+---@field defeat_wizard? ct.interfaces.cluestate.ClueStateAction
+---@field enter_challenge_scroll_answer? ct.interfaces.cluestate.ClueStateAction
+---@field solve_slider? ct.interfaces.cluestate.ClueStateAction
+---@field solve_celtic_knot? ct.interfaces.cluestate.ClueStateAction
+---@field solve_lockbox? ct.interfaces.cluestate.ClueStateAction
+---@field solve_towers? ct.interfaces.cluestate.ClueStateAction
+
+
+
 --- An ActiveSimpleClue is the instance that manages everything about a single simple clue currently in progress.
 ---@class ActiveSimpleClue : zyklib.disposable.IDisposable
 ---@field private navigator Navigator?
----@field private map_navigator ct.MapNavigator?
+---@field private map_navigator ct.MapSectionControl?
+---@field private path_twig prettymap.luaflet.Twig?
 local ActiveSimpleClue = {}
 
 ---@param clue Step
@@ -230,11 +249,72 @@ function ActiveSimpleClue.new(clue)
 
   -- TODO: Hook up to some sort of method selector
 
-  local bounds = clue_map_bounds(clue)
-
   if not method then
+    local bounds = clue_map_bounds(clue)
     --- Only fit to the basic clue target bounds if there is no method available initially
     map.ensure_open():fitBounds(bounds)
+  end
+
+  -- Claim ownership of the clue state panel and show relevant actions to the player
+
+  ---@type ct.SimpleClueActions
+  self.actions = {}
+
+  local state_panel = cluestate.get()
+
+  state_panel:clearActions()
+
+  state_panel:setVisible(true)
+
+  local sol = inferSolution(clue)
+
+  if sol then
+    if sol.type == "talkto" then
+      self.actions.talk = state_panel:addAction("Talk to " .. RichText.npc(sol.npc))
+    elseif sol.type == "dig" then
+      self.actions.dig = state_panel:addAction("Dig  " .. (sol.description or "at target"))
+    elseif sol.type == "search" then
+      if sol.key then
+        self.actions.obtain_key = state_panel:addAction("Obtain key")
+      end
+
+      self.actions.search = state_panel:addAction("Search " .. RichText.loc(sol.entity))
+    end
+  end
+
+  local challenges = clue.challenge
+
+  if challenges ~= nil and #challenges > 0 then
+    for _, challenge in ipairs(challenges) do
+      if challenge.type == "wizard" then
+        self.actions.defeat_wizard = state_panel:addAction("Defeat wizard ")
+
+        self.actions.defeat_wizard:setState("complete")
+      elseif challenge.type == "slider" then
+        self.actions.solve_slider = state_panel:addAction("Complete slider challenge")
+      elseif challenge.type == "celticknot" then
+        self.actions.solve_celtic_knot = state_panel:addAction("Solve Celtic knot challenge")
+      elseif challenge.type == "lockbox" then
+        self.actions.solve_lockbox = state_panel:addAction("Solve lockbox challenge")
+      elseif challenge.type == "towers" then
+        self.actions.solve_towers = state_panel:addAction("Solve towers challenge")
+      elseif challenge.type == "challengescroll" then
+        self.actions.enter_challenge_scroll_answer = state_panel:addAction("Enter answer " .. challenge.answers[1]
+          .answer) -- TODO: Automatically determine correct answer
+      end
+    end
+  end
+
+  if clue.type == "emote" then
+    state_panel:addAction("Obtain items")
+
+    state_panel:addAction("Equip items")
+    state_panel:addAction("Summon")
+
+    if clue.double_agent then
+      state_panel:addAction("Kill double agent")
+    end
+    state_panel:addAction("Speak to Uri")
   end
 
   return self
@@ -252,11 +332,29 @@ function ActiveSimpleClue:setMethod(method)
     self.map_navigator = nil
   end
 
-  if method then
-    self.navigator = Navigator.new()
-    self.navigator:set(stitch_path(method))
+  if self.path_twig ~= nil then
+    self.path_twig:Detach()
+    self.path_twig = nil
+  end
 
-    self.map_navigator = MapNavigator.new(map.ensure_open(), Path.split_into_sections(stitch_path(method)))
+  if method then
+    local path = stitch_path(method)
+    self.navigator = Navigator.new()
+    self.navigator:set(path)
+
+    local sectioned_path = Path.split_into_sections(path)
+
+    self.path_twig = luaflet.twigs.Twig.new()
+        :AddTo(map.ensure_open().map.twigs)
+
+    for _, section in ipairs(sectioned_path) do
+      for _, step in ipairs(section.steps) do
+        PathStepEntity.new(step):AddTo(self.path_twig)
+      end
+    end
+
+    self.map_navigator = MapSectionControl.new(map.ensure_open(),
+      zyklib.array.map(sectioned_path, function(sec) return { name = sec.name, bounds = Path.bounds(sec.steps) } end))
   end
 end
 

@@ -131,6 +131,28 @@ function Bounds:addArea(area)
   })
 end
 
+---@return ct.Bounds
+function Bounds:copy()
+  local copy = setmetatable({}, Bounds)
+  copy.min = self.min and { x = self.min.x, y = self.min.y }
+  copy.max = self.max and { x = self.max.x, y = self.max.y }
+  copy.level = self.level
+  copy.distance_limit = self.distance_limit
+  copy.fixed_center = self.fixed_center
+  copy.level_fixed = self.level_fixed
+  return copy
+end
+
+--- Extends the bounds northwards (+y) by a fraction of their current height. Does nothing for empty bounds.
+---@param fraction number
+---@return ct.Bounds self
+function Bounds:extendNorth(fraction)
+  if self.min ~= nil then
+    self.max.y = self.max.y + (self.max.y - self.min.y + 1) * fraction
+  end
+  return self
+end
+
 ---@return { topleft: MyVector2, botright: MyVector2, level: integer }?
 function Bounds:get()
   if self.min == nil then return nil end

@@ -2,6 +2,8 @@
 local TileArea = require "cluetrainer/model/shared/TileArea"
 local TeleportSpot = require "cluetrainer/model/shared/TeleportSpot"
 local array = require "zyklib/array"
+local Bounds = require("cluetrainer/util/Bounds")
+
 ---@alias Direction any
 ---@alias MovementAbility any
 ---@alias Transportation.TeleportGroup.SpotId {group: string, spot: string, access: string?}
@@ -290,6 +292,36 @@ function Path.split_into_sections(path, far_threshold)
   if bleeding_arrival then sections[#sections + 1] = { name = "Section " .. #sections + 1, steps = { bleeding_arrival } } end
 
   return sections
+end
+
+function Path.bounds(path)
+  local bounds = Bounds.new()
+
+  for _, step in ipairs(path) do
+    local type = step.type
+
+    if type == "ability" then
+      bounds:addTile(step.from, step.to)
+      bounds:addArea(step.target_area)
+    elseif type == "run" then
+      for _, waypoint in ipairs(step.waypoints) do bounds:addTile(waypoint) end
+      bounds:addArea(step.target_area)
+    elseif type == "redclick" or type == "powerburst" then
+      bounds:addTile(step.where)
+    elseif type == "cosmetic" then
+      bounds:addTile(step.position)
+      bounds:addArea(step.area)
+      if step.arrow then bounds:addTile(step.arrow[1], step.arrow[2]) end
+    elseif type == "transport" or type == "cheat" then
+      -- An arrival-only step only matters at its destination.
+      if not step.is_arrival_only then bounds:addTile(step.assumed_start) end
+      bounds:addTile(Path.endsUp({ step }))
+    elseif type == "teleport" then
+      bounds:addTile(Path.endsUp({ step }))
+    end
+  end
+
+  return bounds
 end
 
 return Path

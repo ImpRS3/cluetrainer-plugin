@@ -1,7 +1,13 @@
 -- clues.lua
 local clues = {}
 
----@alias Challenge any
+---@alias Challenge
+---     | { type: "wizard" }
+---     | { type: "slider" }
+---     | { type: "celticknot" }
+---     | { type: "lockbox" }
+---     | { type: "towers" }
+---     | { type: "challengescroll", question: string, answers: {answer: number, note: string?}[]}
 
 ---@alias ClueTier
 ---| "easy"
