@@ -1,6 +1,6 @@
 local luaflet = require("prettymap/luaflet")
-local geometry = require("cluetrainer/map/elements/geometry")
-local InteractionMarker = require("cluetrainer/map/elements/InteractionMarker")
+local geometry = require("cluetrainer/interfaces/map/elements/geometry")
+local InteractionMarker = require("cluetrainer/interfaces/map/elements/InteractionMarker")
 
 --- An NPC with a roaming range: a talk marker in the centre of the range.
 ---@class cluetrainer.NpcEntity : prettymap.luaflet.Twig

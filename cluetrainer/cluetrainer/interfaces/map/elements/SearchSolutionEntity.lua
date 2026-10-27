@@ -1,5 +1,5 @@
-local ObjectEntity = require("cluetrainer/map/elements/ObjectEntity")
-local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
+local ObjectEntity = require("cluetrainer/interfaces/map/elements/ObjectEntity")
+local PropertiesTooltip = require("cluetrainer/interfaces/map/elements/PropertiesTooltip")
 
 --- The object to search for a clue solution, with an explanatory tooltip.
 ---@class cluetrainer.SearchSolutionEntity : cluetrainer.ObjectEntity

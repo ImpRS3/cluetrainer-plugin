@@ -1,7 +1,7 @@
 local luaflet = require("prettymap/luaflet")
 local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
 local FontFamily = require("cluetrainer/util/FontFamily")
-local TeleportTooltip = require("cluetrainer/map/elements/TeleportTooltip")
+local TeleportTooltip = require("cluetrainer/interfaces/map/elements/TeleportTooltip")
 
 local HOVER_FACTOR = 1.5 -- of the largest zoom step
 -- Pixel size per map zoom step: icons are small while the map is crowded and
@@ -107,7 +107,7 @@ function TeleportElement.new(teleport)
     allPlanes = true,
   })
   self.teleport = teleport
-  self.home_level = self.coordinate.floor
+  self.home_level = self.coordinate.level
   setmetatable(self, TeleportElement)
   self:SetTooltip(TeleportTooltip.new(teleport))
   return self

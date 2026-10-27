@@ -74,17 +74,11 @@ function MapSectionControl:setSection(index)
 
   self.index = index
   self:Refresh()
-  self.map:fitBounds(section.bounds:copy():extendNorth(self:_NorthExtension()))
-end
 
---- The fraction of the section's height to add northwards, so that the section fits below the
---- navigator: the viewport height H is split into the covered inset I and the remaining H - I.
----@private
----@return number
-function MapSectionControl:_NorthExtension()
+  -- Fit bounds. Extend bounds northwards to account for the navigator ui.
   local viewport_height = self.map.map.viewportHeight
   local inset = math.min(self.offsetY + HEIGHT + INSET_MARGIN, viewport_height * 0.5)
-  return inset / (viewport_height - inset)
+  self.map:fitBounds(section.bounds:copy():extend({ north = inset / (viewport_height - inset) }):extend(0.05))
 end
 
 ---@private

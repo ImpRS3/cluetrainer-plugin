@@ -143,13 +143,30 @@ function Bounds:copy()
   return copy
 end
 
---- Extends the bounds northwards (+y) by a fraction of their current height. Does nothing for empty bounds.
----@param fraction number
+---@class ct.BoundsExtension
+---@field north number?
+---@field east number?
+---@field south number?
+---@field west number?
+
+--- Extends the bounds in each direction by a fraction of their current size (height for north/south,
+--- width for east/west). Does nothing for empty bounds.
+---@param amount number | ct.BoundsExtension A single fraction for all directions, or one per direction (missing means 0).
 ---@return ct.Bounds self
-function Bounds:extendNorth(fraction)
-  if self.min ~= nil then
-    self.max.y = self.max.y + (self.max.y - self.min.y + 1) * fraction
+function Bounds:extend(amount)
+  if self.min == nil then return self end
+
+  if type(amount) == "number" then
+    amount = { north = amount, east = amount, south = amount, west = amount }
   end
+
+  local width = self.max.x - self.min.x + 1
+  local height = self.max.y - self.min.y + 1
+
+  self.max.y = self.max.y + height * (amount.north or 0)
+  self.min.y = self.min.y - height * (amount.south or 0)
+  self.max.x = self.max.x + width * (amount.east or 0)
+  self.min.x = self.min.x - width * (amount.west or 0)
   return self
 end
 

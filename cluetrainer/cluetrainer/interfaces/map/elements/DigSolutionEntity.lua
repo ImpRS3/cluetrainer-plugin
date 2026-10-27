@@ -1,8 +1,8 @@
 local luaflet = require("prettymap/luaflet")
-local geometry = require("cluetrainer/map/elements/geometry")
-local AreaGraphics = require("cluetrainer/map/elements/AreaGraphics")
-local InteractionMarker = require("cluetrainer/map/elements/InteractionMarker")
-local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
+local geometry = require("cluetrainer/interfaces/map/elements/geometry")
+local AreaGraphics = require("cluetrainer/interfaces/map/elements/AreaGraphics")
+local InteractionMarker = require("cluetrainer/interfaces/map/elements/InteractionMarker")
+local PropertiesTooltip = require("cluetrainer/interfaces/map/elements/PropertiesTooltip")
 
 -- TODO: verify against the original digSpotRect; the dig area is assumed to extend this many tiles around the spot.
 local DIG_RADIUS = 1

@@ -1,5 +1,5 @@
-local ObjectEntity = require("cluetrainer/map/elements/ObjectEntity")
-local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
+local ObjectEntity = require("cluetrainer/interfaces/map/elements/ObjectEntity")
+local PropertiesTooltip = require("cluetrainer/interfaces/map/elements/PropertiesTooltip")
 
 --- The hidey-hole of an emote clue. The tooltip needs the equip marker, so pass `with_cursor` to see it.
 ---@class cluetrainer.HideyHoleEntity : cluetrainer.ObjectEntity

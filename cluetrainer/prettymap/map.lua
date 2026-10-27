@@ -424,7 +424,7 @@ end
 ---@return number? x
 ---@return number? y
 function MapView:CoordToCanvas(coordinate, anyPlane)
-    local floor = coordinate.floor
+    local floor = coordinate.level
     if anyPlane or floor == nil then
         floor = self.plane
     elseif floor ~= self.plane then

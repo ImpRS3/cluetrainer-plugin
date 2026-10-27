@@ -1,15 +1,15 @@
 local luaflet = require("prettymap/luaflet")
 local Path = require("cluetrainer/model/shared/path")
 local TeleportSpot = require("cluetrainer/model/shared/TeleportSpot")
-local geometry = require("cluetrainer/map/elements/geometry")
-local AreaGraphics = require("cluetrainer/map/elements/AreaGraphics")
-local PathGraphics = require("cluetrainer/map/elements/PathGraphics")
-local InteractionMarker = require("cluetrainer/map/elements/InteractionMarker")
-local ItemMarker = require("cluetrainer/map/elements/ItemMarker")
-local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
-local TeleportElement = require("cluetrainer/map/elements/TeleportElement")
+local geometry = require("cluetrainer/interfaces/map/elements/geometry")
+local AreaGraphics = require("cluetrainer/interfaces/map/elements/AreaGraphics")
+local PathGraphics = require("cluetrainer/interfaces/map/elements/PathGraphics")
+local InteractionMarker = require("cluetrainer/interfaces/map/elements/InteractionMarker")
+local ItemMarker = require("cluetrainer/interfaces/map/elements/ItemMarker")
+local PropertiesTooltip = require("cluetrainer/interfaces/map/elements/PropertiesTooltip")
+local TeleportElement = require("cluetrainer/interfaces/map/elements/TeleportElement")
 
-local WEIGHT = 2
+local WEIGHT = 1
 local TRANSPORT_COLOUR = 0x069334
 local RUN_COLOUR = 0xB4B4B4
 local RUN_END_COLOUR = 0xB0E019
@@ -114,7 +114,7 @@ local function build_run(self, step)
   luaflet.twigs.PolygonTwig.new()
       :AddPolyline(points, WEIGHT, PathGraphics.rgba(RUN_COLOUR, 1)):AddTo(self)
 
-      
+
   self:Add(PathGraphics.cross(last, 0.1, PathGraphics.rgba(RUN_END_COLOUR, 1), 5))
 end
 

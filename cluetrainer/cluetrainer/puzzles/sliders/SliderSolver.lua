@@ -5,8 +5,9 @@ local storage          = require("cluetrainer/util/storage")
 local SliderState      = require("cluetrainer/puzzles/sliders/SliderState")
 local Move             = require("cluetrainer/puzzles/sliders/Move")
 local DummySolver      = require("cluetrainer/puzzles/sliders/DummySolver")
+local PdbSolverTicked  = require("cluetrainer/puzzles/sliders/pdb/PdbSolverTicked")
 -- The pattern database solver is disabled for now. To re-enable it, restore these requires, the `graph` below and the PdbSolver call in ActivePuzzle.new.
--- local RegionGraph            = require("cluetrainer/puzzles/sliders/pdb/RegionChain")
+local RegionGraph      = require("cluetrainer/puzzles/sliders/pdb/RegionGraph")
 -- local PdbSolver              = require("cluetrainer/puzzles/sliders/pdb/PdbSolver")
 
 ---@class ct.sliders.SliderSolver
@@ -69,11 +70,11 @@ local function downloadFiles()
   return promise
 end
 
--- local pdb_data = downloadFiles()
---
--- local graph = pdb_data:map(function(data)
---   return RegionGraph.new(RegionGraph.parseTables(data), true)
--- end)
+local pdb_data = downloadFiles()
+
+local graph = pdb_data:map(function(data)
+  return RegionGraph.new(RegionGraph.parseTables(data), true)
+end)
 
 local LOOKAHEAD = 5
 local STROKE = 3
@@ -157,6 +158,7 @@ ActivePuzzle.__index = ActivePuzzle
 
 ---@return ct.sliders.ActiveSliderPuzzle
 function ActivePuzzle.new()
+  ---@class ct.sliders.ActiveSliderPuzzle
   local self = setmetatable({}, ActivePuzzle)
 
   self.lifetime = zyklib.disposable.DisposableGroup.new()
@@ -174,7 +176,12 @@ function ActivePuzzle.new()
 
   -- Temporarily uses a synchronous dummy solver instead of a SliderSolvingTask, since coroutines are broken.
   local start_state = observable_slider_state:get()
-  self.solution = SliderState.augmentMoves(start_state, DummySolver.solve(start_state))
+  self.solver = PdbSolverTicked.new(start_state, graph)
+  self.solver:start()
+  self.solver:tick(2048)
+  self.solution = SliderState.augmentMoves(start_state, self.solver.best_solution)
+
+  --self.solution = SliderState.augmentMoves(start_state, DummySolver.solve(start_state))
 
   self.lifetime:add(
     zyklib.game_events.native.Draw:subscribe(function()
@@ -192,6 +199,7 @@ end
 function ActivePuzzle:dispose()
   self.lifetime:dispose()
   self.canvas:Destroy()
+  self.solver:dispose()
   ActivePuzzle.instance = nil
 end
 
@@ -209,7 +217,7 @@ local interface_open_handler = zyklib.game_events.native.ServerLogic:map(functio
         ActivePuzzle.instance:dispose()
       end
 
-      if is_open then
+      if is_open and graph:resolved() then
         ActivePuzzle.instance = ActivePuzzle.new()
       end
     end)

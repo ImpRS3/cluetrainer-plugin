@@ -1,4 +1,4 @@
--- RegionChain.lua
+-- RegionGraph.lua
 local RegionDistanceTable        = require("cluetrainer/puzzles/sliders/pdb/PdbRegion")
 local Region                     = require("cluetrainer/puzzles/sliders/pdb/Region")
 

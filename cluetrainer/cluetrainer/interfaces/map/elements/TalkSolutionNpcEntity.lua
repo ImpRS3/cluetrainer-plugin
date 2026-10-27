@@ -1,5 +1,5 @@
-local NpcEntity = require("cluetrainer/map/elements/NpcEntity")
-local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
+local NpcEntity = require("cluetrainer/interfaces/map/elements/NpcEntity")
+local PropertiesTooltip = require("cluetrainer/interfaces/map/elements/PropertiesTooltip")
 
 --- The NPC to talk to for a clue solution, with an explanatory tooltip.
 ---@class cluetrainer.TalkSolutionNpcEntity : cluetrainer.NpcEntity

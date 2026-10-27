@@ -1,7 +1,7 @@
 local teleports = require("cluetrainer/data/teleports")
 local TeleportSpot = require("cluetrainer/model/shared/TeleportSpot")
 local luaflet = require("prettymap/luaflet")
-local TeleportElement = require("cluetrainer/map/elements/TeleportElement")
+local TeleportElement = require("cluetrainer/interfaces/map/elements/TeleportElement")
 
 --- A coordinate-less element without a visual: it only owns the teleport spot elements.
 ---@class cluetrainer.TeleportLayer: prettymap.luaflet.Twig

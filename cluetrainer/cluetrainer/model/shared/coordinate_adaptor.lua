@@ -13,4 +13,14 @@ function coordinate_adaptor.tile_coordinates_to_coord_grid(tile_coordinates)
   )
 end
 
+---@param coord_grid CoordGrid
+---@return TileCoordinates
+function coordinate_adaptor.coord_grid_to_tile_coordinates(coord_grid)
+  return {
+    level = coord_grid.level,
+    x = coord_grid.x,
+    y = coord_grid.z
+  }
+end
+
 return coordinate_adaptor

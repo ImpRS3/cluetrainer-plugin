@@ -1,6 +1,6 @@
 local luaflet = require("prettymap/luaflet")
-local AreaGraphics = require("cluetrainer/map/elements/AreaGraphics")
-local PropertiesTooltip = require("cluetrainer/map/elements/PropertiesTooltip")
+local AreaGraphics = require("cluetrainer/interfaces/map/elements/AreaGraphics")
+local PropertiesTooltip = require("cluetrainer/interfaces/map/elements/PropertiesTooltip")
 
 --- "a, b, and c" / "a, then b, then c" style lists.
 ---@param values string[]

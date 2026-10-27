@@ -3,19 +3,16 @@ local coordinate_adaptor     = require "cluetrainer/model/shared/coordinate_adap
 local PathMesh               = require "cluetrainer/model/PathMesh"
 local TileArea               = require "cluetrainer/model/shared/TileArea"
 local OverlayConstants       = require "cluetrainer/model/OverlayConstants"
-local map                    = require "cluetrainer/map/map"
-local TalkSolutionNpcEntity  = require "cluetrainer/map/elements/TalkSolutionNpcEntity"
-local SearchSolutionEntity   = require "cluetrainer/map/elements/SearchSolutionEntity"
-local DigSolutionEntity      = require "cluetrainer/map/elements/DigSolutionEntity"
-local EmoteAreaEntity        = require "cluetrainer/map/elements/EmoteAreaEntity"
-local HideyHoleEntity        = require "cluetrainer/map/elements/HideyHoleEntity"
-local InteractionMarker      = require "cluetrainer/map/elements/InteractionMarker"
+local map                    = require "cluetrainer/interfaces/map/map"
+local TalkSolutionNpcEntity  = require "cluetrainer/interfaces/map/elements/TalkSolutionNpcEntity"
+local SearchSolutionEntity   = require "cluetrainer/interfaces/map/elements/SearchSolutionEntity"
+local DigSolutionEntity      = require "cluetrainer/interfaces/map/elements/DigSolutionEntity"
+local InteractionMarker      = require "cluetrainer/interfaces/map/elements/InteractionMarker"
 local Bounds                 = require "cluetrainer/util/Bounds"
 local methods                = require "cluetrainer/solving/methods"
 local Navigator              = require "cluetrainer/solving/navigator"
 local Path                   = require "cluetrainer/model/shared/path"
-local MapSectionControl           = require "cluetrainer/solving/map_navigator/MapSectionControl"
-local path_sections          = require "cluetrainer/solving/map_navigator/path_sections"
+local MapSectionControl      = require "cluetrainer/solving/map_navigator/MapSectionControl"
 local luaflet                = require "prettymap/luaflet"
 local cluestate              = require "cluetrainer/interfaces/cluestate/cluestate"
 local RichText               = require "cluetrainer/util/RichText"
@@ -63,20 +60,8 @@ local function create_step_highlights(step)
       :add(MutableMesh.cube():lines_only():recolor(0xFFFFFFFF))
       :shapeData()
 
-
   ---@type zyklib.TerrainHighlight[]
   local highlights = {}
-
-  if step.type == "emote" then
-    table.insert(highlights, zyklib.highlights.TerrainHighlight.new(
-      zyklib.api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin) }),
-      function()
-        return PathMesh.drawTileArea(step.area, 0x914183FF, 0x91418380)
-            :translate(Vector3.new(0, OverlayConstants.AREA_OVERLAY_HEIGHT, 0))
-            :shapeData()
-      end
-    ))
-  end
 
   local solution = inferSolution(step)
 
@@ -156,17 +141,9 @@ local function create_step_map_layer(step)
     end
   end
 
-  if step.type == "emote" then
-    EmoteAreaEntity.new(step --[[@as Emote]]):AddTo(layer)
-
-    if step.hidey_hole ~= nil then
-      HideyHoleEntity.new(step --[[@as Emote]]):AddTo(layer)
-    end
-  end
-
   if step.type == "skilling" then
     InteractionMarker.new({
-      coordinate = require("cluetrainer/map/elements/geometry").coord(TileArea.ensure_mutable(step.areas[0]):center()),
+      coordinate = require("cluetrainer/interfaces/map/elements/geometry").coord(TileArea.ensure_mutable(step.areas[0]):center()),
       cursor = step.cursor
     })
   end
@@ -193,9 +170,7 @@ local function clue_map_bounds(step)
     bounds:addRectangle(sol.spot)
   end
 
-  if step.type == "emote" then
-    bounds:addArea(step.area)
-  elseif step.type == "skilling" then
+  if step.type == "skilling" then
     bounds:addRectangle(TileArea.toRect(step.areas[0]))
   end
 
@@ -305,18 +280,6 @@ function ActiveSimpleClue.new(clue)
     end
   end
 
-  if clue.type == "emote" then
-    state_panel:addAction("Obtain items")
-
-    state_panel:addAction("Equip items")
-    state_panel:addAction("Summon")
-
-    if clue.double_agent then
-      state_panel:addAction("Kill double agent")
-    end
-    state_panel:addAction("Speak to Uri")
-  end
-
   return self
 end
 
@@ -379,7 +342,7 @@ function SimpleClueSolver.init()
     end
 
     ---@type ClueType[]
-    local COMPATIBLE_CLUE_TYPES = { "simple", "anagram", "cryptic", "emote", "map", "skilling", "coordinates" }
+    local COMPATIBLE_CLUE_TYPES = { "simple", "anagram", "cryptic", "map", "skilling", "coordinates" }
 
     if clue ~= nil and active_clue == nil and zyklib.array.includes(COMPATIBLE_CLUE_TYPES, clue.type) then
       active_clue = ActiveSimpleClue.new(clue)

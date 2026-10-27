@@ -4,7 +4,7 @@
 ---@type zyklib
 zyklib    = require("zyklib")
 
-local map = require("cluetrainer/map/map")
+local map = require("cluetrainer/interfaces/map/map")
 
 local function main()
   zyklib.lifecycle.setupGlobals()
@@ -17,8 +17,10 @@ local function main()
   require("cluetrainer/puzzles/knot/KnotSolver").init()
   require("cluetrainer/puzzles/sliders/SliderSolver").init()
   require("cluetrainer/solving/SimpleClueSolver").init()
+  require("cluetrainer/solving/EmoteClueSolver").init()
+  require("cluetrainer/solving/CompassSolver").init()
 
-  map.show()
+  --map.show()
 
   zyklib.game_events.native.SettingsLayerReady:subscribe(function(payload)
     settings_dialog.mount(payload.component)

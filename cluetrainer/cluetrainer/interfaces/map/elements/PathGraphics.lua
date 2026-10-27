@@ -1,5 +1,5 @@
 local luaflet = require("prettymap/luaflet")
-local geometry = require("cluetrainer/map/elements/geometry")
+local geometry = require("cluetrainer/interfaces/map/elements/geometry")
 
 --- Arrows, nd marks for rendering paths, as polygon elements.
 --- Points are tile coordinates; integer coordinates are tile centres.

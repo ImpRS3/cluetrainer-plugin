@@ -1,6 +1,6 @@
 local prettymap = require("prettymap")
 local zyklib = require("zyklib")
-local teleport_layer = require("cluetrainer/map/teleport_layer")
+local teleport_layer = require("cluetrainer/interfaces/map/teleport_layer")
 
 local luaflet = require("prettymap/luaflet")
 
@@ -35,10 +35,6 @@ function GameMap.new()
     resizable = true,
     scrollable = false,
     destroyOnClose = false,
-    rowBackgroundColours = {
-      0x24211EFF,
-      0x2E2825FF,
-    }
   })
 
   self.map = prettymap.Map.new(self.window.content, {
@@ -50,8 +46,6 @@ function GameMap.new()
     showZoomControls = false,
     showPlayerMarker = false,
     trackPlayer = false,
-    onError = function(message)
-    end,
   })
 
   -- Window has no resize callback, so hook SetSize, which the resize handle calls on every drag step.
@@ -71,7 +65,10 @@ function GameMap.new()
   luaflet.twigs.prefab.FloorControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
   --luaflet.twigs.prefab.ZoomControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
 
-  zyklib.lifecycle.shutdown_event:subscribe(function() self.window:Destroy() end)
+  zyklib.lifecycle.shutdown_event:subscribe(function()
+    self.map:Destroy()
+    self.window:Destroy()
+  end)
 
   return self
 end
