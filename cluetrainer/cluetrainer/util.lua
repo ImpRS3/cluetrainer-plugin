@@ -67,6 +67,9 @@ end
 
 util.RingBuffer = RingBuffer
 
+---@generic T
+---@param f fun():T
+---@return fun():T
 function util.lazy(f)
   local evaluated = false
   local result

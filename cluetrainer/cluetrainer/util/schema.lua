@@ -49,7 +49,9 @@ end
 ---@param options {default: integer}
 ---@return ct.util.schema.Schema<integer>
 function schema.colour(options)
-  return schema.int({ min = 0, max = 0xFFFFFFFF, default = options.default })
+  return function(val)
+    return schema.int({ min = 0, max = 0xFFFFFFFF, default = options.default })(val) | 0xFF
+  end
 end
 
 ---@param options {min: number, max: number, default: number}
