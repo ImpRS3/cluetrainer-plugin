@@ -66,3 +66,9 @@ package_into target:
     mkdir -p "{{target}}"
     cp -R cluetrainer/. "{{target}}/"
     cp -R dependencies/zyklib/src/. "{{target}}/"
+
+# Paths relative to the project root
+BLACKLIST := "^(./)?(cluetrainer/cluetrainer/data|cluetrainer/prettymap/data)(/|$)"
+
+cloc:
+    cloc cluetrainer --fullpath --not-match-d '{{BLACKLIST}}' --by-file

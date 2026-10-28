@@ -31,7 +31,7 @@ SliderState.tile_reflection_table = {
   5, 10, 15, 20, 25
 }
 
---- Partial moves for each possible move, used in `SliderState.doMove`. 
+--- Partial moves for each possible move, used in `SliderState.doMove`.
 local partial_moves = {
   [-20] = { 0, -5, -10, -15, -20 },
   [-15] = { 0, -5, -10, -15 },
@@ -202,6 +202,15 @@ function SliderState.reflect(state)
 
   local last_move = state[SliderState.LAST_MOVE_INDEX]
   state[SliderState.LAST_MOVE_INDEX] = SliderState.move_translation_reflect[last_move + 1] + 20
+end
+
+function SliderState.isSolved(state)
+  for i = 0, 24 do
+    if state[i + 1] ~= i then
+      return false
+    end
+  end
+  return true
 end
 
 return SliderState

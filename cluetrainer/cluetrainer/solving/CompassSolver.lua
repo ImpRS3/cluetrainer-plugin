@@ -151,6 +151,8 @@ function ActiveCompassSolver:update()
     candidate.marker:setPossible(candidate.possible)
   end
 
+  -- TODO: Render shapes for candidates
+
   log("Remaining candidates: " .. remaining_candidates)
 
   if remaining_candidates == 1 then

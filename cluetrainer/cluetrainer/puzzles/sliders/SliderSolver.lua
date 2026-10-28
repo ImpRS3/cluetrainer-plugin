@@ -1,14 +1,16 @@
 -- SliderSolver.lua
-local zyklib           = require("zyklib")
-local schema           = require("cluetrainer/util/schema")
-local storage          = require("cluetrainer/util/storage")
-local SliderState      = require("cluetrainer/puzzles/sliders/SliderState")
-local Move             = require("cluetrainer/puzzles/sliders/Move")
-local DummySolver      = require("cluetrainer/puzzles/sliders/DummySolver")
-local PdbSolverTicked  = require("cluetrainer/puzzles/sliders/pdb/PdbSolverTicked")
+-- This is an AI assited translation of the coroutine based PDBSolver.
+-- It's less efficient, but at least is doesn't crash the client
+local zyklib          = require("zyklib")
+local schema          = require("cluetrainer/util/schema")
+local storage         = require("cluetrainer/util/storage")
+local SliderState     = require("cluetrainer/puzzles/sliders/SliderState")
+local Move            = require("cluetrainer/puzzles/sliders/Move")
+local PdbSolverTicked = require("cluetrainer/puzzles/sliders/pdb/PdbSolverTicked")
 -- The pattern database solver is disabled for now. To re-enable it, restore these requires, the `graph` below and the PdbSolver call in ActivePuzzle.new.
-local RegionGraph      = require("cluetrainer/puzzles/sliders/pdb/RegionGraph")
--- local PdbSolver              = require("cluetrainer/puzzles/sliders/pdb/PdbSolver")
+local RegionGraph     = require("cluetrainer/puzzles/sliders/pdb/RegionGraph")
+
+
 
 ---@class ct.sliders.SliderSolver
 local slider_solver    = {}
@@ -95,18 +97,22 @@ local function draw(canvas, state, solution)
     return ((index - 1) % 5) * 56 + 24, ((index - 1) // 5) * 56 + 24
   end
 
-  local _, position = zyklib.array.findLast(solution, function(move)
+  local _, mainline_index = zyklib.array.findLast(solution, function(move)
     return zyklib.array.exists(move.pre_states, function(pre) return SliderState.isEqual(pre, state) end)
   end)
 
+  if (mainline_index == #solution - 1 and SliderState.isSolved(state)) then
+    mainline_index = #solution + 1
+  end
+
   -- The current state is not on the solution path, so there is nothing meaningful to show
-  if position < 0 then return end
+  if mainline_index < 0 then return end
 
   local last_size = 10
   local overlap_map = {}
 
   for i = 0, LOOKAHEAD - 1 do
-    local move_index = position + i
+    local move_index = mainline_index + i
 
     if move_index > #solution then break end
 
@@ -175,16 +181,34 @@ function ActivePuzzle.new()
   end)
 
   -- Temporarily uses a synchronous dummy solver instead of a SliderSolvingTask, since coroutines are broken.
-  local start_state = observable_slider_state:get()
-  self.solver = PdbSolverTicked.new(start_state, graph)
+  self.solver = PdbSolverTicked.new(SliderState.getSliderState(), graph:get())
   self.solver:start()
-  self.solver:tick(2048)
-  self.solution = SliderState.augmentMoves(start_state, self.solver.best_solution)
 
   --self.solution = SliderState.augmentMoves(start_state, DummySolver.solve(start_state))
 
+  local ticks = 0
+
   self.lifetime:add(
-    zyklib.game_events.native.Draw:subscribe(function()
+    zyklib.game_events.native.Logic:subscribe(function()
+      ticks = ticks + 1
+
+      if ticks <= 20 then
+        -- Still solving
+        self.solver:tick(2048)
+
+        if ticks == 20 then
+          -- Solving time is over, lock in solution
+          self.solution = SliderState.augmentMoves(SliderState.getSliderState(), self.solver.best_solution)
+
+          draw(self.canvas, SliderState.getSliderState(), self.solution)
+        end
+      else
+        -- Finished solving, draw solution overlay
+        -- TODO: Only redraw on changes!
+        -- TODO: When solved, draw solved overlay
+        draw(self.canvas, SliderState.getSliderState(), self.solution)
+      end
+
       observable_slider_state:set(SliderState.getSliderState())
     end),
 
