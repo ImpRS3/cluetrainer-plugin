@@ -337,7 +337,7 @@ function ActivePuzzle:drawProgress()
 
       local estimated_slider_speed = (solving_time - 0.5) / counted
 
-      drawCenteredText(canvas, sx, sy + 20, string.format("Slider Speed %.3f", estimated_slider_speed), SMALL_TEXT_CONFIG)
+      drawCenteredText(canvas, sx, sy - 20, string.format("Slider Speed %.3f", estimated_slider_speed), SMALL_TEXT_CONFIG)
     end
   end
 end
