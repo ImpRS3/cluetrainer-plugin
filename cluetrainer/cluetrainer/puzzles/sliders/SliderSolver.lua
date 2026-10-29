@@ -6,10 +6,10 @@ local schema          = require("cluetrainer/util/schema")
 local storage         = require("cluetrainer/util/storage")
 local SliderState     = require("cluetrainer/puzzles/sliders/SliderState")
 local Move            = require("cluetrainer/puzzles/sliders/Move")
-local PdbSolverTicked = require("cluetrainer/puzzles/sliders/pdb/PdbSolverTicked")
 -- The pattern database solver is disabled for now. To re-enable it, restore these requires, the `graph` below and the PdbSolver call in ActivePuzzle.new.
 local RegionGraph     = require("cluetrainer/puzzles/sliders/pdb/RegionGraph")
 local util            = require("cluetrainer/util")
+local PdbSolverTicked = require("cluetrainer/puzzles/sliders/pdb/PdbSolverTicked")
 
 
 
@@ -58,7 +58,7 @@ local function getPDB()
       -- Cache pdb for next time. FIXME: Disabled for now
       -- PersistentDB:Set("workaround_sliderpdb_mtm_huge_v0", { value = final_value })
 
-      download.data:resolve(RegionGraph.new(RegionGraph.parseTables(final_value), true))
+      download.data:resolve(RegionGraph.new(RegionGraph.parseTables(final_value), false))
     else
       zyklib.http.get(Plugin.urls["cluetrainer"], "/data/sliderpdb/mtm_huge/v0chunk0" .. #chunks .. ".bin")
           :onCompletion(function(result, data)
@@ -288,8 +288,6 @@ function ActivePuzzle:drawProgress()
   local cx, cy = canvas.width // 2, 9
   local sx, sy = canvas.width // 2, canvas.height - 9
 
-  log(s.mainline_index)
-
   -- Always Draw progress bar
   local completed = executing and (s.mainline_index - 1) or 0
   local progress = executing and (completed / solution_length) or 0
@@ -397,6 +395,7 @@ function ActivePuzzle:logictick()
       end
 
       local solver = PdbSolverTicked.new(SliderState.getSliderState(), graph)
+      --local solver = PdbSolverTicked.new(SliderState.getSliderState(), graph)
       solver:start()
       self.solver = solver
       self.state = { state = "solving", start_tick = self.ticks, solver = solver }
@@ -409,13 +408,13 @@ function ActivePuzzle:logictick()
 
   -- We may have switched to the "solving" state, which we handle immediately
   if s.state == "solving" then
-    local SOLVER_TICK_BUDGET = 256 -- How many states to process per tick
+    local SOLVER_TICK_BUDGET = 512 -- How many states to process per tick
 
     local done = s.solver:tick(SOLVER_TICK_BUDGET)
 
     local max_ticks = slider_solver.settings.solve_time:get() / 20
 
-    if self.ticks - s.start_tick >= max_ticks then
+    if done or self.ticks - s.start_tick >= max_ticks then
       -- Solving time is over, lock in the best solution found so far
       local current = SliderState.getSliderState()
       local best = s.solver.best_solution
@@ -513,6 +512,8 @@ local interface_open_handler = zyklib.game_events.native.ServerLogic:map(functio
       end
     end)
 
+log(interface_open_handler:isActive())
+
 ---Enables or disables the slider solver. Disabling also removes any currently shown overlay.
 ---@param active boolean
 local function setActive(active)
@@ -527,6 +528,8 @@ local initialized = false
 
 --- Activates the solver whenever it is enabled in the settings and deactivates it otherwise. Only the first call has an effect.
 function slider_solver.init()
+  log("initializing slider")
+
   if initialized then return end
   initialized = true
 

@@ -164,8 +164,5 @@ function RegionGraph:getEntryPoints()
   return self.entry_nodes
 end
 
--- Ring buffer queue.
--- Stores independent state copies.
-
 
 return RegionDistanceTable

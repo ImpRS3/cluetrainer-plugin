@@ -64,7 +64,7 @@ function SliderState.doMove(state, move)
     state[blank + partials[i]] = state[blank + partials[i + 1]]
   end
 
-  state[SliderState.LAST_MOVE_INDEX] = move + 20
+  state[SliderState.LAST_MOVE_INDEX] = move
   state[SliderState.BLANK_TILE_INDEX] = blank + move
   state[blank + move] = SliderState.BLANK_TILE
 end
@@ -150,7 +150,7 @@ end
 ---@return ct.sliders.SliderState
 function SliderState.fromPermutation(state)
   local result = { table.unpack(state) }
-  result[SliderState.LAST_MOVE_INDEX] = 20
+  result[SliderState.LAST_MOVE_INDEX] = 0
   result[SliderState.BLANK_TILE_INDEX] = zyklib.array.indexOf(state, SliderState.BLANK_TILE)
 
   return result

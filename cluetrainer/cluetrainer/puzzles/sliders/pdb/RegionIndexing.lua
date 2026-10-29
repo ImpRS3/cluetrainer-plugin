@@ -95,8 +95,7 @@ function Indexing.new(region)
       entries[#entries + 1] = { tile, i }
     end
 
-    self.relevant_tile_numbers[i] =
-        tile == Tile.CURRENT or i == SliderState.BLANK_TILE + 1
+    self.relevant_tile_numbers[i] = tile == Tile.CURRENT or i == SliderState.BLANK_TILE + 1
 
     if tile == Tile.CURRENT or tile == Tile.FIXED then
       self.solution_relevant_indices[#self.solution_relevant_indices + 1] = i

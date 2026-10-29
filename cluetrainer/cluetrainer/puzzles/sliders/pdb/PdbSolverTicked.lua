@@ -20,36 +20,6 @@ local move_translation_identity = {
   [21 + 20] = 20,
 }
 
---- Number of state expansions per call of `tick` unless specified otherwise.
-local DEFAULT_BUDGET = 2048
-
----@alias ct.sliders.pdb.Frame ct.sliders.pdb.RootFrame | ct.sliders.pdb.RegionFrame | ct.sliders.pdb.StateFrame
-
----@class ct.sliders.pdb.RootFrame
----@field kind "root"
----@field entry_points ct.sliders.pdb.RegionGraph.Node[]
----@field index integer
-
----@class ct.sliders.pdb.RegionFrame
----@field kind "region"
----@field phase "enter" | "exit"
----@field region ct.sliders.pdb.RegionGraph.Node
----@field coming_from_reflected boolean
----@field needs_reflection boolean?
-
----@class ct.sliders.pdb.StateFrame
----@field kind "state"
----@field phase "enter" | "moves" | "end" | "children"
----@field region ct.sliders.pdb.RegionGraph.Node
----@field known_distance integer
----@field previous_move integer?
----@field moves integer[]?
----@field i integer Index of the move being tried.
----@field move integer? The move currently applied to the state.
----@field awaiting_child boolean Whether a child state frame is running for `move`.
----@field found boolean Whether an optimal move was found.
----@field child_i integer Index of the child region being visited.
-
 --- The pattern database solver without coroutines. It has the interface of `PdbSolver`
 --- (`start_state`, `best_solution`, `registerSolution`), but instead of being run as a task, `tick` has to be called
 --- repeatedly until it returns true. The recursion of `PdbSolver` is replaced by an explicit stack of frames, so
@@ -58,13 +28,11 @@ local DEFAULT_BUDGET = 2048
 ---@field start_state ct.sliders.SliderState
 ---@field chain ct.sliders.pdb.RegionGraph
 ---@field best_solution integer[]?
----@field private stack ct.sliders.pdb.Frame[]
 ---@field private state ct.sliders.SliderState
----@field private move_list integer[]
----@field private budget integer
 ---@field private finished boolean
 ---@field private tick_handler zyklib.disposable.IDisposable?
 ---@field private started boolean
+---@field private stack StackItem[]
 local PdbSolverTicked = {}
 PdbSolverTicked.__index = PdbSolverTicked
 
@@ -77,8 +45,6 @@ function PdbSolverTicked.new(start_state, chain)
 
   self.start_state = start_state
   self.chain = chain
-  self.move_list = {}
-  self.budget = 0
   self.finished = false
   self.started = false
   self.stack = {}
@@ -91,16 +57,22 @@ function PdbSolverTicked:start()
   if self.started or self.finished then return end
 
   self.started = true
-  self.stack = { { kind = "root", entry_points = self.chain:getEntryPoints(), index = 0 } }
+
+  local state = SliderState.fromPermutation(self.start_state)
+
+  -- Initialize stack with all entry points
+  for _, entry in ipairs(self.chain:getEntryPoints()) do
+    self:pushState(entry, state, {},
+      entry.table:getDistanceByIndex(entry.table.indexing:stateIndex(state))
+    )
+  end
 end
 
 ---@protected
 ---@param solution integer[]
 function PdbSolverTicked:registerSolution(solution)
-  log("Found solution")
-  log(solution)
-
   if self.best_solution == nil or #solution < #self.best_solution then
+    -- TODO: Compress/Uncompress if needed!
     self.best_solution = { table.unpack(solution) }
   end
 end
@@ -114,7 +86,6 @@ end
 function PdbSolverTicked:cancel()
   self.stack = {}
   self.state = nil
-  self.move_list = {}
   self.finished = true
 end
 
@@ -128,74 +99,35 @@ end
 
 ---@private
 ---@param region ct.sliders.pdb.RegionGraph.Node
+---@param state ct.sliders.SliderState
+---@param moves ct.sliders.Move[]
 ---@param known_distance integer
-function PdbSolverTicked:pushState(region, known_distance)
+function PdbSolverTicked:pushState(region, state, moves, known_distance)
+  if #self.stack > 512 then
+    return -- Discard state when there are too many open ends
+  end
+
   self.stack[#self.stack + 1] = {
-    kind = "state",
-    phase = "enter",
     region = region,
+    state = { table.unpack(state) },
+    moves = moves, -- No copy required here. Caller makes a copy if needed
     known_distance = known_distance,
-    i = 0,
-    awaiting_child = false,
-    found = false,
-    child_i = 0,
   }
 end
 
 ---@private
----@param region ct.sliders.pdb.RegionGraph.Node
----@param coming_from_reflected boolean
-function PdbSolverTicked:pushRegion(region, coming_from_reflected)
-  self.stack[#self.stack + 1] = {
-    kind = "region",
-    phase = "enter",
-    region = region,
-    coming_from_reflected = coming_from_reflected,
-  }
-end
-
----@private
+---@return StackItem
 function PdbSolverTicked:pop()
+  local top = self.stack[#self.stack]
   self.stack[#self.stack] = nil
+  return top
 end
 
----@private
----@param frame ct.sliders.pdb.RootFrame
-function PdbSolverTicked:stepRoot(frame)
-  frame.index = frame.index + 1
-  local start = frame.entry_points[frame.index]
-
-  if start == nil then
-    self:pop()
-    return
-  end
-
-  self.state = SliderState.fromPermutation(self.start_state)
-  self.move_list = {}
-
-  log("Starting with entry point")
-
-  self:pushRegion(start, false)
-end
-
----@private
----@param frame ct.sliders.pdb.RegionFrame
-function PdbSolverTicked:stepRegion(frame)
-  local region = frame.region
-
-  if frame.phase == "enter" then
-    frame.needs_reflection = region.reflected ~= frame.coming_from_reflected
-    if frame.needs_reflection then SliderState.reflect(self.state) end
-
-    local index = region.table.indexing:stateIndex(self.state)
-
-    frame.phase = "exit"
-    self:pushState(region, region.table:getDistanceByIndex(index))
-  else
-    if frame.needs_reflection then SliderState.reflect(self.state) end
-    self:pop()
-  end
-end
+---@class StackItem
+---@field region ct.sliders.pdb.RegionGraph.Node
+---@field state ct.sliders.SliderState
+---@field moves ct.sliders.Move[]
+---@field known_distance integer
 
 --- Undoes the move that is currently applied and decides whether more moves need to be tried.
 ---@private
@@ -210,107 +142,130 @@ function PdbSolverTicked:finishMove(frame)
   end
 end
 
----@private
----@param frame ct.sliders.pdb.StateFrame
-function PdbSolverTicked:stepState(frame)
-  local state = self.state
-  local region = frame.region
-  local distance_table = region.table
-  local indexing = distance_table.indexing
+---@return integer # The number of iterations performed in this step
+function PdbSolverTicked:step()
+  local frame = self:pop()
 
-  if frame.phase == "enter" then
-    self.budget = self.budget - 1
-    frame.previous_move = state[SliderState.LAST_MOVE_INDEX]
+  local state = frame.state
+  local move_list = frame.moves
+  local current_region = frame.region
+  local indexing = current_region.table.indexing
+  local distance_table = current_region.table
 
-    if self.best_solution and #self.move_list > #self.best_solution then
-      self:pop()
-      return
+  local move_translation = current_region.reflected
+      and SliderState.move_translation_reflect
+      or move_translation_identity
+
+  local known_distance = frame.known_distance
+
+  local number_of_iterations = 0
+
+  -- Loop through states until end of region is reached
+  while true do
+    number_of_iterations = number_of_iterations + 1
+
+    if self.best_solution and #move_list > #self.best_solution then
+      -- Stop exploring this branch as it cannot yield a better solution
+      break
     end
 
-    frame.moves = distance_table.move_table:get(state)
-    frame.phase = "moves"
-  elseif frame.phase == "moves" then
-    if frame.awaiting_child then
-      frame.awaiting_child = false
-      self.move_list[#self.move_list] = nil
-      self:finishMove(frame)
-      return
-    end
+    -- The first optimal move is followed locally, all others are deferred to the stack
+    local next_move, next_distance, next_index, next_probed_state
+    local moves = distance_table.move_table:get(state)
 
-    frame.i = frame.i + 1
-    local move = frame.moves[frame.i]
+    local previous_move = state[SliderState.LAST_MOVE_INDEX]
+    local snapshot = { table.unpack(state) }
 
-    if move == nil then
-      frame.phase = "end"
-      return
-    end
+    for i = 1, #moves do
+      local move = moves[i]
 
-    local move_translation = region.reflected
-        and SliderState.move_translation_reflect
-        or move_translation_identity
+      SliderState.doMove(state, move)
 
-    frame.move = move
-    SliderState.doMove(state, move)
+      local child_index = indexing:stateIndex(state)
 
-    local child_index = indexing:stateIndex(state)
-    local child_distance = distance_table:getDistanceByIndex(child_index)
+      local child_distance = distance_table:getDistanceByIndex(child_index)
 
-    if (child_distance + 1) % 4 == frame.known_distance then
-      frame.found = true
-      frame.awaiting_child = true
-      self.move_list[#self.move_list + 1] = move_translation[move + 21]
-      self:pushState(region, child_distance)
-    else
-      self:finishMove(frame)
-    end
-  elseif frame.phase == "end" then
-    if frame.found or frame.known_distance ~= 0 or not indexing:satisfied(state) then
-      self:pop()
-    elseif #region.children == 0 then
-      if #self.move_list > 0 or indexing.solves_puzzle then
-        self:registerSolution(self.move_list)
-      else
-        error("Unexpected empty solution")
+      if (child_distance + 1) % 4 == known_distance then
+        if next_move == nil then
+          next_move = move
+          next_distance = child_distance
+          next_index = child_index
+          next_probed_state = { table.unpack(state) }
+
+          if indexing.solves_puzzle then
+            -- If we are in a final region, we do not need to consider further moves
+            SliderState.doMove(state, -move)
+            state[SliderState.LAST_MOVE_INDEX] = previous_move
+            break
+          end
+        else
+          -- If we have already found the first optimal move, any subsequent moves that also satisfy the distance condition are deferred to the stack for later exploration1
+          local child_moves = { table.unpack(move_list) }
+          child_moves[#child_moves + 1] = move_translation[move + 21]
+          self:pushState(current_region, state, child_moves, child_distance)
+        end
       end
-      self:pop()
-    else
-      frame.phase = "children"
-    end
-  else
-    frame.child_i = frame.child_i + 1
-    local child = region.children[frame.child_i]
 
-    if child == nil then
-      self:pop()
-    else
-      self:pushRegion(child, region.reflected)
+      SliderState.doMove(state, -move)
+      state[SliderState.LAST_MOVE_INDEX] = previous_move
     end
+
+    if next_move == nil then
+      if known_distance ~= 0 or not indexing:satisfied(state) then
+        -- This is a dead end, there are no optimal moves.
+        -- Without slackness (TODO), this can only happen in the first iteration of a region.
+        break
+      end
+
+      if #current_region.children == 0 then
+        -- This is a leaf region, so we either register the solution or report an error if it's empty
+        self:registerSolution(move_list)
+      else
+        -- If this is not a leaf region, we need to explore its child regions recursively. We do so by pushing them to the stack
+        for _, child in ipairs(current_region.children) do
+          local needs_reflection = child.reflected ~= current_region.reflected
+
+          if needs_reflection then SliderState.reflect(state) end
+
+          self:pushState(
+            child,
+            state,
+            { table.unpack(move_list) },
+            child.table:getDistanceByIndex(child.table.indexing:stateIndex(state))
+          )
+
+          if needs_reflection then SliderState.reflect(state) end
+        end
+      end
+
+      break
+    end
+
+    SliderState.doMove(state, next_move)
+
+    move_list[#move_list + 1] = move_translation[next_move + 21]
+    known_distance = next_distance
   end
+
+  return number_of_iterations
 end
 
 --- Continues the search for a limited amount of work.
----@param budget integer? Number of states to expand at most. Default 2048.
+---@param budget integer Number of states to expand at most.
 ---@return boolean done Whether the search has finished; `best_solution` is final then.
 function PdbSolverTicked:tick(budget)
   if self.finished then return true end
   if not self.started then error("PdbSolverTicked:tick called before start") end
 
-  self.budget = budget or DEFAULT_BUDGET
-  local stack = self.stack
+  while #self.stack > 0 and budget > 0 do
+    local used_budged = self:step()
 
-  while #stack > 0 and self.budget > 0 do
-    local frame = stack[#stack]
+    self.total_iterations = (self.total_iterations or 0) + used_budged
 
-    if frame.kind == "root" then
-      self:stepRoot(frame)
-    elseif frame.kind == "region" then
-      self:stepRegion(frame)
-    else
-      self:stepState(frame)
-    end
+    budget = budget - used_budged
   end
 
-  if #stack == 0 then self.finished = true end
+  if #self.stack == 0 then self.finished = true end
 
   return self.finished
 end
