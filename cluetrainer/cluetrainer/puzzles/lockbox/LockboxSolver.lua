@@ -113,10 +113,19 @@ function ActivePuzzle.new()
   ---@type zyklib.reactive.Observable<ct.lockbox.LockboxSolution?>
   local solution = zyklib.reactive.Observable.new(nil)
 
-
   local function refreshSolution()
+    local last_solution = solution:get()
+
     solution:set(Lockboxes.solve(getPuzzleState(), {
-      minimize_by = Lockboxes.MoveMap.scoring({ 0, 1, lockbox_solver.settings.optimization_coefficient:get() / 10 }),
+      minimize_by = function(sol)
+        local difference_penalty = last_solution
+            and Lockboxes.MoveMap.difference(sol, last_solution) / 10
+            or 0
+
+        -- If there is no existing solution, use the intended scoring function
+        return Lockboxes.MoveMap.scoring({ 0, 1, lockbox_solver.settings.optimization_coefficient:get() / 10 })(sol) +
+            difference_penalty
+      end,
     }))
   end
 

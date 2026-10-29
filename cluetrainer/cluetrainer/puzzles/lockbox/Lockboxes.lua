@@ -131,6 +131,17 @@ function Lockboxes.MoveMap.scoring(profile)
     end
 end
 
+--- Count the number of differing tiles between two move maps
+---@param a ct.lockbox.MoveMap
+---@param b ct.lockbox.MoveMap
+---@return number
+function Lockboxes.MoveMap.difference(a, b)
+    return zyklib.array.sumBy(a,
+        function(row, row_i)
+            return zyklib.array.count(row, function(v, col_i) return v ~= b[row_i][col_i] end)
+        end)
+end
+
 Lockboxes.State = {}
 
 ---@type ct.lockbox.LockboxState
