@@ -81,11 +81,9 @@ function SliderState.isEqual(a, b)
   return true
 end
 
----Returns all states reachable from the given state with a single move.
 ---@param state ct.sliders.SliderState
----@param multitile_allowed boolean? Whether multitile moves are included. Defaults to true.
----@return ct.sliders.SliderState[]
-function SliderState.neighbours(state, multitile_allowed)
+---@return ct.sliders.Move[]
+local function possibleMoves(state)
   local blank = state[SliderState.BLANK_TILE_INDEX]
   local x = (blank - 1) % 5
   local y = (blank - 1) // 5
@@ -101,9 +99,17 @@ function SliderState.neighbours(state, multitile_allowed)
     if yi ~= y then table.insert(moves, (yi - y) * 5) end
   end
 
+  return moves
+end
+
+---Returns all states reachable from the given state with a single move.
+---@param state ct.sliders.SliderState
+---@param multitile_allowed boolean? Whether multitile moves are included. Defaults to true.
+---@return ct.sliders.SliderState[]
+function SliderState.neighbours(state, multitile_allowed)
   local result = {}
 
-  for _, move in ipairs(moves) do
+  for _, move in ipairs(possibleMoves(state)) do
     if multitile_allowed ~= false or math.abs(move) == 1 or math.abs(move) == 5 then
       local neighbour = zyklib.objects.clone(state)
       SliderState.doMove(neighbour, move)
@@ -112,6 +118,21 @@ function SliderState.neighbours(state, multitile_allowed)
   end
 
   return result
+end
+
+---Finds the single move that turns `from` into `target`. Only the tiles are compared.
+---@param from ct.sliders.SliderState
+---@param target ct.sliders.SliderState
+---@return ct.sliders.Move? # `nil` if the target cannot be reached with one move
+function SliderState.findMove(from, target)
+  for _, move in ipairs(possibleMoves(from)) do
+    local result = zyklib.objects.clone(from)
+    SliderState.doMove(result, move)
+
+    if SliderState.isEqual(result, target) then return move end
+  end
+
+  return nil
 end
 
 ---@class ct.sliders.AugmentedMove
@@ -123,8 +144,9 @@ end
 --- Each `post` is the same table as the next entry's `pre_states[1]`, so treat the states as read-only.
 ---@param start ct.sliders.SliderState
 ---@param moves ct.sliders.Move[]
+---@param multitile_allowed boolean? Whether multitile moves are included. Defaults to true.
 ---@return ct.sliders.AugmentedMove[]
-function SliderState.augmentMoves(start, moves)
+function SliderState.augmentMoves(start, moves, multitile_allowed)
   ---@type ct.sliders.AugmentedMove[]
   local result = {}
   local current = start
@@ -134,7 +156,7 @@ function SliderState.augmentMoves(start, moves)
     SliderState.doMove(post, move)
 
     local pre_states = { current }
-    for _, neighbour in ipairs(SliderState.neighbours(post)) do
+    for _, neighbour in ipairs(SliderState.neighbours(post, multitile_allowed)) do
       table.insert(pre_states, neighbour)
     end
 

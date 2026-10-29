@@ -25,7 +25,7 @@ slider_solver.settings = {
   lookahead = storage.variable("sliders/lookahead", schema.int({ min = 2, max = 10, default = 5 })),
   show_recovery_moves = storage.variable("sliders/show_recovery_moves", schema.bool({ default = true })),
   color_mainline = storage.variable("sliders/color_mainline", schema.colour({ default = 0x00FF00FF })),
-  color_recovery = storage.variable("sliders/color_recovery", schema.colour({ default = 0xFFA500FF })),
+  color_recovery = storage.variable("sliders/color_recovery", schema.colour({ default = 0xff6600FF })),
   solve_time = storage.variable("sliders/solve_time", schema.int({ min = 100, max = 5000, default = 200 })),
   estimate_slider_speed = storage.variable("sliders/estimate_slider_speed", schema.bool({ default = true })),
 }
@@ -114,10 +114,15 @@ SMALL_TEXT_CONFIG.rgba = 0xFFFFFFFF
 SMALL_TEXT_CONFIG.shadowRGBA = 0x000000FF
 SMALL_TEXT_CONFIG.isShadowed = true
 
+---@class ct.sliders.RecoverySolution
+---@field sequence ct.sliders.AugmentedMove[] Moves leading back to the mainline. Empty while the player is on the mainline
+---@field last_known_state ct.sliders.SliderState? The last state the player was in while recovering
+---@field recovering_to_mainline_index integer The mainline entry the recovery leads back to
+
 ---@alias ct.sliders.ct.sliders.ActiveSliderPuzzle.State
 ---           | {state: "waitingforpdb", last_drawn_progress: number?, progress: ct.sliders.PdbDownloadState}
 ---           | {state: "solving", start_tick: number, solver: ct.sliders.pdb.PdbSolverTicked}
----           | {state: "executing", start_tick: number, solution: ct.sliders.AugmentedMove[], mainline_index: integer, finished_tick: integer?, last_drawn_state: ct.sliders.SliderState?}
+---           | {state: "executing", start_tick: number, solution: ct.sliders.AugmentedMove[], mainline_index: integer, last_mainline_state: ct.sliders.SliderState, finished_tick: integer?, last_drawn_state: ct.sliders.SliderState?, recovery_solution: ct.sliders.RecoverySolution}
 ---           | {state: "failed", reason: string}
 
 
@@ -148,22 +153,39 @@ function ActivePuzzle:drawSolution(state)
   local solution = s.solution
   local mainline_index = s.mainline_index
 
-  -- The current state is not on the solution path, so there is nothing meaningful to show
+  -- The current state is not on the solution path (the player is lost), so there is nothing meaningful to show
   if mainline_index < 0 then return end
+
+  -- Tiles to click next. While recovering, the way back to the mainline comes first
+  ---@type {tile: integer, color: integer}[]
+  local steps = {}
+  local lookahead = slider_solver.settings.lookahead:get()
+  local recovery = s.recovery_solution
+  local base_state = state
+
+  if recovery ~= nil and #recovery.sequence > 0 then
+    if slider_solver.settings.show_recovery_moves:get() then
+      for _, entry in ipairs(recovery.sequence) do
+        steps[#steps + 1] = { tile = entry.post[SliderState.BLANK_TILE_INDEX], color = slider_solver.settings.color_recovery:get() }
+      end
+    else
+      -- Recovery moves are hidden, so the mainline is drawn as seen from the last state that was on it
+      base_state = s.last_mainline_state or state
+    end
+  end
+
+  for move_index = mainline_index, #solution do
+    if #steps >= lookahead then break end
+    steps[#steps + 1] = { tile = solution[move_index].post[SliderState.BLANK_TILE_INDEX], color = slider_solver.settings.color_mainline:get() }
+  end
 
   local last_size = 10
   local overlap_map = {}
+  local blank = base_state[SliderState.BLANK_TILE_INDEX]
 
-  for i = 0, slider_solver.settings.lookahead:get() - 1 do
-    local move_index = mainline_index + i
-
-    if move_index > #solution then break end
-
-    local entry = solution[move_index]
-
-    local blank = (i > 0 and solution[move_index - 1].post or state)[SliderState.BLANK_TILE_INDEX]
-
-    local clicked = solution[move_index].pre_states[1][SliderState.BLANK_TILE_INDEX] + entry.move
+  for i = 0, math.min(lookahead, #steps) - 1 do
+    local step = steps[i + 1]
+    local clicked = step.tile
 
     if (slider_solver.settings.prevent_overlap:get()) then
       if (overlap_map[clicked]) then break end
@@ -175,7 +197,7 @@ function ActivePuzzle:drawSolution(state)
       end
     end
 
-    local size = 20 * (1 - i / slider_solver.settings.lookahead:get())
+    local size = 20 * (1 - i / lookahead)
 
     local ax, ay = centerOfTile(blank)
     local bx, by = centerOfTile(clicked)
@@ -189,14 +211,15 @@ function ActivePuzzle:drawSolution(state)
     local x2, y2 = bx - ux * size, by - uy * size
 
     canvas:AddLine(x1, y1, x2, y2, 2, COLOR_CONTRAST)
-    canvas:AddLine(x1, y1, x2, y2, 1, slider_solver.settings.color_mainline:get())
+    canvas:AddLine(x1, y1, x2, y2, 1, step.color)
 
     -- Marker on the clicked tile
     local outer = size + CONTRAST_BORDER
     canvas:AddOutline(bx - outer, by - outer, outer * 2, outer * 2, STROKE + 2 * CONTRAST_BORDER, COLOR_CONTRAST)
-    canvas:AddOutline(bx - size, by - size, size * 2, size * 2, STROKE, slider_solver.settings.color_mainline:get())
+    canvas:AddOutline(bx - size, by - size, size * 2, size * 2, STROKE, step.color)
 
     last_size = size
+    blank = clicked
   end
 end
 
@@ -291,7 +314,9 @@ function ActivePuzzle:drawProgress()
   local sx, sy = canvas.width // 2, canvas.height - 9
 
   -- Always Draw progress bar
-  local completed = executing and (s.mainline_index - 1) or 0
+  -- While lost, mainline_index is -1. Keep showing the progress of the last known mainline entry then
+  local progress_index = executing and (s.mainline_index > 0 and s.mainline_index or s.recovery_solution.recovering_to_mainline_index) or 1
+  local completed = executing and (progress_index - 1) or 0
   local progress = executing and (completed / solution_length) or 0
   local length = math.min(2 * solution_length, 250)
   drawProgressBar(canvas, cx, cy, length, progress, 2, 1)
@@ -379,6 +404,71 @@ function ActivePuzzle.new()
   return self
 end
 
+---Reacts to a state that is not on the mainline. Either the player follows the current recovery sequence, or a move
+---back to the mainline (or to the last known recovery state) is computed. If neither is possible, the player is lost.
+---@private
+---@param current ct.sliders.SliderState
+function ActivePuzzle:recover(current)
+  local s = self.state
+  local recovery = s.recovery_solution
+  local sequence = recovery.sequence
+
+  local _, recovery_index = zyklib.array.find(sequence, function(entry)
+    return zyklib.array.exists(entry.pre_states, function(pre) return SliderState.isEqual(pre, current) end)
+  end)
+
+  if recovery_index > 0 then
+    -- Following the recovery. Prune it to the remaining steps
+    recovery.sequence = { table.unpack(sequence, recovery_index) }
+    recovery.last_known_state = current
+    s.mainline_index = recovery.recovering_to_mainline_index
+    return
+  end
+
+  -- The state is not part of the recovery sequence. Find a single move that gets back to a known state.
+  local targets
+  if recovery.last_known_state ~= nil then
+    targets = { recovery.last_known_state }
+  else
+    local entry = s.solution[recovery.recovering_to_mainline_index]
+    local last = s.solution[#s.solution]
+    targets = entry and entry.pre_states or (last and { last.post } or {})
+  end
+
+  local recovery_move
+  for _, target in ipairs(targets) do
+    recovery_move = SliderState.findMove(current, target)
+    if recovery_move ~= nil then break end
+  end
+
+  if recovery_move == nil then
+    -- Lost track
+    s.mainline_index = -1
+    return
+  end
+
+  -- After the recovery move, the player is in the target state and continues the previous sequence from there.
+  -- Entries are stored as clicked tiles since their first move may start from a partially completed state.
+  local moves = { recovery_move }
+  local blank = current[SliderState.BLANK_TILE_INDEX] + recovery_move
+
+  for _, entry in ipairs(sequence) do
+    local tile = entry.post[SliderState.BLANK_TILE_INDEX]
+    moves[#moves + 1] = tile - blank
+    blank = tile
+  end
+
+  if slider_solver.settings.mode:get() == "keyboard" then
+    moves = Move.expand(moves)
+  else
+    moves = Move.compress(moves)
+  end
+
+  recovery.sequence = SliderState.augmentMoves(current, moves)
+  recovery.last_known_state = current
+  s.mainline_index = recovery.recovering_to_mainline_index
+end
+
 function ActivePuzzle:logictick()
   self.ticks = self.ticks + 1
 
@@ -435,6 +525,8 @@ function ActivePuzzle:logictick()
         start_tick = self.ticks,
         solution = self.solution,
         mainline_index = 1,
+        last_mainline_state = current,
+        recovery_solution = { sequence = {}, recovering_to_mainline_index = 1 },
       }
     else
       self.progress_canvas:Clear()
@@ -457,15 +549,25 @@ function ActivePuzzle:logictick()
     local state_changed = s.last_drawn_state == nil or not SliderState.isEqual(s.last_drawn_state, current)
 
     if state_changed then
-      local _, mainline_index = zyklib.array.findLast(s.solution, function(move)
-        return zyklib.array.exists(move.pre_states, function(pre) return SliderState.isEqual(pre, current) end)
-      end)
+      local mainline_index
 
-      if mainline_index == #s.solution - 1 and SliderState.isSolved(current) then
+      if SliderState.isSolved(current) then
         mainline_index = #s.solution + 1
+      else
+        local _
+        _, mainline_index = zyklib.array.findLast(s.solution, function(move)
+          return zyklib.array.exists(move.pre_states, function(pre) return SliderState.isEqual(pre, current) end)
+        end)
       end
 
-      s.mainline_index = mainline_index
+      if mainline_index > 0 then
+        s.mainline_index = mainline_index
+        s.last_mainline_state = current
+        s.recovery_solution = { sequence = {}, recovering_to_mainline_index = mainline_index }
+      else
+        self:recover(current)
+      end
+
 
       if SliderState.isSolved(current) then
         if s.finished_tick == nil then s.finished_tick = self.ticks end

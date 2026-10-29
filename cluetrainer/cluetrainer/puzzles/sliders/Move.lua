@@ -54,4 +54,45 @@ function Move.isVertical(move)
   return move % 5 == 0
 end
 
+--- Splits every move into its single steps, e.g. `{2, -5}` becomes `{1, 1, -5}`.
+---@param moves ct.sliders.Move[]
+---@return ct.sliders.Move[]
+function Move.expand(moves)
+  local result = {}
+
+  for _, move in ipairs(moves) do
+    for _, step in ipairs(Move.split(move)) do
+      result[#result + 1] = step
+    end
+  end
+
+  return result
+end
+
+--- Merges consecutive moves in the same direction into one multitile move, e.g. `{1, 1, -5}` becomes `{2, -5}`.
+---@param moves ct.sliders.Move[]
+---@return ct.sliders.Move[]
+function Move.compress(moves)
+  local result = {}
+
+  for _, move in ipairs(moves) do
+    local last = result[#result]
+    local merged
+
+    if last ~= nil and Move.isVertical(last) == Move.isVertical(move) and (last > 0) == (move > 0) then
+      -- Horizontal moves span at most 4 tiles, vertical moves at most 20 (4 rows)
+      local sum = last + move
+      if math.abs(sum) <= (Move.isVertical(move) and 20 or 4) then merged = sum end
+    end
+
+    if merged ~= nil then
+      result[#result] = merged
+    else
+      result[#result + 1] = move
+    end
+  end
+
+  return result
+end
+
 return Move
