@@ -4,7 +4,7 @@ local TerrainHighlight   = require "zyklib/highlights/TerrainHighlight"
 local api_util           = require "zyklib/api_util"
 local coordinate_adaptor = require "cluetrainer/model/shared/coordinate_adaptor"
 local Path               = require "cluetrainer/model/shared/path"
-local Navigator          = require "cluetrainer/solving/navigator"
+local Navigator          = require "cluetrainer/solving/common/navigator"
 local array              = require "zyklib/array"
 local zyklib             = require "zyklib"
 

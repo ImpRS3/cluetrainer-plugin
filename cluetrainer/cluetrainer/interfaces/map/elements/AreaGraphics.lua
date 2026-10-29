@@ -1,5 +1,5 @@
 local luaflet = require("prettymap/luaflet")
-local geometry = require("cluetrainer/map/elements/geometry")
+local geometry = require("cluetrainer/interfaces/map/elements/geometry")
 
 --- Outlined and tinted areas as polygon elements, in the style of the original map's area polygons.
 local AreaGraphics = {}
