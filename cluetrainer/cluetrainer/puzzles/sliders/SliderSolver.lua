@@ -161,16 +161,18 @@ function ActivePuzzle:drawSolution(state)
 
     local entry = solution[move_index]
 
-    local blank = (move_index > 1 and solution[move_index - 1].post or state)[SliderState.BLANK_TILE_INDEX]
-    local clicked = blank + entry.move
+    local blank = (i > 0 and solution[move_index - 1].post or state)[SliderState.BLANK_TILE_INDEX]
 
-    -- Stop at the first move that would cover a tile already passed over by an earlier move
-    if overlap_map[clicked] then break end
+    local clicked = solution[move_index].pre_states[1][SliderState.BLANK_TILE_INDEX] + entry.move
 
-    local passed = blank
-    for _, step in ipairs(Move.split(entry.move)) do
-      passed = passed + step
-      overlap_map[passed] = true
+    if (slider_solver.settings.prevent_overlap:get()) then
+      if (overlap_map[clicked]) then break end
+      local passed = blank
+
+      for _, m in ipairs(Move.split(clicked - blank)) do
+        passed = passed + m
+        overlap_map[passed] = true
+      end
     end
 
     local size = 20 * (1 - i / slider_solver.settings.lookahead:get())
