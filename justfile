@@ -13,6 +13,7 @@ install: check-beta-dir
     set -euo pipefail
 
     just package_into "{{DEV_PLUGINS}}/cluetrainer"
+    just install_devtool
 
     install_plugin() {
       local plugin_name="$1"
@@ -54,6 +55,21 @@ install-light: check-beta-dir
 
     copy_without_resources cluetrainer
     copy_without_resources dependencies/zyklib/src
+
+    just install_devtool
+
+# The devtool is a plugin of its own and only gets the data files of Clue Trainer, no code.
+[private]
+install_devtool:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    TARGET="{{DEV_PLUGINS}}/cluetrainer_devtool"
+
+    rm -rf "$TARGET"
+    mkdir -p "$TARGET/cluetrainer/data"
+    cp -R cluetrainer_devtool/. "$TARGET/"
+    cp -R cluetrainer/cluetrainer/data/. "$TARGET/cluetrainer/data/"
 
 package: (package_into "dist/cluetrainer")
 

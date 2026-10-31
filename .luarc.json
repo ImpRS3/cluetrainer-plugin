@@ -28,7 +28,8 @@
 	"runtime.path": [
 		"cluetrainer/?.lua",
 		"dependencies/zyklib/src/?.lua",
-		"dependencies/prettyui/?.lua"
+		"dependencies/prettyui/?.lua",
+		"cluetrainer_devtool/?.lua"
 	],
 	"completion.requireSeparator": "/",
 	"diagnostics.disable": [

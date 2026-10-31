@@ -36,3 +36,5 @@ The beta client folder defaults to `/mnt/c/ProgramData/Jagex/RuneScape-BETA` (WS
    pon cluetrainer
    prl cluetrainer   # after every `just install`
    ```
+
+The devtool (spawn clue scrolls, teleport; dev servers only) is installed alongside: `pon cluetrainer_devtool`.
