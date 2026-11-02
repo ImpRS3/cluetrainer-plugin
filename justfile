@@ -12,6 +12,9 @@ install environment="test": check-beta-dir (package_into "{{DEV_PLUGINS}}/cluetr
     #!/usr/bin/env bash
     set -euo pipefail
 
+    just package_into "{{DEV_PLUGINS}}/cluetrainer"
+    just install_devtool
+
     install_plugin() {
       local plugin_name="$1"
       local target_dir="{{DEV_PLUGINS}}/$(basename "$plugin_name")"
@@ -55,7 +58,22 @@ install-light environment="test": check-beta-dir (check-environment environment)
     rm "$TARGET/plugin.production.json" "$TARGET/plugin.test.json"
     cp "cluetrainer/plugin.{{environment}}.json" "$TARGET/plugin.json"
 
-package environment="production": (package_into "dist/cluetrainer" environment)
+    just install_devtool
+
+# The devtool is a plugin of its own and only gets the data files of Clue Trainer, no code.
+[private]
+install_devtool:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    TARGET="{{DEV_PLUGINS}}/cluetrainer_devtool"
+
+    rm -rf "$TARGET"
+    mkdir -p "$TARGET/cluetrainer/data"
+    cp -R cluetrainer_devtool/. "$TARGET/"
+    cp -R cluetrainer/cluetrainer/data/. "$TARGET/cluetrainer/data/"
+
+package: (package_into "dist/cluetrainer")
 
 package-zip environment="production": (package_into "dist/cluetrainer" environment)
     #!/usr/bin/env bash
@@ -101,4 +119,4 @@ check-beta-dir:
 CLOC_BLACKLIST := "^(./)?(cluetrainer/cluetrainer/data|cluetrainer/prettymap/data)(/|$)"
 
 cloc:
-    cloc cluetrainer --fullpath --not-match-d '{{CLOC_BLACKLIST}}' --by-file
+    cloc cluetrainer --fullpath --not-match-d '{{BLACKLIST}}' --by-file
