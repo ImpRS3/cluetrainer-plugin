@@ -5,13 +5,15 @@ local luaflet            = require("prettymap/luaflet")
 local map                = require("cluetrainer/interfaces/map/map")
 local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
 local Bounds             = require("cluetrainer/util/Bounds")
-local methods            = require("cluetrainer/solving/methods")
+local method_management  = require("cluetrainer/methods/method_management")
 local Path               = require("cluetrainer/model/shared/path")
 local Navigator          = require("cluetrainer/solving/common/navigator")
 local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEntity")
 local MapSectionControl  = require("cluetrainer/solving/map_navigator/MapSectionControl")
 local cluestate          = require("cluetrainer/interfaces/cluestate/cluestate")
 local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
+local MethodAction       = require("cluetrainer/solving/common/MethodAction")
+local MethodSelectDialog = require("cluetrainer/methods/MethodSelectDialog")
 
 ---@class ct.compasslogic
 local compasslogic       = {}
@@ -142,7 +144,20 @@ function ActiveCompassSolver.new(clue)
 
   self.actions = {}
   self.actions.identify = state_window:addAction(ClueStateAction.Text.new("Identify Spot"))
-  self.actions.method = state_window:addAction(ClueStateAction.Text.new("Select Method"))
+  self.actions.method = state_window:addAction(MethodAction.new(nil, {
+    onSelectRequested = function(action)
+      if self.identified_spot == nil then return end
+
+      MethodSelectDialog.open({
+        methods = method_management.getAllForClue({ clue = self.clue.id, spot = self.identified_spot }),
+        selected = action.method,
+        onSelect = function(method)
+          self:setMethod(method)
+        end,
+      })
+    end,
+  }))
+
   self.actions.dig_at = state_window:addAction(ClueStateAction.Text.new("Dig At"))
   --There is no reasonable way to track completion of the following three
   --self.actions.defeat_wizard = state_window:addAction(ClueStateAction.Text.new("Defeat Wizard"))
@@ -201,23 +216,23 @@ function ActiveCompassSolver:update()
 
   -- TODO: Render shapes for candidates
 
+  self.identified_spot = remaining_candidates == 1 and identified_solution or nil
+
   if remaining_candidates == 1 then
     -- If there is one remaining candidate, the spot has been identified and we can show a method
-    local method = methods.resolve({
+    ---@type ct.AugmentedMethod<Method>?
+    local method = method_management.getPreferred({
       clue = self.clue.id,
-      spot = zyklib.array.find(self.candidates, function(candidate)
-        return candidate.possible
-      end).spot
+      spot = self.identified_spot
     })
 
     if method ~= nil then
       log("Method found")
       self:setMethod(method)
-
-      -- TODO: Hook up to method selector somewhere
     else
       -- TODO: What do we do for identified spots without a selected method?
       log("No method found")
+      self:setMethod(nil)
     end
   else
     self:setMethod(nil)
@@ -228,8 +243,9 @@ function ActiveCompassSolver:update()
   end
 end
 
----@param method Method.GenericPath?
+---@param method ct.AugmentedMethod<Method.GenericPath>?
 function ActiveCompassSolver:setMethod(method)
+  self.actions.method:setMethod(method)
   if self.navigator ~= nil then
     self.navigator:dispose()
     self.navigator = nil
@@ -247,9 +263,9 @@ function ActiveCompassSolver:setMethod(method)
 
   if method then
     self.navigator = Navigator.new()
-    self.navigator:set(method.main_path)
+    self.navigator:set(method.method.main_path)
 
-    local sectioned_path = Path.split_into_sections(method.main_path)
+    local sectioned_path = Path.split_into_sections(method.method.main_path)
 
     self.path_twig = luaflet.twigs.Twig.new()
         :AddTo(map.ensure_open().map.twigs)

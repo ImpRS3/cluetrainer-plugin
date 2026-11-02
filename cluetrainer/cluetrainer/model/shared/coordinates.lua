@@ -4,7 +4,7 @@
 ---@class TileCoordinates : ct.lib.math.Vector2
 ---@field level floor_t
 
----@class TileRectangle : ct.Rectangle
+---@class TileRectangle : ct.lib.math.Rectangle
 ---@field level floor_t
 
 ---@class GieliCoordinates

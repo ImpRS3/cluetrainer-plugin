@@ -8,7 +8,7 @@ local persistent_position  = storage.preference("cluestate_interface_position", 
   y = schema.number({ default = 0 }),
 }))
 
-local WINDOW_WIDTH         = 260
+local WINDOW_WIDTH         = 150
 -- Mirrors the PrettyUI window chrome, which is not exposed.
 local WINDOW_BORDER        = 8
 local WINDOW_TITLE_HEIGHT  = 32
@@ -17,7 +17,7 @@ local ROW_HEIGHT           = 24
 local ROW_COLOURS          = { 0x24211EFF, 0x2E2825FF }
 
 ---@class ct.ClueStateInterface
----@field window prettyui.Window
+---@field window PrettyUI.Window
 ---@field actions ct.interfaces.cluestate.ClueStateAction[]
 local ClueStateInterface   = {}
 ClueStateInterface.__index = ClueStateInterface

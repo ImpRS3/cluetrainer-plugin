@@ -129,19 +129,6 @@ end
 ---@field moves ct.sliders.Move[]
 ---@field known_distance integer
 
---- Undoes the move that is currently applied and decides whether more moves need to be tried.
----@private
----@param frame ct.sliders.pdb.StateFrame
-function PdbSolverTicked:finishMove(frame)
-  SliderState.doMove(self.state, -frame.move)
-  self.state[SliderState.LAST_MOVE_INDEX] = frame.previous_move
-  frame.move = nil
-
-  if frame.found and frame.region.table.indexing.solves_puzzle then
-    frame.i = #frame.moves
-  end
-end
-
 ---@return integer # The number of iterations performed in this step
 function PdbSolverTicked:step()
   local frame = self:pop()
@@ -170,11 +157,10 @@ function PdbSolverTicked:step()
     end
 
     -- The first optimal move is followed locally, all others are deferred to the stack
-    local next_move, next_distance, next_index, next_probed_state
+    local next_move, next_distance
     local moves = distance_table.move_table:get(state)
 
     local previous_move = state[SliderState.LAST_MOVE_INDEX]
-    local snapshot = { table.unpack(state) }
 
     for i = 1, #moves do
       local move = moves[i]
@@ -189,8 +175,6 @@ function PdbSolverTicked:step()
         if next_move == nil then
           next_move = move
           next_distance = child_distance
-          next_index = child_index
-          next_probed_state = { table.unpack(state) }
 
           if indexing.solves_puzzle then
             -- If we are in a final region, we do not need to consider further moves

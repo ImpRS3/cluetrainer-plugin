@@ -76,9 +76,13 @@ function ctmath.vector2.scale(factor, vector)
   return { x = vector.x * factor, y = vector.y * factor }
 end
 
+---@class ct.lib.math.Rectangle
+---@field topleft ct.lib.math.Vector2
+---@field botright ct.lib.math.Vector2
+
 ctmath.rectangle = {}
 
----@param rect ct.Rectangle
+---@param rect ct.lib.math.Rectangle
 ---@param point ct.lib.math.Vector2
 ---@return boolean
 function ctmath.rectangle.contains(rect, point)
@@ -90,7 +94,7 @@ end
 
 --- Distance along a ray from `origin` to where it leaves the rectangle. Tiles are centred on integers, so the
 --- rectangle extends half a tile beyond its bounding tiles.
----@param rect ct.Rectangle
+---@param rect ct.lib.math.Rectangle
 ---@param origin ct.lib.math.Vector2
 ---@param direction ct.lib.math.Vector2 Unit vector.
 ---@return number # 0 if the ray starts outside and points away.

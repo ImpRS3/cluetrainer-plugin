@@ -67,10 +67,6 @@ end
 local PathStepEntity = setmetatable({}, { __index = luaflet.twigs.Twig })
 PathStepEntity.__index = PathStepEntity
 
----@param tile TileCoordinates
----@return prettymap.luaflet.Coord
-local grid = geometry.coord
-
 ---@param self cluetrainer.PathStepEntity
 ---@param marker prettymap.luaflet.Twig
 local function add_marker(self, marker)
@@ -125,7 +121,7 @@ local function build_teleport(self, step)
   if not teleport then return end
 
   local marker = TeleportElement.new(teleport)
-  if step.spot then marker:SetCoordinate(grid(step.spot)) end
+  if step.spot then marker:SetCoordinate(geometry.coord(step.spot)) end
   self:Add(marker)
 end
 
@@ -133,7 +129,7 @@ end
 ---@param step Path.Step.RedClick
 local function build_redclick(self, step)
   self:Add(PathGraphics.cross(step.where, 0.3, PathGraphics.rgba(REDCLICK_COLOUR, 1), WEIGHT))
-  add_marker(self, InteractionMarker.new({ coordinate = grid(step.where), cursor = step.how }))
+  add_marker(self, InteractionMarker.new({ coordinate = geometry.coord(step.where), cursor = step.how }))
 end
 
 ---@param self cluetrainer.PathStepEntity
@@ -141,7 +137,7 @@ end
 local function build_powerburst(self, step)
   -- TODO: no Obj id known for the powerburst of acceleration yet.
   local obj = ICON_OBJECTS["item/powerburst-of-acceleration"]
-  if obj then add_marker(self, ItemMarker.new(grid(step.where), obj)) end
+  if obj then add_marker(self, ItemMarker.new(geometry.coord(step.where), obj)) end
 end
 
 ---@param self cluetrainer.PathStepEntity
@@ -174,7 +170,7 @@ local function build_transport(self, step)
     level = area.level,
   }) or step.assumed_start
   if centre then
-    add_marker(self, InteractionMarker.new({ coordinate = grid(centre), cursor = action.cursor }))
+    add_marker(self, InteractionMarker.new({ coordinate = geometry.coord(centre), cursor = action.cursor }))
   end
 end
 
@@ -196,14 +192,14 @@ local function build_cheat(self, step)
     y = (start.y + step.target.y) / 2,
     level = step.target.level,
   }) or step.target
-  add_marker(self, ItemMarker.new(grid(marker_pos), ICON_OBJECTS["item/rotten-potato"]))
+  add_marker(self, ItemMarker.new(geometry.coord(marker_pos), ICON_OBJECTS["item/rotten-potato"]))
 end
 
 ---@param self cluetrainer.PathStepEntity
 ---@param step Path.Step.Cosmetic
 local function build_cosmetic(self, step)
   local obj = ICON_OBJECTS[step.icon]
-  if obj then add_marker(self, ItemMarker.new(grid(step.position), obj)) end
+  if obj then add_marker(self, ItemMarker.new(geometry.coord(step.position), obj)) end
 
   -- Without hover support on groups, hidden-until-hovered extras stay hidden.
   if step.hide_when_not_hovered then return end

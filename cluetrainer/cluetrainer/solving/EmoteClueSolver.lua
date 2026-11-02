@@ -6,7 +6,7 @@ local map                   = require "cluetrainer/interfaces/map/map"
 local EmoteAreaEntity       = require "cluetrainer/interfaces/map/elements/EmoteAreaEntity"
 local HideyHoleEntity       = require "cluetrainer/interfaces/map/elements/HideyHoleEntity"
 local Bounds                = require "cluetrainer/util/Bounds"
-local methods               = require "cluetrainer/solving/methods"
+local methods               = require "cluetrainer/methods/method_management"
 local Navigator             = require "cluetrainer/solving/common/navigator"
 local Path                  = require "cluetrainer/model/shared/path"
 local MapSectionControl     = require "cluetrainer/solving/map_navigator/MapSectionControl"
@@ -84,7 +84,7 @@ function ActiveEmoteClue.new(clue)
   self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.twigs))
 
   ---@type Method.GenericPath?
-  local method = methods.resolve({ clue = clue.id })
+  local method = methods.getPreferred({ clue = clue.id })
 
   self:setMethod(method)
 

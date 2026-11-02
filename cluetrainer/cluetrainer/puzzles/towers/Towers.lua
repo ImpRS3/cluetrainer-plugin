@@ -43,19 +43,18 @@ function Towers.Street.empty()
     return { 0, 0, 0, 0, 0 }
 end
 
----@generic T
----@param elements T[]
----@return T[][]
+---@param elements integer[]
+---@return integer[][]
 local function all_permutations(elements)
     if #elements == 0 then
         return { {} }
     end
 
-    ---@type T[][]
+    ---@type integer[][]
     local result = {}
 
     for i, next_value in ipairs(elements) do
-        ---@type T[]
+        ---@type integer[]
         local remaining = {}
 
         for index, value in ipairs(elements) do
@@ -65,7 +64,7 @@ local function all_permutations(elements)
         end
 
         for _, permutation in ipairs(all_permutations(remaining)) do
-            ---@type T[]
+            ---@type integer[]
             local combined = { next_value }
 
             for _, value in ipairs(permutation) do
@@ -214,12 +213,11 @@ end
 
 Towers.Puzzle = {}
 
----@generic T
----@param matrix T[][]
+---@param matrix integer[][]
 ---@param index integer
----@return T[]
+---@return integer[]
 local function column(matrix, index)
-    ---@type T[]
+    ---@type integer[]
     local result = {}
 
     for row_index, row in ipairs(matrix) do

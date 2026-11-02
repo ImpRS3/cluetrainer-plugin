@@ -1,8 +1,8 @@
 ---@class ct.Bounds
----@field private min MyVector2?
----@field private max MyVector2?
+---@field private min ct.lib.math.Vector2?
+---@field private max ct.lib.math.Vector2?
 ---@field private level integer?
----@field private distance_limit { center: MyVector2, limit: number }?
+---@field private distance_limit { center: ct.lib.math.Vector2, limit: number }?
 ---@field private fixed_center boolean
 ---@field private level_fixed boolean
 local Bounds = {}
@@ -23,13 +23,13 @@ function Bounds.new()
 end
 
 ---@private
----@return MyVector2
+---@return ct.lib.math.Vector2
 function Bounds:center()
   return { x = (self.min.x + self.max.x) / 2, y = (self.min.y + self.max.y) / 2 }
 end
 
 ---@private
----@param p MyVector2
+---@param p ct.lib.math.Vector2
 function Bounds:extend_to(p)
   self.min = { x = math.min(self.min.x, p.x), y = math.min(self.min.y, p.y) }
   self.max = { x = math.max(self.max.x, p.x), y = math.max(self.max.y, p.y) }
@@ -61,7 +61,7 @@ function Bounds:fixLevel(v)
   return self
 end
 
----@param ... (TileCoordinates | MyVector2)?
+---@param ... (TileCoordinates | ct.lib.math.Vector2)?
 function Bounds:addTile(...)
   for i = 1, select("#", ...) do
     local tile = select(i, ...)
@@ -102,7 +102,7 @@ function Bounds:addTile(...)
 end
 
 ---Accepts a rectangle with topleft/botright corners, optionally with a level.
----@param rect { topleft: MyVector2, botright: MyVector2, level: integer? }?
+---@param rect { topleft: ct.lib.math.Vector2, botright: ct.lib.math.Vector2, level: integer? }?
 function Bounds:addRectangle(rect)
   if rect == nil then return end
 
@@ -170,7 +170,7 @@ function Bounds:extend(amount)
   return self
 end
 
----@return { topleft: MyVector2, botright: MyVector2, level: integer }?
+---@return { topleft: ct.lib.math.Vector2, botright: ct.lib.math.Vector2, level: integer }?
 function Bounds:get()
   if self.min == nil then return nil end
 

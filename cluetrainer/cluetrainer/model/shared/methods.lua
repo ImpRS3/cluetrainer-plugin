@@ -1,5 +1,25 @@
 -- methods.lua
 
+---@class MethodPack.Meta
+---@field author string
+---@field name string
+---@field description string
+---@field default_assumptions ClueAssumptions
+---@field default_method_name string
+
+---@alias MethodPack.Type
+---| "default"
+---| "local"
+---| "imported"
+
+---@class MethodPack : MethodPack.Meta
+---@field is_real_default? boolean
+---@field type MethodPack.Type
+---@field local_id string
+---@field original_id string
+---@field timestamp number
+---@field methods Method[]
+
 ---@class ScanTree.ScanTree
 ---@field ordered_spots TileCoordinates[]
 ---@field assumed_range integer
@@ -53,3 +73,23 @@
 ---@alias Method
 ---| Method.ScanTree
 ---| Method.GenericPath
+
+
+local methods = {}
+
+---Returns the first teleport of a method's main path, if it has one.
+---@param method Method.GenericPath
+---@return cluetrainer.TeleportSpot?
+function methods.primaryTeleport(method)
+  local TeleportSpot = require "cluetrainer/model/shared/TeleportSpot"
+
+  for _, step in ipairs(method.main_path or {}) do
+    if step.type == "teleport" then
+      return TeleportSpot.resolve(step.id)
+    end
+  end
+
+  return nil
+end
+
+return methods

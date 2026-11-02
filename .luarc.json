@@ -6,13 +6,12 @@
 	"workspace.library": [
 		"dependencies/runescape-api-stubs/types.lua",
 		"dependencies/runescape-api-stubs/generated/",
-		//"dependencies/runescape-api-stubs/consts/"
 		"dependencies/zyklib/src/",
-		"dependencies/prettyui/"
+		"dependencies/lualsaddons/prettyui-stubs/"
 	],
-  "Lua.workspace.diagnostics.workspaceDelay": 0,
-  "Lua.diagnostics.workspaceEvent": "OnSave",
-  "Lua.diagnostics.neededFileStatus": {},
+	"Lua.workspace.diagnostics.workspaceDelay": 0,
+	"Lua.diagnostics.workspaceEvent": "OnSave",
+	"Lua.diagnostics.neededFileStatus": {},
 	"workspace.checkThirdParty": false,
 	"runtime.version": "Lua 5.4",
 	"runtime.builtin": {
@@ -32,8 +31,7 @@
 	],
 	"completion.requireSeparator": "/",
 	"diagnostics.disable": [
-		"different-requires",
-        "lowercase-global"
+		"lowercase-global"
 	],
 	"diagnostics.severity": {
 		"undefined-field": "Warning",

@@ -3,7 +3,7 @@ local zyklib = require("zyklib")
 
 local SettingsDialog = {}
 
----@type prettyui.Window?
+---@type PrettyUI.Window?
 local window = nil
 
 local TITLE_COLOR = 0xf0be79ff
@@ -32,7 +32,7 @@ local COLOUR_RESERVED = 30
 local VALUE_LABEL_RESERVED = 50
 
 --- Width left for text on a page after reserving space on the right.
----@param page prettyui.Panel
+---@param page PrettyUI.Panel
 ---@param reserved integer?
 ---@return integer
 local function availableWidth(page, reserved)
@@ -40,7 +40,7 @@ local function availableWidth(page, reserved)
 end
 
 --- Adds the title of a setting.
----@param page prettyui.Panel
+---@param page PrettyUI.Panel
 ---@param text string
 ---@param group integer
 ---@param reserved integer? Space kept free on the right hand side
@@ -89,7 +89,7 @@ local function centeredOffset(title, description, control_height)
 end
 
 --- Adds an explanation with an unlabelled checkbox to its right. The label is only shown as a tooltip.
----@param page prettyui.Panel
+---@param page PrettyUI.Panel
 ---@param label string
 ---@param description string
 ---@param setting zyklib.reactive.Observable<boolean>
@@ -114,7 +114,7 @@ end
 
 --- Adds a radio group with an explanation.
 ---@generic T
----@param page prettyui.Panel
+---@param page PrettyUI.Panel
 ---@param title string
 ---@param description string
 ---@param choices { text: string, value: T, tooltip: string? }[]
@@ -325,7 +325,7 @@ end
 
 --- Mounts the settings pages (navigation on the left, selected page on the right) onto a layer.
 ---@param layer ui.Layer
----@return prettyui.SimpleView view The view hosting the settings. Destroy it to remove them again.
+---@return PrettyUI.SimpleView view The view hosting the settings. Destroy it to remove them again.
 function SettingsDialog.mount(layer)
   local NAV_WIDTH = 110
   local VIEW_X = NAV_WIDTH + 25
@@ -342,7 +342,7 @@ function SettingsDialog.mount(layer)
     { name = "Towers",    build = buildTowers },
   }
 
-  ---@type prettyui.SimpleButton[]
+  ---@type PrettyUI.SimpleButton[]
   local buttons = {}
 
   ---@type table?

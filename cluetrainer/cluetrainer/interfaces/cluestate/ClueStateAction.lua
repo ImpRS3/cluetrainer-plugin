@@ -24,7 +24,7 @@ function ClueStateAction:_init()
 end
 
 ---Creates the components of this action in the given view and applies the stored state to them.
----@param view prettyui.core.View
+---@param view PrettyUI.View
 function ClueStateAction:construct(view)
   assert(not self.constructed, "ClueStateAction already constructed")
   self:_construct(view)
@@ -43,14 +43,8 @@ function ClueStateAction:setState(state)
   if self.constructed then self:_apply() end
 end
 
----Updates the text contained in this action line.
----@param text string
-function ClueStateAction:setText(text)
-  error("ClueStateAction:setText not implemented")
-end
-
 ---@protected
----@param view prettyui.core.View
+---@param view PrettyUI.View
 function ClueStateAction:_construct(view)
   error("ClueStateAction:_construct not implemented")
 end
@@ -87,7 +81,7 @@ function Text:setText(content)
 end
 
 ---@protected
----@param view prettyui.core.View
+---@param view PrettyUI.SimpleView
 function Text:_construct(view)
   self.text = view:AddText({
     text = self.content,

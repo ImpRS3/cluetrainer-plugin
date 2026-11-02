@@ -3,7 +3,7 @@ local base64 = require "zyklib/base64"
 
 ---@class TileArea
 ---@field origin TileCoordinates
----@field size MyVector2?
+---@field size ct.lib.math.Vector2?
 ---@field data string?
 
 ---@class TileArea.module
@@ -15,7 +15,7 @@ local ActiveTileArea = {}
 ActiveTileArea.__index = ActiveTileArea
 
 ---@param origin TileCoordinates
----@param size MyVector2
+---@param size ct.lib.math.Vector2
 ---@return TileArea
 function TileArea.centered_on(origin, size)
   local half_size = { x = math.floor(size.x / 2), y = math.floor(size.y / 2) }
@@ -32,7 +32,7 @@ function TileArea.tile(origin)
 end
 
 ---@param self TileArea
----@return ct.Rectangle
+---@return ct.lib.math.Rectangle
 function TileArea.toRect(self)
   local origin = self.origin
   local size = self.size or { x = 1, y = 1 }
@@ -107,7 +107,7 @@ function ActiveTileArea:index(coord)
   return offX + offY * self.size.x
 end
 
----@return MyVector2
+---@return ct.lib.math.Vector2
 function ActiveTileArea:getSize()
   if self.size == nil then
     return { x = 1, y = 1 }

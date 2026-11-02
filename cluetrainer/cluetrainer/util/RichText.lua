@@ -1,3 +1,4 @@
+---@class ct.util.RichText
 local RichText = {}
 
 ---@param text string
@@ -31,6 +32,42 @@ function RichText.obj(obj)
   else
     return RichText.freetoplayItem(obj.name)
   end
+end
+
+function RichText.newline()
+  return "<br>"
+end
+
+function RichText.bold(text)
+  return "<b>" .. text .. "</b>"
+end
+
+function RichText.italic(text)
+  return "<i>" .. text .. "</i>"
+end
+
+function RichText.strikethrough(text, color)
+  if color then
+    return "<str=" .. color .. ">" .. text .. "</str>"
+  else
+    return "<str>" .. text .. "</str>"
+  end
+end
+
+function RichText.underlined(text, color)
+  if color then
+    return "<u=" .. color .. ">" .. text .. "</u>"
+  else
+    return "<u>" .. text .. "</u>"
+  end
+end
+
+function RichText.less()
+  return "<lt>"
+end
+
+function RichText.greater()
+  return "<gt>"
 end
 
 return RichText
