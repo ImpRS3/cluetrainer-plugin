@@ -1,4 +1,3 @@
-local clue_detector         = require "cluetrainer/clue_detector"
 local coordinate_adaptor    = require "cluetrainer/model/shared/coordinate_adaptor"
 local PathMesh              = require "cluetrainer/model/PathMesh"
 local OverlayConstants      = require "cluetrainer/model/OverlayConstants"
@@ -7,19 +6,15 @@ local EmoteAreaEntity       = require "cluetrainer/interfaces/map/elements/Emote
 local HideyHoleEntity       = require "cluetrainer/interfaces/map/elements/HideyHoleEntity"
 local Bounds                = require "cluetrainer/util/Bounds"
 local methods               = require "cluetrainer/methods/method_management"
-local Navigator             = require "cluetrainer/solving/common/navigator"
 local Path                  = require "cluetrainer/model/shared/path"
+local ActiveClueSolver      = require "cluetrainer/solving/common/ActiveClueSolver"
+local Navigator             = require "cluetrainer/solving/common/navigator"
 local MapSectionControl     = require "cluetrainer/solving/map_navigator/MapSectionControl"
-local PathStepEntity        = require "cluetrainer/solving/map_navigator/PathStepEntity"
 local luaflet               = require "prettymap/luaflet"
-local cluestate             = require "cluetrainer/interfaces/cluestate/cluestate"
+local PathStepEntity        = require "cluetrainer/solving/map_navigator/PathStepEntity"
 local RichText              = require "cluetrainer/util/RichText"
 local ClueStateAction       = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local zyklib                = require "zyklib"
-
-local EmoteClueSolver       = {}
-
-EmoteClueSolver.initialized = false
 
 ---@param step Emote
 local function create_step_highlights(step)
@@ -64,21 +59,21 @@ end
 ---@field emote_uri? ct.interfaces.cluestate.ClueStateAction
 ---@field emote_return_hideyhole? ct.interfaces.cluestate.ClueStateAction
 
---- An ActiveEmoteClue is the instance that manages everything about a single emote clue currently in progress.
----@class ActiveEmoteClue : zyklib.disposable.IDisposable
+--- An ActiveEmoteClue manages a single emote clue currently in progress.
+---@class ct.ActiveEmoteClue : ct.ActiveClueSolver
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
-local ActiveEmoteClue = {}
+---@field actions ct.EmoteClueActions
+local EmoteClueSolver = setmetatable({}, { __index = ActiveClueSolver })
+EmoteClueSolver.__index = EmoteClueSolver
 
 ---@param clue Emote
----@return ActiveEmoteClue
-function ActiveEmoteClue.new(clue)
-  ---@class ActiveEmoteClue
-  local self = setmetatable({
-    clue = clue,
-    disposable_group = zyklib.disposable.DisposableGroup.new()
-  }, { __index = ActiveEmoteClue })
+---@param clue_state ct.ClueStateInterface
+---@return ct.ActiveEmoteClue
+function EmoteClueSolver.new(clue, clue_state)
+  ---@type ct.ActiveEmoteClue
+  local self = setmetatable(ActiveClueSolver.new(clue), EmoteClueSolver)
 
   self.disposable_group:add(create_step_highlights(clue):activate())
   self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.twigs))
@@ -97,10 +92,9 @@ function ActiveEmoteClue.new(clue)
   ---@type ct.EmoteClueActions
   self.actions = {}
 
-  local state_panel = cluestate.get()
+  local state_panel = clue_state
 
   state_panel:clearActions()
-  state_panel:setVisible(true)
 
   self.actions.emote_get_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Get hidey-hole"))
   self.actions.equip_items = state_panel:addAction(ClueStateAction.Text.new("Equip items"))
@@ -119,7 +113,16 @@ function ActiveEmoteClue.new(clue)
 end
 
 ---@param method Method.GenericPath?
-function ActiveEmoteClue:setMethod(method)
+function EmoteClueSolver:setMethod(method)
+  if method then
+    self:setPath(stitch_path(method))
+  else
+    self:setPath(nil)
+  end
+end
+
+---@param path Path.Raw?
+function EmoteClueSolver:setPath(path)
   if self.navigator ~= nil then
     self.navigator:dispose()
     self.navigator = nil
@@ -135,15 +138,12 @@ function ActiveEmoteClue:setMethod(method)
     self.path_twig = nil
   end
 
-  if method then
-    local path = stitch_path(method)
+  if path ~= nil then
     self.navigator = Navigator.new()
     self.navigator:set(path)
 
     local sectioned_path = Path.split_into_sections(path)
-
-    self.path_twig = luaflet.twigs.Twig.new()
-        :AddTo(map.ensure_open().map.twigs)
+    self.path_twig = luaflet.twigs.Twig.new():AddTo(map.ensure_open().map.twigs)
 
     for _, section in ipairs(sectioned_path) do
       for _, step in ipairs(section.steps) do
@@ -156,28 +156,9 @@ function ActiveEmoteClue:setMethod(method)
   end
 end
 
-function ActiveEmoteClue.dispose(self)
-  self:setMethod(nil)
-  self.disposable_group:dispose()
-end
-
-function EmoteClueSolver.init()
-  if EmoteClueSolver.initialized then return end
-  EmoteClueSolver.initialized = true
-
-  ---@type ActiveEmoteClue?
-  local active_clue = nil
-
-  clue_detector.clue_detected_event:subscribe(function(clue)
-    if active_clue ~= nil and (clue == nil or active_clue.clue ~= clue) then
-      active_clue:dispose()
-      active_clue = nil
-    end
-
-    if clue ~= nil and active_clue == nil and clue.type == "emote" then
-      active_clue = ActiveEmoteClue.new(clue)
-    end
-  end)
+function EmoteClueSolver:dispose()
+  self:setPath(nil)
+  ActiveClueSolver.dispose(self)
 end
 
 return EmoteClueSolver

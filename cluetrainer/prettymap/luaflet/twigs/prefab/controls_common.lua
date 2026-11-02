@@ -34,6 +34,9 @@ common.SPRITES = {
         neutral = id.Sprite.RS3_BTN_INCREASE_ACTIVE,
         active = id.Sprite.RS3_BTN_INCREASE_OVER,
     },
+    ARROW_RIGHT = { disabled = id.Sprite.RS3_ICON_DIRECTION_RIGHT_32PX_4, neutral = id.Sprite.RS3_ICON_DIRECTION_RIGHT_32PX_2, active = id.Sprite.RS3_ICON_DIRECTION_RIGHT_32PX_3 },
+    ARROW_LEFT = { disabled = id.Sprite.RS3_ICON_DIRECTION_LEFT_32PX_4, neutral = id.Sprite.RS3_ICON_DIRECTION_LEFT_32PX_2, active = id.Sprite.RS3_ICON_DIRECTION_LEFT_32PX_3 },
+
 }
 
 ---@class prettymap.luaflet.ControlButton

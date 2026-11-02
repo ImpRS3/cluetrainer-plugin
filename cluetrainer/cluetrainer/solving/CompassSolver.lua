@@ -7,10 +7,10 @@ local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor"
 local Bounds             = require("cluetrainer/util/Bounds")
 local method_management  = require("cluetrainer/methods/method_management")
 local Path               = require("cluetrainer/model/shared/path")
+local ActiveClueSolver   = require("cluetrainer/solving/common/ActiveClueSolver")
 local Navigator          = require("cluetrainer/solving/common/navigator")
-local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEntity")
 local MapSectionControl  = require("cluetrainer/solving/map_navigator/MapSectionControl")
-local cluestate          = require("cluetrainer/interfaces/cluestate/cluestate")
+local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEntity")
 local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local MethodAction       = require("cluetrainer/solving/common/MethodAction")
 local MethodSelectDialog = require("cluetrainer/methods/MethodSelectDialog")
@@ -49,7 +49,6 @@ function compasslogic.isPossible(information, spot)
   end)
 end
 
-local clue_detector = require "cluetrainer/clue_detector"
 local CompassSpotMarker = require "cluetrainer/solving/compass/CompassSpotMarker"
 
 ---@param clue Compass
@@ -101,27 +100,28 @@ trail_status:subscribe(function(status)
   log(status)
 end, true)
 
----@class ct.ActiveCompassSolver : zyklib.disposable.IDisposable
+---@class ct.ActiveCompassSolver : ct.ActiveClueSolver
 ---@field triangulation_points {info: ct.Compass.TriangulationPoint}[]
 ---@field candidates {spot: TileCoordinates, marker: ct.CompassSpotMarker, possible: boolean}[]
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
-local ActiveCompassSolver = {}
-ActiveCompassSolver.__index = ActiveCompassSolver
+local CompassSolver = setmetatable({}, { __index = ActiveClueSolver })
+CompassSolver.__index = CompassSolver
 
 ---@param clue Compass
-function ActiveCompassSolver.new(clue)
+---@param state_window ct.ClueStateInterface
+---@return ct.ActiveCompassSolver
+function CompassSolver.new(clue, state_window)
   ---@class ct.ActiveCompassSolver
-  local self = setmetatable({
-    disposables = zyklib.disposable.DisposableGroup.new(),
-    clue = clue,
-    map_layer = luaflet.twigs.Twig.new():AddTo(map.ensure_open().map.twigs),
-    triangulation_points = {}
-  }, ActiveCompassSolver)
-  self.clue = clue
+  local self = setmetatable(ActiveClueSolver.new(clue), CompassSolver)
+  self.map_layer = luaflet.twigs.Twig.new():AddTo(map.ensure_open().map.twigs)
+  self.disposable_group:add(zyklib.disposable.wrap(function()
+    self.map_layer:Detach()
+  end))
+  self.triangulation_points = {}
 
-  self.disposables:add(
+  self.disposable_group:add(
     zyklib.game_events.native.ServerLogic:subscribe(function()
       local info = self:getCurrentInformation()
       if info ~= nil then
@@ -137,9 +137,7 @@ function ActiveCompassSolver.new(clue)
       possible = true
     }
   end)
-
-  local state_window = cluestate.get():ensureVisible()
-
+  
   state_window:clearActions()
 
   self.actions = {}
@@ -170,7 +168,7 @@ function ActiveCompassSolver.new(clue)
 end
 
 ---@param info ct.Compass.TriangulationPoint
-function ActiveCompassSolver:maybePushInformation(info)
+function CompassSolver:maybePushInformation(info)
   local is_new = zyklib.array.exists(self.candidates, function(candidate)
     return candidate.possible and not (compasslogic.isPossible({ info }, candidate.spot))
   end)
@@ -184,7 +182,7 @@ function ActiveCompassSolver:maybePushInformation(info)
   self:update()
 end
 
-function ActiveCompassSolver:update()
+function CompassSolver:update()
   local remaining_candidates = 0
   local identified_solution = nil
 
@@ -244,8 +242,13 @@ function ActiveCompassSolver:update()
 end
 
 ---@param method ct.AugmentedMethod<Method.GenericPath>?
-function ActiveCompassSolver:setMethod(method)
+function CompassSolver:setMethod(method)
   self.actions.method:setMethod(method)
+  self:setPath(method and method.method.main_path or nil)
+end
+
+---@param path Path.Raw?
+function CompassSolver:setPath(path)
   if self.navigator ~= nil then
     self.navigator:dispose()
     self.navigator = nil
@@ -261,14 +264,12 @@ function ActiveCompassSolver:setMethod(method)
     self.path_twig = nil
   end
 
-  if method then
+  if path ~= nil then
     self.navigator = Navigator.new()
-    self.navigator:set(method.method.main_path)
+    self.navigator:set(path)
 
-    local sectioned_path = Path.split_into_sections(method.method.main_path)
-
-    self.path_twig = luaflet.twigs.Twig.new()
-        :AddTo(map.ensure_open().map.twigs)
+    local sectioned_path = Path.split_into_sections(path)
+    self.path_twig = luaflet.twigs.Twig.new():AddTo(map.ensure_open().map.twigs)
 
     for _, section in ipairs(sectioned_path) do
       for _, step in ipairs(section.steps) do
@@ -281,13 +282,13 @@ function ActiveCompassSolver:setMethod(method)
   end
 end
 
-function ActiveCompassSolver:dispose()
-  self.disposables:dispose()
-  self.map_layer:Detach()
+function CompassSolver:dispose()
+  self:setPath(nil)
+  ActiveClueSolver.dispose(self)
 end
 
 ---@return ct.Compass.TriangulationPoint? # The current degree of the compass arrow, or nil if unavailable.
-function ActiveCompassSolver:getCurrentInformation()
+function CompassSolver:getCurrentInformation()
   ---@param clue Compass
   ---@return ComponentId
   function arrowComponentIdForTier(clue)
@@ -335,7 +336,7 @@ function ActiveCompassSolver:getCurrentInformation()
   return { origin = player_position, angle_radians = uncertain_angle, uncertainty_radians = UNCERTAINTY_RADIANS }
 end
 
-function ActiveCompassSolver:fitRemainingCandidates()
+function CompassSolver:fitRemainingCandidates()
   local bounds = Bounds.new()
 
   for _, candidate in ipairs(self.candidates) do
@@ -347,30 +348,6 @@ function ActiveCompassSolver:fitRemainingCandidates()
   bounds:extend(0.1)
 
   map.ensure_open():fitBounds(bounds)
-end
-
-local CompassSolver = {}
-
-CompassSolver.initialized = false
-
-function CompassSolver.init()
-  if CompassSolver.initialized then return end
-  CompassSolver.initialized = true
-
-  ---@type ct.ActiveCompassSolver?
-  local active_clue = nil
-
-  clue_detector.clue_detected_event:subscribe(function(clue)
-    if active_clue ~= nil and (clue == nil or active_clue.clue ~= clue) then
-      active_clue:dispose()
-      active_clue = nil
-    end
-
-    ---@type ClueType[]
-    if clue ~= nil and active_clue == nil and clue.type == "compass" then
-      active_clue = ActiveCompassSolver.new(clue)
-    end
-  end)
 end
 
 return CompassSolver

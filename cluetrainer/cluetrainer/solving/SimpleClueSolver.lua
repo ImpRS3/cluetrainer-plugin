@@ -1,4 +1,3 @@
-local clue_detector          = require "cluetrainer/clue_detector"
 local coordinate_adaptor     = require "cluetrainer/model/shared/coordinate_adaptor"
 local PathMesh               = require "cluetrainer/model/PathMesh"
 local TileArea               = require "cluetrainer/model/shared/TileArea"
@@ -10,19 +9,16 @@ local DigSolutionEntity      = require "cluetrainer/interfaces/map/elements/DigS
 local InteractionMarker      = require "cluetrainer/interfaces/map/elements/InteractionMarker"
 local Bounds                 = require "cluetrainer/util/Bounds"
 local methods                = require "cluetrainer/methods/method_management"
-local Navigator              = require "cluetrainer/solving/common/navigator"
 local Path                   = require "cluetrainer/model/shared/path"
+local ActiveClueSolver       = require "cluetrainer/solving/common/ActiveClueSolver"
+local Navigator              = require "cluetrainer/solving/common/navigator"
 local MapSectionControl      = require "cluetrainer/solving/map_navigator/MapSectionControl"
 local luaflet                = require "prettymap/luaflet"
-local cluestate              = require "cluetrainer/interfaces/cluestate/cluestate"
-local RichText               = require "cluetrainer/util/RichText"
 local PathStepEntity         = require "cluetrainer/solving/map_navigator/PathStepEntity"
+local RichText               = require "cluetrainer/util/RichText"
 local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
 local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
-
-local SimpleClueSolver       = {}
-SimpleClueSolver.initialized = false
 
 ---@param step Step
 ---@return Solution?
@@ -198,23 +194,21 @@ end
 ---@field solve_lockbox? ct.interfaces.cluestate.ClueStateAction
 ---@field solve_towers? ct.interfaces.cluestate.ClueStateAction
 
-
-
---- An ActiveSimpleClue is the instance that manages everything about a single simple clue currently in progress.
----@class ActiveSimpleClue : zyklib.disposable.IDisposable
+--- An ActiveSimpleClue manages a single simple clue currently in progress.
+---@class ct.ActiveSimpleClue : ct.ActiveClueSolver
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
-local ActiveSimpleClue = {}
+---@field actions ct.SimpleClueActions
+local SimpleClueSolver = setmetatable({}, { __index = ActiveClueSolver })
+SimpleClueSolver.__index = SimpleClueSolver
 
 ---@param clue Step
----@return ActiveSimpleClue
-function ActiveSimpleClue.new(clue)
-  ---@class ActiveSimpleClue
-  local self = setmetatable({
-    clue = clue,
-    disposable_group = zyklib.disposable.DisposableGroup.new()
-  }, { __index = ActiveSimpleClue })
+---@param clue_state ct.ClueStateInterface
+---@return ct.ActiveSimpleClue
+function SimpleClueSolver.new(clue, clue_state)
+  ---@type ct.ActiveSimpleClue
+  local self = setmetatable(ActiveClueSolver.new(clue), SimpleClueSolver)
 
   self.disposable_group:add(create_step_highlights(clue):activate())
   self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.twigs))
@@ -234,14 +228,12 @@ function ActiveSimpleClue.new(clue)
 
   -- Claim ownership of the clue state panel and show relevant actions to the player
 
-  ---@type ct.SimpleClueActions
+  ---@type ct.ActiveSimpleClue
   self.actions = {}
 
-  local state_panel = cluestate.get()
+  local state_panel = clue_state
 
   state_panel:clearActions()
-
-  state_panel:setVisible(true)
 
   local sol = inferSolution(clue)
 
@@ -287,7 +279,16 @@ function ActiveSimpleClue.new(clue)
 end
 
 ---@param method Method.GenericPath?
-function ActiveSimpleClue:setMethod(method)
+function SimpleClueSolver:setMethod(method)
+  if method then
+    self:setPath(stitch_path(method))
+  else
+    self:setPath(nil)
+  end
+end
+
+---@param path Path.Raw?
+function SimpleClueSolver:setPath(path)
   if self.navigator ~= nil then
     self.navigator:dispose()
     self.navigator = nil
@@ -303,15 +304,12 @@ function ActiveSimpleClue:setMethod(method)
     self.path_twig = nil
   end
 
-  if method then
-    local path = stitch_path(method)
+  if path ~= nil then
     self.navigator = Navigator.new()
     self.navigator:set(path)
 
     local sectioned_path = Path.split_into_sections(path)
-
-    self.path_twig = luaflet.twigs.Twig.new()
-        :AddTo(map.ensure_open().map.twigs)
+    self.path_twig = luaflet.twigs.Twig.new():AddTo(map.ensure_open().map.twigs)
 
     for _, section in ipairs(sectioned_path) do
       for _, step in ipairs(section.steps) do
@@ -324,33 +322,9 @@ function ActiveSimpleClue:setMethod(method)
   end
 end
 
-function ActiveSimpleClue.dispose(self)
-  self:setMethod(nil)
-  self.disposable_group:dispose()
-end
-
-function SimpleClueSolver.init()
-  if SimpleClueSolver.initialized then return end
-  SimpleClueSolver.initialized = true
-
-  ---@type ActiveSimpleClue?
-  local active_clue = nil
-
-  clue_detector.clue_detected_event:subscribe(function(clue)
-    -- Handle the detected clue here
-
-    if active_clue ~= nil and (clue == nil or active_clue.clue ~= clue) then
-      active_clue:dispose()
-      active_clue = nil
-    end
-
-    ---@type ClueType[]
-    local COMPATIBLE_CLUE_TYPES = { "simple", "anagram", "cryptic", "map", "skilling", "coordinates" }
-
-    if clue ~= nil and active_clue == nil and zyklib.array.includes(COMPATIBLE_CLUE_TYPES, clue.type) then
-      active_clue = ActiveSimpleClue.new(clue)
-    end
-  end)
+function SimpleClueSolver:dispose()
+  self:setPath(nil)
+  ActiveClueSolver.dispose(self)
 end
 
 return SimpleClueSolver

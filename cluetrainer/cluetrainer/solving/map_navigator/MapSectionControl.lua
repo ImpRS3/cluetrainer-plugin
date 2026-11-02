@@ -8,8 +8,8 @@ local BORDER = 4
 local INSET_MARGIN = 8
 
 -- TODO: use dedicated previous/next section sprites; these are the zoom button sprites.
-local PREVIOUS_SPRITES = common.SPRITES.zoomOut
-local NEXT_SPRITES = common.SPRITES.zoomIn
+local PREVIOUS_SPRITES = common.SPRITES.ARROW_LEFT
+local NEXT_SPRITES = common.SPRITES.ARROW_RIGHT
 
 --- A viewport-anchored panel to step through named map bounds: previous and next buttons around
 --- the name of the active one. Stepping zooms the map to fit the active bounds. A button is

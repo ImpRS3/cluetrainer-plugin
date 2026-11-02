@@ -4,21 +4,17 @@
 ---@type zyklib
 zyklib    = require("zyklib")
 
-local map = require("cluetrainer/interfaces/map/map")
-
 local function main()
   zyklib.lifecycle.setupGlobals()
 
   local settings_dialog = require("cluetrainer/ui/SettingsDialog")
 
-  -- Load and initialize the individual solver modules
+  -- Load and initialize the individual puzzle solver modules
   require("cluetrainer/puzzles/towers/TowerSolver").init()
   require("cluetrainer/puzzles/lockbox/LockboxSolver").init()
   require("cluetrainer/puzzles/knot/KnotSolver").init()
   require("cluetrainer/puzzles/sliders/SliderSolver").init()
-  require("cluetrainer/solving/SimpleClueSolver").init()
-  require("cluetrainer/solving/EmoteClueSolver").init()
-  require("cluetrainer/solving/CompassSolver").init()
+  require("cluetrainer/solving/SolvingOrchestrator").setActive(true)
 
   --map.show()
 

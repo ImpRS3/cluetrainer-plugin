@@ -34,7 +34,7 @@ function GameMap.new()
     minHeight = 220,
     resizable = true,
     scrollable = false,
-    destroyOnClose = false,
+    destroyOnClose = true,
   })
 
   self.map = prettymap.Map.new(self.window.content, {
@@ -67,6 +67,7 @@ function GameMap.new()
 
   zyklib.lifecycle.shutdown_event:subscribe(function()
     self.map:Destroy()
+
     self.window:Destroy()
   end)
 

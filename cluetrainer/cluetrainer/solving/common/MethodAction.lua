@@ -59,6 +59,7 @@ function MethodAction:_construct(view)
     widthAnchor = 1.0,
     height = ROW_HEIGHT,
     marginBottom = 0,
+    rowBackgroundGroup = self,
   })
   self.text.clickthrough = true
 
@@ -67,6 +68,7 @@ function MethodAction:_construct(view)
     x = ICON_X,
     offsetY = (ROW_HEIGHT - ICON_SIZE) // 2,
     size = ICON_SIZE,
+    rowBackgroundGroup = self,
   })
 
   self.select_button = view:AddSpriteButton("LIST_LAYOUT", function()
@@ -78,6 +80,7 @@ function MethodAction:_construct(view)
     offsetY = (ROW_HEIGHT - BUTTON_SIZE) // 2,
     size = BUTTON_SIZE,
     tooltip = "Select method",
+    rowBackgroundGroup = self,
   })
 end
 
