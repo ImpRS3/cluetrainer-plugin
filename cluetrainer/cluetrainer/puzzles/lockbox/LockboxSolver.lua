@@ -8,8 +8,8 @@ local storage           = require "cluetrainer/util/storage"
 local lockbox_solver    = {}
 
 lockbox_solver.settings = {
-  enabled = storage.variable("lockboxes/enabled", schema.bool({ default = true })),
-  optimization_coefficient = storage.variable("lockboxes/optimization_coefficient",
+  enabled = storage.setting_variable("lockboxes/enabled", schema.bool({ default = true })),
+  optimization_coefficient = storage.setting_variable("lockboxes/optimization_coefficient",
     schema.int({ min = 10, max = 50, default = 13 })),
 }
 

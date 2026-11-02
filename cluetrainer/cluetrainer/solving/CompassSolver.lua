@@ -10,6 +10,8 @@ local Path               = require("cluetrainer/model/shared/path")
 local Navigator          = require("cluetrainer/solving/common/navigator")
 local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEntity")
 local MapSectionControl  = require("cluetrainer/solving/map_navigator/MapSectionControl")
+local cluestate          = require("cluetrainer/interfaces/cluestate/cluestate")
+local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 
 ---@class ct.compasslogic
 local compasslogic       = {}
@@ -76,6 +78,27 @@ local function drawArrowArc(clue, info)
   return twig
 end
 
+
+local trail_status = zyklib.game_events.derived.forPlayerVariable(var.VarPlayer["TRAIL_STATUS"], function()
+  return {
+    --done_emote_or_killed_double_agent_medium = var.VarPlayer
+    --   ["TRAIL_STATUS_DONE_CODE_EMOTE_OR_KILLED_DOUBLE_AGENT_MEDIUM"].value,
+    --current_clue_needs_sextant_hard = var.VarPlayer["TRAIL_STATUS_CURRENT_CLUE_NEEDS_SEXTANT_HARD"].value,
+    --done_emote_or_killed_double_agent_hard = var.VarPlayer["TRAIL_STATUS_DONE_CODE_EMOTE_OR_KILLED_DOUBLE_AGENT_HARD"]
+    --    .value,
+    --has_killed_monster_hard = var.VarPlayer["TRAIL_STATUS_HAS_KILLED_MONSTER_HARD"].value,
+    has_killed_monster_elite = var.VarPlayer["TRAIL_STATUS_HAS_KILLED_MONSTER_ELITE"].value,
+    solved_puzzle_elite = var.VarPlayer["TRAIL_STATUS_SOLVED_PUZZLE_ELITE"].value,
+    solved_puzzle_master = var.VarPlayer["TRAIL_STATUS_SOLVED_PUZZLE_MASTER"].value,
+    has_killed_monster_master = var.VarPlayer["TRAIL_STATUS_HAS_KILLED_MONSTER_MASTER"].value,
+  }
+end)
+
+trail_status:subscribe(function(status)
+  log("Trail status updated")
+  log(status)
+end, true)
+
 ---@class ct.ActiveCompassSolver : zyklib.disposable.IDisposable
 ---@field triangulation_points {info: ct.Compass.TriangulationPoint}[]
 ---@field candidates {spot: TileCoordinates, marker: ct.CompassSpotMarker, possible: boolean}[]
@@ -96,12 +119,14 @@ function ActiveCompassSolver.new(clue)
   }, ActiveCompassSolver)
   self.clue = clue
 
-  self.disposables:add(zyklib.game_events.native.ServerLogic:subscribe(function()
-    local info = self:getCurrentInformation()
-    if info ~= nil then
-      self:maybePushInformation(info)
-    end
-  end))
+  self.disposables:add(
+    zyklib.game_events.native.ServerLogic:subscribe(function()
+      local info = self:getCurrentInformation()
+      if info ~= nil then
+        self:maybePushInformation(info)
+      end
+    end)
+  )
 
   self.candidates = zyklib.array.map(clue.spots, function(spot, i)
     return {
@@ -110,6 +135,19 @@ function ActiveCompassSolver.new(clue)
       possible = true
     }
   end)
+
+  local state_window = cluestate.get():ensureVisible()
+
+  state_window:clearActions()
+
+  self.actions = {}
+  self.actions.identify = state_window:addAction(ClueStateAction.Text.new("Identify Spot"))
+  self.actions.method = state_window:addAction(ClueStateAction.Text.new("Select Method"))
+  self.actions.dig_at = state_window:addAction(ClueStateAction.Text.new("Dig At"))
+  --There is no reasonable way to track completion of the following three
+  --self.actions.defeat_wizard = state_window:addAction(ClueStateAction.Text.new("Defeat Wizard"))
+  --self.actions.complete_puzzle = state_window:addAction(ClueStateAction.Text.new("Complete Puzzle"))
+  --self.actions.dig_again = state_window:addAction(ClueStateAction.Text.new("Dig again"))
 
   self:fitRemainingCandidates()
 
@@ -123,12 +161,8 @@ function ActiveCompassSolver:maybePushInformation(info)
   end)
 
   -- Discard redundant information
-  if not is_new then
-    log("discarding: redundant information")
-    return
-  end
+  if not is_new then return end
 
-  log("accepting new information")
 
   table.insert(self.triangulation_points, { info = info, twig = drawArrowArc(self.clue, info):AddTo(self.map_layer) })
 
@@ -137,6 +171,7 @@ end
 
 function ActiveCompassSolver:update()
   local remaining_candidates = 0
+  local identified_solution = nil
 
   -- Update state of all candidates
   for _, candidate in ipairs(self.candidates) do
@@ -146,14 +181,25 @@ function ActiveCompassSolver:update()
 
     if candidate.possible then
       remaining_candidates = remaining_candidates + 1
+
+      if remaining_candidates == 1 then
+        identified_solution = candidate.spot
+      else
+        identified_solution = nil
+      end
     end
 
     candidate.marker:setPossible(candidate.possible)
   end
 
-  -- TODO: Render shapes for candidates
+  self.actions.identify
+      :setText("Identify " .. remaining_candidates .. "/" .. #self.clue.spots)
+      :setState(identified_solution and "complete" or "incomplete")
 
-  log("Remaining candidates: " .. remaining_candidates)
+  self.actions.dig_at
+      :setText("Dig At " .. (identified_solution and (identified_solution.x .. "|" .. identified_solution.y) or "???"))
+
+  -- TODO: Render shapes for candidates
 
   if remaining_candidates == 1 then
     -- If there is one remaining candidate, the spot has been identified and we can show a method
@@ -248,7 +294,6 @@ function ActiveCompassSolver:getCurrentInformation()
 
   --- If component is not visible, the player cannot see the compass arrow, so we discard the reading
   if component == nil or not component.visibleGlobal or component.parent == nil then
-    log("discarding: compass not visible")
     return nil
   end
 
@@ -260,13 +305,11 @@ function ActiveCompassSolver:getCurrentInformation()
 
   -- If the player and the target are on different levels, the compass would be spinning, so the reading must be discarded
   if player_position.level ~= target_spot.level then
-    log("discarding: wrong level")
     return
   end
 
   -- If the player is not within the valid area, we must discard the angle reading
   if not ctmath.rectangle.contains(self.clue.valid_area, player_position) then
-    log("discarding: out of area")
     return nil
   end
 

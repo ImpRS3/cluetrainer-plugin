@@ -9,10 +9,10 @@ local storage           = require "cluetrainer/util/storage"
 local towers_solver     = {}
 
 towers_solver.settings  = {
-  enabled = storage.variable("towers/enabled", schema.bool({ default = true })),
-  info = storage.variable("towers/info",
+  enabled = storage.setting_variable("towers/enabled", schema.bool({ default = true })),
+  info = storage.setting_variable("towers/info",
     schema.choices({ choices = { "delta", "target", "both" }, default = "both" })),
-  highlight_completed_tiles = storage.variable("towers/highlight_completed_tiles", schema.bool({ default = true })),
+  highlight_completed_tiles = storage.setting_variable("towers/highlight_completed_tiles", schema.bool({ default = true })),
 }
 
 local TILE_OFFSET       = 44

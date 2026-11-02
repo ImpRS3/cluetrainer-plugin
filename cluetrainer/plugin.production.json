@@ -1,0 +1,15 @@
+{
+  "name": "Clue Trainer",
+  "version": "0.1",
+  "dependencies": {
+    "prettyui": 6398181
+  },
+  "requiredPermissions": [],
+  "optionalPermissions": [
+    "httpAccess"
+  ],
+  "urls": {
+    "cluetrainer": "http://cluetrainer.app"
+  },
+  "hasSettingsIcon" : true
+}

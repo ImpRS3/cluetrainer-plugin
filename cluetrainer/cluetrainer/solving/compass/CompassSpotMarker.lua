@@ -7,9 +7,10 @@ local FontFamily = require("cluetrainer/util/FontFamily")
 local ACTIVE_SIZE = 24 -- pixels
 local INACTIVE_FACTOR = 0.5
 local HOVER_FACTOR = 1.5
-local IMPOSSIBLE_ALPHA = 0x80
+local IMPOSSIBLE_ALPHA = 0x20
 local BASE_ICON_HEIGHT = 15
 local BASE_FONT_SIZE = 7
+
 
 ---@class ct.CompassSpotMarkerOptions
 ---@field spot TileCoordinates
@@ -25,7 +26,6 @@ local BASE_FONT_SIZE = 7
 ---@field number integer?
 ---@field active boolean
 ---@field sprite ui.Sprite?
----@field text ui.Text?
 ---@field area prettymap.luaflet.Twig?
 local CompassSpotMarker = setmetatable({}, { __index = luaflet.twigs.Twig })
 CompassSpotMarker.__index = CompassSpotMarker
@@ -123,19 +123,10 @@ end
 ---@return boolean added
 function CompassSpotMarker:CreateComponent(layer)
   local sprite = ui.Sprite.new(layer)
-  sprite:SetSize(0, 0, 1.0, 1.0)
-  sprite.spriteID = id.Sprite.WALK_MARKER_DEFAULT
+  sprite:SetSize(11, 15)
+  sprite.sprite = Plugin.resources["marker_red"]
   sprite.clickthrough = true
   self.sprite = sprite
-
-  local text = ui.Text.new(layer)
-  text:SetSize(0, 0, 1.0, 1.0)
-  text.rgba = 0xFFFFFFFF
-  text.isShadowed = true
-  text.alignHorizontal = ui.AlignMode.CENTRE
-  text.alignVertical = ui.AlignMode.CENTRE
-  text.clickthrough = true
-  self.text = text
 
   self:_ApplyAppearance()
   return true

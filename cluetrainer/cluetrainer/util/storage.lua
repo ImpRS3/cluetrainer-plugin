@@ -9,7 +9,7 @@ local PREFIX = "settings/"
 ---@param key string
 ---@param schema ct.util.schema.Schema<T>
 ---@return zyklib.reactive.Observable<T>
-function storage.variable(key, schema)
+function storage.setting_variable(key, schema)
   ---@type string
   local full_key
 
@@ -17,6 +17,28 @@ function storage.variable(key, schema)
     full_key = PREFIX .. current_profile .. "/" .. key
   end, true)
 
+  local initial_value = schema(PersistentDB:Get(full_key))
+
+  local observable = zyklib.reactive.Observable.new(initial_value)
+
+  observable:subscribe(function(value)
+    if value == nil then
+      PersistentDB:Delete(full_key)
+    else
+      PersistentDB:Set(full_key, value)
+    end
+  end)
+
+  return observable
+end
+
+---@generic T
+---@param key string
+---@param schema ct.util.schema.Schema<T>
+---@return zyklib.reactive.Observable<T>
+function storage.preference(key, schema)
+  ---@type string
+  local full_key = "preferences/" .. key
   local initial_value = schema(PersistentDB:Get(full_key))
 
   local observable = zyklib.reactive.Observable.new(initial_value)

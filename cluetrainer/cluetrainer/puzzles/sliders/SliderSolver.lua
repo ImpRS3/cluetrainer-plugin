@@ -18,16 +18,16 @@ local slider_solver    = {}
 
 ---@class ct.sliders.slider_solver.settings
 slider_solver.settings = {
-  enabled = storage.variable("sliders/enabled", schema.bool({ default = true })),
-  mode = storage.variable("sliders/mode",
+  enabled = storage.setting_variable("sliders/enabled", schema.bool({ default = true })),
+  mode = storage.setting_variable("sliders/mode",
     schema.choices({ choices = { "keyboard", "mouse", "hybrid" }, default = "mouse" })),
-  prevent_overlap = storage.variable("sliders/prevent_overlap", schema.bool({ default = true })),
-  lookahead = storage.variable("sliders/lookahead", schema.int({ min = 2, max = 10, default = 5 })),
-  show_recovery_moves = storage.variable("sliders/show_recovery_moves", schema.bool({ default = true })),
-  color_mainline = storage.variable("sliders/color_mainline", schema.colour({ default = 0x00FF00FF })),
-  color_recovery = storage.variable("sliders/color_recovery", schema.colour({ default = 0xff6600FF })),
-  solve_time = storage.variable("sliders/solve_time", schema.int({ min = 100, max = 5000, default = 200 })),
-  estimate_slider_speed = storage.variable("sliders/estimate_slider_speed", schema.bool({ default = true })),
+  prevent_overlap = storage.setting_variable("sliders/prevent_overlap", schema.bool({ default = true })),
+  lookahead = storage.setting_variable("sliders/lookahead", schema.int({ min = 2, max = 10, default = 5 })),
+  show_recovery_moves = storage.setting_variable("sliders/show_recovery_moves", schema.bool({ default = true })),
+  color_mainline = storage.setting_variable("sliders/color_mainline", schema.colour({ default = 0x00FF00FF })),
+  color_recovery = storage.setting_variable("sliders/color_recovery", schema.colour({ default = 0xff6600FF })),
+  solve_time = storage.setting_variable("sliders/solve_time", schema.int({ min = 100, max = 5000, default = 200 })),
+  estimate_slider_speed = storage.setting_variable("sliders/estimate_slider_speed", schema.bool({ default = true })),
 }
 
 ---@alias ct.sliders.PdbDownloadState {progress: number, data: zyklib.async.Promise<ct.sliders.pdb.RegionGraph>}

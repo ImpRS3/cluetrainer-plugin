@@ -8,11 +8,9 @@ RS_BETA_DIR := env_var_or_default("RS_BETA_DIR", if os() == "macos" {
 
 DEV_PLUGINS := RS_BETA_DIR / "dev_plugins"
 
-install: check-beta-dir
+install environment="test": check-beta-dir (package_into "{{DEV_PLUGINS}}/cluetrainer" environment)
     #!/usr/bin/env bash
     set -euo pipefail
-
-    just package_into "{{DEV_PLUGINS}}/cluetrainer"
 
     install_plugin() {
       local plugin_name="$1"
@@ -32,7 +30,7 @@ install: check-beta-dir
     done
 
 # Replaces everything in the installed plugin except the resources folder.
-install-light: check-beta-dir
+install-light environment="test": check-beta-dir (check-environment environment)
     #!/usr/bin/env bash
     set -euo pipefail
 
@@ -45,7 +43,7 @@ install-light: check-beta-dir
       local src="$1"
       (
         cd "$src"
-        find . -path ./resources -prune -o -type f -print0 | while IFS= read -r -d '' f; do
+        find . -path ./resources/prettymap -prune -o -type f -print0 | while IFS= read -r -d '' f; do
           mkdir -p "$TARGET/$(dirname "$f")"
           cp -f "$f" "$TARGET/$f"
         done
@@ -54,10 +52,12 @@ install-light: check-beta-dir
 
     copy_without_resources cluetrainer
     copy_without_resources dependencies/zyklib/src
+    rm "$TARGET/plugin.production.json" "$TARGET/plugin.test.json"
+    cp "cluetrainer/plugin.{{environment}}.json" "$TARGET/plugin.json"
 
-package: (package_into "dist/cluetrainer")
+package environment="production": (package_into "dist/cluetrainer" environment)
 
-package-zip: (package_into "dist/cluetrainer")
+package-zip environment="production": (package_into "dist/cluetrainer" environment)
     #!/usr/bin/env bash
     set -euo pipefail
 
@@ -69,11 +69,24 @@ package-zip: (package_into "dist/cluetrainer")
     )
 
 [private]
-package_into target:
+package_into target environment="production": (check-environment environment)
     rm -rf "{{target}}"
     mkdir -p "{{target}}"
     cp -R cluetrainer/. "{{target}}/"
     cp -R dependencies/zyklib/src/. "{{target}}/"
+    rm "{{target}}/plugin.production.json" "{{target}}/plugin.test.json"
+    cp "cluetrainer/plugin.{{environment}}.json" "{{target}}/plugin.json"
+
+[private]
+check-environment environment:
+    #!/usr/bin/env bash
+    case "{{environment}}" in
+      production|test) ;;
+      *)
+        echo "Invalid environment '{{environment}}'; choose 'production' or 'test'." >&2
+        exit 2
+        ;;
+    esac
 
 [private]
 check-beta-dir:
@@ -85,7 +98,7 @@ check-beta-dir:
     fi
 
 # Paths relative to the project root
-BLACKLIST := "^(./)?(cluetrainer/cluetrainer/data|cluetrainer/prettymap/data)(/|$)"
+CLOC_BLACKLIST := "^(./)?(cluetrainer/cluetrainer/data|cluetrainer/prettymap/data)(/|$)"
 
 cloc:
-    cloc cluetrainer --fullpath --not-match-d '{{BLACKLIST}}' --by-file
+    cloc cluetrainer --fullpath --not-match-d '{{CLOC_BLACKLIST}}' --by-file

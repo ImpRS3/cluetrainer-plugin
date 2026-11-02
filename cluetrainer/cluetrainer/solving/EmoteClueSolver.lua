@@ -14,6 +14,7 @@ local PathStepEntity        = require "cluetrainer/solving/map_navigator/PathSte
 local luaflet               = require "prettymap/luaflet"
 local cluestate             = require "cluetrainer/interfaces/cluestate/cluestate"
 local RichText              = require "cluetrainer/util/RichText"
+local ClueStateAction       = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local zyklib                = require "zyklib"
 
 local EmoteClueSolver       = {}
@@ -101,18 +102,18 @@ function ActiveEmoteClue.new(clue)
   state_panel:clearActions()
   state_panel:setVisible(true)
 
-  self.actions.emote_get_hideyhole = state_panel:addAction("Get hidey-hole")
-  self.actions.equip_items = state_panel:addAction("Equip items")
+  self.actions.emote_get_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Get hidey-hole"))
+  self.actions.equip_items = state_panel:addAction(ClueStateAction.Text.new("Equip items"))
 
   if clue.double_agent then
-    self.actions.emote_summon = state_panel:addAction("Summon " .. RichText.npc("Double Agent"))
-    self.actions.emote_double_agent = state_panel:addAction("Kill " .. RichText.npc("Double Agent"))
+    self.actions.emote_summon = state_panel:addAction(ClueStateAction.Text.new("Summon " .. RichText.npc("Double Agent")))
+    self.actions.emote_double_agent = state_panel:addAction(ClueStateAction.Text.new("Kill " .. RichText.npc("Double Agent")))
   else
-    self.actions.emote_summon = state_panel:addAction("Summon " .. RichText.npc("Uri"))
+    self.actions.emote_summon = state_panel:addAction(ClueStateAction.Text.new("Summon " .. RichText.npc("Uri")))
   end
 
-  self.actions.emote_uri = state_panel:addAction("Speak to Uri")
-  self.actions.emote_return_hideyhole = state_panel:addAction("Return hidey-hole")
+  self.actions.emote_uri = state_panel:addAction(ClueStateAction.Text.new("Speak to Uri"))
+  self.actions.emote_return_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Return hidey-hole"))
 
   return self
 end

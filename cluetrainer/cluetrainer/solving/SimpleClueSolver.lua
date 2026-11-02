@@ -17,10 +17,11 @@ local luaflet                = require "prettymap/luaflet"
 local cluestate              = require "cluetrainer/interfaces/cluestate/cluestate"
 local RichText               = require "cluetrainer/util/RichText"
 local PathStepEntity         = require "cluetrainer/solving/map_navigator/PathStepEntity"
-local SimpleClueSolver       = {}
 local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
+local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
 
+local SimpleClueSolver       = {}
 SimpleClueSolver.initialized = false
 
 ---@param step Step
@@ -143,7 +144,8 @@ local function create_step_map_layer(step)
 
   if step.type == "skilling" then
     InteractionMarker.new({
-      coordinate = require("cluetrainer/interfaces/map/elements/geometry").coord(TileArea.ensure_mutable(step.areas[0]):center()),
+      coordinate = require("cluetrainer/interfaces/map/elements/geometry").coord(TileArea.ensure_mutable(step.areas[0])
+        :center()),
       cursor = step.cursor
     })
   end
@@ -245,15 +247,15 @@ function ActiveSimpleClue.new(clue)
 
   if sol then
     if sol.type == "talkto" then
-      self.actions.talk = state_panel:addAction("Talk to " .. RichText.npc(sol.npc))
+      self.actions.talk = state_panel:addAction(ClueStateAction.Text.new("Talk to " .. RichText.npc(sol.npc)))
     elseif sol.type == "dig" then
-      self.actions.dig = state_panel:addAction("Dig  " .. (sol.description or "at target"))
+      self.actions.dig = state_panel:addAction(ClueStateAction.Text.new("Dig  " .. (sol.description or "at target")))
     elseif sol.type == "search" then
       if sol.key then
-        self.actions.obtain_key = state_panel:addAction("Obtain key")
+        self.actions.obtain_key = state_panel:addAction(ClueStateAction.Text.new("Obtain key"))
       end
 
-      self.actions.search = state_panel:addAction("Search " .. RichText.loc(sol.entity))
+      self.actions.search = state_panel:addAction(ClueStateAction.Text.new("Search " .. RichText.loc(sol.entity)))
     end
   end
 
@@ -262,20 +264,21 @@ function ActiveSimpleClue.new(clue)
   if challenges ~= nil and #challenges > 0 then
     for _, challenge in ipairs(challenges) do
       if challenge.type == "wizard" then
-        self.actions.defeat_wizard = state_panel:addAction("Defeat wizard ")
+        self.actions.defeat_wizard = state_panel:addAction(ClueStateAction.Text.new("Defeat wizard "))
 
         self.actions.defeat_wizard:setState("complete")
       elseif challenge.type == "slider" then
-        self.actions.solve_slider = state_panel:addAction("Complete slider challenge")
+        self.actions.solve_slider = state_panel:addAction(ClueStateAction.Text.new("Complete slider challenge"))
       elseif challenge.type == "celticknot" then
-        self.actions.solve_celtic_knot = state_panel:addAction("Solve Celtic knot challenge")
+        self.actions.solve_celtic_knot = state_panel:addAction(ClueStateAction.Text.new("Solve Celtic knot challenge"))
       elseif challenge.type == "lockbox" then
-        self.actions.solve_lockbox = state_panel:addAction("Solve lockbox challenge")
+        self.actions.solve_lockbox = state_panel:addAction(ClueStateAction.Text.new("Solve lockbox challenge"))
       elseif challenge.type == "towers" then
-        self.actions.solve_towers = state_panel:addAction("Solve towers challenge")
+        self.actions.solve_towers = state_panel:addAction(ClueStateAction.Text.new("Solve towers challenge"))
       elseif challenge.type == "challengescroll" then
-        self.actions.enter_challenge_scroll_answer = state_panel:addAction("Enter answer " .. challenge.answers[1]
-          .answer) -- TODO: Automatically determine correct answer
+        self.actions.enter_challenge_scroll_answer = state_panel:addAction(ClueStateAction.Text.new("Enter answer " ..
+        challenge.answers[1]
+          .answer)) -- TODO: Automatically determine correct answer
       end
     end
   end
