@@ -2,9 +2,17 @@
 
 --- Global for zyklib. This is a universally used library, so we save ourself some annoyance by making it a global.
 ---@type zyklib
-zyklib    = require("zyklib")
+zyklib = require("zyklib")
+
+if not prettyui then
+  prettyui = require("prettyui")
+end
 
 local function main()
+  zyklib.lifecycle.shutdown_event:subscribe(function()
+    prettyui.PluginShutdown()
+  end)
+
   zyklib.lifecycle.setupGlobals()
 
   local settings_dialog = require("cluetrainer/ui/SettingsDialog")
