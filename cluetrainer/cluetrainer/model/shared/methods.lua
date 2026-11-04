@@ -79,12 +79,16 @@
 local methods = {}
 
 ---Returns the first teleport of a method's main path, if it has one.
----@param method Method.GenericPath
+---@param method Method
 ---@return cluetrainer.TeleportSpot?
 function methods.primaryTeleport(method)
   local Path = require "cluetrainer/model/shared/path"
 
-  return Path.firstTeleport(method.main_path or {})
+  if method.type == "general_path" then 
+    return Path.firstTeleport(method.main_path or {})
+  else
+    return Path.firstTeleport(method.tree.root.path or {})
+  end
 end
 
 return methods

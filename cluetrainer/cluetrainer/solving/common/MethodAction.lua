@@ -11,8 +11,10 @@ local STATE_ALPHA = {
 local PLACEHOLDER_ALPHA = 0.5
 local NOT_SELECTABLE_TEXT = "Not available yet"
 
-local ROW_HEIGHT = 24
-local ICON_SIZE = 20
+-- Flow rows can't change height after construction, so the row always has room for the two lines of a selected
+-- method. Texts are vertically centred, so the single-line states sit in the middle.
+local ROW_HEIGHT = 40
+local ICON_SIZE = 32
 local ICON_X = 3
 local TEXT_X = ICON_SIZE + 6
 local BUTTON_SIZE = 20
@@ -148,7 +150,7 @@ function MethodAction:_apply()
     alpha = PLACEHOLDER_ALPHA
     teleport = nil
   elseif teleport ~= nil then
-    self.text.content = teleport:hover()
+    self.text.content = teleport.group.name .. "<br>" .. teleport.spot.name
   elseif method ~= nil then
     self.text.content = method.method.name
   else

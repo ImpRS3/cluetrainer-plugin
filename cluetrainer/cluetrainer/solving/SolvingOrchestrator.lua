@@ -2,7 +2,7 @@ local clue_detector         = require "cluetrainer/clue_detector"
 local CompassSolver         = require "cluetrainer/solving/CompassSolver"
 local EmoteClueSolver       = require "cluetrainer/solving/EmoteClueSolver"
 local SimpleClueSolver      = require "cluetrainer/solving/SimpleClueSolver"
-local ScanTreeSolver        = require "cluetrainer/solving/ScanTreeSolver"
+local ScanTreeSolver        = require "cluetrainer/solving/ScanClueSolver"
 local ClueStateInterface    = require "cluetrainer/interfaces/cluestate/cluestate"
 local map                   = require "cluetrainer/interfaces/map/map"
 

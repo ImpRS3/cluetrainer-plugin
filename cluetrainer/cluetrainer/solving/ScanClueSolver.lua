@@ -8,8 +8,8 @@ local TileArea           = require "cluetrainer/model/shared/TileArea"
 local Path               = require "cluetrainer/model/shared/path"
 local Navigator          = require "cluetrainer/solving/common/navigator"
 local ActiveClueSolver   = require "cluetrainer/solving/common/ActiveClueSolver"
-local methods            = require "cluetrainer/methods/method_management"
 local ClueStateAction    = require "cluetrainer/interfaces/cluestate/ClueStateAction"
+local MethodAction       = require "cluetrainer/solving/common/MethodAction"
 local scan_panel         = require "cluetrainer/solving/scan/scan_panel"
 local scan_tree          = require "cluetrainer/solving/scan/scan_tree"
 local scan_display       = require "cluetrainer/solving/scan/scan_display"
@@ -43,7 +43,8 @@ local DESTROYED_TIMEOUT_TICKS = 2 * scan_panel.PULSE_TICKS
 --- One scan clue in progress.
 ---@class ct.ActiveScanClue : ct.ActiveClueSolver
 ---@field clue Scan
----@field tree ScanTree.ScanTree
+---@field method_action ct.solving.MethodAction
+---@field tree ScanTree.ScanTree? Nil while there is no scan tree method
 ---@field node ScanTree.ScanTreeNode
 ---@field area TileArea? Where the player scans for the current node
 ---@field history {node: ScanTree.ScanTreeNode, area: TileArea?, press: integer?, press_only: boolean?}[] For Shift+0
@@ -66,38 +67,32 @@ local DESTROYED_TIMEOUT_TICKS = 2 * scan_panel.PULSE_TICKS
 ---@field private status_children ScanTree.Child[]
 ---@field private notice string?
 ---@field private rendered_signature string?
-local ActiveScanClue = setmetatable({}, { __index = ActiveClueSolver })
-ActiveScanClue.__index = ActiveScanClue
+local ScanClueSolver = setmetatable({}, { __index = ActiveClueSolver })
+ScanClueSolver.__index = ScanClueSolver
 
 ---@param clue Scan
----@param method Method.ScanTree
 ---@param clue_state ct.ClueStateInterface
 ---@return ct.ActiveScanClue
-function ActiveScanClue.new(clue, method, clue_state)
-  local self = setmetatable(ActiveClueSolver.new(clue), ActiveScanClue)
+function ScanClueSolver.new(clue, clue_state)
+  local self = setmetatable(ActiveClueSolver.new(clue), ScanClueSolver)
   ---@cast self ct.ActiveScanClue
 
-  self.tree = method.tree
-  self.history = {}
   self.tick = 0
-  self.candidates = scan_tree.candidates(method.tree)
   self.clue_state = clue_state
-  self.navigator = Navigator.new()
-  self.map = ScanMap.new(method.tree)
-  self.ground = ScanGround.new()
-  self.live = LiveNarrowing.new(method.tree.ordered_spots, clue.range)
-  self.remaining = {}
   self.panel_seen = false
   self.area_seen = false
-  self.different_level = false
-  self.status = "travel"
-  self.status_children = {}
 
-  self.disposable_group:add(self.navigator)
-  self.disposable_group:add(self.map)
-  self.disposable_group:add(self.ground)
+  self.method_action = MethodAction.new({ clue = clue.id }, {
+    onMethodSelected = function(selected)
+      self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
+    end,
+  })
+
+  self.disposable_group:add({ dispose = function() self:disposeTree() end })
 
   self.disposable_group:add(zyklib.game_events.native.Logic:subscribe(function(payload)
+    if self.tree == nil then return end
+
     local tick, tile = payload.logicTick, coordinate_adaptor.playerTile()
     local capture, reading = self:ownPanel()
     self.tick = tick
@@ -108,6 +103,7 @@ function ActiveScanClue.new(clue, method, clue_state)
 
   -- On key down, to read Shift while it is still held.
   self.disposable_group:add(zyklib.game_events.native.KeyDown:subscribe(function(event)
+    if self.tree == nil then return end
     if event.isRepeat or event.modifiers & ModifierKey.SHIFT == 0 then return end
 
     if event.gameKey == GameKey._1 then
@@ -121,16 +117,57 @@ function ActiveScanClue.new(clue, method, clue_state)
     end
   end))
 
-  self:enter(self.tree.root, scan_tree.scanArea(self.tree.root, nil))
+  local preferred = self.method_action.method
+  self:setMethod(preferred and preferred.method --[[@as Method.GenericPath?]])
 
   return self
+end
+
+---Releases everything that belongs to the current scan tree.
+---@private
+function ScanClueSolver:disposeTree()
+  for _, resource in ipairs({ self.navigator, self.map, self.ground }) do
+    if resource ~= nil then resource:dispose() end
+  end
+
+  self.navigator, self.map, self.ground, self.live = nil, nil, nil, nil
+  self.tree, self.node, self.area = nil, nil, nil
+end
+
+---Switches to the scan tree of the method, restarting the clue from its root. Without a scan tree method, there is
+---nothing to follow.
+---@param method Method.GenericPath?
+function ScanClueSolver:setMethod(method)
+  self:disposeTree()
+
+  self.history = {}
+  self.remaining = {}
+  self.notice = nil
+  self.preview_signature = nil
+  self.rendered_signature = nil
+  self.arrived_at = nil
+  self.different_level = false
+  self.status = "travel"
+  self.status_children = {}
+
+  if method == nil or method.type ~= "scantree" then return self:render() end
+
+  ---@cast method Method.ScanTree
+  self.tree = method.tree
+  self.candidates = scan_tree.candidates(method.tree)
+  self.navigator = Navigator.new()
+  self.map = ScanMap.new(method.tree)
+  self.ground = ScanGround.new()
+  self.live = LiveNarrowing.new(method.tree.ordered_spots, self.clue.range)
+
+  self:enter(self.tree.root, scan_tree.scanArea(self.tree.root, nil))
 end
 
 ---@private
 ---@param node ScanTree.ScanTreeNode
 ---@param area TileArea?
 ---@param manual boolean? The player went back to this node and picks its pulse by hand
-function ActiveScanClue:enter(node, area, manual)
+function ScanClueSolver:enter(node, area, manual)
   self.node = node
   self.area = area
   self.arrived_at = nil
@@ -158,7 +195,7 @@ end
 --- The scan range as the panel showed it, until then the one the tree was made for.
 ---@private
 ---@return integer
-function ActiveScanClue:range()
+function ScanClueSolver:range()
   return self.live:range() or self.tree.assumed_range
 end
 
@@ -166,7 +203,7 @@ end
 --- disagree with the tree (other range, other route) and the tree's spots stay.
 ---@private
 ---@return TileCoordinates[]
-function ActiveScanClue:remainingSpots()
+function ScanClueSolver:remainingSpots()
   local spots = self.candidates[self.node]
   if self.status == "triple" then
     spots = array.map(self.status_children, function(child) return child.key.spot end)
@@ -179,7 +216,7 @@ end
 --- Shows the remaining spots on the map and the ground. Once they all lie under one child, the scan here can only
 --- pick that child, so its route follows; not after going back, as the player picks then.
 ---@private
-function ActiveScanClue:refresh()
+function ScanClueSolver:refresh()
   self.remaining = self:remainingSpots()
   self.map:setRemaining(self.remaining)
   self.ground:setSpots(self.remaining)
@@ -196,7 +233,7 @@ end
 --- The routes the player chooses between with Shift, faded on the ground and the map. Not while waiting for the
 --- pulse: that decides within a second, and the routes would only flash up.
 ---@private
-function ActiveScanClue:updatePreview()
+function ScanClueSolver:updatePreview()
   local status, children = self.status, {}
   if status == "mismatch" then
     -- The panel doesn't pick a child, so the player may pick any.
@@ -231,7 +268,7 @@ end
 ---@param child ScanTree.Child
 ---@param how string How the pulse was told, for the "Last:" row
 ---@param press integer? The key press that also narrowed the spots, undone with Shift+0
-function ActiveScanClue:step(child, how, press)
+function ScanClueSolver:step(child, how, press)
   table.insert(self.history, { node = self.node, area = self.area, press = press })
   self.notice = scan_display.pulseName(child.key) .. " (" .. how .. ")"
   self:enter(child.value, scan_tree.scanArea(child.value, self.area))
@@ -241,7 +278,7 @@ end
 --- and moves the tree on only at the tree's scan area: a key pressed elsewhere is not about that area.
 ---@private
 ---@param pulse 1 | 2 | 3
-function ActiveScanClue:press(pulse)
+function ScanClueSolver:press(pulse)
   local press = pulse < 3 and self.live:press(self.tick, pulse --[[@as 1 | 2]]) or nil
   local status = self.status
   local at_scan_area = status == "wait" or status == "choose" or status == "manual" or status == "mismatch"
@@ -260,7 +297,7 @@ end
 
 --- Shift+0: undoes the last step or key press. Going back to a node lets the player choose its pulse by hand.
 ---@private
-function ActiveScanClue:back()
+function ScanClueSolver:back()
   local previous = table.remove(self.history)
   if previous == nil then return end
 
@@ -277,7 +314,7 @@ end
 ---@private
 ---@return ct.ScanPanel.Capture?
 ---@return ct.ScanPanel.Reading?
-function ActiveScanClue:ownPanel()
+function ScanClueSolver:ownPanel()
   local capture = scan_panel.capture()
   if capture == nil then return nil, nil end
 
@@ -292,7 +329,7 @@ end
 ---@param tick integer
 ---@param reading ct.ScanPanel.Reading?
 ---@return boolean
-function ActiveScanClue:isGone(tick, reading)
+function ScanClueSolver:isGone(tick, reading)
   local closed = self.panel_seen and not scan_panel.isOpen()
   local destroyed = self.area_seen and reading ~= nil and reading.area == nil and reading.state == "scanning"
   if not (closed or destroyed) then
@@ -311,7 +348,7 @@ end
 ---@param capture ct.ScanPanel.Capture?
 ---@param reading ct.ScanPanel.Reading?
 ---@param tile TileCoordinates?
-function ActiveScanClue:poll(tick, capture, reading, tile)
+function ScanClueSolver:poll(tick, capture, reading, tile)
   if self:isGone(tick, reading) then return self:finish(self.clue_state) end
   -- Hidden, or still the previous clue's panel: wait for this clue's.
   if capture == nil or reading == nil then return end
@@ -359,7 +396,7 @@ end
 ---@private
 ---@param reading ct.ScanPanel.Reading
 ---@param tile TileCoordinates
-function ActiveScanClue:decide(reading, tile)
+function ScanClueSolver:decide(reading, tile)
   if reading.state == "scanning" or reading.state == "unknown" then return self:setStatus("wait") end
 
   self.different_level = reading.state == "different_level"
@@ -381,7 +418,7 @@ end
 ---@private
 ---@param status ct.ScanStatus
 ---@param children ScanTree.Child[]? The children the player chooses between, for "choose", "manual" and "triple"
-function ActiveScanClue:setStatus(status, children)
+function ScanClueSolver:setStatus(status, children)
   self.status = status
   self.status_children = children or {}
   self:updatePreview()
@@ -390,7 +427,17 @@ end
 
 --- Shows the scan state in the clue state window. Only rebuilds the rows when they change.
 ---@private
-function ActiveScanClue:render()
+function ScanClueSolver:render()
+  if self.tree == nil then
+    if self.rendered_signature == "none" then return end
+    self.rendered_signature = "none"
+
+    self.clue_state:clearActions()
+    self.clue_state:addAction(self.method_action)
+    self.clue_state:addAction(ClueStateAction.Text.new("No scan route selected"))
+    return
+  end
+
   local rows = scan_display.rows({
     status = self.status,
     tree = self.tree,
@@ -409,27 +456,8 @@ function ActiveScanClue:render()
   self.rendered_signature = signature
 
   self.clue_state:clearActions()
+  self.clue_state:addAction(self.method_action)
   for _, row in ipairs(rows) do self.clue_state:addAction(scan_display.action(row)) end
 end
 
-local ScanTreeSolver = {}
-
---- Starts the scan tree of the clue, or tells there is none.
----@param clue Scan
----@param clue_state ct.ClueStateInterface
----@return ct.ActiveClueSolver
-function ScanTreeSolver.new(clue, clue_state)
-  local method = array.find(methods.getAllForClue({ clue = clue.id }), function(augmented)
-    return augmented.method.type == "scantree"
-  end)
-
-  if method == nil then
-    clue_state:clearActions()
-    clue_state:addAction(ClueStateAction.Text.new("No scan route for this clue"))
-    return ActiveClueSolver.new(clue)
-  end
-
-  return ActiveScanClue.new(clue, method.method --[[@as Method.ScanTree]], clue_state)
-end
-
-return ScanTreeSolver
+return ScanClueSolver
