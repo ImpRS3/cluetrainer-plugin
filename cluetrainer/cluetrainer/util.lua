@@ -82,4 +82,71 @@ function util.lazy(f)
   end
 end
 
+---Computes the Levenshtein distance between two strings.
+---@param str1 string
+---@param str2 string
+---@param case_sensitive? boolean Defaults to true
+---@return integer
+function util.levenshtein(str1, str2, case_sensitive)
+  if case_sensitive == false then
+    str1 = str1:lower()
+    str2 = str2:lower()
+  end
+
+  if str1 == str2 then return 0 end
+
+  local len1, len2 = #str1, #str2
+
+  if len1 == 0 then return len2 end
+  if len2 == 0 then return len1 end
+
+  -- Minimize memory usage
+  if len1 > len2 then
+    str1, str2 = str2, str1
+    len1, len2 = len2, len1
+  end
+
+  local previous, current = {}, {}
+
+  for i = 0, len1 do
+    previous[i] = i
+  end
+
+  for j = 1, len2 do
+    current[0] = j
+    local byte2 = str2:byte(j)
+
+    for i = 1, len1 do
+      local cost = str1:byte(i) == byte2 and 0 or 1
+
+      current[i] = math.min(
+        previous[i] + 1,       -- deletion
+        current[i - 1] + 1,    -- insertion
+        previous[i - 1] + cost -- substitution
+      )
+    end
+
+    previous, current = current, previous
+  end
+
+  return previous[len1]
+end
+
+---Computes normalized string similarity between 0 and 1.
+---@param str string
+---@param reference string
+---@param case_sensitive? boolean Defaults to false
+---@return number
+function util.stringSimilarity(str, reference, case_sensitive)
+  local maxLength = math.max(#str, #reference)
+
+  if maxLength == 0 then return 1 end
+
+  return 1 - util.levenshtein(
+    str,
+    reference,
+    case_sensitive == true
+  ) / maxLength
+end
+
 return util
