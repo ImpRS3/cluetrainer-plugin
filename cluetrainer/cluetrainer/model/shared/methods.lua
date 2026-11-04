@@ -36,6 +36,7 @@
 
 ---@class PulseInformation
 ---@field pulse 1 | 2 | 3
+---@field different_level boolean?
 ---@field spot TileCoordinates?
 
 ---@alias ClueAssumptions any
@@ -81,15 +82,9 @@ local methods = {}
 ---@param method Method.GenericPath
 ---@return cluetrainer.TeleportSpot?
 function methods.primaryTeleport(method)
-  local TeleportSpot = require "cluetrainer/model/shared/TeleportSpot"
+  local Path = require "cluetrainer/model/shared/path"
 
-  for _, step in ipairs(method.main_path or {}) do
-    if step.type == "teleport" then
-      return TeleportSpot.resolve(step.id)
-    end
-  end
-
-  return nil
+  return Path.firstTeleport(method.main_path or {})
 end
 
 return methods
