@@ -5,3 +5,4 @@ cluetrainer/zyklib.lua
 
 dist/
 mre/*
+.DS_Store

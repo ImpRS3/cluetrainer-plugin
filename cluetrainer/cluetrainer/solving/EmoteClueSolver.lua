@@ -1,6 +1,4 @@
-local coordinate_adaptor    = require "cluetrainer/model/shared/coordinate_adaptor"
 local PathMesh              = require "cluetrainer/model/PathMesh"
-local OverlayConstants      = require "cluetrainer/model/OverlayConstants"
 local map                   = require "cluetrainer/interfaces/map/map"
 local EmoteAreaEntity       = require "cluetrainer/interfaces/map/elements/EmoteAreaEntity"
 local HideyHoleEntity       = require "cluetrainer/interfaces/map/elements/HideyHoleEntity"
@@ -19,14 +17,7 @@ local zyklib                = require "zyklib"
 ---@param step Emote
 local function create_step_highlights(step)
   return zyklib.highlights.HighlightGroup.new({
-    zyklib.highlights.TerrainHighlight.new(
-      zyklib.api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(step.area.origin) }),
-      function()
-        return PathMesh.drawTileArea(step.area, 0x914183FF, 0x91418380)
-            :translate(Vector3.new(0, OverlayConstants.AREA_OVERLAY_HEIGHT, 0))
-            :shapeData()
-      end
-    )
+    PathMesh.areaHighlight(step.area, 0x914183FF, 0x91418380)
   })
 end
 
@@ -78,8 +69,8 @@ function EmoteClueSolver.new(clue, clue_state)
   self.disposable_group:add(create_step_highlights(clue):activate())
   self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.twigs))
 
-  ---@type Method.GenericPath?
-  local method = methods.getPreferred({ clue = clue.id })
+  local preferred = methods.getPreferred({ clue = clue.id })
+  local method = preferred and preferred.method --[[@as Method.GenericPath?]]
 
   self:setMethod(method)
 

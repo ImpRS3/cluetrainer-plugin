@@ -8,11 +8,10 @@ RS_BETA_DIR := env_var_or_default("RS_BETA_DIR", if os() == "macos" {
 
 DEV_PLUGINS := RS_BETA_DIR / "dev_plugins"
 
-install environment="test": check-beta-dir (package_into "{{DEV_PLUGINS}}/cluetrainer" environment)
+install environment="test": check-beta-dir (package_into DEV_PLUGINS / "cluetrainer" environment)
     #!/usr/bin/env bash
     set -euo pipefail
 
-    just package_into "{{DEV_PLUGINS}}/cluetrainer"
     just install_devtool
 
     install_plugin() {
@@ -119,4 +118,4 @@ check-beta-dir:
 CLOC_BLACKLIST := "^(./)?(cluetrainer/cluetrainer/data|cluetrainer/prettymap/data)(/|$)"
 
 cloc:
-    cloc cluetrainer --fullpath --not-match-d '{{BLACKLIST}}' --by-file
+    cloc cluetrainer --fullpath --not-match-d '{{CLOC_BLACKLIST}}' --by-file

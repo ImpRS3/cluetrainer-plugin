@@ -3,6 +3,7 @@ local CompassSolver         = require "cluetrainer/solving/CompassSolver"
 local EmoteClueSolver       = require "cluetrainer/solving/EmoteClueSolver"
 local SimpleClueSolver      = require "cluetrainer/solving/SimpleClueSolver"
 local ClueStateInterface    = require "cluetrainer/interfaces/cluestate/cluestate"
+local map                   = require "cluetrainer/interfaces/map/map"
 
 ---@class ct.solving.SolvingOrchestrator : zyklib.disposable.IDisposable
 ---@field private clue_state ct.ClueStateInterface
@@ -46,8 +47,13 @@ end
 
 ---@param clue Step?
 function SolvingOrchestrator:onClueDetected(clue)
-  if self.active_solver ~= nil and (clue == nil or self.active_solver.clue ~= clue) then
-    self.active_solver:dispose()
+  -- Keep the running solver when the same clue is read again, so its progress stays. Rebuild it once the map was
+  -- closed, to put its map elements back on a reopened map.
+  local active = self.active_solver
+  if clue ~= nil and active ~= nil and active.clue == clue and map.isOpen() then return end
+
+  if active ~= nil then
+    active:dispose()
     self.active_solver = nil
   end
 
@@ -91,5 +97,8 @@ function SolvingOrchestrator.setActive(active)
     instance = nil
   end
 end
+
+-- Dispose the clue state window and the highlights on shutdown, so a plugin restart starts without leftovers.
+zyklib.lifecycle.shutdown_event:subscribe(function() SolvingOrchestrator.setActive(false) end)
 
 return SolvingOrchestrator

@@ -13,6 +13,7 @@
 ---@field hoverQueue prettymap.luaflet.Twig[] Elements under the cursor in order of entry; the first one is hovered.
 ---@field tooltipParent ui.Component? Component tooltips are placed in; defaults to the game area.
 ---@field tooltips prettymap.TooltipHost? Created on the first tooltip.
+---@field viewChangeToken table? Map listener that lays out `clipsToView` elements again; removed on `Destroy`.
 local ElementManager = {}
 ElementManager.__index = ElementManager
 
@@ -50,7 +51,7 @@ function ElementManager.new(map, layer, zLayers, tooltipParent, staticLayer)
         panes[paneID] = container
     end
 
-    return setmetatable({
+    local self = setmetatable({
         map = map,
         layer = layer,
         staticLayer = staticLayer,
@@ -61,6 +62,15 @@ function ElementManager.new(map, layer, zLayers, tooltipParent, staticLayer)
         topPane = ids[#ids],
         tooltipParent = tooltipParent,
     }, ElementManager)
+
+    -- Lay out elements that clip their drawing to the view again when the map is panned, so the clipping follows.
+    self.viewChangeToken = map.overlays:AddViewChangeListener(function()
+        for element in pairs(self.elements) do
+            if element.clipsToView then self:_Position(element) end
+        end
+    end)
+
+    return self
 end
 
 ---@param element prettymap.luaflet.Twig
@@ -225,6 +235,7 @@ end
 
 ---@return nil
 function ElementManager:Destroy()
+    self.map.overlays:RemoveViewChangeListener(self.viewChangeToken)
     self.hoverQueue = {}
     if self.tooltips then
         self.tooltips:Destroy()
