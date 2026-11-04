@@ -414,6 +414,24 @@ local function bounds_from_tile_coordinates(tile_coordinates)
         coordinate_adaptor.tile_coordinates_to_coord_grid))
 end
 
+---A highlight of a tile area on the ground, such as a dig spot or an emote area. Not activated yet.
+---@param tile_area TileArea
+---@param outline_color ColourRGBA? See `drawTileArea`
+---@param fill_color ColourRGBA? See `drawTileArea`
+---@param height number? Height above the ground. Default is `OverlayConstants.AREA_OVERLAY_HEIGHT`.
+---@return zyklib.TerrainHighlight
+function PathMesh.areaHighlight(tile_area, outline_color, fill_color, height)
+    height = height or OverlayConstants.AREA_OVERLAY_HEIGHT
+    local origin, size = tile_area.origin, TileArea.ensure_mutable(tile_area):getSize()
+    local corner = { x = origin.x + size.x - 1, y = origin.y + size.y - 1, level = origin.level }
+
+    return TerrainHighlight.new(bounds_from_tile_coordinates({ origin, corner }), function()
+        return PathMesh.drawTileArea(tile_area, outline_color, fill_color)
+            :translate(Vector3.new(0, height, 0))
+            :shapeData()
+    end)
+end
+
 ---@param step Path.Step?
 ---@return boolean
 local function ends_with_tile_marker(step)

@@ -1,7 +1,6 @@
 local coordinate_adaptor     = require "cluetrainer/model/shared/coordinate_adaptor"
 local PathMesh               = require "cluetrainer/model/PathMesh"
 local TileArea               = require "cluetrainer/model/shared/TileArea"
-local OverlayConstants       = require "cluetrainer/model/OverlayConstants"
 local map                    = require "cluetrainer/interfaces/map/map"
 local TalkSolutionNpcEntity  = require "cluetrainer/interfaces/map/elements/TalkSolutionNpcEntity"
 local SearchSolutionEntity   = require "cluetrainer/interfaces/map/elements/SearchSolutionEntity"
@@ -67,14 +66,7 @@ local function create_step_highlights(step)
       local spot = solution
           .spot --[[@as TileCoordinates]] -- LuaCats does not narrow the type of step.solution to DigSolution, so we need to cast this
 
-      table.insert(highlights, zyklib.highlights.TerrainHighlight.new(
-        zyklib.api_util.map_square_rect_from_tiles({ coordinate_adaptor.tile_coordinates_to_coord_grid(spot) }),
-        function()
-          return PathMesh.drawTileArea(TileArea.centered_on(spot, { x = 3, y = 3 }), 0xFFFFFFFF, 0xFFFFFF80)
-              :translate(Vector3.new(0, OverlayConstants.AREA_OVERLAY_HEIGHT, 0))
-              :shapeData()
-        end
-      ))
+      table.insert(highlights, PathMesh.areaHighlight(TileArea.centered_on(spot, { x = 3, y = 3 })))
     elseif solution.type == "talkto" then
       table.insert(highlights, zyklib.highlights.NpcHighlight.new(function(npc)
           return npc.displayName == solution.npc
@@ -213,8 +205,8 @@ function SimpleClueSolver.new(clue, clue_state)
   self.disposable_group:add(create_step_highlights(clue):activate())
   self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.twigs))
 
-  ---@type Method.GenericPath?
-  local method = methods.getPreferred({ clue = clue.id })
+  local preferred = methods.getPreferred({ clue = clue.id })
+  local method = preferred and preferred.method --[[@as Method.GenericPath?]]
 
   self:setMethod(method)
 
