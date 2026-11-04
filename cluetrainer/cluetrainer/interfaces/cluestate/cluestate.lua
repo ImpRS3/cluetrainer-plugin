@@ -1,6 +1,7 @@
 local ClueStateAction      = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local storage              = require("cluetrainer/util/storage")
 local schema               = require("cluetrainer/util/schema")
+local prettyui_workarounds = require("cluetrainer/util/prettyui_workarounds")
 
 --- @type zyklib.reactive.Observable<{x: number, y: number}>
 local persistent_position  = storage.preference("cluestate_interface_position", schema.struct({
@@ -8,7 +9,7 @@ local persistent_position  = storage.preference("cluestate_interface_position", 
   y = schema.number({ default = 0 }),
 }))
 
-local WINDOW_WIDTH         = 150
+local WINDOW_WIDTH         = 260
 -- Mirrors the PrettyUI window chrome, which is not exposed.
 local WINDOW_BORDER        = 8
 local WINDOW_TITLE_HEIGHT  = 32
@@ -47,6 +48,7 @@ local HEADER_HEIGHT        = ROW_HEIGHT + DIVIDER_HEIGHT
 ---@field tier_icon PrettyUI.Sprite
 ---@field reset_button PrettyUI.SpriteButton
 ---@field divider PrettyUI.Divider
+---@field private reset_rows fun() Puts the flow layout back to right after the header, see `prettyui_workarounds`
 local ClueStateInterface   = {}
 ClueStateInterface.__index = ClueStateInterface
 
@@ -109,9 +111,25 @@ function ClueStateInterface.new()
 
   --self.divider = self.window:AddDivider({ rowBackground = false, marginTop = 1, marginBottom = 1 })
 
+  self.reset_rows = prettyui_workarounds.rememberFlow(self.window)
   self:_FitWindow()
+  -- Hidden until there is a clue, to avoid an empty window on screen.
+  self:setVisible(false)
 
   return self
+end
+
+--- Shows or hides the window, keeping whether it is docked or popped out.
+---@param visible boolean
+function ClueStateInterface:setVisible(visible)
+  local window = self.window
+  if window == nil then return end
+
+  if visible then
+    window:SetPoppedOut(window.poppedOut, false)
+  else
+    prettyui_workarounds.hide(window)
+  end
 end
 
 function ClueStateInterface:_FitWindow()
@@ -128,6 +146,8 @@ end
 ---Sets the clue displayed above the divider.
 ---@param clue StepShared? The current clue, or nil if there is none
 function ClueStateInterface:setClue(clue)
+  self:setVisible(clue ~= nil)
+
   if clue == nil then
     self.clue_text.content = "No clue"
     self.tier_icon.root.hidden = true
@@ -153,6 +173,7 @@ function ClueStateInterface:clearActions()
     action:destroy()
   end
   self.actions = {}
+  self.reset_rows()
   self:_FitWindow()
 end
 

@@ -15,8 +15,12 @@ local WORLD_WIDTH = 12800
 local WORLD_HEIGHT = 12800
 
 ---@class ct.GameMap
+---@field private shutdown_handler zyklib.reactive.EventHandler
 local GameMap = {}
 GameMap.__index = GameMap
+
+---@type ct.GameMap?
+local instance = nil
 
 function GameMap.new()
   ---@class ct.GameMap
@@ -35,6 +39,12 @@ function GameMap.new()
     resizable = true,
     scrollable = false,
     destroyOnClose = true,
+    -- Destroy the map with its window and forget it, so the next ensure_open builds a new one.
+    onClose = function()
+      self.shutdown_handler:cancel()
+      self.map:Destroy()
+      if instance == self then instance = nil end
+    end,
   })
 
   self.map = prettymap.Map.new(self.window.content, {
@@ -65,7 +75,7 @@ function GameMap.new()
   luaflet.twigs.prefab.FloorControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
   --luaflet.twigs.prefab.ZoomControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
 
-  zyklib.lifecycle.shutdown_event:subscribe(function()
+  self.shutdown_handler = zyklib.lifecycle.shutdown_event:subscribe(function()
     self.map:Destroy()
 
     self.window:Destroy()
@@ -118,9 +128,6 @@ function GameMap:fitBounds(bounds)
   return map:CentreOn(centre)
 end
 
----@type ct.GameMap
-local instance = nil
-
 --- Ensures the map exists and its window is visible, then returns it.
 ---@return ct.GameMap
 function GameMap.ensure_open()
@@ -130,6 +137,13 @@ function GameMap.ensure_open()
 
   instance.window:Show()
   return instance
+end
+
+--- Whether the map window is open. Lets a solver know whether its map elements still exist, as closing the map
+--- destroys them.
+---@return boolean
+function GameMap.isOpen()
+  return instance ~= nil
 end
 
 function GameMap.show()
