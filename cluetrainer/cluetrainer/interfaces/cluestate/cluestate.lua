@@ -1,4 +1,4 @@
-local WindowGeometry      = require("cluetrainer/util/WindowGeometry")
+local WindowGeometry       = require("cluetrainer/util/WindowGeometry")
 local prettyui_workarounds = require("cluetrainer/util/prettyui_workarounds")
 
 local geometry             = WindowGeometry.new("cluestate_interface_geometry")
@@ -47,7 +47,7 @@ function ClueStateInterface.new()
   ---@class ct.ClueStateInterface
   local self = setmetatable({}, ClueStateInterface)
 
-  ---@type zyklib.reactive.Event
+  ---@type zyklib.reactive.Event<nil, nil>
   self.reset_event = zyklib.reactive.Event.new()
 
   self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA), geometry:apply({
@@ -115,7 +115,7 @@ function ClueStateInterface:setVisible(visible)
   if window == nil then return end
 
   if visible then
-    window:SetPoppedOut(window.poppedOut, false)
+    prettyui_workarounds.show(window)
   else
     prettyui_workarounds.hide(window)
   end
@@ -143,7 +143,7 @@ function ClueStateInterface:setClue(clue)
 
     self.tier_icon.root:SetAssociatedObject(object_id)
     self.tier_icon.root.hidden = false
-    self.clue_text.content = string.format("(id %s)", tostring(clue.id))
+    self.clue_text.content = string.format("%s/%s", tostring(clue.type), tostring(clue.id))
   end
 
   self:_FitWindow()

@@ -1,10 +1,15 @@
 local ClueStateAction = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local methods = require("cluetrainer/model/shared/methods")
+local method_management = require("cluetrainer/methods/method_management")
+local MethodSelectDialog = require("cluetrainer/methods/MethodSelectDialog")
 
 local STATE_ALPHA = {
   incomplete = 1.0,
   complete = 0.5,
 }
+
+local PLACEHOLDER_ALPHA = 0.5
+local NOT_SELECTABLE_TEXT = "Not available yet"
 
 local ROW_HEIGHT = 24
 local ICON_SIZE = 20
@@ -13,11 +18,13 @@ local TEXT_X = ICON_SIZE + 6
 local BUTTON_SIZE = 20
 local BUTTON_MARGIN = 4
 
----Action line displaying the primary teleport of a method, with a button to request selecting another method.
----`setText` is intentionally unsupported, the text is derived from the method.
+---Action line displaying the primary teleport of the preferred method for a clue spot, with a button to open the
+---method selection dialog. `setText` is intentionally unsupported, the text is derived from the method.
+---Without a spot, no method can be selected yet and the select button is hidden.
 ---@class ct.solving.MethodAction : ct.interfaces.cluestate.ClueStateAction
+---@field spot ClueSpot.Id?
 ---@field method ct.AugmentedMethod.Generic?
----@field onSelectRequested fun(action: ct.solving.MethodAction)?
+---@field onMethodSelected fun(method: ct.AugmentedMethod.Generic?)?
 ---@field text ui.Text?
 ---@field icon PrettyUI.Sprite?
 ---@field select_button PrettyUI.SpriteButton?
@@ -25,17 +32,29 @@ local MethodAction = setmetatable({}, { __index = ClueStateAction })
 MethodAction.__index = MethodAction
 
 ---@class ct.solving.MethodAction.Options
----@field onSelectRequested fun(action: ct.solving.MethodAction)? Called when the player clicks the select button
+---@field onMethodSelected fun(method: ct.AugmentedMethod.Generic?)? Called whenever the player picks a method in the dialog, immediately and not only on confirmation. Nil means "None"
 
----@param method ct.AugmentedMethod.Generic?
+---@param spot ClueSpot.Id? The spot to select a method for, nil if it is not known yet
 ---@param options ct.solving.MethodAction.Options?
 ---@return ct.solving.MethodAction
-function MethodAction.new(method, options)
+function MethodAction.new(spot, options)
   local self = setmetatable({}, MethodAction)
   self:_init()
 
-  self.method = method
-  self.onSelectRequested = options and options.onSelectRequested or nil
+  self.onMethodSelected = options and options.onMethodSelected or nil
+  self.spot = spot
+  self.method = spot and method_management.getPreferred(spot) or nil
+
+  return self
+end
+
+---Sets the spot and resets the method to the preferred one. Does not call `onMethodSelected`, read `method` afterwards.
+---@param spot ClueSpot.Id? nil if the spot is not known yet
+---@return ct.solving.MethodAction
+function MethodAction:setSpot(spot)
+  self.spot = spot
+  self.method = spot and method_management.getPreferred(spot) or nil
+  if self.constructed then self:_apply() end
 
   return self
 end
@@ -49,8 +68,21 @@ function MethodAction:setMethod(method)
   return self
 end
 
+---@private
+function MethodAction:_openDialog()
+  if self.spot == nil then return end
+
+  MethodSelectDialog.open({
+    methods = method_management.getAllForClue(self.spot),
+    selected = self.method,
+    onSelect = function(method)
+      self:setMethod(method)
+      if self.onMethodSelected then self.onMethodSelected(method) end
+    end,
+  })
+end
+
 ---@protected
----@param view PrettyUI.SimpleView
 function MethodAction:_construct(view)
   self.text = view:AddText({
     text = "",
@@ -72,7 +104,7 @@ function MethodAction:_construct(view)
   })
 
   self.select_button = view:AddSpriteButton("LIST_LAYOUT", function()
-    if self.onSelectRequested then self.onSelectRequested(self) end
+    self:_openDialog()
   end, {
     inline = true,
     x = -(BUTTON_SIZE + BUTTON_MARGIN),
@@ -108,13 +140,24 @@ function MethodAction:_apply()
   local teleport = method and methods.primaryTeleport(method.method) or nil
   local alpha = STATE_ALPHA[self.state]
 
-  if teleport ~= nil then
+  local selectable = self.spot ~= nil
+
+  if not selectable then
+    -- Nothing to choose yet, so the select button is not offered
+    self.text.content = NOT_SELECTABLE_TEXT
+    alpha = PLACEHOLDER_ALPHA
+    teleport = nil
+  elseif teleport ~= nil then
     self.text.content = teleport:hover()
+  elseif method ~= nil then
+    self.text.content = method.method.name
   else
-    self.text.content = method and method.method.name or "No method"
+    self.text.content = "No method set"
+    alpha = PLACEHOLDER_ALPHA
   end
 
   applyIcon(self.icon, teleport)
+  self.select_button.root.hidden = not selectable
 
   self.text.alpha = alpha
   self.icon.root.alpha = alpha

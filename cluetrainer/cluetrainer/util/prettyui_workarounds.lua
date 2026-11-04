@@ -57,11 +57,22 @@ end
 -- Fix in PrettyUI: a `Panel:SetVisible(visible)`.
 -- Then remove: `hide`, and call `window:SetVisible(visible)` in cluestate.lua's `setVisible`.
 
---- Hides the panel, docked or popped out. `panel:SetPoppedOut(panel.poppedOut, false)` shows it again.
+--- Hides the panel, docked or popped out, including its drag layers. `show` makes it visible again.
 ---@param panel PrettyUI.Panel
 function prettyui_workarounds.hide(panel)
   panel.dock.root.hidden = true
   panel.overlay.root.hidden = true
+  -- The drag layers are separate components that would otherwise keep catching clicks
+  if panel.dockDragLayer then panel.dockDragLayer.hidden = true end
+  if panel.overlayDragLayer then panel.overlayDragLayer.hidden = true end
+end
+
+--- Shows a panel hidden with `hide`, on the surface it is currently docked or popped out on.
+---@param panel PrettyUI.Panel
+function prettyui_workarounds.show(panel)
+  if panel.dockDragLayer then panel.dockDragLayer.hidden = false end
+  if panel.overlayDragLayer then panel.overlayDragLayer.hidden = false end
+  panel:SetPoppedOut(panel.poppedOut, false)
 end
 
 -- 3. Measuring a panel's content

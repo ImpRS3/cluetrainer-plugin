@@ -2,12 +2,12 @@ local prettymap = require("prettymap")
 local zyklib = require("zyklib")
 local teleport_layer = require("cluetrainer/interfaces/map/teleport_layer")
 local WindowGeometry = require("cluetrainer/util/WindowGeometry")
+local prettyui_workarounds = require("cluetrainer/util/prettyui_workarounds")
 
 local luaflet = require("prettymap/luaflet")
 
--- Mirrors the PrettyUI window chrome, which is not exposed.
-local WINDOW_BORDER = 8
-local WINDOW_TITLE_HEIGHT = 32
+-- Mirrors the PrettyUI panel chrome, which is not exposed.
+local PANEL_BORDER = 8
 
 -- Mirrors prettymap's internal zoom steps and world size, which are not exposed.
 local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
@@ -28,9 +28,9 @@ local instance = nil
 function GameMap.new()
   ---@class ct.GameMap
   local self = setmetatable({}, GameMap)
+  self.visible = true
 
-  self.window = prettyui.Window.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA), geometry:apply({
-    title = "Clue Trainer",
+  self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA), geometry:apply({
     x = -210,
     y = -150,
     xAnchor = 0.5,
@@ -41,16 +41,6 @@ function GameMap.new()
     minHeight = 220,
     resizable = true,
     scrollable = false,
-    destroyOnClose = true,
-    hideCloseButton = true,
-    -- Destroy the map with its window and forget it, so the next ensure_open builds a new one.
-    onClose = function()
-      geometry:save(self.window)
-
-      self.shutdown_handler:cancel()
-      self.map:Destroy()
-      if instance == self then instance = nil end
-    end,
   }))
 
   self.map = prettymap.Map.new(self.window.content, {
@@ -64,15 +54,15 @@ function GameMap.new()
     trackPlayer = false,
   })
 
-  -- Window has no resize callback, so hook SetSize, which the resize handle calls on every drag step.
-  local windowSetSize = self.window.SetSize
+  -- Panel has no resize callback, so hook SetSize, which the resize handle calls on every drag step.
+  local panelSetSize = self.window.SetSize
 
   local game_map_self = self
   self.window.SetSize = function(self, width, height)
-    windowSetSize(self, width, height)
+    panelSetSize(self, width, height)
     game_map_self.map:SetSize(
-      self.root.width - WINDOW_BORDER * 2,
-      self.root.height - WINDOW_TITLE_HEIGHT - WINDOW_BORDER
+      self.root.width - PANEL_BORDER,
+      self.root.height - PANEL_BORDER
     )
   end
 
@@ -82,13 +72,43 @@ function GameMap.new()
   --luaflet.twigs.prefab.ZoomControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
 
   self.shutdown_handler = zyklib.lifecycle.shutdown_event:subscribe(function()
-    geometry:save(self.window)
-    self.map:Destroy()
-
-    self.window:Destroy()
+    self:close()
   end)
 
   return self
+end
+
+---Saves the geometry and destroys the map with its panel. The next ensure_open builds a new one.
+function GameMap:close()
+  geometry:save(self.window)
+
+  self.shutdown_handler:cancel()
+  self.map:Destroy()
+  self.window:Destroy()
+  if instance == self then instance = nil end
+end
+
+---Shows or hides the map panel. The map and everything added to it stay alive while it is hidden.
+---@param visible boolean
+function GameMap:setVisible(visible)
+  if visible == self.visible then return end
+  self.visible = visible
+
+  if visible then
+    prettyui_workarounds.show(self.window)
+  else
+    geometry:save(self.window)
+    prettyui_workarounds.hide(self.window)
+  end
+end
+
+---@return boolean
+function GameMap:isVisible()
+  return self.visible
+end
+
+function GameMap:toggle()
+  self:setVisible(not self.visible)
 end
 
 ---@param bounds ct.Bounds
@@ -135,26 +155,26 @@ function GameMap:fitBounds(bounds)
   return map:CentreOn(centre)
 end
 
---- Ensures the map exists and its window is visible, then returns it.
+--- Ensures the map exists, then returns it.
 ---@return ct.GameMap
 function GameMap.ensure_open()
   if not instance then
     instance = GameMap.new()
   end
 
-  instance.window:Show()
   return instance
 end
 
 --- Whether the map window is open. Lets a solver know whether its map elements still exist, as closing the map
---- destroys them.
+--- Whether the map exists, visible or not. Lets a solver know whether its map elements still exist.
 ---@return boolean
 function GameMap.isOpen()
   return instance ~= nil
 end
 
+--- Makes the map visible, creating it first if needed.
 function GameMap.show()
-  GameMap.ensure_open()
+  GameMap.ensure_open():setVisible(true)
 end
 
 return GameMap

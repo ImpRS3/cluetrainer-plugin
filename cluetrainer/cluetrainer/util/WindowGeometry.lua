@@ -9,11 +9,10 @@ local WindowGeometry = {}
 WindowGeometry.__index = WindowGeometry
 
 ---@class ct.util.WindowGeometry.Value
----@field saved boolean Whether a geometry was ever saved
----@field x number
----@field y number
----@field width number
----@field height number
+---@field x number? Nil until a geometry was saved
+---@field y number?
+---@field width number?
+---@field height number?
 
 ---@class ct.util.WindowGeometry.Options
 ---@field size boolean? Whether to persist and restore the size as well. Default false
@@ -26,11 +25,10 @@ function WindowGeometry.new(key, options)
 
   self.save_size = options ~= nil and options.size == true
   self.value = storage.preference(key, schema.struct({
-    saved = schema.bool({ default = false }),
-    x = schema.number({ default = 0 }),
-    y = schema.number({ default = 0 }),
-    width = schema.number({ default = 0 }),
-    height = schema.number({ default = 0 }),
+    x = schema.number({}),
+    y = schema.number({}),
+    width = schema.number({}),
+    height = schema.number({}),
   }))
 
   return self
@@ -43,12 +41,12 @@ end
 ---@return T options The same table
 function WindowGeometry:apply(options)
   local saved = self.value:get()
-  if not saved.saved then return options end
+  if saved.x == nil or saved.y == nil then return options end
 
   options.x, options.y = saved.x, saved.y
   options.xAnchor, options.yAnchor = 0, 0
 
-  if self.save_size and saved.width > 0 and saved.height > 0 then
+  if self.save_size and saved.width ~= nil and saved.height ~= nil then
     options.width, options.height = saved.width, saved.height
   end
 
@@ -63,11 +61,10 @@ function WindowGeometry:save(window)
   if root == nil then return end
 
   self.value:set({
-    saved = true,
     x = root.x,
     y = root.y,
-    width = self.save_size and root.width or 0,
-    height = self.save_size and root.height or 0,
+    width = self.save_size and root.width or nil,
+    height = self.save_size and root.height or nil,
   })
 end
 

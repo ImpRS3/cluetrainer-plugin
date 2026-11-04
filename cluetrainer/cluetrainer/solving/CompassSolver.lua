@@ -5,7 +5,6 @@ local luaflet            = require("prettymap/luaflet")
 local map                = require("cluetrainer/interfaces/map/map")
 local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
 local Bounds             = require("cluetrainer/util/Bounds")
-local method_management  = require("cluetrainer/methods/method_management")
 local Path               = require("cluetrainer/model/shared/path")
 local ActiveClueSolver   = require("cluetrainer/solving/common/ActiveClueSolver")
 local Navigator          = require("cluetrainer/solving/common/navigator")
@@ -13,7 +12,6 @@ local MapSectionControl  = require("cluetrainer/solving/map_navigator/MapSection
 local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEntity")
 local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local MethodAction       = require("cluetrainer/solving/common/MethodAction")
-local MethodSelectDialog = require("cluetrainer/methods/MethodSelectDialog")
 
 ---@class ct.compasslogic
 local compasslogic       = {}
@@ -137,26 +135,17 @@ function CompassSolver.new(clue, state_window)
       possible = true
     }
   end)
-  
+
   state_window:clearActions()
 
   self.actions = {}
-  self.actions.identify = state_window:addAction(ClueStateAction.Text.new("Identify Spot"))
+  self.actions.identify = state_window:addAction(ClueStateAction.Text.new(""))
   self.actions.method = state_window:addAction(MethodAction.new(nil, {
-    onSelectRequested = function(action)
-      if self.identified_spot == nil then return end
-
-      MethodSelectDialog.open({
-        methods = method_management.getAllForClue({ clue = self.clue.id, spot = self.identified_spot }),
-        selected = action.method,
-        onSelect = function(method)
-          self:setMethod(method)
-        end,
-      })
+    onMethodSelected = function(method)
+      self:setPath(method and method.method.main_path or nil)
     end,
   }))
 
-  self.actions.dig_at = state_window:addAction(ClueStateAction.Text.new("Dig At"))
   --There is no reasonable way to track completion of the following three
   --self.actions.defeat_wizard = state_window:addAction(ClueStateAction.Text.new("Defeat Wizard"))
   --self.actions.complete_puzzle = state_window:addAction(ClueStateAction.Text.new("Complete Puzzle"))
@@ -206,45 +195,22 @@ function CompassSolver:update()
   end
 
   self.actions.identify
-      :setText("Identify " .. remaining_candidates .. "/" .. #self.clue.spots)
-      :setState(identified_solution and "complete" or "incomplete")
-
-  self.actions.dig_at
-      :setText("Dig At " .. (identified_solution and (identified_solution.x .. "|" .. identified_solution.y) or "???"))
+      :setText(identified_solution and ("Dig at " .. (identified_solution.x .. "|" .. identified_solution.y)) or
+        (remaining_candidates .. " candidates"))
+  -- :setState(identified_solution and "complete" or "incomplete")
 
   -- TODO: Render shapes for candidates
 
   self.identified_spot = remaining_candidates == 1 and identified_solution or nil
 
-  if remaining_candidates == 1 then
-    -- If there is one remaining candidate, the spot has been identified and we can show a method
-    ---@type ct.AugmentedMethod<Method>?
-    local method = method_management.getPreferred({
-      clue = self.clue.id,
-      spot = self.identified_spot
-    })
+  -- Once the spot is identified, the action picks the preferred method itself
+  local action = self.actions.method
+  action:setSpot(self.identified_spot and { clue = self.clue.id, spot = self.identified_spot } or nil)
+  self:setPath(action.method and action.method.method.main_path or nil)
 
-    if method ~= nil then
-      log("Method found")
-      self:setMethod(method)
-    else
-      -- TODO: What do we do for identified spots without a selected method?
-      log("No method found")
-      self:setMethod(nil)
-    end
-  else
-    self:setMethod(nil)
-
-    if remaining_candidates > 1 then
-      self:fitRemainingCandidates()
-    end
+  if remaining_candidates > 1 then
+    self:fitRemainingCandidates()
   end
-end
-
----@param method ct.AugmentedMethod<Method.GenericPath>?
-function CompassSolver:setMethod(method)
-  self.actions.method:setMethod(method)
-  self:setPath(method and method.method.main_path or nil)
 end
 
 ---@param path Path.Raw?

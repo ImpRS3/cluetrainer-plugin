@@ -12,6 +12,7 @@ local luaflet               = require "prettymap/luaflet"
 local PathStepEntity        = require "cluetrainer/solving/map_navigator/PathStepEntity"
 local RichText              = require "cluetrainer/util/RichText"
 local ClueStateAction       = require("cluetrainer/interfaces/cluestate/ClueStateAction")
+local MethodAction          = require "cluetrainer/solving/common/MethodAction"
 local zyklib                = require "zyklib"
 
 ---@param step Emote
@@ -43,6 +44,7 @@ local function stitch_path(method)
 end
 
 ---@class ct.EmoteClueActions
+---@field method? ct.solving.MethodAction
 ---@field emote_get_hideyhole? ct.interfaces.cluestate.ClueStateAction
 ---@field equip_items? ct.interfaces.cluestate.ClueStateAction
 ---@field emote_summon? ct.interfaces.cluestate.ClueStateAction
@@ -86,6 +88,12 @@ function EmoteClueSolver.new(clue, clue_state)
   local state_panel = clue_state
 
   state_panel:clearActions()
+
+  self.actions.method = state_panel:addAction(MethodAction.new({ clue = clue.id }, {
+    onMethodSelected = function(selected)
+      self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
+    end,
+  }))
 
   self.actions.emote_get_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Get hidey-hole"))
   self.actions.equip_items = state_panel:addAction(ClueStateAction.Text.new("Equip items"))

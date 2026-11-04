@@ -18,6 +18,7 @@ local RichText               = require "cluetrainer/util/RichText"
 local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
 local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
+local MethodAction           = require "cluetrainer/solving/common/MethodAction"
 
 ---@param step Step
 ---@return Solution?
@@ -175,6 +176,7 @@ local function stitch_path(method)
 end
 
 ---@class ct.SimpleClueActions
+---@field method? ct.solving.MethodAction
 ---@field talk? ct.interfaces.cluestate.ClueStateAction
 ---@field dig? ct.interfaces.cluestate.ClueStateAction
 ---@field obtain_key? ct.interfaces.cluestate.ClueStateAction
@@ -199,7 +201,7 @@ SimpleClueSolver.__index = SimpleClueSolver
 ---@param clue_state ct.ClueStateInterface
 ---@return ct.ActiveSimpleClue
 function SimpleClueSolver.new(clue, clue_state)
-  ---@type ct.ActiveSimpleClue
+  ---@class ct.ActiveSimpleClue
   local self = setmetatable(ActiveClueSolver.new(clue), SimpleClueSolver)
 
   self.disposable_group:add(create_step_highlights(clue):activate())
@@ -218,14 +220,15 @@ function SimpleClueSolver.new(clue, clue_state)
     map.ensure_open():fitBounds(bounds)
   end
 
-  -- Claim ownership of the clue state panel and show relevant actions to the player
-
-  ---@type ct.ActiveSimpleClue
   self.actions = {}
 
   local state_panel = clue_state
 
-  state_panel:clearActions()
+  self.actions.method = state_panel:addAction(MethodAction.new({ clue = clue.id }, {
+    onMethodSelected = function(selected)
+      self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
+    end,
+  }))
 
   local sol = inferSolution(clue)
 
@@ -233,7 +236,7 @@ function SimpleClueSolver.new(clue, clue_state)
     if sol.type == "talkto" then
       self.actions.talk = state_panel:addAction(ClueStateAction.Text.new("Talk to " .. RichText.npc(sol.npc)))
     elseif sol.type == "dig" then
-      self.actions.dig = state_panel:addAction(ClueStateAction.Text.new("Dig  " .. (sol.description or "at target")))
+      self.actions.dig = state_panel:addAction(ClueStateAction.Text.new("Dig " .. (sol.description or "at target")))
     elseif sol.type == "search" then
       if sol.key then
         self.actions.obtain_key = state_panel:addAction(ClueStateAction.Text.new("Obtain key"))
