@@ -198,7 +198,7 @@ function GameMap.show()
   GameMap.ensure_open():setVisible(true)
 end
 
---- Hides the map if it exists.
+--- Hides the map if it exists, keeping it and its elements for the next show.
 function GameMap.hide()
   if instance then instance:setVisible(false) end
 end

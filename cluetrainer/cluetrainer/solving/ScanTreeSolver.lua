@@ -412,13 +412,6 @@ function ActiveScanClue:render()
   for _, row in ipairs(rows) do self.clue_state:addAction(scan_display.action(row)) end
 end
 
---- Shows the scan again on the map the player closed.
----@return boolean reopened
-function ActiveScanClue:reopenMap()
-  self.map:reopen()
-  return true
-end
-
 local ScanTreeSolver = {}
 
 --- Starts the scan tree of the clue, or tells there is none.

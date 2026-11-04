@@ -40,7 +40,6 @@ local PREVIEW_OPACITY   = 0.5
 ---@field private route prettymap.luaflet.Twig?
 ---@field private range_squares prettymap.luaflet.Twig?
 ---@field private range_signature string?
----@field private step_bounds ct.Bounds? What the current step zooms to, kept to zoom there again on reopening
 ---@field private preview prettymap.luaflet.Twig?
 ---@field private player ct.PlayerMarker
 ---@field private markers ct.SpotMarker[] In the order of `ordered_spots`
@@ -107,16 +106,13 @@ function ScanMap:setStep(path, area, range, dig_spots)
   bounds:addArea(area)
   for _, spot in ipairs(dig_spots or {}) do bounds:addTile(spot) end
   if area and range then bounds:addArea(TileArea.grow(area, #RANGE_COLOURS * range)) end
-  self.step_bounds = bounds
   self:fit(bounds)
 end
 
---- Zooms to the bounds with some room around them, below the counter. Only while the scan is on the map, so a map
---- the player closed stays closed.
+--- Zooms to the bounds with some room around them, below the counter.
 ---@private
 ---@param bounds ct.Bounds
 function ScanMap:fit(bounds)
-  if self.layer.manager == nil then return end
   local view = bounds:copy():ensureSize(MIN_VIEW_TILES):extend(FIT_MARGIN)
   map.ensure_open():fitBounds(view, 2 * COUNTER_OFFSET + COUNTER_HEIGHT)
 end
@@ -169,7 +165,6 @@ end
 ---@param squares TileArea
 ---@param area TileArea?
 function ScanMap:keepInView(squares, area)
-  if self.layer.manager == nil then return end
   local game_map = map.ensure_open()
   local corners = TileArea.toRect(squares)
   if game_map:shows(corners.topleft) and game_map:shows(corners.botright) then return end
@@ -199,16 +194,6 @@ end
 ---@param tile TileCoordinates?
 function ScanMap:setPlayer(tile)
   self.player:setTile(tile)
-end
-
---- Shows the scan on the map again after the player closed it, as it stands now.
-function ScanMap:reopen()
-  local twigs = map.ensure_open().map.twigs
-  self.layer:AddTo(twigs)
-  self.counter:AddTo(twigs)
-  if self.step_bounds then self:fit(self.step_bounds) end
-  -- Draw the range squares again on the next poll, to check them against the new view.
-  self.range_signature = nil
 end
 
 function ScanMap:dispose()

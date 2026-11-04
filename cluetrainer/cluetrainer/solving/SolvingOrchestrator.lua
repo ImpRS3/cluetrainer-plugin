@@ -44,26 +44,30 @@ function SolvingOrchestrator:reset()
 
   self.clue_state:setClue(nil)
   self.clue_state:clearActions()
+  -- Hidden until the next clue, so the cross closes both windows.
+  self.clue_state:setVisible(false)
+  map.hide()
 end
 
 ---@param clue Step?
 function SolvingOrchestrator:onClueDetected(clue)
   -- Keep the running solver when the same clue is read again (a scan clue is read on every "Start scanning"), so its
-  -- progress stays, and reopen its map when the player closed it. Rebuild it once it ended, or when it can't reopen
-  -- its map.
+  -- progress stays. Rebuild it once it ended, or once the map with its elements is gone.
   local active = self.active_solver
-  if clue ~= nil and active ~= nil and active.clue == clue and not active.ended
-      and (map.isOpen() or active:reopenMap()) then
-    return
-  end
+  if clue ~= nil and active ~= nil and active.clue == clue and not active.ended and map.isOpen() then return end
 
   if active ~= nil then
     active:dispose()
     self.active_solver = nil
+    -- Here rather than in each solver, so no rows of the previous clue stay above the next clue's.
+    self.clue_state:clearActions()
   end
 
   if clue ~= nil then
     self.clue_state:setClue(clue)
+    -- Shown again after the cross hid them.
+    self.clue_state:setVisible(true)
+    map.show()
   end
 
   self.active_solver = (function()
