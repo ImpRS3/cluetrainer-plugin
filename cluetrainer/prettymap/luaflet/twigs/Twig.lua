@@ -28,6 +28,7 @@
 ---@field manager prettymap.ElementManager? The manager the element is added to; nil while not on a map.
 ---@field parent prettymap.luaflet.Twig? Element this one is a child of; nil for top-level elements.
 ---@field children prettymap.luaflet.Twig[] Child elements, added to and removed from the map together with this one.
+---@field clipsToView boolean? Laid out again when the map is panned; for elements that clip their drawing to the view.
 local Element = {}
 Element.__index = Element
 
