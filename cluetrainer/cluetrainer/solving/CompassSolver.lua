@@ -47,7 +47,7 @@ function compasslogic.isPossible(information, spot)
   end)
 end
 
-local CompassSpotMarker = require "cluetrainer/solving/compass/CompassSpotMarker"
+local SpotMarker = require "cluetrainer/interfaces/map/elements/SpotMarker"
 
 ---@param clue Compass
 ---@param info ct.Compass.TriangulationPoint
@@ -100,7 +100,7 @@ end, true)
 
 ---@class ct.ActiveCompassSolver : ct.ActiveClueSolver
 ---@field triangulation_points {info: ct.Compass.TriangulationPoint}[]
----@field candidates {spot: TileCoordinates, marker: ct.CompassSpotMarker, possible: boolean}[]
+---@field candidates {spot: TileCoordinates, marker: ct.SpotMarker, possible: boolean}[]
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
@@ -131,7 +131,13 @@ function CompassSolver.new(clue, state_window)
   self.candidates = zyklib.array.map(clue.spots, function(spot, i)
     return {
       spot = spot,
-      marker = CompassSpotMarker.new({ spot = spot, spot_id = i - 1 }):AddTo(self.map_layer),
+      marker = SpotMarker.new({
+        spot = spot,
+        spot_id = i - 1,
+        single_tile = clue.single_tile_target,
+        title = "Compass spot",
+        hint = "Click to select as solution and view pathing.",
+      }):AddTo(self.map_layer),
       possible = true
     }
   end)
