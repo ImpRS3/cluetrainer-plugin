@@ -17,13 +17,6 @@ local CIRCLE_SEGMENTS = 12
 ---@field head ("tip"|"x")? Default "tip".
 ---@field arm_length number? Length of the head's arms in tiles. Default 0.5 for "tip", 0.25 for "x".
 
----@param rgb integer
----@param opacity number
----@return integer rgba
-function PathGraphics.rgba(rgb, opacity)
-  return rgb * 256 + math.floor(opacity * 255 + 0.5)
-end
-
 --- Moves `from` towards `to` by `distance` tiles.
 ---@param from TileCoordinates
 ---@param to TileCoordinates

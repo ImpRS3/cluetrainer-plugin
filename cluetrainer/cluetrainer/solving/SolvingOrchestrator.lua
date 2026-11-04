@@ -2,6 +2,7 @@ local clue_detector         = require "cluetrainer/clue_detector"
 local CompassSolver         = require "cluetrainer/solving/CompassSolver"
 local EmoteClueSolver       = require "cluetrainer/solving/EmoteClueSolver"
 local SimpleClueSolver      = require "cluetrainer/solving/SimpleClueSolver"
+local ScanTreeSolver        = require "cluetrainer/solving/ScanTreeSolver"
 local ClueStateInterface    = require "cluetrainer/interfaces/cluestate/cluestate"
 local map                   = require "cluetrainer/interfaces/map/map"
 
@@ -47,10 +48,14 @@ end
 
 ---@param clue Step?
 function SolvingOrchestrator:onClueDetected(clue)
-  -- Keep the running solver when the same clue is read again, so its progress stays. Rebuild it once the map was
-  -- closed, to put its map elements back on a reopened map.
+  -- Keep the running solver when the same clue is read again (a scan clue is read on every "Start scanning"), so its
+  -- progress stays, and reopen its map when the player closed it. Rebuild it once it ended, or when it can't reopen
+  -- its map.
   local active = self.active_solver
-  if clue ~= nil and active ~= nil and active.clue == clue and map.isOpen() then return end
+  if clue ~= nil and active ~= nil and active.clue == clue and not active.ended
+      and (map.isOpen() or active:reopenMap()) then
+    return
+  end
 
   if active ~= nil then
     active:dispose()
@@ -69,7 +74,7 @@ function SolvingOrchestrator:onClueDetected(clue)
     elseif clue.type == "emote" then
       return EmoteClueSolver.new(clue, self.clue_state)
     elseif clue.type == "scan" then
-      --return ScanClueSolver.new(clue)
+      return ScanTreeSolver.new(clue, self.clue_state)
     else
       return SimpleClueSolver.new(clue, self.clue_state)
     end

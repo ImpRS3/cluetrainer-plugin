@@ -3,6 +3,7 @@ local TileArea = require "cluetrainer/model/shared/TileArea"
 local TeleportSpot = require "cluetrainer/model/shared/TeleportSpot"
 local array = require "zyklib/array"
 local Bounds = require("cluetrainer/util/Bounds")
+local tiles = require "cluetrainer/model/shared/tiles"
 
 ---@alias Direction any
 ---@alias MovementAbility any
@@ -163,6 +164,16 @@ function Path.firstTeleport(path)
   return step and TeleportSpot.resolve(step.id)
 end
 
+-- Steps that move the player over the ground, drawn as a line to follow.
+local MOVEMENT_STEPS = { run = true, ability = true, redclick = true, transport = true, cheat = true }
+
+--- Whether the path moves the player over the ground besides teleporting, i.e. has a line to follow.
+---@param path Path.Raw
+---@return boolean
+function Path.hasMovement(path)
+  return array.exists(path, function(step) return MOVEMENT_STEPS[step.type] == true end)
+end
+
 --- Finds the movement of `action` that applies at `tile`: the first whose `valid_from` area contains it.
 ---@param action table
 ---@param tile TileCoordinates?
@@ -233,7 +244,7 @@ function Path.isFar(step, context, threshold)
     local start = step.assumed_start
     if not new_pos or not start then return false end
 
-    return math.max(math.abs(start.x - new_pos.x), math.abs(start.y - new_pos.y)) > threshold
+    return tiles.distance(start, new_pos) > threshold
   elseif step.type == "teleport" then
     if context then
       return context.position > 0 and context.path[context.position].type == "orientation"

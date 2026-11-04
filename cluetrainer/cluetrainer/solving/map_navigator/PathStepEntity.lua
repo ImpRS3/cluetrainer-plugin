@@ -8,6 +8,7 @@ local InteractionMarker = require("cluetrainer/interfaces/map/elements/Interacti
 local ItemMarker = require("cluetrainer/interfaces/map/elements/ItemMarker")
 local PropertiesTooltip = require("cluetrainer/interfaces/map/elements/PropertiesTooltip")
 local TeleportElement = require("cluetrainer/interfaces/map/elements/TeleportElement")
+local Colour = require("cluetrainer/util/Colour")
 
 local WEIGHT = 1
 local TRANSPORT_COLOUR = 0x069334
@@ -87,7 +88,7 @@ local function build_ability(self, step)
       or { head = "x", arm_length = 0.25 }
 
   self:Add(PathGraphics.arrow(PathGraphics.offset_towards(step.from, step.to, 0.2), step.to, {
-    colour = PathGraphics.rgba(colour, 1), weight = WEIGHT, head = head.head, arm_length = head.arm_length,
+    colour = Colour.rgba(colour, 1), weight = WEIGHT, head = head.head, arm_length = head.arm_length,
   }))
 end
 
@@ -108,10 +109,10 @@ local function build_run(self, step)
   end
 
   luaflet.twigs.PolygonTwig.new()
-      :AddPolyline(points, WEIGHT, PathGraphics.rgba(RUN_COLOUR, 1)):AddTo(self)
+      :AddPolyline(points, WEIGHT, Colour.rgba(RUN_COLOUR, 1)):AddTo(self)
 
 
-  self:Add(PathGraphics.cross(last, 0.1, PathGraphics.rgba(RUN_END_COLOUR, 1), 5))
+  self:Add(PathGraphics.cross(last, 0.1, Colour.rgba(RUN_END_COLOUR, 1), 5))
 end
 
 ---@param self cluetrainer.PathStepEntity
@@ -128,7 +129,7 @@ end
 ---@param self cluetrainer.PathStepEntity
 ---@param step Path.Step.RedClick
 local function build_redclick(self, step)
-  self:Add(PathGraphics.cross(step.where, 0.3, PathGraphics.rgba(REDCLICK_COLOUR, 1), WEIGHT))
+  self:Add(PathGraphics.cross(step.where, 0.3, Colour.rgba(REDCLICK_COLOUR, 1), WEIGHT))
   add_marker(self, InteractionMarker.new({ coordinate = geometry.coord(step.where), cursor = step.how }))
 end
 
@@ -149,7 +150,7 @@ local function build_transport(self, step)
 
   local is_remote = movement and movement.fixed_target and not movement.fixed_target.relative
   local ends_up = Path.endsUp({ step })
-  local colour = PathGraphics.rgba(TRANSPORT_COLOUR, 1)
+  local colour = Colour.rgba(TRANSPORT_COLOUR, 1)
 
   if ends_up then
     local too_far = is_remote or Path.isFar(step, nil, FAR_ARROW_THRESHOLD)
@@ -178,7 +179,7 @@ end
 ---@param step Path.Step.Cheat
 local function build_cheat(self, step)
   local start = step.assumed_start
-  local colour = PathGraphics.rgba(TRANSPORT_COLOUR, 1)
+  local colour = Colour.rgba(TRANSPORT_COLOUR, 1)
 
   if start and not Path.isFar(step, nil, FAR_ARROW_THRESHOLD) then
     self:Add(PathGraphics.arrow(PathGraphics.offset_towards(start, step.target, 0.2), step.target,
@@ -212,7 +213,7 @@ local function build_cosmetic(self, step)
 
   if step.arrow then
     self:Add(PathGraphics.arrow(step.arrow[1], step.arrow[2], {
-      colour = PathGraphics.rgba(parse_colour(step.arrow_color, COSMETIC_ARROW_COLOUR), 0.6), weight = WEIGHT,
+      colour = Colour.rgba(parse_colour(step.arrow_color, COSMETIC_ARROW_COLOUR), 0.6), weight = WEIGHT,
     }))
   end
 end
@@ -241,6 +242,16 @@ function PathStepEntity.new(step)
   if build then build(self, step) end
 
   return self
+end
+
+--- All steps of a path in one twig, so the route is added to and removed from the map as a whole.
+---@param path Path.Step[]
+---@param options prettymap.luaflet.TwigOptions?
+---@return prettymap.luaflet.Twig
+function PathStepEntity.route(path, options)
+  local route = luaflet.twigs.Twig.new(options)
+  for _, step in ipairs(path) do PathStepEntity.new(step):AddTo(route) end
+  return route
 end
 
 return PathStepEntity

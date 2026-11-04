@@ -67,7 +67,7 @@ local function create_step_highlights(step)
       local spot = solution
           .spot --[[@as TileCoordinates]] -- LuaCats does not narrow the type of step.solution to DigSolution, so we need to cast this
 
-      table.insert(highlights, PathMesh.areaHighlight(TileArea.centered_on(spot, { x = 3, y = 3 })))
+      table.insert(highlights, PathMesh.digHighlight(spot))
     elseif solution.type == "talkto" then
       table.insert(highlights, zyklib.highlights.NpcHighlight.new(function(npc)
           return npc.displayName == solution.npc
@@ -304,13 +304,8 @@ function SimpleClueSolver:setPath(path)
     self.navigator:set(path)
 
     local sectioned_path = Path.split_into_sections(path)
-    self.path_twig = luaflet.twigs.Twig.new():AddTo(map.ensure_open().map.twigs)
-
-    for _, section in ipairs(sectioned_path) do
-      for _, step in ipairs(section.steps) do
-        PathStepEntity.new(step):AddTo(self.path_twig)
-      end
-    end
+    local steps = zyklib.array.flatMap(sectioned_path, function(section) return section.steps end)
+    self.path_twig = PathStepEntity.route(steps):AddTo(map.ensure_open().map.twigs)
 
     self.map_navigator = MapSectionControl.new(map.ensure_open(),
       zyklib.array.map(sectioned_path, function(sec) return { name = sec.name, bounds = Path.bounds(sec.steps) } end))

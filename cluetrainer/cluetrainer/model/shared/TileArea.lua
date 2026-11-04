@@ -43,6 +43,41 @@ function TileArea.toRect(self)
   }
 end
 
+--- Whether the tile lies in the area and on its level.
+---@param area TileArea
+---@param tile TileCoordinates
+---@return boolean
+function TileArea.contains(area, tile)
+  return (area.origin.level or 0) == (tile.level or 0) and TileArea.ensure_mutable(area):query(tile)
+end
+
+--- The rectangle of all tiles within `distance` of the area, without the area's shape.
+---@param area TileArea
+---@param distance integer
+---@return TileArea
+function TileArea.grow(area, distance)
+  local size = TileArea.ensure_mutable(area):getSize()
+  return {
+    origin = { x = area.origin.x - distance, y = area.origin.y - distance, level = area.origin.level },
+    size = { x = size.x + 2 * distance, y = size.y + 2 * distance },
+  }
+end
+
+--- The smallest rectangle around the tiles, on the level of the first.
+---@param tiles TileCoordinates[] At least one
+---@return TileArea
+function TileArea.around(tiles)
+  local low, high = { x = math.huge, y = math.huge }, { x = -math.huge, y = -math.huge }
+  for _, tile in ipairs(tiles) do
+    low.x, low.y = math.min(low.x, tile.x), math.min(low.y, tile.y)
+    high.x, high.y = math.max(high.x, tile.x), math.max(high.y, tile.y)
+  end
+  return {
+    origin = { x = low.x, y = low.y, level = tiles[1].level },
+    size = { x = high.x - low.x + 1, y = high.y - low.y + 1 },
+  }
+end
+
 ---@param tile_area TileArea
 ---@return TileArea.Active
 function TileArea.ensure_mutable(tile_area)

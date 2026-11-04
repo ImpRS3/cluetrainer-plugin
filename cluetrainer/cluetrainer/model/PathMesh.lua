@@ -12,6 +12,9 @@ local NpcHighlight       = require("zyklib/highlights/NpcHighlight")
 
 local PathMesh           = {}
 
+-- The usual dig highlight: the spot and the tiles around it.
+local DIG_AREA_SIZE      = { x = 3, y = 3 }
+
 ---@class AbilityColors
 ---@field [any] ColourRGBA
 local ABILITY_COLORS = {
@@ -432,6 +435,13 @@ function PathMesh.areaHighlight(tile_area, outline_color, fill_color, height)
     end)
 end
 
+---The usual highlight of a dig spot. Not activated yet.
+---@param spot TileCoordinates
+---@return zyklib.TerrainHighlight
+function PathMesh.digHighlight(spot)
+    return PathMesh.areaHighlight(TileArea.centered_on(spot, DIG_AREA_SIZE))
+end
+
 ---@param step Path.Step?
 ---@return boolean
 local function ends_with_tile_marker(step)
@@ -572,6 +582,15 @@ function PathMesh.buildStepMesh(step, context)
 
     -- If we reach this point, the step type has no highlight geometry. Return an empty highlight.
     return HighlightGroup.new({})
+end
+
+---All steps of a path on the ground as one highlight, e.g. to show a route faded. Not activated yet.
+---@param path Path.Step[]
+---@return zyklib.HighlightGroup
+function PathMesh.pathHighlight(path)
+    return HighlightGroup.new(array.map(path, function(step, i)
+        return PathMesh.buildStepMesh(step, { context_path = path, i = i })
+    end))
 end
 
 return PathMesh
