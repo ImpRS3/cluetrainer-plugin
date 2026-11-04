@@ -1,6 +1,6 @@
 local luaflet = require("prettymap/luaflet")
 local PathGraphics = require("cluetrainer/interfaces/map/elements/PathGraphics")
-local Colour = require("cluetrainer/util/Colour")
+local colours = require("cluetrainer/util/colours")
 local tiles = require("cluetrainer/model/shared/tiles")
 
 local FILL = 0xFFFFFF
@@ -29,7 +29,7 @@ function PlayerMarker:setTile(tile)
   self.tile = tile
 
   if self.dot then self.dot:Detach() end
-  self.dot = PathGraphics.dot(tile, RADIUS, Colour.rgba(FILL, 1), Colour.rgba(OUTLINE, 1), OUTLINE_WEIGHT)
+  self.dot = PathGraphics.dot(tile, RADIUS, colours.rgba(FILL, 1), colours.rgba(OUTLINE, 1), OUTLINE_WEIGHT)
   self:Add(self.dot)
 end
 
