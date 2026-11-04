@@ -1,6 +1,6 @@
 [submodule "dependencies/runescape-api-stubs"]
 	path = dependencies/runescape-api-stubs
-	url = git@github.com:Friendliness/runescape-api-stubs.git
+	url = https://github.com/FriendlyDevelopment/runescape-api-stubs.git
 [submodule "dependencies/zyklib"]
 	path = dependencies/zyklib
 	url = https://codeberg.org/ZyklopMarco/runescape-api-zyklib.git

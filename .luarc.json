@@ -7,7 +7,7 @@
 		"dependencies/runescape-api-stubs/types.lua",
 		"dependencies/runescape-api-stubs/generated/",
 		"dependencies/zyklib/src/",
-		"dependencies/lualsaddons/prettyui-stubs/"
+		"dependencies/prettyui-stubs/"
 	],
 	"Lua.workspace.diagnostics.workspaceDelay": 0,
 	"Lua.diagnostics.workspaceEvent": "OnSave",
@@ -27,7 +27,6 @@
 	"runtime.path": [
 		"cluetrainer/?.lua",
 		"dependencies/zyklib/src/?.lua",
-		"dependencies/prettyui/?.lua",
 		"cluetrainer_devtool/?.lua"
 	],
 	"completion.requireSeparator": "/",
