@@ -115,7 +115,7 @@ check-beta-dir:
     fi
 
 # Paths relative to the project root
-CLOC_BLACKLIST := "^(./)?(cluetrainer/cluetrainer/data|cluetrainer/prettymap/data)(/|$)"
+CLOC_BLACKLIST := "^(./)?(cluetrainer/cluetrainer/data|cluetrainer/prettymap/data|cluetrainer/prettyui)(/|$)"
 
 cloc:
     cloc cluetrainer --fullpath --not-match-d '{{CLOC_BLACKLIST}}' --by-file

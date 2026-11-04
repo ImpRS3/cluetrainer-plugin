@@ -1,16 +1,11 @@
-local storage              = require("cluetrainer/util/storage")
-local schema               = require("cluetrainer/util/schema")
+local WindowGeometry      = require("cluetrainer/util/WindowGeometry")
 local prettyui_workarounds = require("cluetrainer/util/prettyui_workarounds")
 
---- @type zyklib.reactive.Observable<{x: number, y: number}>
-local persistent_position  = storage.preference("cluestate_interface_position", schema.struct({
-  x = schema.number({ default = 0 }),
-  y = schema.number({ default = 0 }),
-}))
+local geometry             = WindowGeometry.new("cluestate_interface_geometry")
 
 local WINDOW_WIDTH         = 260
 -- Mirrors the PrettyUI window chrome, which is not exposed.
-local PANEL_BORDER        = 8
+local PANEL_BORDER         = 8
 local ROW_HEIGHT           = 24
 -- Native settings panel row colours
 local ROW_COLOURS          = { 0x24211EFF, 0x2E2825FF }
@@ -55,21 +50,22 @@ function ClueStateInterface.new()
   ---@type zyklib.reactive.Event
   self.reset_event = zyklib.reactive.Event.new()
 
-  local pos = persistent_position:get()
-
-  self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA), {
+  self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA), geometry:apply({
     title = "Clue Trainer",
-    x = pos.x,
-    y = pos.y,
+    x = 0,
+    y = 0,
     width = WINDOW_WIDTH,
     height = PANEL_BORDER,
     resizable = false,
     scrollable = false,
+    backgroundAlpha = 0.5,
     destroyOnClose = false,
+    -- Called once a drag of the panel ends
+    onPositionChange = function(panel) geometry:save(panel) end,
     rowBackgroundColours = ROW_COLOURS,
     rowBackgroundEdgeToEdge = true,
     layout = { startY = 0, padding = 0, rowGap = 0 },
-  })
+  }))
 
   self.actions = {}
 
@@ -145,15 +141,9 @@ function ClueStateInterface:setClue(clue)
 
     local object_id = id.Obj[TIER_OBJECT_IDS[clue.tier]]
 
-    if object_id ~= nil then
-      self.tier_icon.root:SetAssociatedObject(object_id)
-      self.tier_icon.root.hidden = false
-      self.clue_text.content = string.format("#%s", tostring(clue.id))
-    else
-      -- Without an icon the tier name is shown instead
-      self.tier_icon.root.hidden = true
-      self.clue_text.content = string.format("%s (#%s)", clue.tier:sub(1, 1):upper() .. clue.tier:sub(2), tostring(clue.id))
-    end
+    self.tier_icon.root:SetAssociatedObject(object_id)
+    self.tier_icon.root.hidden = false
+    self.clue_text.content = string.format("(id %s)", tostring(clue.id))
   end
 
   self:_FitWindow()
@@ -181,6 +171,7 @@ end
 
 function ClueStateInterface:dispose()
   if self.window ~= nil then
+    geometry:save(self.window)
     self.window:Destroy()
     self.window = nil
   end

@@ -1,6 +1,7 @@
 local prettymap = require("prettymap")
 local zyklib = require("zyklib")
 local teleport_layer = require("cluetrainer/interfaces/map/teleport_layer")
+local WindowGeometry = require("cluetrainer/util/WindowGeometry")
 
 local luaflet = require("prettymap/luaflet")
 
@@ -14,6 +15,8 @@ local MIN_ZOOM_INDEX = 4
 local WORLD_WIDTH = 12800
 local WORLD_HEIGHT = 12800
 
+local geometry = WindowGeometry.new("map_window_geometry", { size = true })
+
 ---@class ct.GameMap
 ---@field private shutdown_handler zyklib.reactive.EventHandler
 local GameMap = {}
@@ -26,7 +29,7 @@ function GameMap.new()
   ---@class ct.GameMap
   local self = setmetatable({}, GameMap)
 
-  self.window = prettyui.Window.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA), {
+  self.window = prettyui.Window.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA), geometry:apply({
     title = "Clue Trainer",
     x = -210,
     y = -150,
@@ -39,13 +42,16 @@ function GameMap.new()
     resizable = true,
     scrollable = false,
     destroyOnClose = true,
+    hideCloseButton = true,
     -- Destroy the map with its window and forget it, so the next ensure_open builds a new one.
     onClose = function()
+      geometry:save(self.window)
+
       self.shutdown_handler:cancel()
       self.map:Destroy()
       if instance == self then instance = nil end
     end,
-  })
+  }))
 
   self.map = prettymap.Map.new(self.window.content, {
     x = 0,
@@ -76,6 +82,7 @@ function GameMap.new()
   --luaflet.twigs.prefab.ZoomControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
 
   self.shutdown_handler = zyklib.lifecycle.shutdown_event:subscribe(function()
+    geometry:save(self.window)
     self.map:Destroy()
 
     self.window:Destroy()

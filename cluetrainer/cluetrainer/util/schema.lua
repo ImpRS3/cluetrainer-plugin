@@ -54,13 +54,13 @@ function schema.colour(options)
   end
 end
 
----@param options {min: number, max: number, default: number}
+---@param options {min: number?, max: number?, default: number}
 ---@return ct.util.schema.Schema<number>
 function schema.number(options)
   return function(value)
     if type(value) ~= "number" then return options.default end
 
-    return math.max(options.min, math.min(options.max, value))
+    return math.max(options.min or -math.huge, math.min(options.max or math.huge, value))
   end
 end
 
