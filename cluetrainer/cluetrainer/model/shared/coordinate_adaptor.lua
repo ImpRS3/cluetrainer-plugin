@@ -23,4 +23,11 @@ function coordinate_adaptor.coord_grid_to_tile_coordinates(coord_grid)
   }
 end
 
+--- The tile the local player stands on, nil while there is no player.
+---@return TileCoordinates?
+function coordinate_adaptor.playerTile()
+  local player = PlayerList.Self()
+  return player and coordinate_adaptor.coord_grid_to_tile_coordinates(player.coordGrid)
+end
+
 return coordinate_adaptor

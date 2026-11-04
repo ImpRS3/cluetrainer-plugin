@@ -170,6 +170,19 @@ function Bounds:extend(amount)
   return self
 end
 
+--- Grows the bounds around their centre to at least `size` tiles in both directions, so fitting them doesn't zoom in
+--- all the way. Does nothing for empty bounds.
+---@param size number
+---@return ct.Bounds self
+function Bounds:ensureSize(size)
+  if self.min == nil then return self end
+
+  local c = self:center()
+  self:extend_to({ x = c.x - size / 2, y = c.y - size / 2 })
+  self:extend_to({ x = c.x + size / 2, y = c.y + size / 2 })
+  return self
+end
+
 ---@return { topleft: ct.lib.math.Vector2, botright: ct.lib.math.Vector2, level: integer }?
 function Bounds:get()
   if self.min == nil then return nil end

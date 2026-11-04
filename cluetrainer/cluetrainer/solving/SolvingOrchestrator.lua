@@ -2,6 +2,7 @@ local clue_detector         = require "cluetrainer/clue_detector"
 local CompassSolver         = require "cluetrainer/solving/CompassSolver"
 local EmoteClueSolver       = require "cluetrainer/solving/EmoteClueSolver"
 local SimpleClueSolver      = require "cluetrainer/solving/SimpleClueSolver"
+local ScanTreeSolver        = require "cluetrainer/solving/ScanTreeSolver"
 local ClueStateInterface    = require "cluetrainer/interfaces/cluestate/cluestate"
 local map                   = require "cluetrainer/interfaces/map/map"
 
@@ -43,22 +44,30 @@ function SolvingOrchestrator:reset()
 
   self.clue_state:setClue(nil)
   self.clue_state:clearActions()
+  -- Hidden until the next clue, so the cross closes both windows.
+  self.clue_state:setVisible(false)
+  map.hide()
 end
 
 ---@param clue Step?
 function SolvingOrchestrator:onClueDetected(clue)
-  -- Keep the running solver when the same clue is read again, so its progress stays. Rebuild it once the map was
-  -- closed, to put its map elements back on a reopened map.
+  -- Keep the running solver when the same clue is read again (a scan clue is read on every "Start scanning"), so its
+  -- progress stays. Rebuild it once it ended, or once the map with its elements is gone.
   local active = self.active_solver
-  if clue ~= nil and active ~= nil and active.clue == clue and map.isOpen() then return end
+  if clue ~= nil and active ~= nil and active.clue == clue and not active.ended and map.isOpen() then return end
 
   if active ~= nil then
     active:dispose()
     self.active_solver = nil
+    -- Here rather than in each solver, so no rows of the previous clue stay above the next clue's.
+    self.clue_state:clearActions()
   end
 
   if clue ~= nil then
     self.clue_state:setClue(clue)
+    -- Shown again after the cross hid them.
+    self.clue_state:setVisible(true)
+    map.show()
   end
 
   self.active_solver = (function()
@@ -69,7 +78,7 @@ function SolvingOrchestrator:onClueDetected(clue)
     elseif clue.type == "emote" then
       return EmoteClueSolver.new(clue, self.clue_state)
     elseif clue.type == "scan" then
-      --return ScanClueSolver.new(clue)
+      return ScanTreeSolver.new(clue, self.clue_state)
     else
       return SimpleClueSolver.new(clue, self.clue_state)
     end

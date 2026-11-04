@@ -14,6 +14,8 @@ local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
 local MIN_ZOOM_INDEX = 4
 local WORLD_WIDTH = 12800
 local WORLD_HEIGHT = 12800
+-- A panel over the top of the map never takes more than this part of the view when fitting bounds.
+local MAX_TOP_INSET = 0.5
 
 local geometry = WindowGeometry.new("map_window_geometry", { size = true })
 
@@ -111,8 +113,16 @@ function GameMap:toggle()
   self:setVisible(not self.visible)
 end
 
+--- Zooms and centres the map on the bounds.
 ---@param bounds ct.Bounds
-function GameMap:fitBounds(bounds)
+---@param top_inset number? Pixels at the top covered by a panel, kept clear of the bounds. Default 0.
+function GameMap:fitBounds(bounds, top_inset)
+  if top_inset and top_inset > 0 then
+    local viewport_height = self.map.viewportHeight
+    top_inset = math.min(top_inset, viewport_height * MAX_TOP_INSET)
+    bounds = bounds:copy():extend({ north = top_inset / (viewport_height - top_inset) })
+  end
+
   local rect = bounds:get()
   if rect == nil then return end
 
@@ -155,6 +165,17 @@ function GameMap:fitBounds(bounds)
   return map:CentreOn(centre)
 end
 
+--- Whether the tile lies in the visible part of the map, at its x/y on whichever plane the map shows.
+---@param tile TileCoordinates
+---@return boolean
+function GameMap:shows(tile)
+  local map = self.map
+  local x, y = map:CoordToCanvas(tile, true)
+  if x == nil then return false end
+  local left, top = map.viewport.scrollX or 0, map.viewport.scrollY or 0
+  return x >= left and x <= left + map.viewportWidth and y >= top and y <= top + map.viewportHeight
+end
+
 --- Ensures the map exists, then returns it.
 ---@return ct.GameMap
 function GameMap.ensure_open()
@@ -175,6 +196,11 @@ end
 --- Makes the map visible, creating it first if needed.
 function GameMap.show()
   GameMap.ensure_open():setVisible(true)
+end
+
+--- Hides the map if it exists, keeping it and its elements for the next show.
+function GameMap.hide()
+  if instance then instance:setVisible(false) end
 end
 
 return GameMap

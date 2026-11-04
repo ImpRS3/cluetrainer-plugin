@@ -47,7 +47,7 @@ function compasslogic.isPossible(information, spot)
   end)
 end
 
-local CompassSpotMarker = require "cluetrainer/solving/compass/CompassSpotMarker"
+local SpotMarker = require "cluetrainer/interfaces/map/elements/SpotMarker"
 
 ---@param clue Compass
 ---@param info ct.Compass.TriangulationPoint
@@ -100,7 +100,7 @@ end, true)
 
 ---@class ct.ActiveCompassSolver : ct.ActiveClueSolver
 ---@field triangulation_points {info: ct.Compass.TriangulationPoint}[]
----@field candidates {spot: TileCoordinates, marker: ct.CompassSpotMarker, possible: boolean}[]
+---@field candidates {spot: TileCoordinates, marker: ct.SpotMarker, possible: boolean}[]
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
@@ -131,7 +131,13 @@ function CompassSolver.new(clue, state_window)
   self.candidates = zyklib.array.map(clue.spots, function(spot, i)
     return {
       spot = spot,
-      marker = CompassSpotMarker.new({ spot = spot, spot_id = i - 1 }):AddTo(self.map_layer),
+      marker = SpotMarker.new({
+        spot = spot,
+        spot_id = i - 1,
+        single_tile = clue.single_tile_target,
+        title = "Compass spot",
+        hint = "Click to select as solution and view pathing.",
+      }):AddTo(self.map_layer),
       possible = true
     }
   end)
@@ -235,13 +241,8 @@ function CompassSolver:setPath(path)
     self.navigator:set(path)
 
     local sectioned_path = Path.split_into_sections(path)
-    self.path_twig = luaflet.twigs.Twig.new():AddTo(map.ensure_open().map.twigs)
-
-    for _, section in ipairs(sectioned_path) do
-      for _, step in ipairs(section.steps) do
-        PathStepEntity.new(step):AddTo(self.path_twig)
-      end
-    end
+    local steps = zyklib.array.flatMap(sectioned_path, function(section) return section.steps end)
+    self.path_twig = PathStepEntity.route(steps):AddTo(map.ensure_open().map.twigs)
 
     self.map_navigator = MapSectionControl.new(map.ensure_open(),
       zyklib.array.map(sectioned_path, function(sec) return { name = sec.name, bounds = Path.bounds(sec.steps) } end))
@@ -280,7 +281,8 @@ function CompassSolver:getCurrentInformation()
     return nil
   end
 
-  local player_position = coordinate_adaptor.coord_grid_to_tile_coordinates(PlayerList.Self().coordGrid)
+  local player_position = coordinate_adaptor.playerTile()
+  if player_position == nil then return nil end
 
   -- Hidden value, we obscure it to emulate the uncertainty of visual observation.
   local target_spot = coordinate_adaptor.coord_grid_to_tile_coordinates(var.VarClient["TRAIL_DESTCOORD"]
