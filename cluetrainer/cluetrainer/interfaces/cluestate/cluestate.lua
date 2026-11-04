@@ -1,4 +1,3 @@
-local ClueStateAction      = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local storage              = require("cluetrainer/util/storage")
 local schema               = require("cluetrainer/util/schema")
 local prettyui_workarounds = require("cluetrainer/util/prettyui_workarounds")
@@ -11,8 +10,7 @@ local persistent_position  = storage.preference("cluestate_interface_position", 
 
 local WINDOW_WIDTH         = 260
 -- Mirrors the PrettyUI window chrome, which is not exposed.
-local WINDOW_BORDER        = 8
-local WINDOW_TITLE_HEIGHT  = 32
+local PANEL_BORDER        = 8
 local ROW_HEIGHT           = 24
 -- Native settings panel row colours
 local ROW_COLOURS          = { 0x24211EFF, 0x2E2825FF }
@@ -26,20 +24,17 @@ local TIER_ICON_X          = 4
 local TIER_TEXT_X          = TIER_ICON_X + TIER_ICON_SIZE + 4
 
 ---Object ids of the items displayed as the sprite of each clue tier. Fill in the ids, tiers without an id show no icon.
----@type table<ClueTier, integer?>
+---@type table<ClueTier, string?>
 local TIER_OBJECT_IDS      = {
-  easy         = nil,
-  medium       = nil,
-  hard         = nil,
-  elite        = nil,
-  master       = nil,
-  tetracompass = nil,
-  sandy        = nil,
+  easy         = "TRAIL17_TRAIL_START_EASY",
+  medium       = "TRAIL17_TRAIL_START_MEDIUM",
+  hard         = "TRAIL17_TRAIL_START_HARD",
+  elite        = "TRAIL17_TRAIL_START_ELITE",
+  master       = "TRAIL17_TRAIL_START_MASTER",
+  tetracompass = "ARCH_TETRACOMPASS_POWERED"
 }
 
--- Estimated height of the divider including its margins. Tune visually.
-local DIVIDER_HEIGHT       = 6
-local HEADER_HEIGHT        = ROW_HEIGHT + DIVIDER_HEIGHT
+local PLACEHOLDER_ALPHA    = 0.5
 
 ---@class ct.ClueStateInterface: zyklib.disposable.IDisposable
 ---@field window PrettyUI.Panel
@@ -67,7 +62,7 @@ function ClueStateInterface.new()
     x = pos.x,
     y = pos.y,
     width = WINDOW_WIDTH,
-    height = WINDOW_TITLE_HEIGHT + WINDOW_BORDER,
+    height = PANEL_BORDER,
     resizable = false,
     scrollable = false,
     destroyOnClose = false,
@@ -112,9 +107,7 @@ function ClueStateInterface.new()
   --self.divider = self.window:AddDivider({ rowBackground = false, marginTop = 1, marginBottom = 1 })
 
   self.reset_rows = prettyui_workarounds.rememberFlow(self.window)
-  self:_FitWindow()
-  -- Hidden until there is a clue, to avoid an empty window on screen.
-  self:setVisible(false)
+  self:setClue(nil)
 
   return self
 end
@@ -133,26 +126,24 @@ function ClueStateInterface:setVisible(visible)
 end
 
 function ClueStateInterface:_FitWindow()
-  -- The flow layout keeps contentHeight up to date, the row based estimate is only a fallback.
-  local content = self.window.contentHeight
-  if type(content) ~= "number" or content <= 0 then
-    content = HEADER_HEIGHT + #self.actions * ROW_HEIGHT
-  end
-
-  self.window:SetSize(WINDOW_WIDTH, WINDOW_TITLE_HEIGHT + WINDOW_BORDER + content)
+  self.window:SetSize(WINDOW_WIDTH, PANEL_BORDER + prettyui_workarounds.contentHeight(self.window))
   self.window:RefreshRowBackgrounds()
 end
 
 ---Sets the clue displayed above the divider.
 ---@param clue StepShared? The current clue, or nil if there is none
 function ClueStateInterface:setClue(clue)
-  self:setVisible(clue ~= nil)
+  self.reset_button:SetDisabled(clue == nil)
 
   if clue == nil then
+    -- Faded to be distinct from a selected clue
     self.clue_text.content = "No clue"
+    self.clue_text.alpha = PLACEHOLDER_ALPHA
     self.tier_icon.root.hidden = true
   else
-    local object_id = TIER_OBJECT_IDS[clue.tier]
+    self.clue_text.alpha = 1.0
+
+    local object_id = id.Obj[TIER_OBJECT_IDS[clue.tier]]
 
     if object_id ~= nil then
       self.tier_icon.root:SetAssociatedObject(object_id)
@@ -161,7 +152,7 @@ function ClueStateInterface:setClue(clue)
     else
       -- Without an icon the tier name is shown instead
       self.tier_icon.root.hidden = true
-      self.clue_text.content = string.format("%s #%s", clue.tier:sub(1, 1):upper() .. clue.tier:sub(2), tostring(clue.id))
+      self.clue_text.content = string.format("%s (#%s)", clue.tier:sub(1, 1):upper() .. clue.tier:sub(2), tostring(clue.id))
     end
   end
 

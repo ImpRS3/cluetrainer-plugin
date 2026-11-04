@@ -64,4 +64,25 @@ function prettyui_workarounds.hide(panel)
   panel.overlay.root.hidden = true
 end
 
+-- 3. Measuring a panel's content
+--
+-- `contentHeight` on a panel's content owner is only set after PrettyUI reflows, which does not happen for every added or
+-- removed row. The flow layout's own bookkeeping is always current, so the height is read from there.
+--
+-- Fix in PrettyUI: call `reflow` (prettyui/core/layout.lua) after `Layout.place`, `Layout.remove` and on reset.
+-- Then remove: `contentHeight`, and use `panel.dockOwner.contentHeight` in cluestate.lua's `_FitWindow`.
+
+--- The height of everything laid out in the panel so far, including the layout's bottom padding.
+---@param panel PrettyUI.Panel
+---@return number
+function prettyui_workarounds.contentHeight(panel)
+  local owner = panel.poppedOut and panel.overlayOwner or panel.dockOwner
+  local layout = owner._flowLayout
+
+  local bottom = layout.nextY
+  if layout.row ~= nil then bottom = layout.row.y + layout.row.height end
+
+  return bottom + layout.paddingBottom
+end
+
 return prettyui_workarounds
