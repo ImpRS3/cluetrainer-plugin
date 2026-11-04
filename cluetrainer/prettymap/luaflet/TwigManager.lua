@@ -187,6 +187,8 @@ function ElementManager:Add(element)
 
     if element:CreateComponent(layer) then
         element.component = layer
+        local opacity = element:GetOpacity()
+        if opacity < 1 then layer.alpha = opacity end
         self:_Position(element)
         element:_OnPlaneChanged(self.map:GetPlane())
     else

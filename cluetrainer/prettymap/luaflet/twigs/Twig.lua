@@ -6,12 +6,13 @@
 ---@field hoverSize number? Fixed pixel size (width and height) while hovered. Makes the element hoverable.
 ---@field zoomScale (false|fun(mapScale: number, map: prettymap.MapView): number)? Size factor from map zoom. Default is tile-proportional; false keeps a fixed pixel size.
 ---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id of the map. The map's topmost pane if nil.
----@field allPlanes boolean? Show the element on every plane at its x/z position instead of hiding it on other planes. Use `_OnPlaneChanged` to restyle it.
+---@field allPlanes boolean? Show the element and its children on every plane at their x/z position instead of hiding them on other planes. Use `_OnPlaneChanged` to restyle it.
+---@field opacity number? Opacity from 0 to 1, multiplied into the element's children. Default 1. Fixed once added.
 
 ---@class prettymap.luaflet.Twig : zyklib.disposable.IDisposable
 ---@field static boolean? True for elements fixed to the viewport instead of the map; see StaticElement.
 ---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id the element is drawn in; the map's topmost pane if nil.
----@field allPlanes boolean? If true, the element is shown on every plane instead of being hidden on other planes.
+---@field allPlanes boolean? If true, the element and its children are shown on every plane instead of being hidden on other planes; see `ShowsAllPlanes`.
 ---@field tooltip prettymap.Tooltip? Tooltip shown while hovered; set with `SetTooltip`.
 ---@field coordinate prettymap.luaflet.Coord? Position the element is centred on; nil means it has no position.
 ---@field width integer Current width in pixels, including zoom and hover effects.
@@ -29,6 +30,7 @@
 ---@field parent prettymap.luaflet.Twig? Element this one is a child of; nil for top-level elements.
 ---@field children prettymap.luaflet.Twig[] Child elements, added to and removed from the map together with this one.
 ---@field clipsToView boolean? Laid out again when the map is panned; for elements that clip their drawing to the view.
+---@field opacity number Own opacity from 0 to 1; the drawn opacity also includes the parents', see `GetOpacity`.
 local Element = {}
 Element.__index = Element
 
@@ -69,6 +71,7 @@ function Element.new(options)
         zoomScale = options.zoomScale == nil and TileProportional or options.zoomScale,
         zoomFactor = 1,
         hovered = false,
+        opacity = options.opacity or 1,
     }, Element)
     return self
 end
@@ -93,6 +96,18 @@ function Element:_UpdateSize()
     end
 end
 
+--- The opacity the element is drawn with: its own times that of its parents.
+---@return number
+function Element:GetOpacity()
+    return (self.opacity or 1) * (self.parent and self.parent:GetOpacity() or 1)
+end
+
+--- Whether the element is shown on every plane: set on itself or on a parent.
+---@return boolean
+function Element:ShowsAllPlanes()
+    return self.allPlanes == true or (self.parent ~= nil and self.parent:ShowsAllPlanes())
+end
+
 --- Called by the manager whenever the component must be sized and placed (only while it has a
 --- component). Subclasses with their own geometry override this.
 ---@param map prettymap.MapView
@@ -100,7 +115,7 @@ function Element:_Layout(map)
     self:_ApplyZoom(map.currentScale, map)
     self.component:SetSize(self.width, self.height)
     if self.coordinate then
-        self:_ApplyPosition(map:CoordToCanvas(self.coordinate, self.allPlanes))
+        self:_ApplyPosition(map:CoordToCanvas(self.coordinate, self:ShowsAllPlanes()))
     end
 end
 

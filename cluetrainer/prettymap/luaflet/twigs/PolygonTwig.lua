@@ -9,7 +9,8 @@ local Twig = require("prettymap/luaflet/twigs/Twig")
 
 --- Draws any number of lines, polylines, rectangles, outlines and filled triangles on a canvas. All geometry
 --- is given in map coordinates and follows the map when zooming; stroke widths are fixed pixels. It is clipped to the
---- visible part of the map. All points of a polygon should be on the same plane; it is hidden on any other plane.
+--- visible part of the map. All points of a polygon should be on the same plane; it is hidden on any other plane,
+--- unless it shows on all planes (`ShowsAllPlanes`).
 ---
 --- "Canvas pixels" are those of the map's whole scrollable canvas, as in `MapView:CoordToCanvas`; the twig's own
 --- `canvas` only covers its layer, and is drawn on relative to that.
@@ -236,13 +237,14 @@ end
 
 --- Converts all points to canvas pixels, clips the geometry to the visible part of the map and redraws, so nothing is
 --- drawn outside the map. The layer covers just the bounding box of what is left (plus the line thickness); it is
---- hidden when nothing is left or when any point is off the current plane.
+--- hidden when nothing is left or when any point is off the current plane (unless it shows on all planes).
 ---@param map prettymap.MapView
 function PolygonTwig:_Layout(map)
     local component, canvas = self.component, self.canvas
     canvas:Clear()
 
     local view = view_rect(map)
+    local anyPlane = self:ShowsAllPlanes()
 
     -- The clipped primitives in canvas pixels, still to be drawn: { kind, coordinates..., thickness?, colour }.
     local clipped = {}
@@ -254,7 +256,7 @@ function PolygonTwig:_Layout(map)
 
     for _, p in ipairs(self.primitives) do
         local function resolve(coord)
-            local x, y = map:CoordToCanvas(coord)
+            local x, y = map:CoordToCanvas(coord, anyPlane)
             return x and { x, y }
         end
 
