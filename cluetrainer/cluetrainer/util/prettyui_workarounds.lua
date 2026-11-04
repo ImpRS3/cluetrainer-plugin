@@ -1,6 +1,6 @@
 -- prettyui_workarounds.lua
--- Workarounds for PrettyUI 1.3.0-beta (mod.io 6398181). They use private PrettyUI fields, so an update may break them.
--- Remove each one once PrettyUI has the fix described with it.
+-- Workarounds for PrettyUI 1.3.0-beta.3, bundled in cluetrainer/prettyui. They use private PrettyUI fields, so updating
+-- the bundled copy may break them. Remove each one once the bundled PrettyUI has the fix described with it.
 local prettyui_workarounds = {}
 
 -- 1. Clearing rows from a panel
