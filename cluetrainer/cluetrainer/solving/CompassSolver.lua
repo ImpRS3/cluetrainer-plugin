@@ -73,7 +73,7 @@ local function drawArrowArc(clue, info)
   local l = ctmath.vector2.add(origin, beam_left)
   local r = ctmath.vector2.add(origin, beam_right)
 
-  twig:AddTriangle(origin, r, l, 0x3388ff80)
+  twig:AddTriangle(origin, r, l, 0x3388ff50)
 
   return twig
 end
