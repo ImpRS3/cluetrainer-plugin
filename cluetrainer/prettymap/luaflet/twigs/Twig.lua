@@ -76,18 +76,23 @@ function Element.new(options)
     return self
 end
 
---- Recomputes the size from the base size, zoom factor and hover state, keeping the element centred.
---- While hovered, `hoverSize` (fixed pixels) replaces the zoomed size.
+--- The size in pixels from the base size and zoom factor; while hovered, `hoverSize` (fixed pixels).
+--- Subclasses override this when their size also depends on their content.
+---@return number width
+---@return number height
+function Element:_ComputeSize()
+    if self.hovered and self.hoverSize then
+        return self.hoverSize, self.hoverSize
+    end
+    local scale = self.zoomFactor
+    return math.max(1, math.floor(self.baseWidth * scale + 0.5)),
+        math.max(1, math.floor(self.baseHeight * scale + 0.5))
+end
+
+--- Recomputes the size with `_ComputeSize`, keeping the element centred.
 --- Children of the component should use relative sizes to follow the resize.
 function Element:_UpdateSize()
-    local width, height
-    if self.hovered and self.hoverSize then
-        width, height = self.hoverSize, self.hoverSize
-    else
-        local scale = self.zoomFactor
-        width = math.max(1, math.floor(self.baseWidth * scale + 0.5))
-        height = math.max(1, math.floor(self.baseHeight * scale + 0.5))
-    end
+    local width, height = self:_ComputeSize()
     if width == self.width and height == self.height then return end
     self.width, self.height = width, height
     if self.component then

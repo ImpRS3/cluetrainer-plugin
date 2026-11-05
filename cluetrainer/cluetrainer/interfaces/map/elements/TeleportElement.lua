@@ -14,6 +14,8 @@ local ZOOM_STEPS = {
 -- The text uses BASE_FONT_SIZE when the icon is BASE_ICON_HEIGHT pixels tall and scales with the icon.
 local BASE_ICON_HEIGHT = 15
 local BASE_FONT_SIZE = 7
+-- Room in pixels on both sides of a code that is wider than the icon, so its shadow isn't cut off.
+local TEXT_PADDING = 2
 -- Tint (RGBA) approximating a slight grayscale filter for spots on other planes.
 local OFF_PLANE_TINT = 0xA0A0A0B4
 
@@ -35,15 +37,40 @@ end
 local TeleportElement = setmetatable({}, { __index = luaflet.twigs.Twig })
 TeleportElement.__index = TeleportElement
 
+--- The code's font at an icon size: the largest bold font not exceeding the scaled size.
+---@param icon number Icon size in pixels, with zoom and hover
+---@return FontType? # nil if no font is small enough
+local function code_font(icon)
+  return FontFamily.NOTOSANS:Get(BASE_FONT_SIZE * icon / BASE_ICON_HEIGHT, "bold")
+end
+
+--- The square icon size, widened to fit the code: the layer clips its content, so a wider code would be cut off.
+---@return number width
+---@return number height
+function TeleportElement:_ComputeSize()
+  local _, icon = luaflet.twigs.Twig._ComputeSize(self)
+  local font = self.overlay_text and code_font(icon)
+  if not font then return icon, icon end
+  return math.max(icon, font:GetStringWidth(self.teleport:code()) + 2 * TEXT_PADDING), icon
+end
+
 function TeleportElement:_UpdateSize()
+  local width, height = self.width, self.height
   luaflet.twigs.Twig._UpdateSize(self)
+  if self.width ~= width or self.height ~= height then self:_PlaceContent() end
+end
+
+--- Centres the square icon in the element, with the code's font for its size. The room beside the icon is for the
+--- code only.
+function TeleportElement:_PlaceContent()
+  local icon = self.height
+  self.sprite:SetSize(icon, icon)
+  self.sprite:SetPos(math.floor((self.width - icon) / 2), 0)
+
   -- Spots without a sprite have no text.
   local text = self.overlay_text
   if not text then return end
-  local scale = self.height / BASE_ICON_HEIGHT -- active zoom and hover scale
-  -- The largest bold font not exceeding the scaled size; hidden if none is small enough.
-  local font = FontFamily.NOTOSANS:Get(BASE_FONT_SIZE * scale, "bold")
-
+  local font = code_font(icon)
   text.hidden = font == nil
   if font then text.font = font.id end
 end
@@ -66,7 +93,6 @@ function TeleportElement:CreateComponent(layer)
 
   local sprite = ui.Sprite.new(layer)
   self.sprite = sprite
-  sprite:SetSize(0, 0, 1.0, 1.0)
 
   if teleport.props.cache_data.sprite then
     sprite.sprite = id.Sprite[teleport.props.cache_data.sprite]
@@ -85,12 +111,15 @@ function TeleportElement:CreateComponent(layer)
     overlay_text.isShadowed = true
     overlay_text.alignHorizontal = ui.AlignMode.CENTRE
     overlay_text.alignVertical = ui.AlignMode.CENTRE
+    -- One line, as the element is widened to fit it.
+    overlay_text.maxLines = 1
     overlay_text.clickthrough = true
 
     self.overlay_text = overlay_text
-    self:_UpdateSize()
   end
 
+  -- Before the map sizes the element, which only places the content again when the size changes.
+  self:_PlaceContent()
   return true
 end
 
