@@ -136,7 +136,7 @@ function CompassSolver.new(clue, state_window)
         spot_id = i - 1,
         single_tile = clue.single_tile_target,
         title = "Compass spot",
-        hint = "Click to select as solution and view pathing.",
+        hint = "",
       }):AddTo(self.map_layer),
       possible = true
     }
@@ -155,7 +155,7 @@ function CompassSolver.new(clue, state_window)
   --self.actions.complete_puzzle = state_window:addAction(ClueStateAction.Text.new("Complete Puzzle"))
   --self.actions.dig_again = state_window:addAction(ClueStateAction.Text.new("Dig again"))
 
-  self:fitRemainingCandidates()
+  self:update()
 
   return self
 end
