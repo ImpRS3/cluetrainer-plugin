@@ -100,7 +100,7 @@ function ClueStateInterface.new()
     xAnchor = 1.0,
     offsetY = (ROW_HEIGHT - RESET_BUTTON_SIZE) // 2,
     size = RESET_BUTTON_SIZE,
-    tooltip = "Reset clue",
+    tooltip = "Close",
     rowBackgroundGroup = HEADER_GROUP,
   })
 
@@ -133,8 +133,6 @@ end
 ---Sets the clue displayed above the divider.
 ---@param clue StepShared? The current clue, or nil if there is none
 function ClueStateInterface:setClue(clue)
-  self.reset_button:SetDisabled(clue == nil)
-
   if clue == nil then
     -- Faded to be distinct from a selected clue
     self.clue_text.content = "No clue"

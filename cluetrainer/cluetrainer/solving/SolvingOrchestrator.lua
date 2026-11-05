@@ -5,6 +5,7 @@ local SimpleClueSolver       = require "cluetrainer/solving/SimpleClueSolver"
 local ScanTreeSolver         = require "cluetrainer/solving/ScanClueSolver"
 local ClueStateInterface     = require "cluetrainer/interfaces/cluestate/cluestate"
 local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
+local map                    = require "cluetrainer/interfaces/map/map"
 local schema                 = require "cluetrainer/util/schema"
 local storage                = require "cluetrainer/util/storage"
 
@@ -12,6 +13,7 @@ local storage                = require "cluetrainer/util/storage"
 ---@field private clue_state ct.ClueStateInterface
 ---@field private active_solver ct.ActiveClueSolver?
 ---@field private clue_detection_handler zyklib.reactive.EventHandler
+---@field private map_hidden boolean? Whether the cross hid the map, which the next clue shows again
 local SolvingOrchestrator    = {}
 SolvingOrchestrator.__index  = SolvingOrchestrator
 
@@ -61,6 +63,14 @@ function SolvingOrchestrator:reset()
 
   self.clue_state:setClue(nil)
   self.clue_state:clearActions()
+
+  -- Hidden until the next clue, so the cross closes both windows. The main panel's toggles stay as they are.
+  self.clue_state:setVisible(false)
+  local game_map = map.current()
+  if game_map ~= nil and game_map:isVisible() then
+    game_map:setVisible(false)
+    self.map_hidden = true
+  end
 end
 
 ---@param clue Step?
@@ -81,6 +91,10 @@ function SolvingOrchestrator:setClue(clue)
     self.clue_state:setClue(clue)
     -- Shown again after the cross hid them.
     self.clue_state:setVisible(true)
+    if self.map_hidden then
+      self.map_hidden = false
+      map.get():setVisible(true)
+    end
   end
 
   self.active_solver = (function()
