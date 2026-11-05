@@ -129,7 +129,8 @@ end
 ---Sets the clue displayed above the divider.
 ---@param clue StepShared? The current clue, or nil if there is none
 function ClueStateInterface:setClue(clue)
-  self.reset_button:SetDisabled(clue == nil)
+  -- Enabled without a clue too, so the cross still closes the windows.
+  self.reset_button:SetTooltip(clue == nil and "Close" or "Reset clue")
 
   if clue == nil then
     -- Faded to be distinct from a selected clue
