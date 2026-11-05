@@ -145,7 +145,15 @@ local function instruction(state)
   elseif status == "triple" then
     return {
       { text = "Triple: one of spots " .. spotNumbers(state.tree, state.remaining), state = "incomplete" },
-      { text = "Walk there and dig", state = "incomplete" },
+      { text = #state.remaining > 1 and "Walk towards one, the next pulse tells" or "Walk there and dig", state = "incomplete" },
+    }
+  elseif status == "off_route" then
+    local spots = spotNumbers(state.tree, state.remaining)
+    return {
+      { text = "Triple points off the route", state = "incomplete", colour = WARNING_COLOUR },
+      #state.remaining > 1
+          and { text = "One of spots " .. spots .. ": walk towards one", state = "incomplete" }
+          or { text = "Spot " .. spots .. ": walk there and dig", state = "incomplete", colour = scan_display.PULSE_COLOURS[3] },
     }
   elseif status == "mismatch" then
     return {
@@ -182,7 +190,7 @@ function scan_display.rows(state)
 
   local warning = rangeWarning(state.range, state.tree.assumed_range)
   if warning then rows[#rows + 1] = { text = warning, state = "incomplete", colour = WARNING_COLOUR } end
-  if #state.node.children > 0 and #state.remaining == 1 then
+  if #state.node.children > 0 and #state.remaining == 1 and state.status ~= "off_route" then
     rows[#rows + 1] = {
       text = "Only spot " .. spotNumbers(state.tree, state.remaining) .. " fits: dig there",
       state = "incomplete",

@@ -89,7 +89,7 @@ function GameMap.new()
   return self
 end
 
----Saves the geometry and destroys the map with its panel. The next ensure_open builds a new one.
+---Saves the geometry and destroys the map with its panel. The next `get` builds a new one.
 function GameMap:close()
   geometry:save(self.window)
 
@@ -192,6 +192,12 @@ function GameMap.get()
     instance = GameMap.new()
   end
 
+  return instance
+end
+
+--- The map if it exists, without building one.
+---@return ct.GameMap?
+function GameMap.current()
   return instance
 end
 

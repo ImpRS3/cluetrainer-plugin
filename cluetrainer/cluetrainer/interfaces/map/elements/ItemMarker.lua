@@ -1,4 +1,5 @@
 local luaflet = require("prettymap/luaflet")
+local item_icon = require("cluetrainer/util/item_icon")
 
 local MARKER_SIZE = 24 -- pixels
 local HOVER_FACTOR = 1.5
@@ -29,7 +30,7 @@ end
 ---@return boolean added
 function ItemMarker:CreateComponent(layer)
   local sprite = ui.Sprite.new(layer)
-  sprite:SetSize(0, 0, 1.0, 1.0)
+  item_icon.fill(sprite)
   sprite:SetAssociatedObject(self.obj)
   sprite.clickthrough = true
   return true

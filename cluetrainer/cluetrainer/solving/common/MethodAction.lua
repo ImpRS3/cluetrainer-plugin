@@ -2,6 +2,7 @@ local ClueStateAction = require("cluetrainer/interfaces/cluestate/ClueStateActio
 local methods = require("cluetrainer/model/shared/methods")
 local method_management = require("cluetrainer/methods/method_management")
 local MethodSelectDialog = require("cluetrainer/methods/MethodSelectDialog")
+local item_icon = require("cluetrainer/util/item_icon")
 
 local STATE_ALPHA = {
   incomplete = 1.0,
@@ -28,7 +29,8 @@ local BUTTON_MARGIN = 4
 ---@field method ct.AugmentedMethod.Generic?
 ---@field onMethodSelected fun(method: ct.AugmentedMethod.Generic?)?
 ---@field text ui.Text?
----@field icon PrettyUI.Sprite?
+---@field icon PrettyUI.Sprite? Shows a teleport's sprite
+---@field item_icon PrettyUI.Sprite? Shows a teleport's item, placed by `item_icon`
 ---@field select_button PrettyUI.SpriteButton?
 local MethodAction = setmetatable({}, { __index = ClueStateAction })
 MethodAction.__index = MethodAction
@@ -105,6 +107,17 @@ function MethodAction:_construct(view)
     rowBackgroundGroup = self,
   })
 
+  -- A separate sprite, as items need another box than sprites and flow rows can't move a component afterwards.
+  local item_x, item_y, item_width, item_height = item_icon.rect(ICON_X, (ROW_HEIGHT - ICON_SIZE) // 2, ICON_SIZE)
+  self.item_icon = view:AddSprite(-1, {
+    inline = true,
+    x = item_x,
+    offsetY = item_y,
+    width = item_width,
+    height = item_height,
+    rowBackgroundGroup = self,
+  })
+
   self.select_button = view:AddSpriteButton("LIST_LAYOUT", function()
     self:_openDialog()
   end, {
@@ -119,20 +132,18 @@ function MethodAction:_construct(view)
 end
 
 ---@param icon PrettyUI.Sprite
+---@param item PrettyUI.Sprite
 ---@param teleport cluetrainer.TeleportSpot?
-local function applyIcon(icon, teleport)
+local function applyIcon(icon, item, teleport)
   local cache = teleport and teleport.props.cache_data or nil
-  local root = icon.root
+
+  icon.root.hidden = not (cache and cache.sprite)
+  item.root.hidden = not (cache and not cache.sprite and cache.obj)
 
   if cache and cache.sprite then
-    root.hidden = false
-    root.sprite = id.Sprite[cache.sprite]
-    root:SetAssociatedObject(-1)
+    icon.root.sprite = id.Sprite[cache.sprite]
   elseif cache and cache.obj then
-    root.hidden = false
-    root:SetAssociatedObject(id.Obj[cache.obj])
-  else
-    root.hidden = true
+    item.root:SetAssociatedObject(id.Obj[cache.obj])
   end
 end
 
@@ -158,19 +169,20 @@ function MethodAction:_apply()
     alpha = PLACEHOLDER_ALPHA
   end
 
-  applyIcon(self.icon, teleport)
+  applyIcon(self.icon, self.item_icon, teleport)
   self.select_button.root.hidden = not selectable
 
   self.text.alpha = alpha
   self.icon.root.alpha = alpha
+  self.item_icon.root.alpha = alpha
 end
 
 function MethodAction:destroy()
-  for _, component in ipairs({ self.select_button, self.icon, self.text }) do
+  for _, component in ipairs({ self.select_button, self.icon, self.item_icon, self.text }) do
     component:Destroy()
   end
 
-  self.select_button, self.icon, self.text = nil, nil, nil
+  self.select_button, self.icon, self.item_icon, self.text = nil, nil, nil, nil
   self.constructed = false
 end
 

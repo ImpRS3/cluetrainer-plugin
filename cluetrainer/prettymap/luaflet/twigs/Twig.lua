@@ -8,6 +8,8 @@
 ---@field zLayer (string|prettymap.PaneID)? Named z-layer or pane id of the map. The map's topmost pane if nil.
 ---@field allPlanes boolean? Show the element and its children on every plane at their x/z position instead of hiding them on other planes. Use `_OnPlaneChanged` to restyle it.
 ---@field opacity number? Opacity from 0 to 1, multiplied into the element's children. Default 1. Fixed once added.
+---@field pivotX number? Point of the element on its coordinate, as a fraction of its width from the left. Default 0.5.
+---@field pivotY number? Point of the element on its coordinate, as a fraction of its height from the top. Default 0.5; 1 for a pin whose tip marks the coordinate.
 
 ---@class prettymap.luaflet.Twig : zyklib.disposable.IDisposable
 ---@field static boolean? True for elements fixed to the viewport instead of the map; see StaticElement.
@@ -31,6 +33,8 @@
 ---@field children prettymap.luaflet.Twig[] Child elements, added to and removed from the map together with this one.
 ---@field clipsToView boolean? Laid out again when the map is panned; for elements that clip their drawing to the view.
 ---@field opacity number Own opacity from 0 to 1; the drawn opacity also includes the parents', see `GetOpacity`.
+---@field pivotX number Point of the element on its coordinate, as a fraction of its width from the left.
+---@field pivotY number Point of the element on its coordinate, as a fraction of its height from the top.
 local Element = {}
 Element.__index = Element
 
@@ -72,22 +76,29 @@ function Element.new(options)
         zoomFactor = 1,
         hovered = false,
         opacity = options.opacity or 1,
+        pivotX = options.pivotX or 0.5,
+        pivotY = options.pivotY or 0.5,
     }, Element)
     return self
 end
 
---- Recomputes the size from the base size, zoom factor and hover state, keeping the element centred.
---- While hovered, `hoverSize` (fixed pixels) replaces the zoomed size.
+--- The size in pixels from the base size and zoom factor; while hovered, `hoverSize` (fixed pixels).
+--- Subclasses override this when their size also depends on their content.
+---@return number width
+---@return number height
+function Element:_ComputeSize()
+    if self.hovered and self.hoverSize then
+        return self.hoverSize, self.hoverSize
+    end
+    local scale = self.zoomFactor
+    return math.max(1, math.floor(self.baseWidth * scale + 0.5)),
+        math.max(1, math.floor(self.baseHeight * scale + 0.5))
+end
+
+--- Recomputes the size with `_ComputeSize`, keeping the element centred.
 --- Children of the component should use relative sizes to follow the resize.
 function Element:_UpdateSize()
-    local width, height
-    if self.hovered and self.hoverSize then
-        width, height = self.hoverSize, self.hoverSize
-    else
-        local scale = self.zoomFactor
-        width = math.max(1, math.floor(self.baseWidth * scale + 0.5))
-        height = math.max(1, math.floor(self.baseHeight * scale + 0.5))
-    end
+    local width, height = self:_ComputeSize()
     if width == self.width and height == self.height then return end
     self.width, self.height = width, height
     if self.component then
@@ -228,7 +239,7 @@ function Element:SetCoordinate(coordinate)
     if self.manager then self.manager:_Position(self) end
 end
 
---- Places the component centred on the coordinate, hiding it when it is not on the current plane.
+--- Places the component with its pivot on the coordinate, hiding it when it is not on the current plane.
 ---@param x integer?
 ---@param y integer?
 function Element:_ApplyPosition(x, y)
@@ -240,7 +251,7 @@ function Element:_ApplyPosition(x, y)
         return
     end
     component.hidden = false
-    component:SetPos(x - math.floor(self.width / 2), y - math.floor(self.height / 2))
+    component:SetPos(x - math.floor(self.width * self.pivotX), y - math.floor(self.height * self.pivotY))
 end
 
 return Element

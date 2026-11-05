@@ -14,6 +14,8 @@ local PathMesh           = {}
 
 -- The usual dig highlight: the spot and the tiles around it.
 local DIG_AREA_SIZE      = { x = 3, y = 3 }
+-- For clues whose dig spot must be hit exactly.
+local SINGLE_TILE_SIZE   = { x = 1, y = 1 }
 
 ---@class AbilityColors
 ---@field [any] ColourRGBA
@@ -437,9 +439,10 @@ end
 
 ---The usual highlight of a dig spot. Not activated yet.
 ---@param spot TileCoordinates
+---@param single_tile boolean? Only the spot's tile instead of the dig area.
 ---@return zyklib.TerrainHighlight
-function PathMesh.digHighlight(spot)
-    return PathMesh.areaHighlight(TileArea.centered_on(spot, DIG_AREA_SIZE))
+function PathMesh.digHighlight(spot, single_tile)
+    return PathMesh.areaHighlight(TileArea.centered_on(spot, single_tile and SINGLE_TILE_SIZE or DIG_AREA_SIZE))
 end
 
 ---@param step Path.Step?
