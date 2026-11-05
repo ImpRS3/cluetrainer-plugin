@@ -1,7 +1,8 @@
 -- LiveNarrowing.lua
 -- Narrows the dig spots down on every pulse from what the player sees: the scan panel and their own tile, wherever
 -- they stand, plus the single or double the player tells with Shift+1/2. A spot is only ruled out when it fits none
--- of the tiles the player stood on around the pulse, so the right spot is never dropped.
+-- of the tiles the player stood on around the pulse, so the right spot is never dropped. A triple's paces judge every
+-- spot again, so a wrong key press before it can't hide the dig spot.
 local scan_panel       = require "cluetrainer/solving/scan/scan_panel"
 local scan_tree        = require "cluetrainer/solving/scan/scan_tree"
 local tiles            = require "cluetrainer/model/shared/tiles"
@@ -41,6 +42,7 @@ local KEEP_SAMPLE_TICKS = PRESS_PULSES * PULSE_TICKS + TILES_BEFORE + TILES_AFTE
 ---@field private reading ct.LiveNarrowing.Reading? The reading of the current text
 ---@field private next_pulse integer? When the next pulse is due while the text stays the same
 ---@field private known_range integer?
+---@field private paced boolean Whether a triple's paces narrowed the spots
 local LiveNarrowing = {}
 LiveNarrowing.__index = LiveNarrowing
 
@@ -56,6 +58,7 @@ function LiveNarrowing.new(spots, clue_range)
     samples = {},
     pending = {},
     found = false,
+    paced = false,
   }, LiveNarrowing)
 end
 
@@ -63,6 +66,12 @@ end
 ---@return integer?
 function LiveNarrowing:range()
   return self.known_range
+end
+
+--- Whether a triple's paces narrowed the spots: those left then hold wherever the route went.
+---@return boolean
+function LiveNarrowing:hasPaces()
+  return self.paced
 end
 
 --- The given spots without the ones the readings ruled out.
@@ -144,12 +153,47 @@ function LiveNarrowing:tilesBetween(from, to)
   return stood_on
 end
 
+--- A triple's paces tell the dig spot whatever was read before: the spots at that distance stay, the others go. It
+--- brings back spots a key press ruled out, as that press may have been wrong. Spots an earlier reading ruled out stay
+--- out, unless that leaves none: then this triple wins, so a reading at a wrong tile can't hide the spot either.
+---@private
+---@param reading ct.LiveNarrowing.Reading
+---@param stood_on TileCoordinates[]
+---@return boolean changed
+function LiveNarrowing:applyPaces(reading, stood_on)
+  local fit, agrees = {}, false
+  for _, spot in ipairs(self.spots) do
+    local id = tiles.key(spot)
+    if array.exists(stood_on, function(tile) return fits(reading, spot, tile) end) then
+      fit[id] = true
+      agrees = agrees or self.ruled_out[id] ~= "panel"
+    end
+  end
+
+  -- Ignore paces no spot fits, so off data never loses the right spot.
+  if next(fit) == nil then return false end
+  self.paced = true
+
+  local changed = false
+  for _, spot in ipairs(self.spots) do
+    local id = tiles.key(spot)
+    local by = self.ruled_out[id]
+    local keep = fit[id] and (by ~= "panel" or not agrees)
+    -- The panel, not a key press, so undoing that press doesn't bring the spot back.
+    local now = (not keep) and "panel" or nil
+    changed = changed or (by == nil) ~= (now == nil)
+    self.ruled_out[id] = now
+  end
+  return changed
+end
+
 ---@private
 ---@param pending ct.LiveNarrowing.Pending
 ---@return boolean changed
 function LiveNarrowing:apply(pending)
   local stood_on = self:tilesBetween(pending.from, pending.to)
   if #stood_on == 0 then return false end
+  if pending.reading.state == "triple" then return self:applyPaces(pending.reading, stood_on) end
 
   -- The panel also judges spots a key press ruled out, so they stay out when that press is undone.
   local dropped, kept = {}, 0

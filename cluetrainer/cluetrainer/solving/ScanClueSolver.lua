@@ -16,6 +16,7 @@ local scan_display       = require "cluetrainer/solving/scan/scan_display"
 local ScanMap            = require "cluetrainer/solving/scan/ScanMap"
 local ScanGround         = require "cluetrainer/solving/scan/ScanGround"
 local LiveNarrowing      = require "cluetrainer/solving/scan/LiveNarrowing"
+local tiles              = require "cluetrainer/model/shared/tiles"
 local array              = require "zyklib/array"
 local zyklib             = require "zyklib"
 
@@ -36,6 +37,7 @@ local DESTROYED_TIMEOUT_TICKS = 2 * scan_panel.PULSE_TICKS
 ---| "choose" # The panel can't tell the pulses apart (single or double, or a different level), the player presses a key
 ---| "manual" # The player went back, the panel is ignored until they press a key
 ---| "triple" # Triple with several spots left
+---| "off_route" # A triple's paces point to spots the route doesn't lead to, e.g. after a wrong Shift+1/2
 ---| "mismatch" # The panel shows a pulse the tree doesn't have here
 ---| "dig" # One spot left, follow the route and dig
 ---| "dig_here" # The panel says the player stands on the dig spot
@@ -200,9 +202,11 @@ function ScanClueSolver:range()
 end
 
 --- The node's spots that fit every pulse so far; with several triples only theirs. Should no spot fit, the pulses
---- disagree with the tree (other range, other route) and the tree's spots stay.
+--- disagree with the tree (other range, other route) and the tree's spots stay; after a triple's paces, the clue's
+--- spots that fit them, as those tell the dig spot wherever the route went.
 ---@private
 ---@return TileCoordinates[]
+---@return boolean off_route Whether the spots lie off the route
 function ScanClueSolver:remainingSpots()
   local spots = self.candidates[self.node]
   if self.status == "triple" then
@@ -210,16 +214,27 @@ function ScanClueSolver:remainingSpots()
   end
 
   local narrowed = self.live:filter(spots)
-  return #narrowed > 0 and narrowed or spots
+  if #narrowed > 0 then return narrowed, false end
+
+  if self.live:hasPaces() then
+    local anywhere = self.live:filter(self.tree.ordered_spots)
+    if #anywhere > 0 then return anywhere, true end
+  end
+  return spots, false
 end
 
 --- Shows the remaining spots on the map and the ground. Once they all lie under one child, the scan here can only
 --- pick that child, so its route follows; not after going back, as the player picks then.
 ---@private
 function ScanClueSolver:refresh()
-  self.remaining = self:remainingSpots()
+  local off_route
+  self.remaining, off_route = self:remainingSpots()
   self.map:setRemaining(self.remaining)
   self.ground:setSpots(self.remaining)
+
+  if off_route then return self:leaveRoute() end
+  -- Back on the route, e.g. Shift+0 to before the wrong key press.
+  if self.status == "off_route" then return self:enter(self.node, self.area) end
 
   if self.status ~= "manual" then
     local children = self.status == "triple" and self.status_children or self.node.children
@@ -227,7 +242,20 @@ function ScanClueSolver:refresh()
     if child then return self:step(child, "spots left") end
   end
 
+  self:updatePreview()
   self:render()
+end
+
+--- Drops the route, which leads elsewhere, and shows just the spots the triple points to: the player stands within
+--- range of them.
+---@private
+function ScanClueSolver:leaveRoute()
+  if self.status ~= "off_route" then
+    self.navigator:clear()
+    self.ground:setScanArea(nil)
+  end
+  self.map:setStep({}, nil, nil, self.remaining)
+  self:setStatus("off_route")
 end
 
 --- The routes the player chooses between with Shift, faded on the ground and the map. Not while waiting for the
@@ -238,8 +266,13 @@ function ScanClueSolver:updatePreview()
   if status == "mismatch" then
     -- The panel doesn't pick a child, so the player may pick any.
     children = self.node.children
-  elseif status == "choose" or status == "manual" or status == "triple" then
+  elseif status == "choose" or status == "manual" then
     children = self.status_children
+  elseif status == "triple" then
+    -- Only the triples the paces leave, so no route leads to a spot they ruled out.
+    children = array.filter(self.status_children, function(child)
+      return array.exists(self.remaining, function(spot) return tiles.same(spot, child.key.spot) end)
+    end)
   end
 
   local previews = {}
@@ -361,6 +394,9 @@ function ScanClueSolver:poll(tick, capture, reading, tile)
   -- While more than one spot is left, so the squares stay for the whole scan.
   self.map:setRange(#self.remaining > 1 and self.area or nil, range, tile)
   self.map:setPlayer(tile)
+
+  -- Before the leaf check, as a leaf's route leads to another spot then.
+  if self.status == "off_route" then return self:render() end
 
   if #self.node.children == 0 then
     return self:setStatus(capture.found and "dig_here" or "dig")
