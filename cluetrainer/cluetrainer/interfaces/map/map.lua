@@ -60,7 +60,10 @@ function GameMap.new()
     showZoomControls = false,
     showPlayerMarker = false,
     trackPlayer = false,
+
   })
+
+  self.map:ZoomToMapSquare(CoordGrid.new(0, 46, 52, 32, 32))
 
   -- Panel has no resize callback, so hook SetSize, which the resize handle calls on every drag step.
   local panelSetSize = self.window.SetSize
