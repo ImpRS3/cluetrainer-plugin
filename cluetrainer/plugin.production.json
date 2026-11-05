@@ -9,5 +9,6 @@
   "urls": {
     "cluetrainer": "http://cluetrainer.app"
   },
-  "hasSettingsIcon" : true
+  "hasSettingsIcon" : true,
+  "hasRibbonIcon" : true
 }

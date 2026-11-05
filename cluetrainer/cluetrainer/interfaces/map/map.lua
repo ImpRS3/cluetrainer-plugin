@@ -5,6 +5,8 @@ local WindowGeometry = require("cluetrainer/util/WindowGeometry")
 local prettyui_workarounds = require("cluetrainer/util/prettyui_workarounds")
 
 local luaflet = require("prettymap/luaflet")
+local schema = require("cluetrainer/util/schema")
+local storage = require("cluetrainer/util/storage")
 
 -- Mirrors the PrettyUI panel chrome, which is not exposed.
 local PANEL_BORDER = 8
@@ -23,6 +25,10 @@ local geometry = WindowGeometry.new("map_window_geometry", { size = true })
 ---@field private shutdown_handler zyklib.reactive.EventHandler
 local GameMap = {}
 GameMap.__index = GameMap
+
+GameMap.settings = {
+  visible = storage.setting_variable("map/visible", schema.bool({ default = false })),
+}
 
 ---@type ct.GameMap?
 local instance = nil
@@ -178,29 +184,12 @@ end
 
 --- Ensures the map exists, then returns it.
 ---@return ct.GameMap
-function GameMap.ensure_open()
+function GameMap.get()
   if not instance then
     instance = GameMap.new()
   end
 
   return instance
-end
-
---- Whether the map window is open. Lets a solver know whether its map elements still exist, as closing the map
---- Whether the map exists, visible or not. Lets a solver know whether its map elements still exist.
----@return boolean
-function GameMap.isOpen()
-  return instance ~= nil
-end
-
---- Makes the map visible, creating it first if needed.
-function GameMap.show()
-  GameMap.ensure_open():setVisible(true)
-end
-
---- Hides the map if it exists, keeping it and its elements for the next show.
-function GameMap.hide()
-  if instance then instance:setVisible(false) end
 end
 
 return GameMap

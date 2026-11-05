@@ -260,7 +260,8 @@ local function buildSliders(page)
 
   addSection(page, "Solver")
 
-  addNumber(page, "Solve time", "How much time the solver is allowed to spend on finding a solution before drawing it on the overlay.",
+  addNumber(page, "Solve time",
+    "How much time the solver is allowed to spend on finding a solution before drawing it on the overlay.",
     {
       min = 100,
       max = 5000,
@@ -328,11 +329,13 @@ end
 ---@return PrettyUI.SimpleView view The view hosting the settings. Destroy it to remove them again.
 function SettingsDialog.mount(layer)
   local NAV_WIDTH = 110
-  local VIEW_X = NAV_WIDTH + 25
+  local NAV_GAP = 5
+  local VIEW_X = NAV_WIDTH
 
   local host = prettyui.SimpleView.new(layer, {
     width = layer.width,
     height = layer.height,
+    layout = { paddingLeft = NAV_GAP, paddingRight = NAV_GAP },
   })
 
   local pages = {
@@ -373,7 +376,8 @@ function SettingsDialog.mount(layer)
   end
 
   for i, page in ipairs(pages) do
-    buttons[i] = host:AddSimpleButton(page.name, function() select(i) end, { width = NAV_WIDTH })
+    buttons[i] = host:AddSimpleButton(page.name, function() select(i) end,
+      { width = NAV_WIDTH - 2 * NAV_GAP, marginTop = NAV_GAP, marginBottom = 0 })
   end
 
   select(1)
@@ -394,7 +398,7 @@ function SettingsDialog.open()
   local WINDOW_HEIGHT = 460
 
   window = prettyui.Window.new(parent, {
-    title = "Clue Trainer",
+    title = "Clue Trainer Settings",
     x = -WINDOW_WIDTH // 2,
     y = -WINDOW_HEIGHT // 2,
     xAnchor = 0.5,

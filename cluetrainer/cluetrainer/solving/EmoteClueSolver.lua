@@ -69,7 +69,7 @@ function EmoteClueSolver.new(clue, clue_state)
   local self = setmetatable(ActiveClueSolver.new(clue), EmoteClueSolver)
 
   self.disposable_group:add(create_step_highlights(clue):activate())
-  self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.twigs))
+  self.disposable_group:add(create_step_map_layer(clue):AddTo(map.get().map.twigs))
 
   local preferred = methods.getPreferred({ clue = clue.id })
   local method = preferred and preferred.method --[[@as Method.GenericPath?]]
@@ -79,15 +79,13 @@ function EmoteClueSolver.new(clue, clue_state)
   if not method then
     local bounds = Bounds.new()
     bounds:addArea(clue.area)
-    map.ensure_open():fitBounds(bounds)
+    map.get():fitBounds(bounds)
   end
 
   ---@type ct.EmoteClueActions
   self.actions = {}
 
   local state_panel = clue_state
-
-  state_panel:clearActions()
 
   self.actions.method = state_panel:addAction(MethodAction.new({ clue = clue.id }, {
     onMethodSelected = function(selected)
@@ -143,9 +141,9 @@ function EmoteClueSolver:setPath(path)
 
     local sectioned_path = Path.split_into_sections(path)
     local steps = zyklib.array.flatMap(sectioned_path, function(section) return section.steps end)
-    self.path_twig = PathStepEntity.route(steps):AddTo(map.ensure_open().map.twigs)
+    self.path_twig = PathStepEntity.route(steps):AddTo(map.get().map.twigs)
 
-    self.map_navigator = MapSectionControl.new(map.ensure_open(),
+    self.map_navigator = MapSectionControl.new(map.get(),
       zyklib.array.map(sectioned_path, function(sec) return { name = sec.name, bounds = Path.bounds(sec.steps) } end))
   end
 end

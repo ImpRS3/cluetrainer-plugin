@@ -205,7 +205,7 @@ function SimpleClueSolver.new(clue, clue_state)
   local self = setmetatable(ActiveClueSolver.new(clue), SimpleClueSolver)
 
   self.disposable_group:add(create_step_highlights(clue):activate())
-  self.disposable_group:add(create_step_map_layer(clue):AddTo(map.ensure_open().map.twigs))
+  self.disposable_group:add(create_step_map_layer(clue):AddTo(map.get().map.twigs))
 
   local preferred = methods.getPreferred({ clue = clue.id })
   local method = preferred and preferred.method --[[@as Method.GenericPath?]]
@@ -217,7 +217,7 @@ function SimpleClueSolver.new(clue, clue_state)
   if not method then
     local bounds = clue_map_bounds(clue)
     --- Only fit to the basic clue target bounds if there is no method available initially
-    map.ensure_open():fitBounds(bounds)
+    map.get():fitBounds(bounds)
   end
 
   self.actions = {}
@@ -305,9 +305,9 @@ function SimpleClueSolver:setPath(path)
 
     local sectioned_path = Path.split_into_sections(path)
     local steps = zyklib.array.flatMap(sectioned_path, function(section) return section.steps end)
-    self.path_twig = PathStepEntity.route(steps):AddTo(map.ensure_open().map.twigs)
+    self.path_twig = PathStepEntity.route(steps):AddTo(map.get().map.twigs)
 
-    self.map_navigator = MapSectionControl.new(map.ensure_open(),
+    self.map_navigator = MapSectionControl.new(map.get(),
       zyklib.array.map(sectioned_path, function(sec) return { name = sec.name, bounds = Path.bounds(sec.steps) } end))
   end
 end

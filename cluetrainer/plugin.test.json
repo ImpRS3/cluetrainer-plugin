@@ -9,5 +9,6 @@
   "urls": {
     "cluetrainer": "http://localhost:8000"
   },
-  "hasSettingsIcon" : true
+  "hasSettingsIcon": true,
+  "hasRibbonIcon": true
 }

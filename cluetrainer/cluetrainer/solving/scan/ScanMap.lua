@@ -59,7 +59,7 @@ end
 ---@param tree ScanTree.ScanTree
 ---@return ct.ScanMap
 function ScanMap.new(tree)
-  local game_map = map.ensure_open()
+  local game_map = map.get()
 
   local self = setmetatable({
     -- On every plane, so steps whose tiles have another level than the map shows (dungeons) stay visible.
@@ -114,7 +114,7 @@ end
 ---@param bounds ct.Bounds
 function ScanMap:fit(bounds)
   local view = bounds:copy():ensureSize(MIN_VIEW_TILES):extend(FIT_MARGIN)
-  map.ensure_open():fitBounds(view, 2 * COUNTER_OFFSET + COUNTER_HEIGHT)
+  map.get():fitBounds(view, 2 * COUNTER_OFFSET + COUNTER_HEIGHT)
 end
 
 --- Dashed squares where a pulse gives a triple, and where a double. Around the player while they are where a pulse can
@@ -165,7 +165,7 @@ end
 ---@param squares TileArea
 ---@param area TileArea?
 function ScanMap:keepInView(squares, area)
-  local game_map = map.ensure_open()
+  local game_map = map.get()
   local corners = TileArea.toRect(squares)
   if game_map:shows(corners.topleft) and game_map:shows(corners.botright) then return end
 

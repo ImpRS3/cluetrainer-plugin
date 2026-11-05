@@ -113,7 +113,7 @@ CompassSolver.__index = CompassSolver
 function CompassSolver.new(clue, state_window)
   ---@class ct.ActiveCompassSolver
   local self = setmetatable(ActiveClueSolver.new(clue), CompassSolver)
-  self.map_layer = luaflet.twigs.Twig.new():AddTo(map.ensure_open().map.twigs)
+  self.map_layer = luaflet.twigs.Twig.new():AddTo(map.get().map.twigs)
   self.disposable_group:add(zyklib.disposable.wrap(function()
     self.map_layer:Detach()
   end))
@@ -141,8 +141,6 @@ function CompassSolver.new(clue, state_window)
       possible = true
     }
   end)
-
-  state_window:clearActions()
 
   self.actions = {}
   self.actions.identify = state_window:addAction(ClueStateAction.Text.new(""))
@@ -242,9 +240,9 @@ function CompassSolver:setPath(path)
 
     local sectioned_path = Path.split_into_sections(path)
     local steps = zyklib.array.flatMap(sectioned_path, function(section) return section.steps end)
-    self.path_twig = PathStepEntity.route(steps):AddTo(map.ensure_open().map.twigs)
+    self.path_twig = PathStepEntity.route(steps):AddTo(map.get().map.twigs)
 
-    self.map_navigator = MapSectionControl.new(map.ensure_open(),
+    self.map_navigator = MapSectionControl.new(map.get(),
       zyklib.array.map(sectioned_path, function(sec) return { name = sec.name, bounds = Path.bounds(sec.steps) } end))
   end
 end
@@ -315,7 +313,7 @@ function CompassSolver:fitRemainingCandidates()
 
   bounds:extend(0.1)
 
-  map.ensure_open():fitBounds(bounds)
+  map.get():fitBounds(bounds)
 end
 
 return CompassSolver

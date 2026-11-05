@@ -1,20 +1,26 @@
-local clue_detector         = require "cluetrainer/clue_detector"
-local CompassSolver         = require "cluetrainer/solving/CompassSolver"
-local EmoteClueSolver       = require "cluetrainer/solving/EmoteClueSolver"
-local SimpleClueSolver      = require "cluetrainer/solving/SimpleClueSolver"
-local ScanTreeSolver        = require "cluetrainer/solving/ScanClueSolver"
-local ClueStateInterface    = require "cluetrainer/interfaces/cluestate/cluestate"
-local map                   = require "cluetrainer/interfaces/map/map"
+local clue_detector          = require "cluetrainer/clue_detector"
+local CompassSolver          = require "cluetrainer/solving/CompassSolver"
+local EmoteClueSolver        = require "cluetrainer/solving/EmoteClueSolver"
+local SimpleClueSolver       = require "cluetrainer/solving/SimpleClueSolver"
+local ScanTreeSolver         = require "cluetrainer/solving/ScanClueSolver"
+local ClueStateInterface     = require "cluetrainer/interfaces/cluestate/cluestate"
+local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
+local schema                 = require "cluetrainer/util/schema"
+local storage                = require "cluetrainer/util/storage"
 
 ---@class ct.solving.SolvingOrchestrator : zyklib.disposable.IDisposable
 ---@field private clue_state ct.ClueStateInterface
 ---@field private active_solver ct.ActiveClueSolver?
 ---@field private clue_detection_handler zyklib.reactive.EventHandler
-local SolvingOrchestrator   = {}
-SolvingOrchestrator.__index = SolvingOrchestrator
+local SolvingOrchestrator    = {}
+SolvingOrchestrator.__index  = SolvingOrchestrator
+
+SolvingOrchestrator.settings = {
+  enabled = storage.setting_variable("solving/enabled", schema.bool({ default = true })),
+}
 
 ---@type ct.solving.SolvingOrchestrator?
-local instance              = nil
+local instance               = nil
 
 ---@private
 ---@return ct.solving.SolvingOrchestrator
@@ -29,11 +35,22 @@ function SolvingOrchestrator.new()
 
   self.active_solver = nil
 
+  self:showIntroduction()
+
   self.clue_detection_handler = clue_detector.clue_detected_event:subscribe(function(clue)
-    self:onClueDetected(clue)
+    self:setClue(clue)
   end)
 
   return self
+end
+
+---Fills the empty clue state panel with introductory text, until the first clue replaces it.
+---@private
+function SolvingOrchestrator:showIntroduction()
+  self.clue_state:addAction(ClueStateAction.Text.new("Clue Trainer ready!"))
+  self.clue_state:addAction(ClueStateAction.Text.new("Click any active Clue scroll or<br>tetracompass to start solving."))
+  self.clue_state:addAction(ClueStateAction.Text.new(
+    "To move this panel or the map,<br>unlock your interface, hold the<br>Alt key, and drag them around"))
 end
 
 function SolvingOrchestrator:reset()
@@ -44,30 +61,26 @@ function SolvingOrchestrator:reset()
 
   self.clue_state:setClue(nil)
   self.clue_state:clearActions()
-  -- Hidden until the next clue, so the cross closes both windows.
-  self.clue_state:setVisible(false)
-  map.hide()
 end
 
 ---@param clue Step?
-function SolvingOrchestrator:onClueDetected(clue)
+function SolvingOrchestrator:setClue(clue)
   -- Keep the running solver when the same clue is read again (a scan clue is read on every "Start scanning"), so its
   -- progress stays. Rebuild it once it ended, or once the map with its elements is gone.
   local active = self.active_solver
-  if clue ~= nil and active ~= nil and active.clue == clue and not active.ended and map.isOpen() then return end
+  if clue ~= nil and active ~= nil and active.clue == clue and not active.ended then return end
+
+  self.clue_state:clearActions()
 
   if active ~= nil then
     active:dispose()
     self.active_solver = nil
-    -- Here rather than in each solver, so no rows of the previous clue stay above the next clue's.
-    self.clue_state:clearActions()
   end
 
   if clue ~= nil then
     self.clue_state:setClue(clue)
     -- Shown again after the cross hid them.
     self.clue_state:setVisible(true)
-    map.show()
   end
 
   self.active_solver = (function()

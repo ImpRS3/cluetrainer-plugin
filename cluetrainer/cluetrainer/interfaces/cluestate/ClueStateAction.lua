@@ -5,8 +5,17 @@ local STATE_ALPHA = {
   complete = 0.5,
 }
 
-local ROW_HEIGHT = 24
+local ROW_HEIGHT = 22
+local LINE_HEIGHT = 20
 
+---The height of a row for the text, which has one line per `<br>`-separated part. Rows can't change height after
+---construction, so this is only evaluated for the initial text.
+---@param content string
+---@return integer
+local function rowHeight(content)
+  local _, breaks = content:gsub("<br>", "")
+  return math.max(ROW_HEIGHT, (breaks + 1) * LINE_HEIGHT)
+end
 ---Interface for a single line in the clue state panel.
 ---State is always stored in the object and only applied to components once they have been constructed.
 ---Implementations add their components to the PrettyUI view (and thereby its flow rows, which receive the
@@ -86,7 +95,7 @@ function Text:_construct(view)
   self.text = view:AddText({
     text = self.content,
     x = 0,
-    height = ROW_HEIGHT,
+    height = rowHeight(self.content),
     marginBottom = 0,
   })
   self.text.clickthrough = true
