@@ -10,6 +10,7 @@ local ActiveClueSolver   = require("cluetrainer/solving/common/ActiveClueSolver"
 local Navigator          = require("cluetrainer/solving/common/navigator")
 local MapSectionControl  = require("cluetrainer/solving/map_navigator/MapSectionControl")
 local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEntity")
+local PathMesh           = require("cluetrainer/model/PathMesh")
 local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local MethodAction       = require("cluetrainer/solving/common/MethodAction")
 
@@ -104,6 +105,8 @@ end, true)
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
+---@field private dig_spot TileCoordinates? The spot the dig highlight is on
+---@field private dig_highlight zyklib.Highlight?
 local CompassSolver = setmetatable({}, { __index = ActiveClueSolver })
 CompassSolver.__index = CompassSolver
 
@@ -207,6 +210,12 @@ function CompassSolver:update()
 
   self.identified_spot = remaining_candidates == 1 and identified_solution or nil
 
+  -- The identified spot gets the large pin with its dig area on the map, and the dig highlight in the world.
+  for _, candidate in ipairs(self.candidates) do
+    candidate.marker:setActive(self.identified_spot ~= nil and candidate.possible)
+  end
+  self:setDigHighlight(self.identified_spot)
+
   -- Once the spot is identified, the action picks the preferred method itself
   local action = self.actions.method
   action:setSpot(self.identified_spot and { clue = self.clue.id, spot = self.identified_spot } or nil)
@@ -247,8 +256,19 @@ function CompassSolver:setPath(path)
   end
 end
 
+--- Highlights the dig spot in the world; nil removes the highlight.
+---@param spot TileCoordinates?
+function CompassSolver:setDigHighlight(spot)
+  if spot == self.dig_spot then return end
+  if self.dig_highlight then self.dig_highlight:deactivate() end
+
+  self.dig_spot = spot
+  self.dig_highlight = spot and PathMesh.digHighlight(spot, self.clue.single_tile_target):activate() or nil
+end
+
 function CompassSolver:dispose()
   self:setPath(nil)
+  self:setDigHighlight(nil)
   ActiveClueSolver.dispose(self)
 end
 
