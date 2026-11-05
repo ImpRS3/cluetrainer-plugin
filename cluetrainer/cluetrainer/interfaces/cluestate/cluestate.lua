@@ -1,5 +1,6 @@
 local WindowGeometry       = require("cluetrainer/util/WindowGeometry")
 local prettyui_workarounds = require("cluetrainer/util/prettyui_workarounds")
+local item_icon            = require("cluetrainer/util/item_icon")
 
 local geometry             = WindowGeometry.new("cluestate_interface_geometry")
 
@@ -79,11 +80,14 @@ function ClueStateInterface.new()
     rowBackgroundGroup = HEADER_GROUP,
   })
 
+  local icon_x, icon_y, icon_width, icon_height =
+      item_icon.rect(TIER_ICON_X, (ROW_HEIGHT - TIER_ICON_SIZE) // 2, TIER_ICON_SIZE)
   self.tier_icon = self.window:AddSprite(-1, {
     inline = true,
-    x = TIER_ICON_X,
-    offsetY = (ROW_HEIGHT - TIER_ICON_SIZE) // 2,
-    size = TIER_ICON_SIZE,
+    x = icon_x,
+    offsetY = icon_y,
+    width = icon_width,
+    height = icon_height,
     rowBackgroundGroup = HEADER_GROUP,
   })
   self.tier_icon.root.hidden = true

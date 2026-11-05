@@ -2,6 +2,7 @@ local luaflet = require("prettymap/luaflet")
 local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
 local FontFamily = require("cluetrainer/util/FontFamily")
 local TeleportTooltip = require("cluetrainer/interfaces/map/elements/TeleportTooltip")
+local item_icon = require("cluetrainer/util/item_icon")
 
 local HOVER_FACTOR = 1.5 -- of the largest zoom step
 -- Pixel size per map zoom step: icons are small while the map is crowded and
@@ -33,6 +34,7 @@ end
 ---@field teleport cluetrainer.TeleportSpot
 ---@field overlay_text ui.Text?
 ---@field sprite ui.Sprite?
+---@field is_item boolean? Whether the sprite shows an item, which `item_icon` places.
 ---@field home_level integer The plane the teleport is on.
 local TeleportElement = setmetatable({}, { __index = luaflet.twigs.Twig })
 TeleportElement.__index = TeleportElement
@@ -64,8 +66,13 @@ end
 --- code only.
 function TeleportElement:_PlaceContent()
   local icon = self.height
-  self.sprite:SetSize(icon, icon)
-  self.sprite:SetPos(math.floor((self.width - icon) / 2), 0)
+  local x = math.floor((self.width - icon) / 2)
+  if self.is_item then
+    item_icon.place(self.sprite, x, 0, icon)
+  else
+    self.sprite:SetSize(icon, icon)
+    self.sprite:SetPos(x, 0)
+  end
 
   -- Spots without a sprite have no text.
   local text = self.overlay_text
@@ -98,6 +105,7 @@ function TeleportElement:CreateComponent(layer)
     sprite.sprite = id.Sprite[teleport.props.cache_data.sprite]
   elseif teleport.props.cache_data.obj then
     sprite:SetAssociatedObject(id.Obj[teleport.props.cache_data.obj])
+    self.is_item = true
   end
 
   sprite.clickthrough = true
