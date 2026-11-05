@@ -96,6 +96,14 @@ function MapSectionControl:CreateComponent(layer)
 
   self.previous = common.button(container, PREVIOUS_SPRITES, function() self:_Step(-1) end, 0, BUTTON_SIZE)
   self.text = common.label(container, BUTTON_SIZE, inner_width - BUTTON_SIZE * 2, BUTTON_SIZE)
+  self.text.clickthrough = false
+  local cursor = config.Cursor.CURSOR_SEARCH
+  self.text.cursorConfig.mouseOverCursor = cursor.id
+  self.text.opConfig:SetOpCursor(0, cursor.id)
+  self.text:Subscribe(ui.Hook.ONCLICK, function()
+    self:setSection(self.index)
+    return false
+  end)
   self.next = common.button(container, NEXT_SPRITES, function() self:_Step(1) end, inner_width - BUTTON_SIZE, BUTTON_SIZE)
 
   self:Refresh()
