@@ -1,4 +1,3 @@
--- clues.lua
 ---@type Step[]
 local clues = {
   {
@@ -65,7 +64,7 @@ local clues = {
       type = "talkto",
       spots = {
         {
-          range = { origin = { x = 3202, y = 3205, level = 0 }, size = { x = 20, y = 28 } },
+          range = { origin = { x = 3202, y = 3205, level = 0 }, size = { x = 21, y = 28 } },
           description = "at Lumbridge Castle"
         }
       },
@@ -296,7 +295,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
-      spot = { level = 1, topleft = { x = 2970, y = 3213 }, botright = { x = 2970, y = 3213 } }
+      spot = { level = 1, topleft = { x = 2970, y = 3214 }, botright = { x = 2970, y = 3214 } }
     }
   },
   {
@@ -933,126 +932,6 @@ local clues = {
     }
   },
   {
-    id = 472,
-    type = "cryptic",
-    tier = "sandy",
-    text = {
-      "He's got a rebuildathon going on, and an endless stream of important visitors."
-    },
-    solution = {
-      type = "talkto",
-      npc = "Foreman George",
-      spots = {
-        {
-          range = { origin = { x = 3155, y = 3240, level = 0 } },
-          description = "near the sandcastles"
-        }
-      }
-    }
-  },
-  {
-    id = 473,
-    type = "cryptic",
-    tier = "sandy",
-    text = { "He's got one hat, two hat, three hat, many hats!" },
-    solution = {
-      type = "talkto",
-      npc = "Sheldon",
-      spots = {
-        {
-          range = { origin = { x = 3169, y = 3254, level = 0 } },
-          description = "at the northern entrance"
-        }
-      }
-    }
-  },
-  {
-    id = 474,
-    type = "cryptic",
-    tier = "sandy",
-    text = { "He's named after a boot, and carrying nets on his shoulder." },
-    solution = {
-      type = "talkto",
-      npc = "Wellington",
-      spots = {
-        {
-          range = { origin = { x = 3185, y = 3232, level = 0 } },
-          description = "at the fishing spots"
-        }
-      }
-    }
-  },
-  {
-    id = 475,
-    type = "cryptic",
-    tier = "sandy",
-    text = { "She can be trusted, she isn't shy and she likes ducks." },
-    solution = {
-      type = "talkto",
-      npc = "Sarah",
-      spots = {
-        {
-          range = { origin = { x = 3170, y = 3215, level = 0 } },
-          description = "at the southern entrance"
-        }
-      }
-    }
-  },
-  {
-    id = 476,
-    type = "cryptic",
-    tier = "sandy",
-    text = {
-      "She doesn't sell sea shells, but does share common ground with the feather of fletching."
-    },
-    solution = {
-      type = "talkto",
-      npc = "Flo",
-      spots = {
-        {
-          range = { origin = { x = 3164, y = 3214, level = 0 } },
-          description = "at the southern entrance"
-        }
-      }
-    }
-  },
-  {
-    id = 477,
-    type = "cryptic",
-    tier = "sandy",
-    text = {
-      "Some say he guards their life, others say he sits around watching beach balls roll around."
-    },
-    solution = {
-      type = "talkto",
-      npc = "Lifeguard",
-      spots = {
-        {
-          range = { origin = { x = 3166, y = 3256, level = 0 } },
-          description = "at the northern entrance"
-        }
-      }
-    }
-  },
-  {
-    id = 478,
-    type = "cryptic",
-    tier = "sandy",
-    text = {
-      "Some say he's got the beach in the palm of his hand. Others think he's just excited about coconuts."
-    },
-    solution = {
-      type = "talkto",
-      npc = "Palmer",
-      spots = {
-        {
-          range = { origin = { x = 3143, y = 3228, level = 0 } },
-          description = "at the western entrance"
-        }
-      }
-    }
-  },
-  {
     id = 179,
     type = "cryptic",
     tier = "easy",
@@ -1324,7 +1203,7 @@ local clues = {
     },
     solution = {
       type = "dig",
-      spot = { x = 2656, y = 3160, level = 0 },
+      spot = { x = 2656, y = 3161, level = 0 },
       description = "in front of the door"
     }
   },
@@ -1575,7 +1454,7 @@ local clues = {
     },
     solution = {
       type = "dig",
-      spot = { x = 3176, y = 2916, level = 0 },
+      spot = { x = 3175, y = 2915, level = 0 },
       description = "west of the cart"
     }
   },
@@ -1615,7 +1494,7 @@ local clues = {
     },
     solution = {
       type = "dig",
-      spot = { x = 2992, y = 3178, level = 0 },
+      spot = { x = 2993, y = 3178, level = 0 },
       description = "west of the church near Port Sarim"
     }
   },
@@ -1917,7 +1796,7 @@ local clues = {
     },
     solution = {
       type = "dig",
-      spot = { x = 3161, y = 9905, level = 0 },
+      spot = { x = 3161, y = 9904, level = 0 },
       description = "next to the cauldron"
     }
   },
@@ -2106,7 +1985,7 @@ local clues = {
       type = "talkto",
       spots = {
         {
-          range = { origin = { x = 3202, y = 3205, level = 0 }, size = { x = 20, y = 28 } },
+          range = { origin = { x = 3202, y = 3205, level = 0 }, size = { x = 21, y = 28 } },
           description = "at Lumbridge Castle"
         }
       },
@@ -2167,7 +2046,7 @@ local clues = {
       type = "talkto",
       spots = {
         {
-          range = { origin = { x = 3219, y = 3434, level = 0 }, size = { x = 5, y = 5 } },
+          range = { origin = { x = 3219, y = 3434, level = 0 }, size = { x = 6, y = 5 } },
           description = "near Varrock's fountain"
         }
       },
@@ -2404,7 +2283,7 @@ local clues = {
     solution = {
       type = "dig",
       description = "west of the Chemist's House",
-      spot = { x = 2923, y = 3210, level = 0 }
+      spot = { x = 2924, y = 3208, level = 0 }
     }
   },
   {
@@ -2428,7 +2307,7 @@ local clues = {
     solution = {
       type = "dig",
       description = "south of the giant head",
-      spot = { x = 2648, y = 3231, level = 0 }
+      spot = { x = 2650, y = 3231, level = 0 }
     }
   },
   {
@@ -2451,7 +2330,7 @@ local clues = {
     text = { "X marks the spot near a rock on a peninsula." },
     solution = {
       type = "dig",
-      spot = { x = 2906, y = 3296, level = 0 },
+      spot = { x = 2906, y = 3294, level = 0 },
       description = "west of the snape grass at the tip of the hobgoblin peninsula."
     }
   },
@@ -2463,7 +2342,7 @@ local clues = {
     text = { "X marks the spot on a small landmass surrounded by water." },
     solution = {
       type = "dig",
-      spot = { x = 2579, y = 3597, level = 0 },
+      spot = { x = 2578, y = 3597, level = 0 },
       description = "at the end of the branching path next to the crystal tree"
     }
   },
@@ -2819,7 +2698,7 @@ local clues = {
     text = {
       "Twirl in Draynor Manor by the fountain. Equip an iron platebody, studded chaps and a bronze full helm."
     },
-    area = { origin = { x = 3086, y = 3333, level = 0 }, size = { x = 5, y = 5 } },
+    area = { origin = { x = 3085, y = 3332, level = 0 }, size = { x = 6, y = 6 } },
     items = { "Iron platebody", "Studden chaps", "Bronze full helm" },
     emotes = { "Twirl" },
     double_agent = false,
@@ -3264,7 +3143,7 @@ local clues = {
     items = { "Diamond ring", "Amulet of power", "Nothing on your chest and legs" },
     emotes = { "Salute" },
     double_agent = true,
-    area = { origin = { x = 2908, y = 3154, level = 0 }, size = { x = 27, y = 21 } },
+    area = { origin = { x = 2908, y = 3155, level = 0 }, size = { x = 27, y = 20 } },
     hidey_hole = {
       name = "Log (hidey-hole)",
       location = { topleft = { x = 2914, y = 3154 }, botright = { x = 2914, y = 3154 }, level = 0 }
@@ -3312,7 +3191,7 @@ local clues = {
     items = { "Splitbark helmet", "Mud pie", "Rune platebofy" },
     emotes = { "Blow kiss" },
     double_agent = true,
-    area = { origin = { x = 2851, y = 2952, level = 0 }, size = { x = 3, y = 3 } },
+    area = { origin = { x = 2851, y = 2952, level = 0 }, size = { x = 3, y = 4 } },
     hidey_hole = {
       name = "Potted plant (hidey-hole)",
       location = { topleft = { x = 2856, y = 2954 }, botright = { x = 2857, y = 2953 }, level = 0 }
@@ -3373,7 +3252,7 @@ local clues = {
     text = {
       "Cheer by the sulphur pit in the TzHaar City. Beware of double agents! Equip a fire cape, a Toktz-ket-xil and a spork."
     },
-    area = { origin = { x = 4632, y = 5106, level = 0 }, size = { x = 9, y = 9 } },
+    area = { origin = { x = 4630, y = 5104, level = 0 }, size = { x = 14, y = 14 } },
     items = { "Fire Cape", "Toktz-Ket-Xil", "Spork" },
     emotes = { "Cheer" },
     double_agent = true,
@@ -3470,7 +3349,7 @@ local clues = {
       "Bow or curtsy at the charm sprite hunter area. Beware of double agents! Equip an enhanced yaktwee stick, a Dagon-hai hat and an amulet of ranging."
     },
     items = { "Enhances Yaktwee Stick", "Dagon-Hai Hat", "Amulet of Ranging" },
-    area = { origin = { x = 2391, y = 3363, level = 0 }, size = { x = 27, y = 21 } },
+    area = { origin = { x = 2391, y = 3362, level = 0 }, size = { x = 26, y = 22 } },
     emotes = { "Bow or Curtsy" },
     double_agent = true,
     hidey_hole = {
@@ -3567,12 +3446,8 @@ local clues = {
     challenge = {
       {
         type = "challengescroll",
-        question = "How many animals are in the Ardougne Zoo?",
-        answers = {
-          { answer = 40, note = "Before Eagles' Peak and Hunt for Red Raktuber" },
-          { answer = 41, note = "After either Eagles' Peak or Hunt for Red Raktuber" },
-          { answer = 42, note = "After both Eagles' Peak and Hunt for Red Raktuber" }
-        }
+        question = "How many camels live in the zoo?",
+        answers = { { answer = 3 } }
       }
     },
     solution = {
@@ -4152,7 +4027,7 @@ local clues = {
       type = "talkto",
       spots = {
         {
-          range = { origin = { x = 2868, y = 9876, level = 0 }, size = { x = 3, y = 2 } },
+          range = { origin = { x = 2869, y = 9877, level = 0 } },
           description = "in the Dwarven Tunnel under the White Wolf Mountain"
         }
       },
@@ -4426,7 +4301,7 @@ local clues = {
       type = "talkto",
       spots = {
         {
-          range = { origin = { x = 2384, y = 4466, level = 0 }, size = { x = 6, y = 6 } },
+          range = { origin = { x = 2384, y = 4466, level = 0 }, size = { x = 7, y = 6 } },
           description = "north of the bank in Zanaris"
         }
       },
@@ -4683,7 +4558,7 @@ local clues = {
         {
           id = "farm",
           note = "Before Gower Quest",
-          range = { origin = { x = 3254, y = 3354, level = 0 } },
+          range = { origin = { x = 3256, y = 3355, level = 0 } },
           description = "at the farm south of Varrock"
         }
       },
@@ -6322,14 +6197,14 @@ local clues = {
       { x = 2910, y = 3075, level = 0 },
       { x = 2705, y = 3157, level = 0 },
       { x = 2726, y = 3223, level = 0 },
-      { x = 2835, y = 2924, level = 0 },
+      { x = 2835, y = 2927, level = 0 },
       { x = 3256, y = 3195, level = 0 },
       { x = 3142, y = 3251, level = 0 },
       { x = 3356, y = 3396, level = 0 },
       { x = 3200, y = 3200, level = 0 },
       { x = 3731, y = 3164, level = 0 },
       { x = 2196, y = 3101, level = 0 },
-      { x = 2255, y = 3119, level = 0 },
+      { x = 2254, y = 3119, level = 0 },
       { x = 2207, y = 3156, level = 0 },
       { x = 2168, y = 3083, level = 0 },
       { x = 2281, y = 3190, level = 0 },
@@ -6342,65 +6217,6 @@ local clues = {
       { x = 2992, y = 3686, level = 0 },
       { x = 2965, y = 3746, level = 0 }
     }
-  },
-  {
-    type = "skilling",
-    text = { "Pick some coconuts that are oh so close to the stage." },
-    tier = "sandy",
-    id = 479,
-    areas = { { origin = { x = 3185, y = 3239, level = 0 }, size = { x = 3, y = 2 } } },
-    answer = "Attempt to pick coconuts from the palm tree south of the main stage at the Lumbridge Crater, or read the palm if it's depleted.",
-    cursor = "generic"
-  },
-  {
-    type = "skilling",
-    text = { "Investigate a large hole that leads... Well, we don't know where it leads." },
-    tier = "sandy",
-    id = 480,
-    areas = {
-      {
-        origin = { x = 3167, y = 3242, level = 0 },
-        size = { x = 5, y = 6 },
-        data = "////CQ=="
-      }
-    },
-    answer = "Attempt to dungeoneer in the Dungeoneering hole at the Lumbridge Crater.",
-    cursor = "generic"
-  },
-  {
-    type = "skilling",
-    text = {
-      "Investigate a magical portal that will take you to random encounters within a dangerous land."
-    },
-    tier = "sandy",
-    id = 482,
-    areas = { { origin = { x = 3150, y = 3222, level = 0 }, size = { x = 3, y = 3 } } },
-    answer = "Attempt to enter the Wilderness Flash Events portal at the Lumbridge Crater.",
-    cursor = "generic"
-  },
-  {
-    type = "skilling",
-    text = { "Something smells fishy behind a dwarf on holiday." },
-    tier = "sandy",
-    id = 483,
-    areas = { { origin = { x = 3180, y = 3251, level = 0 }, size = { x = 3, y = 4 } } },
-    answer = "Click on the table behind Nigel at the Lumbridge Crater.",
-    cursor = "generic"
-  },
-  {
-    type = "skilling",
-    text = { "Somewhere a dwarf looks after a pile of coconuts. Search the pile!" },
-    tier = "sandy",
-    id = 484,
-    areas = {
-      {
-        origin = { x = 3171, y = 3214, level = 0 },
-        size = { x = 3, y = 3 },
-        data = "ugA="
-      }
-    },
-    answer = "Attempt to deposit coconuts on the pile of coconuts next to the coconut shy at the Lumbridge Crater.",
-    cursor = "generic"
   },
   {
     type = "skilling",
