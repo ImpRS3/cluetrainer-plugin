@@ -18,16 +18,16 @@ local slider_solver    = {}
 
 ---@class ct.sliders.slider_solver.settings
 slider_solver.settings = {
-  enabled = storage.setting_variable("sliders/enabled", schema.bool({ default = true })),
-  mode = storage.setting_variable("sliders/mode",
+  enabled = ctGlobal.persistence:profileVariable("sliders/enabled", schema.bool({ default = true })),
+  mode = ctGlobal.persistence:profileVariable("sliders/mode",
     schema.choices({ choices = { "keyboard", "mouse", "hybrid" }, default = "mouse" })),
-  prevent_overlap = storage.setting_variable("sliders/prevent_overlap", schema.bool({ default = true })),
-  lookahead = storage.setting_variable("sliders/lookahead", schema.int({ min = 2, max = 10, default = 5 })),
-  show_recovery_moves = storage.setting_variable("sliders/show_recovery_moves", schema.bool({ default = true })),
-  color_mainline = storage.setting_variable("sliders/color_mainline", schema.colour({ default = 0x00FF00FF })),
-  color_recovery = storage.setting_variable("sliders/color_recovery", schema.colour({ default = 0xff6600FF })),
-  solve_time = storage.setting_variable("sliders/solve_time", schema.int({ min = 100, max = 5000, default = 200 })),
-  estimate_slider_speed = storage.setting_variable("sliders/estimate_slider_speed", schema.bool({ default = true })),
+  prevent_overlap = ctGlobal.persistence:profileVariable("sliders/prevent_overlap", schema.bool({ default = true })),
+  lookahead = ctGlobal.persistence:profileVariable("sliders/lookahead", schema.int({ min = 2, max = 10, default = 5 })),
+  show_recovery_moves = ctGlobal.persistence:profileVariable("sliders/show_recovery_moves", schema.bool({ default = true })),
+  color_mainline = ctGlobal.persistence:profileVariable("sliders/color_mainline", schema.colour({ default = 0x00FF00FF })),
+  color_recovery = ctGlobal.persistence:profileVariable("sliders/color_recovery", schema.colour({ default = 0xff6600FF })),
+  solve_time = ctGlobal.persistence:profileVariable("sliders/solve_time", schema.int({ min = 100, max = 5000, default = 200 })),
+  estimate_slider_speed = ctGlobal.persistence:profileVariable("sliders/estimate_slider_speed", schema.bool({ default = true })),
 }
 
 ---@alias ct.sliders.PdbDownloadState {progress: number, data: zyklib.async.Promise<ct.sliders.pdb.RegionGraph>}
@@ -616,8 +616,6 @@ local interface_open_handler = zyklib.game_events.native.ServerLogic:map(functio
       end
     end)
 
-log(interface_open_handler:isActive())
-
 ---Enables or disables the slider solver. Disabling also removes any currently shown overlay.
 ---@param active boolean
 local function setActive(active)
@@ -637,7 +635,7 @@ function slider_solver.init()
   if initialized then return end
   initialized = true
 
-  slider_solver.settings.enabled:subscribe(setActive, true)
+  slider_solver.settings.enabled:observable():subscribe(setActive, true)
 end
 
 return slider_solver

@@ -1,4 +1,5 @@
 local methods = require("cluetrainer/model/shared/methods")
+local method_management = require("cluetrainer/methods/method_management")
 local RichText = require("cluetrainer/util/RichText")
 
 ---@class ct.ui.MethodSelectDialog
@@ -93,7 +94,7 @@ local INTRO_TEXT =
     RichText.italic("Note: Creating custom methods will arrive in a future update.")
 
 ---@class ct.ui.MethodSelectDialog.Options
----@field methods ct.AugmentedMethod<Method.GenericPath>[] The methods to choose from
+---@field spot ClueSpot.Id The clue spot for which to select a method
 ---@field selected ct.AugmentedMethod<Method.GenericPath>? The currently selected method; nil selects "None"
 ---@field onSelect fun(method: ct.AugmentedMethod<Method.GenericPath>?) Called when the player picks an option; nil means "None"
 
@@ -103,9 +104,11 @@ local INTRO_TEXT =
 function MethodSelectDialog.open(options)
   local parent = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_TOP)
 
+  local candidates = method_management.getAllForClue(options.spot)
+
   return prettyui.Dialog.new(parent, {
     title = "Select method",
-    height = math.min(DIALOG_MAX_HEIGHT, DIALOG_BASE_HEIGHT + INTRO_HEIGHT + (#options.methods + 1) * DIALOG_ROW_HEIGHT),
+    height = math.min(DIALOG_MAX_HEIGHT, DIALOG_BASE_HEIGHT + INTRO_HEIGHT + (#candidates + 1) * DIALOG_ROW_HEIGHT),
     width = DIALOG_WIDTH,
     content = function(window)
       window:AddText({
@@ -127,12 +130,14 @@ function MethodSelectDialog.open(options)
         end
 
         radios[index]:SetSelectedValue("picked", false)
+
+        method_management.setPreferred(options.spot, method and method.method or nil)
         options.onSelect(method)
       end
 
       radios[0] = addNoneOption(window, 0, options.selected == nil, function() pick(0, nil) end)
 
-      for i, method in ipairs(options.methods) do
+      for i, method in ipairs(candidates) do
         radios[i] = addOption(window, method, i, method == options.selected, function() pick(i, method) end)
       end
     end,

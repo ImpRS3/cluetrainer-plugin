@@ -8,8 +8,8 @@ local storage           = require "cluetrainer/util/storage"
 local lockbox_solver    = {}
 
 lockbox_solver.settings = {
-  enabled = storage.setting_variable("lockboxes/enabled", schema.bool({ default = true })),
-  optimization_coefficient = storage.setting_variable("lockboxes/optimization_coefficient",
+  enabled = ctGlobal.persistence:profileVariable("lockboxes/enabled", schema.bool({ default = true })),
+  optimization_coefficient = ctGlobal.persistence:profileVariable("lockboxes/optimization_coefficient",
     schema.int({ min = 10, max = 50, default = 13 })),
 }
 
@@ -132,7 +132,7 @@ function ActivePuzzle.new()
   state:subscribe(refreshSolution, true)
 
   self.disposable_group:add(
-    lockbox_solver.settings.optimization_coefficient:subscribe(refreshSolution),
+    lockbox_solver.settings.optimization_coefficient:observable():subscribe(refreshSolution),
     zyklib.game_events.native.Draw:subscribe(function()
       state:set(getPuzzleState())
     end),
@@ -185,7 +185,7 @@ function lockbox_solver.init()
   if initialized then return end
   initialized = true
 
-  lockbox_solver.settings.enabled:subscribe(setActive, true)
+  lockbox_solver.settings.enabled:observable():subscribe(setActive, true)
 end
 
 return lockbox_solver

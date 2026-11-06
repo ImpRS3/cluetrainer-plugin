@@ -87,4 +87,14 @@ function schema.struct(table)
   end
 end
 
+function schema.any(default)
+  return function(value)
+    if value == nil then
+      return default
+    end
+
+    return value
+  end
+end
+
 return schema

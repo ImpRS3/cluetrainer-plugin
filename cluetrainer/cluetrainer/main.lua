@@ -11,6 +11,11 @@ if not prettyui then
   zyklib.lifecycle.shutdown_event:subscribe(prettyui.PluginShutdown)
 end
 
+---@class ct.global
+ctGlobal = {
+  persistence = require("cluetrainer/util/storage").new("cluetrainer", "default")
+}
+
 local function main()
   zyklib.lifecycle.setupGlobals()
 
@@ -51,9 +56,6 @@ local function main()
       end
     })
   end)
-
-  -- task:start()
-  log("clue trainer started")
 end
 
 return {

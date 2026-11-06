@@ -9,10 +9,10 @@ local storage           = require "cluetrainer/util/storage"
 local towers_solver     = {}
 
 towers_solver.settings  = {
-  enabled = storage.setting_variable("towers/enabled", schema.bool({ default = true })),
-  info = storage.setting_variable("towers/info",
+  enabled = ctGlobal.persistence:profileVariable("towers/enabled", schema.bool({ default = true })),
+  info = ctGlobal.persistence:profileVariable("towers/info",
     schema.choices({ choices = { "delta", "target", "both" }, default = "both" })),
-  highlight_completed_tiles = storage.setting_variable("towers/highlight_completed_tiles", schema.bool({ default = true })),
+  highlight_completed_tiles = ctGlobal.persistence:profileVariable("towers/highlight_completed_tiles", schema.bool({ default = true })),
 }
 
 local TILE_OFFSET       = 44
@@ -187,8 +187,8 @@ function ActivePuzzle.new()
   end
 
   self.disposable_group:add(
-    towers_solver.settings.info:subscribe(draw),
-    towers_solver.settings.highlight_completed_tiles:subscribe(draw),
+    towers_solver.settings.info:observable():subscribe(draw),
+    towers_solver.settings.highlight_completed_tiles:observable():subscribe(draw),
     zyklib.lifecycle.shutdown_event:subscribe(function() self.disposable_group:dispose() end),
     state:subscribe(function(puzzle_state) client_side_history:push(puzzle_state) end, true),
     zyklib.game_events.native.MiniMenuEntrySelected:subscribe(function(payload)
@@ -273,7 +273,7 @@ function towers_solver.init()
   if initialized then return end
   initialized = true
 
-  towers_solver.settings.enabled:subscribe(setActive, true)
+  towers_solver.settings.enabled:observable():subscribe(setActive, true)
 end
 
 return towers_solver

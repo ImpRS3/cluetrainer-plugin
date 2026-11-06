@@ -23,7 +23,10 @@ local move_translation_identity = {
   [21 + 20] = 20,
 }
 
----@class ct.sliders.pdb.PdbSolv : ct.sliders.SliderSolvingTask
+--- This PDBSolver implementation uses coroutines for cooperative multitasking.
+--- It is currently unused due to a critical API bug that makes coroutines unusable.
+--- Instead, a manually ticked implementation is used as a workaround
+---@class ct.sliders.pdb.PdbSolverCoroutines : ct.sliders.SliderSolvingTask
 ---@field chain ct.sliders.pdb.RegionGraph
 local PdbSolver = setmetatable({}, { __index = SliderSolvingTask })
 PdbSolver.__index = PdbSolver

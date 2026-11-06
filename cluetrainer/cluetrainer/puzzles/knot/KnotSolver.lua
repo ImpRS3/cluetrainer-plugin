@@ -8,7 +8,7 @@ local storage    = require "cluetrainer/util/storage"
 local KnotSolver = {}
 
 KnotSolver.settings = {
-  enabled = storage.setting_variable("knots/enabled", schema.bool({ default = true })),
+  enabled = ctGlobal.persistence:profileVariable("knots/enabled", schema.bool({ default = true })),
 }
 
 ---Get the current shuffle state of the knot puzzle from player variables.
@@ -222,7 +222,7 @@ function KnotSolver.init()
   if initialized then return end
   initialized = true
 
-  KnotSolver.settings.enabled:subscribe(setActive, true)
+  KnotSolver.settings.enabled:observable():subscribe(setActive, true)
 end
 
 return KnotSolver

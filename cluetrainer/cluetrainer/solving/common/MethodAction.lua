@@ -77,7 +77,7 @@ function MethodAction:_openDialog()
   if self.spot == nil then return end
 
   MethodSelectDialog.open({
-    methods = method_management.getAllForClue(self.spot),
+    spot = self.spot,
     selected = self.method,
     onSelect = function(method)
       self:setMethod(method)

@@ -24,7 +24,7 @@ function WindowGeometry.new(key, options)
   local self = setmetatable({}, WindowGeometry)
 
   self.save_size = options ~= nil and options.size == true
-  self.value = storage.preference(key, schema.struct({
+  self.value = ctGlobal.persistence:profileVariable(key, schema.struct({
     x = schema.number({}),
     y = schema.number({}),
     width = schema.number({}),

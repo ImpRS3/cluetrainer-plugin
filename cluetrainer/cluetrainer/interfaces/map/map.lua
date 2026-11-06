@@ -27,7 +27,7 @@ local GameMap = {}
 GameMap.__index = GameMap
 
 GameMap.settings = {
-  visible = storage.setting_variable("map/visible", schema.bool({ default = false })),
+  visible = ctGlobal.persistence:profileVariable("map/visible", schema.bool({ default = false })),
 }
 
 ---@type ct.GameMap?

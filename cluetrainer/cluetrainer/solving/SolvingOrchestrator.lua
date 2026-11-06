@@ -44,7 +44,7 @@ local function itemsOf(clue)
 end
 
 SolvingOrchestrator.settings = {
-  enabled = storage.setting_variable("solving/enabled", schema.bool({ default = true })),
+  enabled = ctGlobal.persistence:profileVariable("solving/enabled", schema.bool({ default = true })),
 }
 
 ---@type ct.solving.SolvingOrchestrator?
