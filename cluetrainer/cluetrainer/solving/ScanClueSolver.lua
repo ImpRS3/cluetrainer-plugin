@@ -9,7 +9,6 @@ local Path               = require "cluetrainer/model/shared/path"
 local Navigator          = require "cluetrainer/solving/common/navigator"
 local ActiveClueSolver   = require "cluetrainer/solving/common/ActiveClueSolver"
 local ClueStateAction    = require "cluetrainer/interfaces/cluestate/ClueStateAction"
-local MethodAction       = require "cluetrainer/solving/common/MethodAction"
 local TeleportAction     = require "cluetrainer/solving/common/TeleportAction"
 local scan_panel         = require "cluetrainer/solving/scan/scan_panel"
 local scan_tree          = require "cluetrainer/solving/scan/scan_tree"
@@ -46,8 +45,8 @@ local DESTROYED_TIMEOUT_TICKS = 2 * scan_panel.PULSE_TICKS
 --- One scan clue in progress.
 ---@class ct.ActiveScanClue : ct.ActiveClueSolver
 ---@field clue Scan
----@field method_action ct.solving.MethodAction
 ---@field teleport_action ct.solving.TeleportAction
+---@field private method Method?
 ---@field tree ScanTree.ScanTree? Nil while there is no scan tree method
 ---@field node ScanTree.ScanTreeNode
 ---@field area TileArea? Where the player scans for the current node
@@ -86,11 +85,6 @@ function ScanClueSolver.new(clue, clue_state)
   self.panel_seen = false
   self.area_seen = false
 
-  self.method_action = MethodAction.new({ clue = clue.id }, {
-    onMethodSelected = function(selected)
-      self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
-    end,
-  })
   self.teleport_action = TeleportAction.new(nil)
 
   self.disposable_group:add({ dispose = function() self:disposeTree() end })
@@ -122,8 +116,10 @@ function ScanClueSolver.new(clue, clue_state)
     end
   end))
 
-  local preferred = self.method_action.method
-  self:setMethod(preferred and preferred.method --[[@as Method.GenericPath?]])
+  self.disposable_group:add(clue_state.method_selected:subscribe(function(selected)
+    self:setMethod(selected and selected.method)
+  end))
+  clue_state:setClueSpot({ clue = clue })
 
   return self
 end
@@ -141,9 +137,10 @@ end
 
 ---Switches to the scan tree of the method, restarting the clue from its root. Without a scan tree method, there is
 ---nothing to follow.
----@param method Method.GenericPath?
+---@param method Method?
 function ScanClueSolver:setMethod(method)
   self:disposeTree()
+  self.method = method
 
   self.history = {}
   self.remaining = {}
@@ -155,7 +152,7 @@ function ScanClueSolver:setMethod(method)
   self.status = "travel"
   self.status_children = {}
 
-  if method == nil or method.type ~= "scantree" then return self:render() end
+  if method == nil or method.type ~= "scantree" then return self:buildActions() end
 
   ---@cast method Method.ScanTree
   self.tree = method.tree
@@ -248,7 +245,7 @@ function ScanClueSolver:refresh()
   end
 
   self:updatePreview()
-  self:render()
+  self:buildActions()
 end
 
 --- Drops the route, which leads elsewhere, and shows just the spots the triple points to: the player stands within
@@ -330,7 +327,7 @@ function ScanClueSolver:press(pulse)
   elseif pulse < 3 then
     self.notice = "Shift+" .. pulse .. ": wait for a single or double pulse"
   end
-  self:render()
+  self:buildActions()
 end
 
 --- Shift+0: undoes the last step or key press. Going back to a node lets the player choose its pulse by hand.
@@ -401,20 +398,20 @@ function ScanClueSolver:poll(tick, capture, reading, tile)
   self.map:setPlayer(tile)
 
   -- Before the leaf check, as a leaf's route leads to another spot then.
-  if self.status == "off_route" then return self:render() end
+  if self.status == "off_route" then return self:buildActions() end
 
   if #self.node.children == 0 then
     return self:setStatus(capture.found and "dig_here" or "dig")
   end
 
-  if self.status == "manual" then return self:render() end
+  if self.status == "manual" then return self:buildActions() end
   if tile == nil then return end
 
   -- With several triple spots the player leaves the scan spot to look for the right one, until the game says they
   -- stand on it.
   if self.status == "triple" then
     if capture.found then self:decide(reading, tile) end
-    return self:render()
+    return self:buildActions()
   end
 
   if self.area == nil or not TileArea.contains(self.area, tile) then
@@ -463,19 +460,18 @@ function ScanClueSolver:setStatus(status, children)
   self.status = status
   self.status_children = children or {}
   self:updatePreview()
-  self:render()
+  self:buildActions()
 end
 
 --- Shows the scan state in the clue state window. Only rebuilds the rows when they change.
 ---@private
-function ScanClueSolver:render()
+function ScanClueSolver:buildActions()
   if self.tree == nil then
     if self.rendered_signature == "none" then return end
     self.rendered_signature = "none"
 
     self.clue_state:clearActions()
-    self.clue_state:addAction(self.method_action)
-    self.clue_state:addAction(self.teleport_action)
+    if self.method then self.clue_state:addAction(self.teleport_action) end
     self.clue_state:addAction(ClueStateAction.Text.new("No scan route selected"))
     return
   end
@@ -498,7 +494,6 @@ function ScanClueSolver:render()
   self.rendered_signature = signature
 
   self.clue_state:clearActions()
-  self.clue_state:addAction(self.method_action)
   self.clue_state:addAction(self.teleport_action)
   for _, row in ipairs(rows) do self.clue_state:addAction(scan_display.action(row)) end
 end

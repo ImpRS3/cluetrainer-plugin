@@ -12,7 +12,6 @@ local MapSectionControl  = require("cluetrainer/solving/map_navigator/MapSection
 local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEntity")
 local PathMesh           = require("cluetrainer/model/PathMesh")
 local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
-local MethodAction       = require("cluetrainer/solving/common/MethodAction")
 local TeleportAction     = require("cluetrainer/solving/common/TeleportAction")
 local tiles              = require("cluetrainer/model/shared/tiles")
 
@@ -110,6 +109,8 @@ end, true)
 ---@field private path_twig prettymap.luaflet.Twig?
 ---@field private dig_spot TileCoordinates? The spot the dig highlight is on
 ---@field private dig_highlight zyklib.Highlight?
+---@field private clue_state ct.ClueStateInterface
+---@field private method ct.AugmentedMethod<Method.GenericPath>?
 local CompassSolver = setmetatable({}, { __index = ActiveClueSolver })
 CompassSolver.__index = CompassSolver
 
@@ -119,6 +120,7 @@ CompassSolver.__index = CompassSolver
 function CompassSolver.new(clue, state_window)
   ---@class ct.ActiveCompassSolver
   local self = setmetatable(ActiveClueSolver.new(clue), CompassSolver)
+  self.clue_state = state_window
   self.map_layer = luaflet.twigs.Twig.new():AddTo(map.get().map.twigs)
   self.disposable_group:add(zyklib.disposable.wrap(function()
     self.map_layer:Detach()
@@ -149,19 +151,18 @@ function CompassSolver.new(clue, state_window)
   end)
 
   self.actions = {}
-  self.actions.identify = state_window:addAction(ClueStateAction.Text.new(""))
-  self.actions.method = state_window:addAction(MethodAction.new(nil, {
-    onMethodSelected = function(method)
-      self:setPath(method and method.method.main_path or nil)
-    end,
-  }))
-  self.actions.teleport = state_window:addAction(TeleportAction.new(nil))
+  self.actions.identify = ClueStateAction.Text.new("")
+  self.actions.teleport = TeleportAction.new(nil)
+  self.disposable_group:add(state_window.method_selected:subscribe(function(method)
+    self:setMethod(method)
+  end))
 
   --There is no reasonable way to track completion of the following three
   --self.actions.defeat_wizard = state_window:addAction(ClueStateAction.Text.new("Defeat Wizard"))
   --self.actions.complete_puzzle = state_window:addAction(ClueStateAction.Text.new("Complete Puzzle"))
   --self.actions.dig_again = state_window:addAction(ClueStateAction.Text.new("Dig again"))
 
+  state_window:setClueSpot({ clue = clue })
   self:update()
 
   return self
@@ -212,6 +213,7 @@ function CompassSolver:update()
 
   -- TODO: Render shapes for candidates
 
+  local previous_spot = self.identified_spot
   self.identified_spot = remaining_candidates == 1 and identified_solution or nil
 
   -- The identified spot gets the large pin with its dig area on the map, and the dig highlight in the world.
@@ -220,14 +222,26 @@ function CompassSolver:update()
   end
   self:setDigHighlight(self.identified_spot)
 
-  -- Once the spot is identified, the action picks the preferred method itself
-  local action = self.actions.method
-  action:setSpot(self.identified_spot and { clue = self.clue.id, spot = self.identified_spot } or nil)
-  self:setPath(action.method and action.method.method.main_path or nil)
+  if previous_spot ~= self.identified_spot then
+    self.clue_state:setClueSpot({ clue = self.clue, spot = self.identified_spot })
+  end
 
   if remaining_candidates > 1 then
     self:fitRemainingCandidates()
   end
+end
+
+function CompassSolver:buildActions()
+  self.clue_state:clearActions()
+  self.clue_state:addAction(self.actions.identify)
+  if self.method then self.clue_state:addAction(self.actions.teleport) end
+end
+
+---@param method ct.AugmentedMethod<Method.GenericPath>?
+function CompassSolver:setMethod(method)
+  self.method = method
+  self:setPath(method and method.method.main_path or nil)
+  self:buildActions()
 end
 
 ---@param path Path.Raw?

@@ -1,20 +1,18 @@
-local PathMesh              = require "cluetrainer/model/PathMesh"
-local map                   = require "cluetrainer/interfaces/map/map"
-local EmoteAreaEntity       = require "cluetrainer/interfaces/map/elements/EmoteAreaEntity"
-local HideyHoleEntity       = require "cluetrainer/interfaces/map/elements/HideyHoleEntity"
-local Bounds                = require "cluetrainer/util/Bounds"
-local methods               = require "cluetrainer/methods/method_management"
-local Path                  = require "cluetrainer/model/shared/path"
-local ActiveClueSolver      = require "cluetrainer/solving/common/ActiveClueSolver"
-local Navigator             = require "cluetrainer/solving/common/navigator"
-local MapSectionControl     = require "cluetrainer/solving/map_navigator/MapSectionControl"
-local luaflet               = require "prettymap/luaflet"
-local PathStepEntity        = require "cluetrainer/solving/map_navigator/PathStepEntity"
-local RichText              = require "cluetrainer/util/RichText"
-local ClueStateAction       = require("cluetrainer/interfaces/cluestate/ClueStateAction")
-local MethodAction          = require "cluetrainer/solving/common/MethodAction"
-local TeleportAction        = require "cluetrainer/solving/common/TeleportAction"
-local zyklib                = require "zyklib"
+local PathMesh          = require "cluetrainer/model/PathMesh"
+local map               = require "cluetrainer/interfaces/map/map"
+local EmoteAreaEntity   = require "cluetrainer/interfaces/map/elements/EmoteAreaEntity"
+local HideyHoleEntity   = require "cluetrainer/interfaces/map/elements/HideyHoleEntity"
+local Bounds            = require "cluetrainer/util/Bounds"
+local Path              = require "cluetrainer/model/shared/path"
+local ActiveClueSolver  = require "cluetrainer/solving/common/ActiveClueSolver"
+local Navigator         = require "cluetrainer/solving/common/navigator"
+local MapSectionControl = require "cluetrainer/solving/map_navigator/MapSectionControl"
+local luaflet           = require "prettymap/luaflet"
+local PathStepEntity    = require "cluetrainer/solving/map_navigator/PathStepEntity"
+local RichText          = require "cluetrainer/util/RichText"
+local ClueStateAction   = require("cluetrainer/interfaces/cluestate/ClueStateAction")
+local TeleportAction    = require "cluetrainer/solving/common/TeleportAction"
+local zyklib            = require "zyklib"
 
 ---@param step Emote
 local function create_step_highlights(step)
@@ -45,13 +43,11 @@ local function stitch_path(method)
 end
 
 ---@class ct.EmoteClueActions
----@field method? ct.solving.MethodAction
 ---@field teleport ct.solving.TeleportAction
 ---@field emote_get_hideyhole? ct.interfaces.cluestate.ClueStateAction
 ---@field equip_items? ct.interfaces.cluestate.ClueStateAction
----@field emote_summon? ct.interfaces.cluestate.ClueStateAction
----@field emote_double_agent? ct.interfaces.cluestate.ClueStateAction
----@field emote_uri? ct.interfaces.cluestate.ClueStateAction
+---@field summon? ct.interfaces.cluestate.ClueStateAction
+---@field uri? ct.interfaces.cluestate.ClueStateAction
 ---@field emote_return_hideyhole? ct.interfaces.cluestate.ClueStateAction
 
 --- An ActiveEmoteClue manages a single emote clue currently in progress.
@@ -59,6 +55,8 @@ end
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
+---@field private clue_state ct.ClueStateInterface
+---@field private method Method.GenericPath?
 ---@field actions ct.EmoteClueActions
 local EmoteClueSolver = setmetatable({}, { __index = ActiveClueSolver })
 EmoteClueSolver.__index = EmoteClueSolver
@@ -69,56 +67,63 @@ EmoteClueSolver.__index = EmoteClueSolver
 function EmoteClueSolver.new(clue, clue_state)
   ---@type ct.ActiveEmoteClue
   local self = setmetatable(ActiveClueSolver.new(clue), EmoteClueSolver)
+  self.clue_state = clue_state
 
   self.disposable_group:add(create_step_highlights(clue):activate())
   self.disposable_group:add(create_step_map_layer(clue):AddTo(map.get().map.twigs))
 
-  local preferred = methods.getPreferred({ clue = clue.id })
-  local method = preferred and preferred.method --[[@as Method.GenericPath?]]
-
   ---@type ct.EmoteClueActions
   self.actions = { teleport = TeleportAction.new(nil) }
 
-  local state_panel = clue_state
+  self.disposable_group:add(clue_state.method_selected:subscribe(function(selected)
+    self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
+  end))
+  clue_state:setClueSpot({ clue = clue })
 
-  self.actions.method = state_panel:addAction(MethodAction.new({ clue = clue.id }, {
-    onMethodSelected = function(selected)
-      self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
-    end,
-  }))
-
-  state_panel:addAction(self.actions.teleport)
-  self:setMethod(method)
-
-  if not method then
+  if not self.method then
     local bounds = Bounds.new()
     bounds:addArea(clue.area)
     map.get():fitBounds(bounds)
   end
 
-  self.actions.emote_get_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Get hidey-hole"))
-  self.actions.equip_items = state_panel:addAction(ClueStateAction.Text.new("Equip items"))
+  return self
+end
 
-  if clue.double_agent then
-    self.actions.emote_summon = state_panel:addAction(ClueStateAction.Text.new("Summon " .. RichText.npc("Double Agent")))
-    self.actions.emote_double_agent = state_panel:addAction(ClueStateAction.Text.new("Kill " .. RichText.npc("Double Agent")))
-  else
-    self.actions.emote_summon = state_panel:addAction(ClueStateAction.Text.new("Summon " .. RichText.npc("Uri")))
+function EmoteClueSolver:buildActions()
+  local clue = self.clue
+  local state_panel = self.clue_state
+  state_panel:clearActions()
+  if self.method then state_panel:addAction(self.actions.teleport) end
+
+  if self.clue.hidey_hole ~= nil then
+    self.actions.emote_get_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Get hidey-hole"))
   end
 
-  self.actions.emote_uri = state_panel:addAction(ClueStateAction.Text.new("Speak to Uri"))
-  self.actions.emote_return_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Return hidey-hole"))
+  self.actions.equip_items = state_panel:addAction(ClueStateAction.Text.new("Equip outfit"))
 
-  return self
+  if clue.double_agent then
+    self.actions.summon = state_panel:addAction(ClueStateAction.Text.new("Summon and kill " ..
+      RichText.npc("Double Agent")))
+  else
+    self.actions.summon = state_panel:addAction(ClueStateAction.Text.new("Summon " .. RichText.npc("Uri")))
+  end
+
+  self.actions.uri = state_panel:addAction(ClueStateAction.Text.new("Speak to Uri"))
+
+  if self.clue.hidey_hole ~= nil then
+    self.actions.emote_return_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Return hidey-hole"))
+  end
 end
 
 ---@param method Method.GenericPath?
 function EmoteClueSolver:setMethod(method)
+  self.method = method
   if method then
     self:setPath(stitch_path(method))
   else
     self:setPath(nil)
   end
+  self:buildActions()
 end
 
 ---@param path Path.Raw?

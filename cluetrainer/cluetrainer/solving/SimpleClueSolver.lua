@@ -7,7 +7,6 @@ local SearchSolutionEntity   = require "cluetrainer/interfaces/map/elements/Sear
 local DigSolutionEntity      = require "cluetrainer/interfaces/map/elements/DigSolutionEntity"
 local InteractionMarker      = require "cluetrainer/interfaces/map/elements/InteractionMarker"
 local Bounds                 = require "cluetrainer/util/Bounds"
-local methods                = require "cluetrainer/methods/method_management"
 local Path                   = require "cluetrainer/model/shared/path"
 local ActiveClueSolver       = require "cluetrainer/solving/common/ActiveClueSolver"
 local Navigator              = require "cluetrainer/solving/common/navigator"
@@ -18,7 +17,6 @@ local RichText               = require "cluetrainer/util/RichText"
 local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
 local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
-local MethodAction           = require "cluetrainer/solving/common/MethodAction"
 local TeleportAction         = require "cluetrainer/solving/common/TeleportAction"
 
 ---@param step Step
@@ -177,7 +175,6 @@ local function stitch_path(method)
 end
 
 ---@class ct.SimpleClueActions
----@field method? ct.solving.MethodAction
 ---@field teleport ct.solving.TeleportAction
 ---@field talk? ct.interfaces.cluestate.ClueStateAction
 ---@field dig? ct.interfaces.cluestate.ClueStateAction
@@ -195,6 +192,8 @@ end
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
+---@field private clue_state ct.ClueStateInterface
+---@field private method Method.GenericPath?
 ---@field actions ct.SimpleClueActions
 local SimpleClueSolver = setmetatable({}, { __index = ActiveClueSolver })
 SimpleClueSolver.__index = SimpleClueSolver
@@ -205,32 +204,32 @@ SimpleClueSolver.__index = SimpleClueSolver
 function SimpleClueSolver.new(clue, clue_state)
   ---@class ct.ActiveSimpleClue
   local self = setmetatable(ActiveClueSolver.new(clue), SimpleClueSolver)
+  self.clue_state = clue_state
 
   self.disposable_group:add(create_step_highlights(clue):activate())
   self.disposable_group:add(create_step_map_layer(clue):AddTo(map.get().map.twigs))
 
-  local preferred = methods.getPreferred({ clue = clue.id })
-  local method = preferred and preferred.method --[[@as Method.GenericPath?]]
-
   self.actions = { teleport = TeleportAction.new(nil) }
 
-  local state_panel = clue_state
+  self.disposable_group:add(clue_state.method_selected:subscribe(function(selected)
+    self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
+  end))
+  clue_state:setClueSpot({ clue = clue })
 
-  self.actions.method = state_panel:addAction(MethodAction.new({ clue = clue.id }, {
-    onMethodSelected = function(selected)
-      self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
-    end,
-  }))
-
-  state_panel:addAction(self.actions.teleport)
-  self:setMethod(method)
-
-  if not method then
+  if not self.method then
     local bounds = clue_map_bounds(clue)
     --- Only fit to the basic clue target bounds if there is no method available initially
     map.get():fitBounds(bounds)
   end
 
+  return self
+end
+
+function SimpleClueSolver:buildActions()
+  local clue = self.clue
+  local state_panel = self.clue_state
+  state_panel:clearActions()
+  if self.method then state_panel:addAction(self.actions.teleport) end
   local sol = inferSolution(clue)
 
   if sol then
@@ -239,7 +238,7 @@ function SimpleClueSolver.new(clue, clue_state)
     elseif sol.type == "dig" then
       self.actions.dig = state_panel:addAction(ClueStateAction.Text.new("Dig " .. (sol.description or "at target")))
     elseif sol.type == "search" then
-      if sol.key then
+      if sol.key and var.VarPlayer.TRAIL17_MEDIUM_KEY_SKIP_OWNED.value == 0 then
         self.actions.obtain_key = state_panel:addAction(ClueStateAction.Text.new("Obtain key"))
       end
 
@@ -271,16 +270,17 @@ function SimpleClueSolver.new(clue, clue_state)
     end
   end
 
-  return self
 end
 
 ---@param method Method.GenericPath?
 function SimpleClueSolver:setMethod(method)
+  self.method = method
   if method then
     self:setPath(stitch_path(method))
   else
     self:setPath(nil)
   end
+  self:buildActions()
 end
 
 ---@param path Path.Raw?

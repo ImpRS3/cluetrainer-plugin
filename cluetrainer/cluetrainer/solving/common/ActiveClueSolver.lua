@@ -22,13 +22,11 @@ function ActiveClueSolver:dispose()
   self.disposable_group:dispose()
 end
 
---- Stops the solver once its clue is done or gone, and empties the clue state window to "No clue". The solver stays
---- until the next clue replaces it.
 ---@param clue_state ct.ClueStateInterface
 function ActiveClueSolver:finish(clue_state)
   self:dispose()
   clue_state:clearActions()
-  clue_state:setClue(nil)
+  clue_state:setClueSpot(nil)
 end
 
 return ActiveClueSolver

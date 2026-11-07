@@ -20,7 +20,7 @@ local DESCRIPTION_COLOUR = 0x999999FF
 
 ---Adds a row for an option: pack name, method name and optional description, with a radio button on the left.
 ---@param window PrettyUI.Window
----@param augmented ct.AugmentedMethod<Method.GenericPath>
+---@param augmented ct.AugmentedMethod<Method>
 ---@param group integer
 ---@param selected boolean
 ---@param onPicked fun(radio: PrettyUI.RadioButton)
@@ -95,8 +95,8 @@ local INTRO_TEXT =
 
 ---@class ct.ui.MethodSelectDialog.Options
 ---@field spot ClueSpot.Id The clue spot for which to select a method
----@field selected ct.AugmentedMethod<Method.GenericPath>? The currently selected method; nil selects "None"
----@field onSelect fun(method: ct.AugmentedMethod<Method.GenericPath>?) Called when the player picks an option; nil means "None"
+---@field selected ct.AugmentedMethod<Method>? The currently selected method; nil selects "None"
+---@field onSelect fun(method: ct.AugmentedMethod<Method>?) Called when the player picks an option; nil means "None"
 
 ---Opens a modal dialog in which one of the given methods can be selected.
 ---@param options ct.ui.MethodSelectDialog.Options
@@ -123,7 +123,7 @@ function MethodSelectDialog.open(options)
       local radios = {}
 
       ---@param index integer
-      ---@param method ct.AugmentedMethod<Method.GenericPath>?
+      ---@param method ct.AugmentedMethod<Method>?
       local function pick(index, method)
         for j, other in pairs(radios) do
           if j ~= index then other:SetSelectedValue(nil, false) end

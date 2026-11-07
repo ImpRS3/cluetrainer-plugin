@@ -117,7 +117,7 @@ function SolvingOrchestrator:reset()
     self.active_solver = nil
   end
 
-  self.clue_state:setClue(nil)
+  self.clue_state:setClueSpot(nil)
   self.clue_state:clearActions()
 
   -- Hidden until the next clue, so the cross closes both windows. The main panel's toggles stay as they are.
@@ -143,8 +143,8 @@ function SolvingOrchestrator:setClue(clue)
     self.active_solver = nil
   end
 
+  if clue == nil then self.clue_state:setClueSpot(nil) end
   if clue ~= nil then
-    self.clue_state:setClue(clue)
     -- Shown again after the cross hid them.
     self.clue_state:setVisible(true)
     if self.map_hidden then
