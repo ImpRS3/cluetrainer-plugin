@@ -13,6 +13,7 @@ local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEn
 local PathMesh           = require("cluetrainer/model/PathMesh")
 local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local MethodAction       = require("cluetrainer/solving/common/MethodAction")
+local tiles              = require("cluetrainer/model/shared/tiles")
 
 ---@class ct.compasslogic
 local compasslogic       = {}
@@ -100,7 +101,8 @@ trail_status:subscribe(function(status)
 end, true)
 
 ---@class ct.ActiveCompassSolver : ct.ActiveClueSolver
----@field triangulation_points {info: ct.Compass.TriangulationPoint}[]
+---@field triangulation_points {info: ct.Compass.TriangulationPoint, twig: prettymap.luaflet.Twig}[]
+---@field private target TileCoordinates? The compass target the triangulation points were read towards
 ---@field candidates {spot: TileCoordinates, marker: ct.SpotMarker, possible: boolean}[]
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
@@ -305,21 +307,40 @@ function CompassSolver:getCurrentInformation()
   -- Hidden value, we obscure it to emulate the uncertainty of visual observation.
   local target_spot = coordinate_adaptor.coord_grid_to_tile_coordinates(var.VarClient["TRAIL_DESTCOORD"]
     .value --[[@as CoordGrid]])
+  self:followTarget(target_spot)
 
-  -- If the player and the target are on different levels, the compass would be spinning, so the reading must be discarded
-  if player_position.level ~= target_spot.level then
-    return
-  end
+  return compasslogic.reading(player_position, target_spot, self.clue.valid_area, UNCERTAINTY_RADIANS)
+end
 
-  -- If the player is not within the valid area, we must discard the angle reading
-  if not ctmath.rectangle.contains(self.clue.valid_area, player_position) then
-    return nil
-  end
+--- The reading the compass arrow gives at the player's position, or nil if it gives none: on another level than the
+--- target (the arrow spins), outside the clue's valid area, or on the target tile itself, where there is no direction.
+---@param player_position TileCoordinates
+---@param target_spot TileCoordinates
+---@param valid_area table The clue's valid area, a rectangle
+---@param uncertainty_radians number The angle is rounded to multiples of this
+---@return ct.Compass.TriangulationPoint?
+function compasslogic.reading(player_position, target_spot, valid_area, uncertainty_radians)
+  if player_position.level ~= target_spot.level then return nil end
+  if not ctmath.rectangle.contains(valid_area, player_position) then return nil end
+  if player_position.x == target_spot.x and player_position.y == target_spot.y then return nil end
 
   local expected_precise_angle = compasslogic.getExpectedAngle(player_position, target_spot)
-  local uncertain_angle = ctmath.round(expected_precise_angle / UNCERTAINTY_RADIANS) * UNCERTAINTY_RADIANS
+  local uncertain_angle = ctmath.round(expected_precise_angle / uncertainty_radians) * uncertainty_radians
 
-  return { origin = player_position, angle_radians = uncertain_angle, uncertainty_radians = UNCERTAINTY_RADIANS }
+  return { origin = player_position, angle_radians = uncertain_angle, uncertainty_radians = uncertainty_radians }
+end
+
+--- Starts the triangulation over when the compass target changes, so readings towards the previous target (the game
+--- may still report the last compass's spot right after a dig) don't rule out the new spot.
+---@param target TileCoordinates
+function CompassSolver:followTarget(target)
+  local previous = self.target
+  self.target = target
+  if previous == nil or tiles.same(previous, target) or #self.triangulation_points == 0 then return end
+
+  for _, point in ipairs(self.triangulation_points) do point.twig:Detach() end
+  self.triangulation_points = {}
+  self:update()
 end
 
 function CompassSolver:fitRemainingCandidates()
