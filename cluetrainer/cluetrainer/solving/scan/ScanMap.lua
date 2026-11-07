@@ -26,6 +26,8 @@ local SCAN_AREA_COLOUR  = 0x00FF00
 local FIT_MARGIN        = 0.25
 -- The smallest view in tiles (one map square), so a short walk to the dig spot doesn't zoom in all the way.
 local MIN_VIEW_TILES    = 64
+-- Tiles further than this from the route are left out of the fit.
+local FIT_DISTANCE_LIMIT = 320
 -- Alt1's range squares in the pulse colours (RGB): within range a triple, within twice the range a double.
 local RANGE_COLOURS     = { scan_display.PULSE_COLOURS[3] >> 8, scan_display.PULSE_COLOURS[2] >> 8 }
 local RANGE_OPACITY     = 0.9
@@ -102,7 +104,11 @@ function ScanMap:setStep(path, area, range, dig_spots)
   self.route = PathStepEntity.route(path):AddTo(self.layer)
   if area then areaGraphics(area, SCAN_AREA_COLOUR):AddTo(self.route) end
 
-  local bounds = Path.bounds(path)
+  -- Fits only the last section, the part of the route that leads to the scan area, and ignores anything further than
+  -- Alt1's 320 tiles from it, so a route that starts with a teleport elsewhere doesn't zoom out to both places.
+  local sections = Path.split_into_sections(path)
+  local bounds = #sections > 0 and Path.bounds(sections[#sections].steps) or Bounds.new()
+  bounds:setDistanceLimit(FIT_DISTANCE_LIMIT)
   bounds:addArea(area)
   for _, spot in ipairs(dig_spots or {}) do bounds:addTile(spot) end
   if area and range then bounds:addArea(TileArea.grow(area, #RANGE_COLOURS * range)) end

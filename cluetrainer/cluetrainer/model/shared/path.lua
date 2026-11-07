@@ -320,10 +320,15 @@ function Path.split_into_sections(path, far_threshold)
   return sections
 end
 
+--- The box around the tiles a path visits. A far transport or cheat (see `Path.isFar`) adds only one of its ends, as
+--- in Alt1: its destination when it is the first step, otherwise its start. That keeps a section ending in a far
+--- transport framed on where the player departs; the next section starts with its arrival.
+---@param path Path.Raw
+---@return ct.Bounds
 function Path.bounds(path)
   local bounds = Bounds.new()
 
-  for _, step in ipairs(path) do
+  for i, step in ipairs(path) do
     local type = step.type
 
     if type == "ability" then
@@ -339,9 +344,14 @@ function Path.bounds(path)
       bounds:addArea(step.area)
       if step.arrow then bounds:addTile(step.arrow[1], step.arrow[2]) end
     elseif type == "transport" or type == "cheat" then
-      -- An arrival-only step only matters at its destination.
-      if not step.is_arrival_only then bounds:addTile(step.assumed_start) end
-      bounds:addTile(Path.endsUp({ step }))
+      local destination = Path.endsUp({ step })
+      if step.is_arrival_only or not step.assumed_start then
+        bounds:addTile(destination)
+      elseif Path.isFar(step) then
+        bounds:addTile(i == 1 and destination or step.assumed_start)
+      else
+        bounds:addTile(step.assumed_start, destination)
+      end
     elseif type == "teleport" then
       bounds:addTile(Path.endsUp({ step }))
     end
