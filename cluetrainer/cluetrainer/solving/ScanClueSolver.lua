@@ -13,6 +13,7 @@ local TeleportAction     = require "cluetrainer/solving/common/TeleportAction"
 local scan_panel         = require "cluetrainer/solving/scan/scan_panel"
 local scan_tree          = require "cluetrainer/solving/scan/scan_tree"
 local scan_display       = require "cluetrainer/solving/scan/scan_display"
+local ScanPulseAction    = require "cluetrainer/solving/scan/ScanPulseAction"
 local ScanMap            = require "cluetrainer/solving/scan/ScanMap"
 local ScanGround         = require "cluetrainer/solving/scan/ScanGround"
 local LiveNarrowing      = require "cluetrainer/solving/scan/LiveNarrowing"
@@ -46,6 +47,8 @@ local DESTROYED_TIMEOUT_TICKS = 2 * scan_panel.PULSE_TICKS
 ---@class ct.ActiveScanClue : ct.ActiveClueSolver
 ---@field clue Scan
 ---@field teleport_action ct.solving.TeleportAction
+---@field private pulse_action ct.interfaces.cluestate.ScanPulseClueStateAction
+---@field private disabled_pulse_action ct.interfaces.cluestate.ScanPulseClueStateAction
 ---@field private method Method?
 ---@field tree ScanTree.ScanTree? Nil while there is no scan tree method
 ---@field node ScanTree.ScanTreeNode
@@ -86,6 +89,10 @@ function ScanClueSolver.new(clue, clue_state)
   self.area_seen = false
 
   self.teleport_action = TeleportAction.new(nil)
+  self.pulse_action = ScanPulseAction.new("Enter scan pulse", "Preview only; buttons do not affect the scan yet.",
+    function() end)
+  self.disabled_pulse_action = ScanPulseAction.new("Move to <col=00ff00>decision point</col>", "Preview of the disabled state.",
+    function() end):setEnabled(false)
 
   self.disposable_group:add({ dispose = function() self:disposeTree() end })
 
@@ -473,6 +480,8 @@ function ScanClueSolver:buildActions()
     self.clue_state:clearActions()
     if self.method then self.clue_state:addAction(self.teleport_action) end
     self.clue_state:addAction(ClueStateAction.Text.new("No scan route selected"))
+    self.clue_state:addAction(self.pulse_action)
+    self.clue_state:addAction(self.disabled_pulse_action)
     return
   end
 
@@ -496,6 +505,8 @@ function ScanClueSolver:buildActions()
   self.clue_state:clearActions()
   self.clue_state:addAction(self.teleport_action)
   for _, row in ipairs(rows) do self.clue_state:addAction(scan_display.action(row)) end
+  self.clue_state:addAction(self.pulse_action)
+  self.clue_state:addAction(self.disabled_pulse_action)
 end
 
 return ScanClueSolver

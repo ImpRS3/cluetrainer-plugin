@@ -1,19 +1,19 @@
 -- scan_display.lua
 -- How the scan is shown to the player: the pulse names and colours, and the rows of the clue state window.
-local Path            = require "cluetrainer/model/shared/path"
-local RichText        = require "cluetrainer/util/RichText"
-local ClueStateAction = require "cluetrainer/interfaces/cluestate/ClueStateAction"
-local scan_panel      = require "cluetrainer/solving/scan/scan_panel"
-local tiles           = require "cluetrainer/model/shared/tiles"
-local array           = require "zyklib/array"
+local Path                   = require "cluetrainer/model/shared/path"
+local RichText               = require "cluetrainer/util/RichText"
+local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
+local scan_panel             = require "cluetrainer/solving/scan/scan_panel"
+local tiles                  = require "cluetrainer/model/shared/tiles"
+local array                  = require "zyklib/array"
 
-local scan_display = {}
+local scan_display           = {}
 
 -- Alt1's pulse colours (RGBA) for single, double and triple, so a row reads like the rings around the player.
-scan_display.PULSE_COLOURS = { 0x0F91D3FF, 0xE1A53FFF, 0xD51918FF }
+scan_display.PULSE_COLOURS   = { 0x0F91D3FF, 0xE1A53FFF, 0xD51918FF }
 local DIFFERENT_LEVEL_COLOUR = 0x8ADC13FF
 -- Rows that need the player's attention, such as a range warning.
-local WARNING_COLOUR = 0xFF6A4DFF
+local WARNING_COLOUR         = 0xFF6A4DFF
 
 ---@class ct.ScanRow
 ---@field text string
@@ -59,17 +59,7 @@ end
 ---@param target string What the route leads to, e.g. "Scan in the green area"
 ---@return ct.ScanRow[]
 local function routeRows(path, target)
-  local teleport = Path.firstTeleport(path)
-  local rows = {}
-
-  if teleport then
-    rows[#rows + 1] = { text = "Teleport: " .. teleport.group.name, state = "incomplete" }
-    rows[#rows + 1] = { text = "to " .. teleport.spot.name, state = "incomplete" }
-  end
-  if Path.hasMovement(path) then rows[#rows + 1] = { text = "Follow the line", state = "incomplete" } end
-  rows[#rows + 1] = { text = target, state = "incomplete" }
-
-  return rows
+  return {}
 end
 
 --- Where a child's route goes, in a few words: "tele Falador", "walk", "walk and dig".
@@ -134,8 +124,7 @@ local function instruction(state)
   end
 
   if status == "travel" then
-    local name = node.region and node.region.name or ""
-    return routeRows(node.path, name ~= "" and ("Scan at " .. name) or "Scan in the green area")
+    return {}
   elseif status == "wait" then
     return rows("Wait for the pulse", node.children)
   elseif status == "choose" then
@@ -144,7 +133,7 @@ local function instruction(state)
     return rows("Choose the pulse", state.children)
   elseif status == "triple" then
     return {
-      { text = "Triple: one of spots " .. spotNumbers(state.tree, state.remaining), state = "incomplete" },
+      { text = "Triple: one of spots " .. spotNumbers(state.tree, state.remaining),                       state = "incomplete" },
       { text = #state.remaining > 1 and "Walk towards one, the next pulse tells" or "Walk there and dig", state = "incomplete" },
     }
   elseif status == "off_route" then
@@ -152,16 +141,21 @@ local function instruction(state)
     return {
       { text = "Triple points off the route", state = "incomplete", colour = WARNING_COLOUR },
       #state.remaining > 1
-          and { text = "One of spots " .. spots .. ": walk towards one", state = "incomplete" }
-          or { text = "Spot " .. spots .. ": walk there and dig", state = "incomplete", colour = scan_display.PULSE_COLOURS[3] },
+      and { text = "One of spots " .. spots .. ": walk towards one", state = "incomplete" }
+      or {
+        text = "Spot " .. spots .. ": walk there and dig",
+        state = "incomplete",
+        colour = scan_display.PULSE_COLOURS
+            [3]
+      },
     }
   elseif status == "mismatch" then
     return {
       { text = "Pulse doesn't fit the route", state = "incomplete", colour = WARNING_COLOUR },
-      { text = "Check position and range", state = "incomplete", colour = WARNING_COLOUR },
+      { text = "Check position and range",    state = "incomplete", colour = WARNING_COLOUR },
     }
   elseif status == "dig" then
-    return routeRows(node.path, "Dig at the end")
+    return {}
   elseif status == "dig_here" then
     return rows("Dig here")
   end
@@ -198,8 +192,6 @@ function scan_display.rows(state)
     }
   end
   for _, row in ipairs(instruction(state)) do rows[#rows + 1] = row end
-  if state.notice then rows[#rows + 1] = { text = "Last: " .. state.notice, state = "complete" } end
-  if state.can_go_back then rows[#rows + 1] = { text = "Shift+0: back", state = "complete" } end
 
   return rows
 end
