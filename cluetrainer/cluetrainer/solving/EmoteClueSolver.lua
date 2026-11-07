@@ -13,6 +13,7 @@ local PathStepEntity        = require "cluetrainer/solving/map_navigator/PathSte
 local RichText              = require "cluetrainer/util/RichText"
 local ClueStateAction       = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local MethodAction          = require "cluetrainer/solving/common/MethodAction"
+local TeleportAction        = require "cluetrainer/solving/common/TeleportAction"
 local zyklib                = require "zyklib"
 
 ---@param step Emote
@@ -45,6 +46,7 @@ end
 
 ---@class ct.EmoteClueActions
 ---@field method? ct.solving.MethodAction
+---@field teleport ct.solving.TeleportAction
 ---@field emote_get_hideyhole? ct.interfaces.cluestate.ClueStateAction
 ---@field equip_items? ct.interfaces.cluestate.ClueStateAction
 ---@field emote_summon? ct.interfaces.cluestate.ClueStateAction
@@ -74,16 +76,8 @@ function EmoteClueSolver.new(clue, clue_state)
   local preferred = methods.getPreferred({ clue = clue.id })
   local method = preferred and preferred.method --[[@as Method.GenericPath?]]
 
-  self:setMethod(method)
-
-  if not method then
-    local bounds = Bounds.new()
-    bounds:addArea(clue.area)
-    map.get():fitBounds(bounds)
-  end
-
   ---@type ct.EmoteClueActions
-  self.actions = {}
+  self.actions = { teleport = TeleportAction.new(nil) }
 
   local state_panel = clue_state
 
@@ -92,6 +86,15 @@ function EmoteClueSolver.new(clue, clue_state)
       self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
     end,
   }))
+
+  state_panel:addAction(self.actions.teleport)
+  self:setMethod(method)
+
+  if not method then
+    local bounds = Bounds.new()
+    bounds:addArea(clue.area)
+    map.get():fitBounds(bounds)
+  end
 
   self.actions.emote_get_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Get hidey-hole"))
   self.actions.equip_items = state_panel:addAction(ClueStateAction.Text.new("Equip items"))
@@ -136,7 +139,9 @@ function EmoteClueSolver:setPath(path)
   end
 
   if path ~= nil then
-    self.navigator = Navigator.new()
+    self.navigator = Navigator.new(function(teleport)
+      self.actions.teleport:setTeleport(teleport)
+    end)
     self.navigator:set(path)
 
     local sectioned_path = Path.split_into_sections(path)

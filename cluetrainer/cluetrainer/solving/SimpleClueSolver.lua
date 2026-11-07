@@ -19,6 +19,7 @@ local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
 local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
 local MethodAction           = require "cluetrainer/solving/common/MethodAction"
+local TeleportAction         = require "cluetrainer/solving/common/TeleportAction"
 
 ---@param step Step
 ---@return Solution?
@@ -177,6 +178,7 @@ end
 
 ---@class ct.SimpleClueActions
 ---@field method? ct.solving.MethodAction
+---@field teleport ct.solving.TeleportAction
 ---@field talk? ct.interfaces.cluestate.ClueStateAction
 ---@field dig? ct.interfaces.cluestate.ClueStateAction
 ---@field obtain_key? ct.interfaces.cluestate.ClueStateAction
@@ -210,17 +212,7 @@ function SimpleClueSolver.new(clue, clue_state)
   local preferred = methods.getPreferred({ clue = clue.id })
   local method = preferred and preferred.method --[[@as Method.GenericPath?]]
 
-  self:setMethod(method)
-
-  -- TODO: Hook up to some sort of method selector
-
-  if not method then
-    local bounds = clue_map_bounds(clue)
-    --- Only fit to the basic clue target bounds if there is no method available initially
-    map.get():fitBounds(bounds)
-  end
-
-  self.actions = {}
+  self.actions = { teleport = TeleportAction.new(nil) }
 
   local state_panel = clue_state
 
@@ -229,6 +221,15 @@ function SimpleClueSolver.new(clue, clue_state)
       self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
     end,
   }))
+
+  state_panel:addAction(self.actions.teleport)
+  self:setMethod(method)
+
+  if not method then
+    local bounds = clue_map_bounds(clue)
+    --- Only fit to the basic clue target bounds if there is no method available initially
+    map.get():fitBounds(bounds)
+  end
 
   local sol = inferSolution(clue)
 
@@ -300,7 +301,9 @@ function SimpleClueSolver:setPath(path)
   end
 
   if path ~= nil then
-    self.navigator = Navigator.new()
+    self.navigator = Navigator.new(function(teleport)
+      self.actions.teleport:setTeleport(teleport)
+    end)
     self.navigator:set(path)
 
     local sectioned_path = Path.split_into_sections(path)

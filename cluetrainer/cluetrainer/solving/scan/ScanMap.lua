@@ -45,7 +45,6 @@ local PREVIEW_OPACITY   = 0.5
 ---@field private markers ct.SpotMarker[] In the order of `ordered_spots`
 ---@field private spots TileCoordinates[]
 ---@field private region TileArea The box around every dig spot
----@field private counter ct.MapLabel
 local ScanMap = {}
 ScanMap.__index = ScanMap
 
@@ -66,8 +65,6 @@ function ScanMap.new(tree)
     layer = luaflet.twigs.Twig.new({ allPlanes = true }):AddTo(game_map.map.twigs),
     spots = tree.ordered_spots,
     region = TileArea.around(tree.ordered_spots),
-    counter = MapLabel.new({ anchor = "top", offsetY = COUNTER_OFFSET, width = COUNTER_WIDTH, height = COUNTER_HEIGHT })
-        :AddTo(game_map.map.twigs),
   }, ScanMap)
 
   self.markers = {}
@@ -86,8 +83,6 @@ function ScanMap:setRemaining(remaining)
     local possible = array.exists(remaining, function(candidate) return tiles.same(candidate, spot) end)
     self.markers[i]:setPossible(possible):setActive(possible)
   end
-
-  self.counter:setText(#remaining == 1 and "1 spot" or (#remaining .. " spots"))
 end
 
 --- Draws the route and the scan area of the current step, and zooms to what the player does next: the route, and
@@ -198,7 +193,6 @@ end
 
 function ScanMap:dispose()
   self.layer:Detach()
-  self.counter:Detach()
 end
 
 return ScanMap

@@ -1,8 +1,6 @@
 local ClueStateAction = require("cluetrainer/interfaces/cluestate/ClueStateAction")
-local methods = require("cluetrainer/model/shared/methods")
 local method_management = require("cluetrainer/methods/method_management")
 local MethodSelectDialog = require("cluetrainer/methods/MethodSelectDialog")
-local item_icon = require("cluetrainer/util/item_icon")
 
 local STATE_ALPHA = {
   incomplete = 1.0,
@@ -12,25 +10,19 @@ local STATE_ALPHA = {
 local PLACEHOLDER_ALPHA = 0.5
 local NOT_SELECTABLE_TEXT = "Not available yet"
 
--- Flow rows can't change height after construction, so the row always has room for the two lines of a selected
--- method. Texts are vertically centred, so the single-line states sit in the middle.
-local ROW_HEIGHT = 40
-local ICON_SIZE = 32
-local ICON_X = 3
-local TEXT_X = ICON_SIZE + 6
+local ROW_HEIGHT = 22
+local TEXT_X = 3
 local BUTTON_SIZE = 20
 local BUTTON_MARGIN = 4
 
----Action line displaying the primary teleport of the preferred method for a clue spot, with a button to open the
----method selection dialog. `setText` is intentionally unsupported, the text is derived from the method.
+---Action line displaying the selected method's name, with a button to open the method selection dialog.
+---`setText` is intentionally unsupported, the text is derived from the method.
 ---Without a spot, no method can be selected yet and the select button is hidden.
 ---@class ct.solving.MethodAction : ct.interfaces.cluestate.ClueStateAction
 ---@field spot ClueSpot.Id?
 ---@field method ct.AugmentedMethod.Generic?
 ---@field onMethodSelected fun(method: ct.AugmentedMethod.Generic?)?
 ---@field text ui.Text?
----@field icon PrettyUI.Sprite? Shows a teleport's sprite
----@field item_icon PrettyUI.Sprite? Shows a teleport's item, placed by `item_icon`
 ---@field select_button PrettyUI.SpriteButton?
 local MethodAction = setmetatable({}, { __index = ClueStateAction })
 MethodAction.__index = MethodAction
@@ -95,28 +87,10 @@ function MethodAction:_construct(view)
     widthAnchor = 1.0,
     height = ROW_HEIGHT,
     marginBottom = 0,
+    maxLines = 1,
     rowBackgroundGroup = self,
   })
   self.text.clickthrough = true
-
-  self.icon = view:AddSprite(-1, {
-    inline = true,
-    x = ICON_X,
-    offsetY = (ROW_HEIGHT - ICON_SIZE) // 2,
-    size = ICON_SIZE,
-    rowBackgroundGroup = self,
-  })
-
-  -- A separate sprite, as items need another box than sprites and flow rows can't move a component afterwards.
-  local item_x, item_y, item_width, item_height = item_icon.rect(ICON_X, (ROW_HEIGHT - ICON_SIZE) // 2, ICON_SIZE)
-  self.item_icon = view:AddSprite(-1, {
-    inline = true,
-    x = item_x,
-    offsetY = item_y,
-    width = item_width,
-    height = item_height,
-    rowBackgroundGroup = self,
-  })
 
   self.select_button = view:AddSpriteButton("LIST_LAYOUT", function()
     self:_openDialog()
@@ -131,58 +105,68 @@ function MethodAction:_construct(view)
   })
 end
 
----@param icon PrettyUI.Sprite
----@param item PrettyUI.Sprite
----@param teleport cluetrainer.TeleportSpot?
-local function applyIcon(icon, item, teleport)
-  local cache = teleport and teleport.props.cache_data or nil
-
-  icon.root.hidden = not (cache and cache.sprite)
-  item.root.hidden = not (cache and not cache.sprite and cache.obj)
-
-  if cache and cache.sprite then
-    icon.root.sprite = id.Sprite[cache.sprite]
-  elseif cache and cache.obj then
-    item.root:SetAssociatedObject(id.Obj[cache.obj])
+---@param text ui.Text
+---@param content string
+local function setTruncatedText(text, content)
+  local font = config.Font.MUSEO_SANS_15PT_REGULAR
+  local width = text.width
+  content = content:gsub("<br>", " "):gsub("[\r\n]", " ")
+  if font:GetStringWidth(content) <= width then
+    text.content = content
+    return
   end
+
+  local suffix = "..."
+  if font:GetStringWidth(suffix) > width then
+    text.content = ""
+    return
+  end
+
+  while #content > 0 and font:GetStringWidth(content .. suffix) > width do
+    local last = #content
+    while last > 1 and content:byte(last) >= 128 and content:byte(last) < 192 do
+      last = last - 1
+    end
+    content = content:sub(1, last - 1)
+  end
+  text.content = content .. suffix
 end
 
 ---@protected
 function MethodAction:_apply()
   local method = self.method
-  local teleport = method and methods.primaryTeleport(method.method) or nil
   local alpha = STATE_ALPHA[self.state]
-
   local selectable = self.spot ~= nil
+  local content
 
   if not selectable then
-    -- Nothing to choose yet, so the select button is not offered
-    self.text.content = NOT_SELECTABLE_TEXT
+    content = NOT_SELECTABLE_TEXT
     alpha = PLACEHOLDER_ALPHA
-    teleport = nil
-  elseif teleport ~= nil then
-    self.text.content = teleport.group.name .. "<br>" .. teleport.spot.name
   elseif method ~= nil then
-    self.text.content = method.method.name
+    content = method.method.name
   else
-    self.text.content = "No method set"
+    content = "No method set"
     alpha = PLACEHOLDER_ALPHA
   end
 
-  applyIcon(self.icon, self.item_icon, teleport)
-  self.select_button.root.hidden = not selectable
-
+  if type(self.text) == "table" and self.text.dock then
+    setTruncatedText(self.text.dock, content)
+    setTruncatedText(self.text.overlay, content)
+    self.select_button.dock.root.hidden = not selectable
+    self.select_button.overlay.root.hidden = not selectable
+  else
+    setTruncatedText(self.text, content)
+    self.select_button.root.hidden = not selectable
+  end
   self.text.alpha = alpha
-  self.icon.root.alpha = alpha
-  self.item_icon.root.alpha = alpha
 end
 
 function MethodAction:destroy()
-  for _, component in ipairs({ self.select_button, self.icon, self.item_icon, self.text }) do
+  for _, component in ipairs({ self.select_button, self.text }) do
     component:Destroy()
   end
 
-  self.select_button, self.icon, self.item_icon, self.text = nil, nil, nil, nil
+  self.select_button, self.text = nil, nil
   self.constructed = false
 end
 

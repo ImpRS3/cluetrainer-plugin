@@ -10,6 +10,7 @@ local Navigator          = require "cluetrainer/solving/common/navigator"
 local ActiveClueSolver   = require "cluetrainer/solving/common/ActiveClueSolver"
 local ClueStateAction    = require "cluetrainer/interfaces/cluestate/ClueStateAction"
 local MethodAction       = require "cluetrainer/solving/common/MethodAction"
+local TeleportAction     = require "cluetrainer/solving/common/TeleportAction"
 local scan_panel         = require "cluetrainer/solving/scan/scan_panel"
 local scan_tree          = require "cluetrainer/solving/scan/scan_tree"
 local scan_display       = require "cluetrainer/solving/scan/scan_display"
@@ -46,6 +47,7 @@ local DESTROYED_TIMEOUT_TICKS = 2 * scan_panel.PULSE_TICKS
 ---@class ct.ActiveScanClue : ct.ActiveClueSolver
 ---@field clue Scan
 ---@field method_action ct.solving.MethodAction
+---@field teleport_action ct.solving.TeleportAction
 ---@field tree ScanTree.ScanTree? Nil while there is no scan tree method
 ---@field node ScanTree.ScanTreeNode
 ---@field area TileArea? Where the player scans for the current node
@@ -89,6 +91,7 @@ function ScanClueSolver.new(clue, clue_state)
       self:setMethod(selected and selected.method --[[@as Method.GenericPath?]])
     end,
   })
+  self.teleport_action = TeleportAction.new(nil)
 
   self.disposable_group:add({ dispose = function() self:disposeTree() end })
 
@@ -157,7 +160,9 @@ function ScanClueSolver:setMethod(method)
   ---@cast method Method.ScanTree
   self.tree = method.tree
   self.candidates = scan_tree.candidates(method.tree)
-  self.navigator = Navigator.new()
+  self.navigator = Navigator.new(function(teleport)
+    self.teleport_action:setTeleport(teleport)
+  end)
   self.map = ScanMap.new(method.tree)
   self.ground = ScanGround.new()
   self.live = LiveNarrowing.new(method.tree.ordered_spots, self.clue.range)
@@ -470,6 +475,7 @@ function ScanClueSolver:render()
 
     self.clue_state:clearActions()
     self.clue_state:addAction(self.method_action)
+    self.clue_state:addAction(self.teleport_action)
     self.clue_state:addAction(ClueStateAction.Text.new("No scan route selected"))
     return
   end
@@ -493,6 +499,7 @@ function ScanClueSolver:render()
 
   self.clue_state:clearActions()
   self.clue_state:addAction(self.method_action)
+  self.clue_state:addAction(self.teleport_action)
   for _, row in ipairs(rows) do self.clue_state:addAction(scan_display.action(row)) end
 end
 

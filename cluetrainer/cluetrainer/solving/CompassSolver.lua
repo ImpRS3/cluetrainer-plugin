@@ -13,6 +13,7 @@ local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEn
 local PathMesh           = require("cluetrainer/model/PathMesh")
 local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local MethodAction       = require("cluetrainer/solving/common/MethodAction")
+local TeleportAction     = require("cluetrainer/solving/common/TeleportAction")
 
 ---@class ct.compasslogic
 local compasslogic       = {}
@@ -152,6 +153,7 @@ function CompassSolver.new(clue, state_window)
       self:setPath(method and method.method.main_path or nil)
     end,
   }))
+  self.actions.teleport = state_window:addAction(TeleportAction.new(nil))
 
   --There is no reasonable way to track completion of the following three
   --self.actions.defeat_wizard = state_window:addAction(ClueStateAction.Text.new("Defeat Wizard"))
@@ -244,7 +246,9 @@ function CompassSolver:setPath(path)
   end
 
   if path ~= nil then
-    self.navigator = Navigator.new()
+    self.navigator = Navigator.new(function(teleport)
+      self.actions.teleport:setTeleport(teleport)
+    end)
     self.navigator:set(path)
 
     local sectioned_path = Path.split_into_sections(path)
