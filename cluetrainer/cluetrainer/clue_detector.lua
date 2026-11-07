@@ -29,26 +29,62 @@ local function readClueLongText()
   return text
 end
 
+-- How long the clue text is read again after the window opens, in client logic ticks (50 per second).
+local READ_TIMEOUT_TICKS          = 100
+
+---The master clue whose text matches, or nil.
+---@param text string
+---@return Step?
+local function matchMasterClue(text)
+  local scored = zyklib.array.map(relevant_master_clues, function(clue)
+    return { clue = clue, score = util.stringSimilarity(text, clue.text[1]) }
+  end)
+
+  local best = zyklib.array.maxBy(scored, function(entry) return entry.score end)
+
+  return best ~= nil and best.score > 0.97 and best.clue or nil
+end
+
+---@type zyklib.reactive.EventHandler?
+local pending_read                = nil
+
+local function stopReading()
+  if pending_read then pending_read:cancel() end
+  pending_read = nil
+end
+
+---Reads the clue text on every logic tick until it matches a master clue, the window closes or the timeout passes, so
+---the clue is found however many ticks the game takes to replace its placeholder text. Only a changed text is scored.
+local function readUntilMatched()
+  stopReading()
+
+  local deadline = nil
+  local last_text = nil
+
+  pending_read = zyklib.game_events.native.Logic:subscribe(function(payload)
+    deadline = deadline or payload.logicTick + READ_TIMEOUT_TICKS
+
+    local text = readClueLongText()
+    if text ~= "" and text ~= last_text then
+      last_text = text
+      local clue = matchMasterClue(text)
+      if clue ~= nil then
+        stopReading()
+        clue_detector.clue_detected_event:trigger(clue)
+        return
+      end
+    end
+
+    if payload.logicTick >= deadline then stopReading() end
+  end)
+end
+
 local interface_handler           = zyklib.game_events.derived.component(id.Component
   ["TRAIL_CLUELONG__MAINMODAL_WINDOW"]):subscribeSuspended(function(event)
-  -- Handle the modal window being suspended if needed
-
   if event ~= nil then
-    -- The actual clue text is not readable until the next client logic tick, so we wait for it.
-    zyklib.game_events.native.Logic:once(function(payload)
-      local text = readClueLongText()
-
-      -- Score
-      local scored = zyklib.array.map(relevant_master_clues, function(clue)
-        return { clue = clue, score = util.stringSimilarity(text, clue.text[1]) }
-      end)
-
-      local best = zyklib.array.maxBy(scored, function(entry) return entry.score end)
-
-      if best.score > 0.97 then
-        clue_detector.clue_detected_event:trigger(best.clue)
-      end
-    end)
+    readUntilMatched()
+  else
+    stopReading()
   end
 end)
 
@@ -77,6 +113,7 @@ local mini_menu_handler           = zyklib.game_events.native.MiniMenuEntrySelec
 clue_detector.clue_detected_event = zyklib.reactive.Event.new(function(hasActiveListeners)
   interface_handler:setActive(hasActiveListeners)
   mini_menu_handler:setActive(hasActiveListeners)
+  if not hasActiveListeners then stopReading() end
 end)
 
 return clue_detector
