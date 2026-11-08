@@ -2,6 +2,7 @@ local ClueStateAction = require("cluetrainer/interfaces/cluestate/ClueStateActio
 local TeleportTooltip = require("cluetrainer/interfaces/map/elements/TeleportTooltip")
 local item_icon = require("cluetrainer/util/item_icon")
 local FontFamily = require("cluetrainer/util/FontFamily")
+local TeleportCustomization = require("cluetrainer/solving/common/TeleportCustomization")
 
 local ROW_HEIGHT = 40
 local ICON_SIZE = 32
@@ -21,6 +22,7 @@ local TOOLTIP_GAP = 2
 ---@field code_text ui.Text?
 ---@field private tooltip_root ui.Layer?
 ---@field private hovered_icon ui.Sprite?
+---@field private customization_handler zyklib.reactive.EventHandler?
 local TeleportAction = setmetatable({}, { __index = ClueStateAction })
 TeleportAction.__index = TeleportAction
 
@@ -179,12 +181,20 @@ function TeleportAction:_construct(view)
   self.code_text.clickthrough = true
   self:_bindTooltip(self.icon)
   self:_bindTooltip(self.item_icon)
+
+  -- Read once per row, in case a var transmit named an id that isn't watched.
+  TeleportCustomization.refreshFavourites()
+
+  -- Pota slots and fairy ring favourites change the code and icon while the row is shown.
+  self.customization_handler = TeleportCustomization.changed:subscribe(function()
+    if self.constructed then self:_apply() end
+  end)
 end
 
 ---@protected
 function TeleportAction:_apply()
   self:_hideTooltip()
-  local cache = self.teleport and self.teleport.props.cache_data
+  local cache = self.teleport and self.teleport:cacheData()
   local alpha = STATE_ALPHA[self.state]
   self.label.alpha = alpha
   self.placeholder.hidden = self.teleport ~= nil
@@ -220,6 +230,10 @@ end
 function TeleportAction:destroy()
   self:_hideTooltip()
   self.hovered_icon = nil
+  if self.customization_handler then
+    self.customization_handler:cancel()
+    self.customization_handler = nil
+  end
   for _, component in ipairs({ self.code_text, self.item_icon, self.icon, self.placeholder, self.label }) do
     component:Destroy()
   end
