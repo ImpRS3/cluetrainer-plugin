@@ -183,6 +183,7 @@ end
 ---@field dig? ct.interfaces.cluestate.ClueStateAction
 ---@field obtain_key? ct.interfaces.cluestate.ClueStateAction
 ---@field search? ct.interfaces.cluestate.ClueStateAction
+---@field skill? ct.interfaces.cluestate.ClueStateAction
 ---@field defeat_wizard? ct.interfaces.cluestate.ClueStateAction
 ---@field enter_challenge_scroll_answer? ct.interfaces.cluestate.ClueStateAction
 ---@field solve_slider? ct.interfaces.cluestate.ClueStateAction
@@ -247,6 +248,11 @@ function SimpleClueSolver:buildActions()
 
       self.actions.search = state_panel:addAction(ClueStateAction.Text.new("Search " .. RichText.loc(sol.entity)))
     end
+  end
+
+  if clue.type == "skilling" then
+    ---@cast clue Skilling
+    self.actions.skill = state_panel:addAction(ClueStateAction.Text.new(clue.answer))
   end
 
   local challenges = clue.challenge
