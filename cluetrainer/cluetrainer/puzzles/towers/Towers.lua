@@ -191,7 +191,9 @@ function Towers.LabelPair.getCandidates(label)
         candidates = Towers.LabelPair.candidateMap()
     end
 
-    return candidates[label[1]][label[2]]
+    -- A label outside 1 to 5 has no streets, so the puzzle has no solution instead of raising an error.
+    local by_first = candidates[label[1]]
+    return by_first and by_first[label[2]] or {}
 end
 
 Towers.Hints = {}

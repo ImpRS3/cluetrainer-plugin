@@ -78,6 +78,31 @@ local function getPuzzleState()
   return current_state
 end
 
+---The 20 edge hints, or nil while any of them is not a height from 1 to 5. The game opens the window a few server
+---ticks before it sends the hints, so they read as 0 at first.
+---@return ct.towers.Hints?
+local function readValidHints()
+  local hints = getPuzzleHints()
+  for _, side in pairs(hints) do
+    for _, hint in ipairs(side) do
+      if type(hint) ~= "number" or hint < 1 or hint > 5 then return nil end
+    end
+  end
+  return hints
+end
+
+---@param a ct.towers.Hints
+---@param b ct.towers.Hints
+---@return boolean
+local function sameHints(a, b)
+  for _, side in ipairs({ "top", "bottom", "left", "right" }) do
+    for i = 1, 5 do
+      if a[side][i] ~= b[side][i] then return false end
+    end
+  end
+  return true
+end
+
 ---@class ct.towers.ActiveTowersPuzzle: zyklib.disposable.IDisposable
 ---@field canvas ui.Canvas
 ---@field solution ct.towers.PuzzleState
@@ -85,9 +110,10 @@ end
 local ActivePuzzle = {}
 ActivePuzzle.__index = ActivePuzzle
 
----@return ct.towers.ActiveTowersPuzzle? # `nil` if the puzzle has no solution for the current hints
-function ActivePuzzle.new()
-  local solution = Towers.solve(getPuzzleHints())
+---@param hints ct.towers.Hints Valid hints, from `readValidHints`
+---@return ct.towers.ActiveTowersPuzzle? # `nil` if the puzzle has no solution for the hints, or the overlay failed
+function ActivePuzzle.new(hints)
+  local solution = Towers.solve(hints)
 
   if not solution then return nil end
 
@@ -95,9 +121,24 @@ function ActivePuzzle.new()
 
   self.disposable_group = zyklib.disposable.DisposableGroup.new()
 
+  -- Everything is added to the group as soon as it exists, so a failure halfway removes what was built so far
+  -- instead of leaving listeners and the canvas behind, and the error stays out of the server tick event.
+  local ok, err = pcall(ActivePuzzle.build, self)
+  if not ok then
+    self.disposable_group:dispose()
+    log("Towers overlay failed: " .. tostring(err))
+    return nil
+  end
+
+  return self
+end
+
+---@private
+function ActivePuzzle:build()
   -- Create the canvas for the solution overlay
   local content = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__SKYSCRAPERS_PLAYING_BOARD) --[[@as ui.ComponentCollection]]
   self.canvas = ui.Canvas.new(content)
+  self.disposable_group:add(zyklib.disposable.wrap(function() self.canvas:Destroy() end))
   self.canvas:SetSize(content.width, content.height)
 
   local click_layer = ui.Interfaces:GetComponent(id.Component.TRAIL17_SKYSCRAPERS__CLICK) --[[@as ui.ComponentCollection]]
@@ -186,12 +227,12 @@ function ActivePuzzle.new()
     end
   end
 
-  self.disposable_group:add(
-    towers_solver.settings.info:observable():subscribe(draw),
-    towers_solver.settings.highlight_completed_tiles:observable():subscribe(draw),
-    zyklib.lifecycle.shutdown_event:subscribe(function() self.disposable_group:dispose() end),
-    state:subscribe(function(puzzle_state) client_side_history:push(puzzle_state) end, true),
-    zyklib.game_events.native.MiniMenuEntrySelected:subscribe(function(payload)
+  local group = self.disposable_group
+  group:add(towers_solver.settings.info:observable():subscribe(draw))
+  group:add(towers_solver.settings.highlight_completed_tiles:observable():subscribe(draw))
+  group:add(zyklib.lifecycle.shutdown_event:subscribe(function() group:dispose() end))
+  group:add(state:subscribe(function(puzzle_state) client_side_history:push(puzzle_state) end, true))
+  group:add(zyklib.game_events.native.MiniMenuEntrySelected:subscribe(function(payload)
       if payload.entry.componentData ~= nil and payload.entry.componentData.component ~= nil then
         if payload.entry.componentData.component.parent == click_layer then
           local tile = payload.entry.componentData.component.dynamicID
@@ -202,7 +243,8 @@ function ActivePuzzle.new()
           local current_state = zyklib.objects.deepClone(state:get())
 
           local actions = {
-            ["Clear"] = function() current_state.rows[row_i][col_ci] = nil end,
+            -- 0 is the game's own value for an empty tile; nil would break the drawing.
+            ["Clear"] = function() current_state.rows[row_i][col_ci] = 0 --[[@as ct.towers.Tower]] end,
             ["Increment"] = function()
               current_state.rows[row_i][col_ci] = ((current_state.rows[row_i][col_ci] or 0) + 1) % 6
             end,
@@ -221,23 +263,45 @@ function ActivePuzzle.new()
           end
         end
       end
-    end),
-    zyklib.game_events.native.ServerLogic:subscribe(refresh),
-
-    state:subscribe(draw, true)
-  )
-
-  return self
+    end))
+  group:add(zyklib.game_events.native.ServerLogic:subscribe(refresh))
+  group:add(state:subscribe(draw, true))
 end
 
 function ActivePuzzle:dispose()
   self.disposable_group:dispose()
-  self.canvas:Clear()
   ActivePuzzle.instance = nil
 end
 
 ---@type ct.towers.ActiveTowersPuzzle?
 ActivePuzzle.instance = nil
+
+---@type zyklib.reactive.EventHandler? Reads the hints on every server tick while the window is open
+local hint_watch = nil
+
+---@type ct.towers.Hints? The hints of the current overlay or of the last attempt that had no solution
+local built_for = nil
+
+local function disposeInstance()
+  if ActivePuzzle.instance ~= nil then ActivePuzzle.instance:dispose() end
+end
+
+---Builds the overlay once the hints are valid, and again whenever they change, so a window that opens before the
+---hints arrive, or still holds the previous puzzle's hints, gets the right overlay a few ticks later.
+local function buildWhenHintsReady()
+  local hints = readValidHints()
+  if hints == nil or (built_for ~= nil and sameHints(hints, built_for)) then return end
+
+  built_for = hints
+  disposeInstance()
+  ActivePuzzle.instance = ActivePuzzle.new(hints)
+end
+
+local function stopWatching()
+  if hint_watch ~= nil then hint_watch:cancel() end
+  hint_watch, built_for = nil, nil
+  disposeInstance()
+end
 
 local interface_open_handler = zyklib.game_events.native.ServerLogic:map(function()
       local interface = ui.Interfaces:GetInterface(id.Interface.TRAIL17_SKYSCRAPERS)
@@ -247,12 +311,11 @@ local interface_open_handler = zyklib.game_events.native.ServerLogic:map(functio
     end)
     :toObservable(false)
     :subscribeSuspended(function(is_open)
-      if ActivePuzzle.instance ~= nil then
-        ActivePuzzle.instance:dispose()
-      end
+      stopWatching()
 
       if is_open then
-        ActivePuzzle.instance = ActivePuzzle.new()
+        hint_watch = zyklib.game_events.native.ServerLogic:subscribe(buildWhenHintsReady)
+        buildWhenHintsReady()
       end
     end)
 
@@ -261,9 +324,7 @@ local interface_open_handler = zyklib.game_events.native.ServerLogic:map(functio
 local function setActive(active)
   interface_open_handler:setActive(active)
 
-  if not active and ActivePuzzle.instance ~= nil then
-    ActivePuzzle.instance:dispose()
-  end
+  if not active then stopWatching() end
 end
 
 local initialized = false
