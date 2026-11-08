@@ -139,45 +139,9 @@ local mini_menu_handler           = zyklib.game_events.native.MiniMenuEntrySelec
     end
   end)
 
--- The compass item and its arrow panel per compass clue, so a compass also starts when its panel opens without the
--- "Read" option: by a keybind, or after the scroll box while the panel stays open.
-local COMPASS_PANELS              = zyklib.array.map({
-  { item = "TRAIL_CLUE_ELITE_COMPASS", component = "TRAIL_COMPASSCLUE_SIDE__TRAIL_LINE" },
-  { item = "TRAIL_CLUE_MASTER_COMPASS_EASTERNLANDS", component = "TRAIL_COMPASSCLUE_EASTERNLANDS_SIDE__TRAIL_LINE" },
-}, function(panel)
-  panel.clue = zyklib.array.find(clues, function(clue) return clue.id == clue_items[panel.item] end)
-  panel.shown = false
-  return panel
-end)
-
----Whether the compass's arrow panel is visible while the compass is in the backpack. The backpack check keeps a dug
----compass, whose panel can stay open, from starting again.
-local function compassShown(panel)
-  local component = ui.Interfaces:GetComponent(id.Component[panel.component])
-  if component == nil or not component.visibleGlobal or component.parent == nil then return false end
-
-  -- The proxy has no `valid` field, so only nil means the backpack is unavailable.
-  local backpack = Inventory.Find(config.Inv.INV) --[[@as Inv?]]
-  local obj = id.Obj[panel.item]
-  return backpack ~= nil and obj ~= nil and backpack:GetTotal(obj) > 0
-end
-
--- Reports the compass only when it becomes shown, not on every tick, so reading another clue while the panel stays
--- open is not switched back to the compass.
-local compass_panel_handler       = zyklib.game_events.native.ServerLogic:subscribeSuspended(function()
-  for _, panel in ipairs(COMPASS_PANELS) do
-    local shown = compassShown(panel)
-    if shown and not panel.shown and panel.clue ~= nil then clue_detector.clue_detected_event:trigger(panel.clue) end
-    panel.shown = shown
-  end
-end)
-
 clue_detector.clue_detected_event = zyklib.reactive.Event.new(function(hasActiveListeners)
   interface_handler:setActive(hasActiveListeners)
   mini_menu_handler:setActive(hasActiveListeners)
-  compass_panel_handler:setActive(hasActiveListeners)
-  -- Forgotten while inactive, so a compass that is open when solving is switched on starts right away.
-  for _, panel in ipairs(COMPASS_PANELS) do panel.shown = false end
   if not hasActiveListeners then stopReading() end
 end)
 
