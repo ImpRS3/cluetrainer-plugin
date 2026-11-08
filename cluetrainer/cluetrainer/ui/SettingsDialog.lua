@@ -28,6 +28,9 @@ local PAGE_PADDING = 60
 -- Space kept free right of the text for an inline control (its size, the column gap and some padding). Estimated, tune visually.
 local CHECKBOX_RESERVED = 24
 local COLOUR_RESERVED = 30
+local KEYBIND_WIDTH = 150
+local KEYBIND_HEIGHT = 24
+local KEYBIND_RESERVED = KEYBIND_WIDTH + 20
 -- Space for the value label right of a slider. Estimated, tune visually.
 local VALUE_LABEL_RESERVED = 50
 
@@ -152,6 +155,32 @@ local function addColour(page, title, description, setting)
     rowBackgroundGroup = group,
     onChange = function(_, colour)
       setting:set(colour)
+    end,
+  })
+end
+
+--- Adds an explanation with a keybind field to its right. Clearing the field leaves the binding empty.
+---@param page PrettyUI.Panel
+---@param title string
+---@param description string
+---@param setting ct.util.PersistentVariable<integer[]>
+local function addKeybind(page, title, description, setting)
+  local group = nextGroup()
+
+  local title_text = addSettingTitle(page, title, group, KEYBIND_RESERVED)
+  local text = addDescription(page, description, group, KEYBIND_RESERVED)
+
+  page:AddKeybindField({
+    value = setting:get(),
+    width = KEYBIND_WIDTH,
+    height = KEYBIND_HEIGHT,
+    inline = true,
+    columnGap = 8,
+    offsetY = centeredOffset(title_text, text, KEYBIND_HEIGHT),
+    rowBackgroundGroup = group,
+    onChange = function(_, value)
+      log(value)
+      setting:set(value)
     end,
   })
 end
@@ -324,6 +353,31 @@ local function buildTowers(page)
     settings.towers.highlight_completed_tiles)
 end
 
+---@param page table
+local function buildScans(page)
+  addPageTitle(page, "Scans")
+
+  addKeybind(page, "Enter single pulse",
+    "Keybind for manually entering a single pulse.",
+    settings.scans.single_pulse_keybind)
+
+  addKeybind(page, "Enter double pulse",
+    "Keybind for manually entering a double pulse.",
+    settings.scans.double_pulse_keybind)
+
+  addKeybind(page, "Undo",
+    "Keybind for undoing the previous manual input or going back up the scan tree.",
+    settings.scans.undo_keybind)
+end
+
+---@param page table
+local function buildCompasses(page)
+  addPageTitle(page, "Compasses")
+
+  addColour(page, "Beam colour", "Colour used to draw compass beams.",
+    settings.compasses.beam_color)
+end
+
 --- Mounts the settings pages (navigation on the left, selected page on the right) onto a layer.
 ---@param layer ui.Layer
 ---@return PrettyUI.SimpleView view The view hosting the settings. Destroy it to remove them again.
@@ -343,6 +397,8 @@ function SettingsDialog.mount(layer)
     { name = "Knots",     build = buildKnots },
     { name = "Lockboxes", build = buildLockboxes },
     { name = "Towers",    build = buildTowers },
+    { name = "Scans",     build = buildScans },
+    { name = "Compasses", build = buildCompasses },
   }
 
   ---@type PrettyUI.SimpleButton[]

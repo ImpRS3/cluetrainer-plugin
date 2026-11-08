@@ -21,6 +21,8 @@ local LiveNarrowing              = require "cluetrainer/solving/scan/LiveNarrowi
 local tiles                      = require "cluetrainer/model/shared/tiles"
 local array                      = require "zyklib/array"
 local zyklib                     = require "zyklib"
+local schema                     = require "cluetrainer/util/schema"
+local KeybindField               = require "prettyui/keybind_field"
 
 -- Read the panel 10 times per second (logic ticks run at 50 per second), enough for a text that changes once per pulse.
 local POLL_EVERY_TICKS           = 5
@@ -76,6 +78,45 @@ local DESTROYED_TIMEOUT_TICKS    = 2 * scan_panel.PULSE_TICKS
 local ScanClueSolver             = setmetatable({}, { __index = ActiveClueSolver })
 ScanClueSolver.__index           = ScanClueSolver
 
+local function gameKeyToModifier(gameKey)
+  return ({
+    [GameKey.SHIFT] = ModifierKey.SHIFT,
+    [GameKey.CONTROL] = ModifierKey.CONTROL,
+    [GameKey.ALT] = ModifierKey.ALT,
+  })[gameKey]
+end
+
+---comment
+---@param event KeyDownEventPayload
+---@param keybind integer[]
+---@return boolean
+local function keybindPressed(event, keybind)
+  -- Empty keybinds are {}, which are never considered pressed
+  if #keybind == 0 then return false end
+
+  for _, key in ipairs(keybind) do
+    local modifier = gameKeyToModifier(key)
+
+    if modifier ~= nil then
+      if (event.modifiers & modifier) == 0 then
+        return false
+      end
+    else
+      if event.gameKey ~= key then
+        return false
+      end
+    end
+  end
+
+  return true
+end
+
+ScanClueSolver.settings = {
+  single_pulse_keybind = ctGlobal.persistence:profileVariable("scans/single_pulse_keybind", schema.any({})),
+  double_pulse_keybind = ctGlobal.persistence:profileVariable("scans/double_pulse_keybind", schema.any({})),
+  undo_keybind = ctGlobal.persistence:profileVariable("scans/undo_keybind", schema.any({})),
+}
+
 ---@param clue Scan
 ---@param clue_state ct.ClueStateInterface
 ---@return ct.ActiveScanClue
@@ -91,9 +132,9 @@ function ScanClueSolver.new(clue, clue_state)
   self.teleport_action = TeleportAction.new(nil)
   self.pulse_action = ScanPulseAction.new("", "", function(pulse)
     if pulse == "undo" then
-      self:back()
+      self:undo()
     else
-      self:press(pulse)
+      self:enterPulse(pulse)
     end
   end)
   self.candidates_action = ClueStateAction.Text.new("")
@@ -114,16 +155,14 @@ function ScanClueSolver.new(clue, clue_state)
 
   -- On key down, to read Shift while it is still held.
   self.disposable_group:add(zyklib.game_events.native.KeyDown:subscribe(function(event)
-    if event.isRepeat or event.modifiers & ModifierKey.SHIFT == 0 then return end
+    if event.isRepeat then return end
 
-    if event.gameKey == GameKey._1 then
-      self:press(1)
-    elseif event.gameKey == GameKey._2 then
-      self:press(2)
-    elseif event.gameKey == GameKey._3 then
-      self:press(3)
-    elseif event.gameKey == GameKey._0 then
-      self:back()
+    if keybindPressed(event, ScanClueSolver.settings.single_pulse_keybind:get()) then
+      self:enterPulse(1)
+    elseif keybindPressed(event, ScanClueSolver.settings.double_pulse_keybind:get()) then
+      self:enterPulse(2)
+    elseif keybindPressed(event, ScanClueSolver.settings.undo_keybind:get()) then
+      self:undo()
     end
   end))
 
@@ -261,7 +300,6 @@ function ScanClueSolver:refresh()
   self.ground:setSpots(self.remaining)
 
   if off_route then return self:leaveRoute() end
-  -- Back on the route, e.g. Shift+0 to before the wrong key press.
   if self.status == "off_route" then return self:enter(self.node, self.area) end
 
   if self.status ~= "manual" then
@@ -338,7 +376,7 @@ end
 --- and moves the tree on only at the tree's scan area: a key pressed elsewhere is not about that area.
 ---@private
 ---@param pulse 1 | 2 | 3
-function ScanClueSolver:press(pulse)
+function ScanClueSolver:enterPulse(pulse)
   local press = pulse < 3 and self.live:press(
     self.tick, pulse --[[@as 1 | 2]], coordinate_adaptor.playerTile()) or nil
   if self.tree == nil then
@@ -362,7 +400,7 @@ end
 
 --- Shift+0: undoes the last step or key press. Going back to a node lets the player choose its pulse by hand.
 ---@private
-function ScanClueSolver:back()
+function ScanClueSolver:undo()
   local previous = table.remove(self.history)
   if previous == nil then return end
 
@@ -555,7 +593,8 @@ function ScanClueSolver:updatePulseAction(tile)
   local tooltip
   if enabled then
     content = "Enter scan pulse"
-    tooltip = "Due to an API limitation, Clue Trainer cannot automatically distinguish single and double pulses and they need to be entered manually. This will hopefully be obsolete in a future API update."
+    tooltip =
+    "Due to an API limitation, Clue Trainer cannot automatically distinguish single and double pulses and they need to be entered manually. This will hopefully be obsolete in a future API update."
   elseif not has_node then
     content = "Wait for ambiguous pulse"
     tooltip = "Single or double can be entered when the panel shows a pulse that needs disambiguation."

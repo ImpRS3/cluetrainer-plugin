@@ -14,6 +14,7 @@ local PathMesh           = require("cluetrainer/model/PathMesh")
 local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
 local TeleportAction     = require("cluetrainer/solving/common/TeleportAction")
 local tiles              = require("cluetrainer/model/shared/tiles")
+local schema             = require("cluetrainer/util/schema")
 
 ---@class ct.compasslogic
 local compasslogic       = {}
@@ -53,7 +54,8 @@ local SpotMarker = require "cluetrainer/interfaces/map/elements/SpotMarker"
 
 ---@param clue Compass
 ---@param info ct.Compass.TriangulationPoint
-local function drawArrowArc(clue, info)
+---@param color integer
+local function drawArrowArc(clue, info, color)
   -- Implementation for drawing an arrow arc on the map
 
   local origin = info.origin
@@ -74,35 +76,15 @@ local function drawArrowArc(clue, info)
   local l = ctmath.vector2.add(origin, beam_left)
   local r = ctmath.vector2.add(origin, beam_right)
 
-  twig:AddTriangle(origin, r, l, 0x3388ff50)
+  twig:AddTriangle(origin, r, l, color)
 
   return twig
 end
 
-
-local trail_status = zyklib.game_events.derived.forPlayerVariable(var.VarPlayer["TRAIL_STATUS"], function()
-  return {
-    --done_emote_or_killed_double_agent_medium = var.VarPlayer
-    --   ["TRAIL_STATUS_DONE_CODE_EMOTE_OR_KILLED_DOUBLE_AGENT_MEDIUM"].value,
-    --current_clue_needs_sextant_hard = var.VarPlayer["TRAIL_STATUS_CURRENT_CLUE_NEEDS_SEXTANT_HARD"].value,
-    --done_emote_or_killed_double_agent_hard = var.VarPlayer["TRAIL_STATUS_DONE_CODE_EMOTE_OR_KILLED_DOUBLE_AGENT_HARD"]
-    --    .value,
-    --has_killed_monster_hard = var.VarPlayer["TRAIL_STATUS_HAS_KILLED_MONSTER_HARD"].value,
-    has_killed_monster_elite = var.VarPlayer["TRAIL_STATUS_HAS_KILLED_MONSTER_ELITE"].value,
-    solved_puzzle_elite = var.VarPlayer["TRAIL_STATUS_SOLVED_PUZZLE_ELITE"].value,
-    solved_puzzle_master = var.VarPlayer["TRAIL_STATUS_SOLVED_PUZZLE_MASTER"].value,
-    has_killed_monster_master = var.VarPlayer["TRAIL_STATUS_HAS_KILLED_MONSTER_MASTER"].value,
-  }
-end)
-
-trail_status:subscribe(function(status)
-  log("Trail status updated")
-  log(status)
-end, true)
-
 ---@class ct.ActiveCompassSolver : ct.ActiveClueSolver
 ---@field triangulation_points {info: ct.Compass.TriangulationPoint, twig: prettymap.luaflet.Twig}[]
----@field private target TileCoordinates? The compass target the triangulation points were read towards
+---@field clue Compass
+---@field private REDACTED_target TileCoordinates? The compass target the triangulation points were read towards. Hidden information, must not be exposed to the player
 ---@field candidates {spot: TileCoordinates, marker: ct.SpotMarker, possible: boolean}[]
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
@@ -113,6 +95,10 @@ end, true)
 ---@field private method ct.AugmentedMethod<Method.GenericPath>?
 local CompassSolver = setmetatable({}, { __index = ActiveClueSolver })
 CompassSolver.__index = CompassSolver
+
+CompassSolver.settings = {
+  beam_color = ctGlobal.persistence:profileVariable("compasses/beam_color", schema.colour({ default = 0x3388ff50 })),
+}
 
 ---@param clue Compass
 ---@param state_window ct.ClueStateInterface
@@ -177,8 +163,8 @@ function CompassSolver:maybePushInformation(info)
   -- Discard redundant information
   if not is_new then return end
 
-
-  table.insert(self.triangulation_points, { info = info, twig = drawArrowArc(self.clue, info):AddTo(self.map_layer) })
+  table.insert(self.triangulation_points,
+  { info = info, twig = drawArrowArc(self.clue, info, CompassSolver.settings.beam_color:get()):AddTo(self.map_layer) })
 
   self:update()
 end
@@ -323,11 +309,11 @@ function CompassSolver:getCurrentInformation()
   if player_position == nil then return nil end
 
   -- Hidden value, we obscure it to emulate the uncertainty of visual observation.
-  local target_spot = coordinate_adaptor.coord_grid_to_tile_coordinates(var.VarClient["TRAIL_DESTCOORD"]
+  local REDACTED_target_spot = coordinate_adaptor.coord_grid_to_tile_coordinates(var.VarClient["TRAIL_DESTCOORD"]
     .value --[[@as CoordGrid]])
-  self:followTarget(target_spot)
+  self:followTarget(REDACTED_target_spot)
 
-  return compasslogic.reading(player_position, target_spot, self.clue.valid_area, UNCERTAINTY_RADIANS)
+  return compasslogic.reading(player_position, REDACTED_target_spot, self.clue.valid_area, UNCERTAINTY_RADIANS)
 end
 
 --- The reading the compass arrow gives at the player's position, or nil if it gives none: on another level than the
@@ -338,8 +324,11 @@ end
 ---@param uncertainty_radians number The angle is rounded to multiples of this
 ---@return ct.Compass.TriangulationPoint?
 function compasslogic.reading(player_position, target_spot, valid_area, uncertainty_radians)
+  -- If the player and the target are on different levels, the compass would be spinning, so the reading must be discarded
   if player_position.level ~= target_spot.level then return nil end
+  -- If the player is not within the valid area, the compass would be spinning, so we must discard the angle reading
   if not ctmath.rectangle.contains(valid_area, player_position) then return nil end
+  -- If the player is on the target tile itself, there is no direction to point to, so we discard the reading
   if player_position.x == target_spot.x and player_position.y == target_spot.y then return nil end
 
   local expected_precise_angle = compasslogic.getExpectedAngle(player_position, target_spot)
@@ -352,8 +341,8 @@ end
 --- may still report the last compass's spot right after a dig) don't rule out the new spot.
 ---@param target TileCoordinates
 function CompassSolver:followTarget(target)
-  local previous = self.target
-  self.target = target
+  local previous = self.REDACTED_target
+  self.REDACTED_target = target
   if previous == nil or tiles.same(previous, target) or #self.triangulation_points == 0 then return end
 
   for _, point in ipairs(self.triangulation_points) do point.twig:Detach() end
