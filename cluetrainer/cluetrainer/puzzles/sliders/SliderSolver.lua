@@ -53,7 +53,6 @@ local function getPDB()
   }
 
   --- API WORKAROUND: PersistentDB has a bug where it wrongly truncates strings at null bytes, so we need to escape them before storing and unescape after retrieving.
-  ---
   ---@param str string
   ---@return string
   local function escape_null_bytes(str)
@@ -202,7 +201,7 @@ SMALL_TEXT_CONFIG.isShadowed = true
 ---@alias ct.sliders.ct.sliders.ActiveSliderPuzzle.State
 ---           | {state: "waitingforpdb", last_drawn_progress: number?, progress: ct.sliders.PdbDownloadState}
 ---           | {state: "solving", start_tick: number, solver: ct.sliders.pdb.PdbSolverTicked}
----           | {state: "executing", start_tick: number, solution: ct.sliders.AugmentedMove[], mainline_index: integer, last_mainline_state: ct.sliders.SliderState, finished_tick: integer?, last_drawn_state: ct.sliders.SliderState?, recovery_solution: ct.sliders.RecoverySolution}
+---           | {state: "executing", start_tick: number, solution: ct.sliders.AugmentedMove[], mainline_index: integer, last_mainline_state: ct.sliders.SliderState, finished_tick: integer?, last_drawn_state: ct.sliders.SliderState?, last_drawn_arrows_inverted: boolean?, recovery_solution: ct.sliders.RecoverySolution}
 ---           | {state: "failed", reason: string}
 
 
@@ -220,6 +219,8 @@ ActivePuzzle.__index = ActivePuzzle
 ---@param state ct.sliders.SliderState The current puzzle state
 function ActivePuzzle:drawSolution(state)
   assert(self.state.state == "executing")
+  
+  local arrows_inverted = var.VarPlayer.SLIDE_PUZZLE_KEYBOARD_INVERT.value ~= 0
 
   local canvas = self.solution_canvas
   canvas:Clear()
@@ -270,6 +271,7 @@ function ActivePuzzle:drawSolution(state)
   local last_size = 10
   local overlap_map = {}
   local blank = base_state[SliderState.BLANK_TILE_INDEX]
+  local mode = slider_solver.settings.mode:get()
 
   for i = 0, math.min(lookahead, #steps) - 1 do
     local step = steps[i + 1]
@@ -301,10 +303,51 @@ function ActivePuzzle:drawSolution(state)
     canvas:AddLine(x1, y1, x2, y2, 2, COLOR_CONTRAST)
     canvas:AddLine(x1, y1, x2, y2, 1, step.color)
 
-    -- Marker on the clicked tile
-    local outer = size + CONTRAST_BORDER
-    canvas:AddOutline(bx - outer, by - outer, outer * 2, outer * 2, STROKE + 2 * CONTRAST_BORDER, COLOR_CONTRAST)
-    canvas:AddOutline(bx - size, by - size, size * 2, size * 2, STROKE, step.color)
+    if mode ~= "mouse" and Move.isSmallStep(clicked - blank) then
+      -- Normal arrows point towards the blank; inverted arrows point the other way.
+      local direction = arrows_inverted and 1 or -1
+      local arrow_x, arrow_y = direction * ux, direction * uy
+      local shaft = size / 3
+      local points = {
+        { -size, -shaft },
+        { 0,     -shaft },
+        { 0,     -size },
+        { size,  0 },
+        { 0,     size },
+        { 0,     shaft },
+        { -size, shaft },
+      }
+
+      for _, point in ipairs(points) do
+        local x, y = point[1], point[2]
+        point[1] = bx + arrow_x * x - arrow_y * y
+        point[2] = by + arrow_y * x + arrow_x * y
+      end
+
+      for _, stroke in ipairs({
+        { width = STROKE + 2 * CONTRAST_BORDER, color = COLOR_CONTRAST,
+          extension = (STROKE + 2 * CONTRAST_BORDER) / 4 + 0.5,
+          corner_extension = (STROKE + 2 * CONTRAST_BORDER) / 4 + 0.25 },
+        { width = STROKE, color = step.color, extension = STROKE / 4 + 0.25, corner_extension = STROKE / 8 },
+      }) do
+        for index, point in ipairs(points) do
+          local next_index = index % #points + 1
+          local next_point = points[next_index]
+          local line_dx, line_dy = next_point[1] - point[1], next_point[2] - point[2]
+          local line_length = math.sqrt(line_dx * line_dx + line_dy * line_dy)
+          local unit_x, unit_y = line_dx / line_length, line_dy / line_length
+          local start_extension = (index == 3 or index == 5) and stroke.corner_extension or stroke.extension
+          local end_extension = (next_index == 3 or next_index == 5) and stroke.corner_extension or stroke.extension
+          canvas:AddLine(point[1] - unit_x * start_extension, point[2] - unit_y * start_extension,
+            next_point[1] + unit_x * end_extension, next_point[2] + unit_y * end_extension,
+            stroke.width / 2, stroke.color)
+        end
+      end
+    else
+      local outer = size + CONTRAST_BORDER
+      canvas:AddOutline(bx - outer, by - outer, outer * 2, outer * 2, STROKE + 2 * CONTRAST_BORDER, COLOR_CONTRAST)
+      canvas:AddOutline(bx - size, by - size, size * 2, size * 2, STROKE, step.color)
+    end
 
     last_size = size
     blank = clicked
@@ -486,6 +529,18 @@ function ActivePuzzle.new()
   self.ticks = 0
   self.state = { state = "waitingforpdb", progress = pdb(), last_drawn_progress = nil }
 
+  self.lifetime:add(slider_solver.settings.mode:observable():subscribe(function()
+    if self.state.state == "waitingforpdb" then return end
+
+    if self.solver then
+      self.solver:dispose()
+      self.solver = nil
+    end
+    self.solution_canvas:Clear()
+    self.progress_canvas:Clear()
+    self.state = { state = "waitingforpdb", progress = pdb(), last_drawn_progress = nil }
+  end))
+
   self.lifetime:add(zyklib.game_events.native.Logic:subscribe(function() self:logictick() end))
 
   self:logictick()
@@ -553,7 +608,7 @@ function ActivePuzzle:recover(current)
     moves = Move.compress(moves)
   end
 
-  recovery.sequence = SliderState.augmentMoves(current, moves)
+  recovery.sequence = SliderState.augmentMoves(current, moves, slider_solver.settings.mode:get() ~= "keyboard")
   recovery.last_known_state = current
   s.mainline_index = recovery.recovering_to_mainline_index
 end
@@ -575,7 +630,8 @@ function ActivePuzzle:logictick()
 
       local graph = download.data:get()
 
-      local solver = PdbSolverTicked.new(SliderState.getSliderState(), graph)
+      local solver = PdbSolverTicked.new(SliderState.getSliderState(), graph,
+        slider_solver.settings.mode:get() ~= "keyboard")
       solver:start()
       self.solver = solver
       self.state = { state = "solving", start_tick = self.ticks, solver = solver }
@@ -607,7 +663,7 @@ function ActivePuzzle:logictick()
 
       s.solver:cancel()
 
-      self.solution = SliderState.augmentMoves(current, best)
+      self.solution = SliderState.augmentMoves(current, best, slider_solver.settings.mode:get() ~= "keyboard")
       self.state = {
         state = "executing",
         start_tick = self.ticks,
@@ -626,6 +682,7 @@ function ActivePuzzle:logictick()
   -- We may have switched to the "executing" state, which we handle immediately
   if s.state == "executing" then
     local current = SliderState.getSliderState()
+    local arrows_inverted = var.VarPlayer.SLIDE_PUZZLE_KEYBOARD_INVERT.value ~= 0
 
     if SliderState.isSolved(current) and s.finished_tick == nil then
       s.finished_tick = self.ticks
@@ -667,6 +724,10 @@ function ActivePuzzle:logictick()
       end
 
       s.last_drawn_state = current
+      s.last_drawn_arrows_inverted = arrows_inverted
+    elseif s.last_drawn_arrows_inverted ~= arrows_inverted then
+      if not SliderState.isSolved(current) then self:drawSolution(current) end
+      s.last_drawn_arrows_inverted = arrows_inverted
     end
 
     -- Reduce number of progress redraws to match the clock accuracy

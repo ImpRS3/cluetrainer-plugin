@@ -1,6 +1,6 @@
 -- RegionGraph.lua
-local RegionDistanceTable        = require("cluetrainer/puzzles/sliders/pdb/PdbRegion")
-local Region                     = require("cluetrainer/puzzles/sliders/pdb/Region")
+local RegionDistanceTable = require("cluetrainer/puzzles/sliders/pdb/PdbRegion")
+local Region              = require("cluetrainer/puzzles/sliders/pdb/Region")
 
 
 local array = require("zyklib/array")
@@ -12,6 +12,7 @@ local array = require("zyklib/array")
 ---@field children ct.sliders.pdb.RegionGraph.Node[]
 
 ---@class ct.sliders.pdb.RegionGraph
+---@field is_multitile boolean
 ---@field private nodes ct.sliders.pdb.RegionGraph.Node[]
 ---@field private entry_nodes ct.sliders.pdb.RegionGraph.Node[]
 local RegionGraph = {}
@@ -21,7 +22,9 @@ RegionGraph.__index = RegionGraph
 ---@param include_reflected_nodes boolean
 ---@return ct.sliders.pdb.RegionGraph
 function RegionGraph.new(databases, include_reflected_nodes)
-  local self = setmetatable({}, RegionGraph)
+  local self = setmetatable({
+    is_multitile = databases[1].description.multitile,
+  }, RegionGraph)
 
   local nodes = {}
 
@@ -67,7 +70,6 @@ function RegionGraph.new(databases, include_reflected_nodes)
 
   return self
 end
-
 
 ---Parses the given data into a list of RegionDistanceTable instances.
 ---@param data string

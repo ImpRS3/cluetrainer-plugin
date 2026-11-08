@@ -1,4 +1,5 @@
-local SliderState = require "cluetrainer/puzzles/sliders/SliderState"
+local SliderState               = require "cluetrainer/puzzles/sliders/SliderState"
+local Move                      = require "cluetrainer/puzzles/sliders/Move"
 
 local move_translation_identity = {
   [21 - 20] = -20,
@@ -29,22 +30,25 @@ local move_translation_identity = {
 ---@field chain ct.sliders.pdb.RegionGraph
 ---@field best_solution integer[]?
 ---@field private state ct.sliders.SliderState
+---@field private use_multitile boolean
 ---@field private finished boolean
 ---@field private tick_handler zyklib.disposable.IDisposable?
 ---@field private started boolean
 ---@field private stack StackItem[]
-local PdbSolverTicked = {}
-PdbSolverTicked.__index = PdbSolverTicked
+local PdbSolverTicked           = {}
+PdbSolverTicked.__index         = PdbSolverTicked
 
 ---@param start_state ct.sliders.SliderState
 ---@param chain ct.sliders.pdb.RegionGraph
+---@param use_multitile boolean
 ---@return ct.sliders.pdb.PdbSolverTicked
-function PdbSolverTicked.new(start_state, chain)
+function PdbSolverTicked.new(start_state, chain, use_multitile)
   ---@class ct.sliders.pdb.PdbSolverTicked
   local self = setmetatable({}, PdbSolverTicked)
 
   self.start_state = start_state
   self.chain = chain
+  self.use_multitile = use_multitile
   self.finished = false
   self.started = false
   self.stack = {}
@@ -71,8 +75,13 @@ end
 ---@protected
 ---@param solution integer[]
 function PdbSolverTicked:registerSolution(solution)
+  if self.use_multitile and not self.chain.is_multitile then
+    solution = Move.compress(solution)
+  elseif not self.use_multitile and self.chain.is_multitile then
+    solution = Move.expand(solution)
+  end
+
   if self.best_solution == nil or #solution < #self.best_solution then
-    -- TODO: Compress/Uncompress if needed!
     self.best_solution = { table.unpack(solution) }
   end
 end
