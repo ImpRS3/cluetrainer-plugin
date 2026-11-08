@@ -1,5 +1,8 @@
 local settings = require("cluetrainer/settings")
 local zyklib = require("zyklib")
+local teleport_data = require("cluetrainer/data/teleports")
+local customization = require("cluetrainer/model/shared/teleport_customization")
+local TeleportCustomization = require("cluetrainer/solving/common/TeleportCustomization")
 
 local SettingsDialog = {}
 
@@ -378,6 +381,153 @@ local function buildCompasses(page)
     settings.compasses.beam_color)
 end
 
+local COMBO_HEIGHT = 30
+local SLOT_LABEL_WIDTH = 14
+local SLOT_COMBO_WIDTH = 175
+
+local function capitalise(text)
+  return text:sub(1, 1):upper() .. text:sub(2)
+end
+
+--- The jewellery that fits in a pota, by name. Labels must be unique for the combo box, which they are.
+---@return { label: string, slot: ct.PotaSlot }[]
+local function potaJewellery()
+  local result = {}
+  for _, group in ipairs(teleport_data) do
+    for _, access in ipairs(group.access or {}) do
+      if access.type == "item" and access.can_be_in_pota then
+        result[#result + 1] = { label = access.name.name, slot = { group = group.id, access = access.id } }
+      end
+    end
+  end
+  table.sort(result, function(a, b) return a.label < b.label end)
+  return result
+end
+
+--- What the player's fairy ring favourites hold, as "1 AIQ, 2 DKS". Values that can't be decoded show as "?value", so
+--- a wrong decoding is visible here.
+---@return string
+local function favouritesText()
+  local fairy_rings = nil
+  for _, group in ipairs(teleport_data) do
+    if group.id == "fairyring" then fairy_rings = group end
+  end
+
+  local parts = {}
+  for i, value in ipairs(TeleportCustomization.favouriteValues()) do
+    local spot_id = customization.fairyRingSpot(value)
+    local label = nil
+    if spot_id then
+      label = spot_id
+      for _, spot in ipairs(fairy_rings and fairy_rings.spots or {}) do
+        if spot.id == spot_id then label = (spot.code ~= nil and spot.code ~= "") and spot.code or spot.name end
+      end
+    elseif value and value ~= 0 then
+      label = "?" .. tostring(value)
+    end
+    if label then parts[#parts + 1] = tostring(i % 10) .. " " .. label end
+  end
+
+  if #parts == 0 then return "None set in the game (or not readable)." end
+  return table.concat(parts, ", ")
+end
+
+--- Adds a toggle that reads and changes one value of the teleport settings.
+---@param read fun(settings: ct.TeleportCustomization): boolean
+---@param write fun(settings: ct.TeleportCustomization, value: boolean)
+---@param rebuild (fun())? Rebuilds the page after the change, for toggles that show or hide other settings
+local function addTeleportToggle(page, label, description, read, write, rebuild)
+  addToggle(page, label, description, {
+    get = function() return read(TeleportCustomization.get()) end,
+    set = function(_, value)
+      TeleportCustomization.update(function(settings) write(settings, value) end)
+      if rebuild then rebuild() end
+    end,
+  })
+end
+
+---@param page PrettyUI.Panel
+---@param rebuild fun()
+local function buildTeleports(page, rebuild)
+  local current = TeleportCustomization.get()
+
+  addPageTitle(page, "Teleports")
+
+  addSection(page, "Passages of the abyss")
+  addDescription(page,
+    "Fill in what each passage of the abyss you own holds, in the order of its teleport menu. A teleport from a passage then shows its slot in front of the code, e.g. 3,2.",
+    nextGroup())
+
+  local jewellery = potaJewellery()
+
+  for _, colour in ipairs(customization.POTA_COLOURS) do
+    addTeleportToggle(page, capitalise(colour) .. " passage of the abyss", "",
+      function(settings) return customization.pota(settings, colour) ~= nil end,
+      function(settings, owned)
+        if owned and not customization.pota(settings, colour) then
+          settings.potas[#settings.potas + 1] = { colour = colour, slots = customization.emptySlots() }
+        elseif not owned then
+          for i, pota in ipairs(settings.potas) do
+            if pota.colour == colour then
+              table.remove(settings.potas, i)
+              break
+            end
+          end
+        end
+      end, rebuild)
+
+    local pota = customization.pota(current, colour)
+    if pota then
+      local group = nextGroup()
+      for i = 1, customization.POTA_SLOTS do
+        -- Entry ids are positions: 1 is empty, 2.. are the jewellery.
+        local entries, selected = { { label = "Empty", id = 1 } }, 1
+        for index, item in ipairs(jewellery) do
+          entries[#entries + 1] = { label = item.label, id = index + 1 }
+          local stored = pota.slots[i]
+          if stored and stored.group == item.slot.group and stored.access == item.slot.access then
+            selected = index + 1
+          end
+        end
+
+        -- Two slots per row.
+        local first = i % 2 == 1
+        page:AddText({
+          text = tostring(i),
+          colour = SETTINGS_NAME_COLOUR,
+          width = SLOT_LABEL_WIDTH,
+          height = COMBO_HEIGHT,
+          inline = not first,
+          columnGap = first and nil or 16,
+          rowBackgroundGroup = group,
+        })
+        page:AddComboBox({
+          entries = entries,
+          selectedID = selected,
+          width = SLOT_COMBO_WIDTH,
+          height = COMBO_HEIGHT,
+          inline = true,
+          columnGap = 4,
+          rowBackgroundGroup = group,
+          onChange = function(_, entry_id)
+            local item = jewellery[(entry_id or 1) - 1]
+            TeleportCustomization.update(function(settings)
+              local setup = customization.pota(settings, colour)
+              if setup then setup.slots[i] = item and customization.copy(item.slot) or false end
+            end)
+          end,
+        })
+      end
+    end
+  end
+
+  addSection(page, "Fairy rings")
+  local group = nextGroup()
+  addSettingTitle(page, "Favourites", group)
+  addDescription(page,
+    "Read from the game. A favourite fairy ring shows its key instead of its code. Now: " .. favouritesText(), group)
+end
+
 --- Mounts the settings pages (navigation on the left, selected page on the right) onto a layer.
 ---@param layer ui.Layer
 ---@return PrettyUI.SimpleView view The view hosting the settings. Destroy it to remove them again.
@@ -399,6 +549,7 @@ function SettingsDialog.mount(layer)
     { name = "Towers",    build = buildTowers },
     { name = "Scans",     build = buildScans },
     { name = "Compasses", build = buildCompasses },
+    { name = "Teleports", build = buildTeleports },
   }
 
   ---@type PrettyUI.SimpleButton[]
@@ -406,12 +557,31 @@ function SettingsDialog.mount(layer)
 
   ---@type table?
   local current_view = nil
+  local selected_index = nil
+
+  local select
+
+  --- Builds the page again on the next tick, at the same scroll position. Deferred, because it runs from a callback of
+  --- a control that the rebuild destroys.
+  ---@param index integer
+  local function rebuild(index)
+    local view = current_view
+    local scroll_y = view and view.dock and view.dock.scroll and view.dock.scroll.scrollY or 0
+    zyklib.game_events.native.Logic:once(function()
+      -- Skipped when another page was opened or the window closed in the meantime.
+      if current_view ~= view or selected_index ~= index then return end
+      select(index, scroll_y)
+    end)
+  end
 
   -- Only the selected page exists at any time. Hidden views kept on top of each other can swallow the input meant for the visible one.
-  local function select(index)
+  ---@param index integer
+  ---@param scroll_y number?
+  select = function(index, scroll_y)
     if current_view ~= nil then
       current_view:Destroy()
     end
+    selected_index = index
 
     for i, button in ipairs(buttons) do
       button:SetActive(i == index)
@@ -426,9 +596,16 @@ function SettingsDialog.mount(layer)
       rowBackgroundColours = ROW_COLOURS,
     })
 
-    pages[index].build(current_view)
+    pages[index].build(current_view, function() rebuild(index) end)
 
     current_view:RefreshRowBackgrounds()
+
+    -- The panel has no public scroll setter, so its two internal surfaces (docked and popped out) are scrolled.
+    if scroll_y and scroll_y > 0 then
+      local panel = current_view --[[@as table]]
+      panel.dock.scroll:SetScrollPosition(scroll_y)
+      panel.overlay.scroll:SetScrollPosition(scroll_y)
+    end
   end
 
   for i, page in ipairs(pages) do

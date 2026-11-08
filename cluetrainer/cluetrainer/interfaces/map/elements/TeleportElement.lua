@@ -96,15 +96,16 @@ function TeleportElement:CreateComponent(layer)
   local teleport = self.teleport
 
   -- Without a sprite nothing is added and the layer is discarded.
-  if not teleport.props.cache_data then return false end
+  local cache = teleport:cacheData()
+  if not cache then return false end
 
   local sprite = ui.Sprite.new(layer)
   self.sprite = sprite
 
-  if teleport.props.cache_data.sprite then
-    sprite.sprite = id.Sprite[teleport.props.cache_data.sprite]
-  elseif teleport.props.cache_data.obj then
-    sprite:SetAssociatedObject(id.Obj[teleport.props.cache_data.obj])
+  if cache.sprite then
+    sprite.sprite = id.Sprite[cache.sprite]
+  elseif cache.obj then
+    sprite:SetAssociatedObject(id.Obj[cache.obj])
     self.is_item = true
   end
 

@@ -7,7 +7,7 @@
     "httpAccess"
   ],
   "urls": {
-    "cluetrainer": "http://cluetrainer.app"
+    "cluetrainer": "https://cluetrainer.app"
   },
   "hasSettingsIcon" : true,
   "hasRibbonIcon" : true

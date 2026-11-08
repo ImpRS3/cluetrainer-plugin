@@ -18,6 +18,7 @@ local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
 local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
 local TeleportAction         = require "cluetrainer/solving/common/TeleportAction"
+local clue_targets           = require "cluetrainer/solving/common/clue_targets"
 
 ---@param step Step
 ---@return Solution?
@@ -68,44 +69,58 @@ local function create_step_highlights(step)
 
       table.insert(highlights, PathMesh.digHighlight(spot))
     elseif solution.type == "talkto" then
-      table.insert(highlights, zyklib.highlights.NpcHighlight.new(function(npc)
-          return npc.displayName == solution.npc
-        end,
-        function(npc)
-          return {
-            shapeData = cube,
-            translation = npc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) - Vector3.new(0.1) * npc.aabb.dimensions,
-            scale = Vector3.new(1.2) * npc.aabb.dimensions,
-            colour = 0xFFFF00A0
-          }
-        end
-      ))
+      local target = clue_targets.for_clue(step.id)
+      local areas = clue_targets.talkto_areas(solution.spots)
+
+      -- By id only near the spots: some ids are used at more places, such as Hazelmere's in White Knights' Castle.
+      if target then
+        table.insert(highlights, zyklib.highlights.NpcHighlight.new(function(npc)
+            return clue_targets.matches_id(npc, target) and clue_targets.in_areas(npc.coordGrid, areas)
+          end,
+          function(npc)
+            return {
+              shapeData = cube,
+              translation = npc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) - Vector3.new(0.1) * npc.aabb.dimensions,
+              scale = Vector3.new(1.2) * npc.aabb.dimensions,
+              colour = 0xFFFF00A0
+            }
+          end
+        ))
+      end
     elseif solution.type == "search" then
       local spot = solution
           .spot --[[@as TileRectangle]] -- LuaCats does not narrow the type of step.solution to SearchSolution, so we need to cast this
 
       local LOC_SCALE = 2
 
-      table.insert(highlights, zyklib.highlights.LocHighlight.new({
-          name = solution.entity,
-          coordGrid = coordinate_adaptor.tile_coordinates_to_coord_grid({
-            x = spot.topleft.x,
-            y = spot.botright.y,
-            level =
-                spot.level
-          }),
-          range = 2
-        },
-        function(loc)
-          return {
-            shapeData = cube,
-            translation = loc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) -
-                Vector3.new((LOC_SCALE - 1) / 2) * loc.aabb.dimensions,
-            scale = Vector3.new(LOC_SCALE) * loc.aabb.dimensions,
-            colour = 0x00FFFFA0
-          }
-        end
-      ))
+      local target = clue_targets.for_clue(step.id)
+      local areas = clue_targets.search_areas(spot)
+      -- 1 extra tile, so objects of 2 by 2 tiles that only partly cover the spot are in the query.
+      local around = clue_targets.query_around(areas[1], 1)
+
+      -- By id only on the spot: object ids are shared by every copy of that object, such as all crates of one kind.
+      if target then
+        table.insert(highlights, zyklib.highlights.LocHighlight.new({
+            coordGrid = coordinate_adaptor.tile_coordinates_to_coord_grid({ x = around.x, y = around.y, level = spot.level }),
+            range = around.range,
+            func = function(loc)
+              return clue_targets.matches_id(loc, target) and clue_targets.loc_in_areas(loc, areas)
+            end
+          },
+          function(loc)
+            -- Width and length at most the object's own tiles (512 units each), so an object placed diagonally,
+            -- such as the crates of clues 84, 153 and 158, isn't drawn larger than the same object placed straight.
+            local d = loc.aabb.dimensions
+            local size = Vector3.new(math.min(d.x, loc.width * 512), d.y, math.min(d.z, loc.length * 512))
+            return {
+              shapeData = cube,
+              translation = loc.aabb.centre - Vector3.new(LOC_SCALE / 2) * size,
+              scale = Vector3.new(LOC_SCALE) * size,
+              colour = 0x00FFFFA0
+            }
+          end
+        ))
+      end
     end
   end
 

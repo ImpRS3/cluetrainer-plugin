@@ -1,8 +1,8 @@
 -- navigator.lua
 local PathMesh           = require "cluetrainer/model/PathMesh"
-local TileArea           = require "cluetrainer/model/shared/TileArea"
 local TeleportSpot       = require "cluetrainer/model/shared/TeleportSpot"
 local coordinate_adaptor = require "cluetrainer/model/shared/coordinate_adaptor"
+local PathProgress       = require "cluetrainer/solving/common/path_progress"
 local array              = require "zyklib/array"
 local zyklib             = require "zyklib"
 
@@ -13,35 +13,11 @@ local zyklib             = require "zyklib"
 ---@class Navigator : zyklib.disposable.IDisposable
 ---@field path PathStepEntity[]
 ---@field logic_handler zyklib.reactive.EventHandler
+---@field private progress ct.PathProgress?
 ---@field private onNextTeleportChanged fun(teleport: cluetrainer.TeleportSpot?)?
----@field private next_teleport cluetrainer.TeleportSpot?
 ---@field private next_teleport_index integer?
----@field private inside_teleport_target boolean?
 local Navigator   = {}
 Navigator.__index = Navigator
-
-local function isCompleted(step)
-  ---@type CoordGrid
-  local true_tile = Player.GetEntity().routeEnd
-
-  ---@type TileCoordinates
-  local tile = { x = true_tile.x, y = true_tile.z, level = true_tile.level }
-
-  local function distance(a, b)
-    return math.abs(a.x - b.x) + math.abs(a.y - b.y)
-  end
-
-  if step.type == "ability" then
-    return distance(step.from, tile) > distance(step.to, tile)
-  elseif step.type == "run" then
-    local start = step.waypoints[1]
-    local finish = step.waypoints[#step.waypoints]
-
-    return distance(start, tile) >= distance(start, finish) and distance(start, tile) > distance(finish, tile)
-  end
-
-  return false
-end
 
 ---@param onNextTeleportChanged (fun(teleport: cluetrainer.TeleportSpot?))?
 ---@return Navigator
@@ -59,51 +35,42 @@ function Navigator.new(onNextTeleportChanged)
   return self
 end
 
-function Navigator:update_progress()
-  for _, value in ipairs(self.path) do
-    local completed = isCompleted(value.step)
+---@private
+---Draws the steps up to the progress faded and behind the scenery, the rest bright and on top.
+function Navigator:_paint()
+  local done = self.progress and self.progress.done or 0
+  for i, value in ipairs(self.path) do
+    local completed = i <= done
 
     value.geometry:setColour(completed and 0x80808080 or 0xFFFFFFFF)
     value.geometry:setIgnoreDepth(not completed)
   end
+end
 
-  if self.next_teleport then
-    local tile = coordinate_adaptor.playerTile()
-    if tile then
-      local inside = TileArea.contains(self.next_teleport:target_area(), tile)
-      if inside and self.inside_teleport_target == false then
-        local index = assert(self.next_teleport_index)
-        self:_findNextTeleport(index + 1, tile)
-      else
-        self.inside_teleport_target = inside
-      end
-    end
+function Navigator:update_progress()
+  if self.progress and self.progress:update(coordinate_adaptor.playerTile()) then
+    self:_paint()
+    self:_announceTeleport(false)
   end
 end
 
 ---@private
----@param start integer
----@param tile TileCoordinates?
-function Navigator:_findNextTeleport(start, tile)
-  local teleport, index
-  for i = start, #self.path do
-    local step = self.path[i].step
-    if step.type == "teleport" then
-      teleport = TeleportSpot.resolve(step.id)
-      assert(teleport, "Cannot resolve teleport " .. tostring(step.id.group) .. "/" .. tostring(step.id.spot))
-      index = i
-      break
-    end
-  end
+---Reports the first teleport after the progress, so the teleport row and the faded steps always agree.
+---@param force boolean Report even if it didn't change (a new path)
+function Navigator:_announceTeleport(force)
+  if not self.onNextTeleportChanged then return end
 
-  self.next_teleport, self.next_teleport_index = teleport, index
-  -- Starting inside a target is not an arrival; wait for the player to leave and enter it.
-  self.inside_teleport_target = nil
-  if teleport and tile then
-    self.inside_teleport_target = TileArea.contains(teleport:target_area(), tile)
+  local index = self.progress and self.progress:nextTeleport()
+  if index == self.next_teleport_index and not force then return end
+  self.next_teleport_index = index
+
+  local teleport = nil
+  if index then
+    local id = self.path[index].step.id
+    teleport = TeleportSpot.resolve(id)
+    assert(teleport, "Cannot resolve teleport " .. tostring(id.group) .. "/" .. tostring(id.spot))
   end
-  local callback = assert(self.onNextTeleportChanged)
-  callback(teleport)
+  self.onNextTeleportChanged(teleport)
 end
 
 --- Set the current path to the given path segments.
@@ -122,11 +89,10 @@ function Navigator:set(path)
           :activate()
     }
   end)
-
-  if self.onNextTeleportChanged then
-    self:_findNextTeleport(1, coordinate_adaptor.playerTile())
-  end
-  self:update_progress()
+  self.progress = PathProgress.new(path)
+  self.progress:update(coordinate_adaptor.playerTile())
+  self:_paint()
+  self:_announceTeleport(true)
 end
 
 function Navigator:clear()
@@ -135,8 +101,9 @@ function Navigator:clear()
   end
 
   self.path = {}
-  local had_teleport = self.next_teleport ~= nil
-  self.next_teleport, self.next_teleport_index, self.inside_teleport_target = nil, nil, nil
+  self.progress = nil
+  local had_teleport = self.next_teleport_index ~= nil
+  self.next_teleport_index = nil
   if had_teleport and self.onNextTeleportChanged then self.onNextTeleportChanged(nil) end
 end
 
