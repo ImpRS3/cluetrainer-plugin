@@ -8,13 +8,20 @@ local STATE_ALPHA = {
 local ROW_HEIGHT = 22
 local LINE_HEIGHT = 20
 
----The height of a row for the text, which has one line per `<br>`-separated part. Rows can't change height after
----construction, so this is only evaluated for the initial text.
+---The height of a row for the text wrapped at `width`, so long text gets extra lines instead of being cut off. Counts
+---the `<br>`-separated parts too, so a font that can't measure still gets a line per part. Rows can't change height
+---after construction, so this is only evaluated for the initial text.
 ---@param content string
+---@param width number
+---@param font? FontType Defaults to the body font PrettyUI draws text in
 ---@return integer
-local function rowHeight(content)
+local function rowHeight(content, width, font)
   local _, breaks = content:gsub("<br>", "")
-  return math.max(ROW_HEIGHT, (breaks + 1) * LINE_HEIGHT)
+  local measured, wrapped = pcall(function()
+    return (font or config.Font.MUSEO_SANS_15PT_REGULAR):GetStringLineCount(content, width, false, false, false)
+  end)
+  local lines = math.max(breaks + 1, measured and wrapped or 0)
+  return math.max(ROW_HEIGHT, lines * LINE_HEIGHT)
 end
 ---Interface for a single line in the clue state panel.
 ---State is always stored in the object and only applied to components once they have been constructed.
@@ -95,7 +102,7 @@ function Text:_construct(view)
   self.text = view:AddText({
     text = self.content,
     x = 0,
-    height = rowHeight(self.content),
+    height = rowHeight(self.content, view.contentWidth),
     marginBottom = 0,
   })
   self.text.clickthrough = true
@@ -116,5 +123,6 @@ function Text:_apply()
 end
 
 ClueStateAction.Text = Text
+ClueStateAction.rowHeight = rowHeight
 
 return ClueStateAction
