@@ -117,7 +117,6 @@ function ClueStateInterface.new()
     xAnchor = 1.0,
     offsetY = (ROW_HEIGHT - RESET_BUTTON_SIZE) // 2,
     size = RESET_BUTTON_SIZE,
-    tooltip = "Close",
     rowBackgroundGroup = HEADER_GROUP,
   })
 
@@ -129,7 +128,6 @@ function ClueStateInterface.new()
     xAnchor = 1.0,
     offsetY = (ROW_HEIGHT - RESET_BUTTON_SIZE) // 2,
     size = RESET_BUTTON_SIZE,
-    tooltip = "Close",
     rowBackgroundGroup = HEADER_GROUP,
   })
 

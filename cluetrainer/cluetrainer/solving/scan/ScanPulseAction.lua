@@ -6,6 +6,7 @@ local TEXT_ROW_HEIGHT = 28
 local BUTTON_ROW_HEIGHT = 22
 local INFO_SIZE = 20
 local INFO_GAP = 4
+local PULSE_BUTTON_COUNT = 3
 local PULSE_BUTTON_GAP = 4
 
 ---Tint each background sprite, including both surfaces of a paired panel button.
@@ -29,18 +30,20 @@ end
 ---@field content string
 ---@field tooltip string
 ---@field enabled boolean
----@field private on_pulse fun(pulse: 1|2)
+---@field private on_pulse fun(pulse: 1|2|"undo")
+---@field undo_enabled boolean
 ---@field private text ui.Text?
 ---@field private info PrettyUI.SpriteButton?
 ---@field private single PrettyUI.SimpleButton?
 ---@field private double PrettyUI.SimpleButton?
+---@field private undo PrettyUI.SimpleButton?
 local ScanPulse = setmetatable({}, { __index = ClueStateAction })
 ScanPulse.__index = ScanPulse
 
 ---Creates an enabled scan-pulse action.
 ---@param content string
 ---@param tooltip string
----@param on_pulse fun(pulse: 1|2) Called with 1 for single and 2 for double.
+---@param on_pulse fun(pulse: 1|2|"undo") Called with 1, 2, or "undo".
 ---@return ct.interfaces.cluestate.ScanPulseClueStateAction
 function ScanPulse.new(content, tooltip, on_pulse)
   local self = setmetatable({}, ScanPulse)
@@ -48,6 +51,7 @@ function ScanPulse.new(content, tooltip, on_pulse)
   self.content = content
   self.tooltip = tooltip
   self.enabled = true
+  self.undo_enabled = false
   self.on_pulse = on_pulse
   return self
 end
@@ -76,11 +80,21 @@ function ScanPulse:setEnabled(enabled)
   return self
 end
 
+---@param enabled boolean
+---@return ct.interfaces.cluestate.ScanPulseClueStateAction
+function ScanPulse:setUndoEnabled(enabled)
+  self.undo_enabled = enabled
+  if self.constructed then self:_apply() end
+  return self
+end
+
 ---@protected
 ---@param view PrettyUI.View
 function ScanPulse:_construct(view)
-  local single_width = math.floor((view.contentWidth - PULSE_BUTTON_GAP) / 2)
-  local double_width = view.contentWidth - PULSE_BUTTON_GAP - single_width
+  local single_width = math.floor((view.contentWidth - (PULSE_BUTTON_COUNT - 1) * PULSE_BUTTON_GAP)
+      / PULSE_BUTTON_COUNT)
+  local double_width = single_width
+  local undo_width = view.contentWidth - 2 * PULSE_BUTTON_GAP - single_width - double_width
   self.text = view:AddText({
     text = self.content,
     x = 0,
@@ -115,9 +129,20 @@ function ScanPulse:_construct(view)
     if self.enabled then self.on_pulse(2) end
   end, {
     inline = true,
-    x = -double_width,
-    xAnchor = 1.0,
+    x = -double_width / 2,
+    xAnchor = 0.5,
     width = double_width,
+    height = BUTTON_ROW_HEIGHT,
+    marginBottom = 0,
+    rowBackgroundGroup = self,
+  })
+  self.undo = view:AddSimpleButton("Undo", function()
+    if self.undo_enabled then self.on_pulse("undo") end
+  end, {
+    inline = true,
+    x = -undo_width,
+    xAnchor = 1.0,
+    width = undo_width,
     height = BUTTON_ROW_HEIGHT,
     marginBottom = 0,
     rowBackgroundGroup = self,
@@ -131,15 +156,17 @@ function ScanPulse:_apply()
   self.info:SetTooltip(self.tooltip)
   self.single:SetDisabled(not self.enabled)
   self.double:SetDisabled(not self.enabled)
+  self.undo:SetDisabled(not self.undo_enabled)
   tintButton(self.single, self.enabled and scan_display.PULSE_COLOURS[1] or 0xFFFFFFFF)
   tintButton(self.double, self.enabled and scan_display.PULSE_COLOURS[2] or 0xFFFFFFFF)
+  tintButton(self.undo, 0xFFFFFFFF)
 end
 
 function ScanPulse:destroy()
-  for _, component in ipairs({ self.double, self.single, self.info, self.text }) do
+  for _, component in ipairs({ self.undo, self.double, self.single, self.info, self.text }) do
     component:Destroy()
   end
-  self.double, self.single, self.info, self.text = nil, nil, nil, nil
+  self.undo, self.double, self.single, self.info, self.text = nil, nil, nil, nil, nil
   self.constructed = false
 end
 

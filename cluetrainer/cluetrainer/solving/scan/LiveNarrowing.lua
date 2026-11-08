@@ -29,6 +29,7 @@ local KEEP_SAMPLE_TICKS = PRESS_PULSES * PULSE_TICKS + TILES_BEFORE + TILES_AFTE
 ---@field to integer Last logic tick, the reading is applied once it has passed
 ---@field reading ct.LiveNarrowing.Reading
 ---@field source "panel" | integer The panel, or the number of the key press that told it
+---@field provisional_tile TileCoordinates? The player's tile when a manual pulse was entered
 
 ---@class ct.LiveNarrowing
 ---@field private spots TileCoordinates[]
@@ -37,6 +38,7 @@ local KEEP_SAMPLE_TICKS = PRESS_PULSES * PULSE_TICKS + TILES_BEFORE + TILES_AFTE
 ---@field private presses integer
 ---@field private samples {tick: integer, tile: TileCoordinates}[] Every tile change, oldest first
 ---@field private pending ct.LiveNarrowing.Pending[]
+---@field private tick integer
 ---@field private text string? The panel text as last seen, nil while the panel is hidden
 ---@field private found boolean
 ---@field private reading ct.LiveNarrowing.Reading? The reading of the current text
@@ -57,6 +59,7 @@ function LiveNarrowing.new(spots, clue_range)
     presses = 0,
     samples = {},
     pending = {},
+    tick = 0,
     found = false,
     paced = false,
   }, LiveNarrowing)
@@ -68,17 +71,17 @@ function LiveNarrowing:range()
   return self.known_range
 end
 
+---Whether the current panel reading can be disambiguated with a manually entered single or double pulse.
+---@return boolean
+function LiveNarrowing:canPress()
+  return self.reading ~= nil
+      and (self.reading.state == "too_far" or self.reading.state == "different_level")
+end
+
 --- Whether a triple's paces narrowed the spots: those left then hold wherever the route went.
 ---@return boolean
 function LiveNarrowing:hasPaces()
   return self.paced
-end
-
---- The given spots without the ones the readings ruled out.
----@param spots TileCoordinates[]
----@return TileCoordinates[]
-function LiveNarrowing:filter(spots)
-  return array.filter(spots, function(spot) return not self.ruled_out[tiles.key(spot)] end)
 end
 
 --- The scan range as the panel showed it; until then the clue's range both without and with meerkats.
@@ -135,6 +138,29 @@ end
 local function fits(reading, spot, tile)
   if reading.state == "found" then return tiles.same(spot, tile) end
   return array.exists(reading.ranges, function(range) return fitsRange(reading, range, spot, tile) end)
+end
+
+--- The given spots without the ones the readings ruled out.
+---@param spots TileCoordinates[]
+---@return TileCoordinates[]
+function LiveNarrowing:filter(spots)
+  local remaining = array.filter(spots, function(spot) return not self.ruled_out[tiles.key(spot)] end)
+
+  -- Apply known tiles from manual pulses immediately; later samples can refine this provisional result.
+  for _, pending in ipairs(self.pending) do
+    if pending.source ~= "panel" then
+      local stood_on = pending.provisional_tile and { pending.provisional_tile }
+          or self:tilesBetween(pending.from, math.min(pending.to, self.tick))
+      if #stood_on > 0 then
+        local fitting = array.filter(remaining, function(spot)
+          return array.exists(stood_on, function(tile) return fits(pending.reading, spot, tile) end)
+        end)
+        if #fitting > 0 then remaining = fitting end
+      end
+    end
+  end
+
+  return remaining
 end
 
 --- The tiles the player stood on between two logic ticks, including the one at `from`.
@@ -224,10 +250,11 @@ end
 --- so a press after walking on or teleporting doesn't lose the right spot.
 ---@param tick integer
 ---@param pulse 1 | 2
+---@param tile TileCoordinates? The player's tile when the pulse was entered
 ---@return integer? press To undo it with, nil when the panel doesn't show single or double now
-function LiveNarrowing:press(tick, pulse)
+function LiveNarrowing:press(tick, pulse, tile)
   local reading = self.reading
-  if reading == nil or (reading.state ~= "too_far" and reading.state ~= "different_level") then return nil end
+  if not self:canPress() then return nil end
 
   self.presses = self.presses + 1
   table.insert(self.pending, {
@@ -235,6 +262,7 @@ function LiveNarrowing:press(tick, pulse)
     to = tick + TILES_AFTER,
     reading = { state = reading.state, ranges = reading.ranges, pulse = pulse },
     source = self.presses,
+    provisional_tile = tile,
   })
   return self.presses
 end
@@ -328,9 +356,25 @@ end
 ---@param capture ct.ScanPanel.Capture?
 ---@return boolean changed Whether spots were ruled out
 function LiveNarrowing:sample(tick, tile, capture)
+  local previous
+  for _, pending in ipairs(self.pending) do
+    if pending.source ~= "panel" then
+      previous = self:filter(self.spots)
+      break
+    end
+  end
+
+  self.tick = tick
   self:trackTile(tick, tile)
   self:trackPanel(tick, capture)
-  return self:applyDue(tick)
+  local changed = self:applyDue(tick)
+  if previous == nil then return changed end
+
+  local remaining = self:filter(self.spots)
+  return changed or #previous ~= #remaining
+      or not array.forAll(previous, function(spot)
+        return array.exists(remaining, function(candidate) return tiles.same(spot, candidate) end)
+      end)
 end
 
 return LiveNarrowing
