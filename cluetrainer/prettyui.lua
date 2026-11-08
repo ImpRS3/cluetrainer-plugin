@@ -46,7 +46,8 @@ local CategoryGroups = require("prettyui/core/category_groups")
 local Components = require("prettyui/core/components")
 
 local resources = Plugin.resources
-TextField.SetDefaultSprite(resources and (resources.input_default or resources["input_default.png"]))
+TextField.SetDefaultSprite(resources and
+((resources.prettyui and resources.prettyui.input_default) or resources["prettyui/input_default.png"]))
 
 local PrettyUI = {
     AchievementPopup = require("prettyui/achievement_popup"),
@@ -91,7 +92,7 @@ local PrettyUI = {
     BuffBar = BuffBar,
 }
 
-PrettyUI.version = "1.3.0-beta.3"
+PrettyUI.version = "1.3.0"
 
 PrettyMiniMenu.Start()
 
