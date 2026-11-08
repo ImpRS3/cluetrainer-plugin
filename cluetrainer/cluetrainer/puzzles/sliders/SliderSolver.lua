@@ -42,10 +42,13 @@ slider_solver.settings = {
 ---@field file_count integer
 
 
+--- I am sorry for what you are about to read. This function downloads 170MB of data, and needs to cache it locally to avoid DDOSing cloudflare.
+--- This really pushes the limits of the API, and various performance-intensive workarounds are needed.
 ---@return ct.sliders.PdbDownloadState
 local function getPDB()
   --- Compile time toggle to enable or disable PDB caching
-  local ENABLE_PDB_CACHE = false
+  local ENABLE_PDB_CACHE = true
+  local CACHE_SUBCHUNK_SIZE = 130000
 
   local download = {
     progress = 0,
@@ -87,7 +90,8 @@ local function getPDB()
       local file_name = desc.file_pattern:gsub("%*", string.format("%03d", #chunks), 1)
 
       local chunk_url = BASE_URL .. file_name
-      local cache_key = "sliderpdb/" .. file_name
+      local cache_key = "sliderpdb/" .. file_name .. "/subchunks-v1/"
+      local length_key = cache_key .. "length"
 
       local function accept_chunk(data)
         table.insert(chunks, data)
@@ -95,19 +99,32 @@ local function getPDB()
 
         --- API WORKAROUND: The following is a bug workaround. Recursing directly triggers a client crash, hence we delay by a tick
         zyklib.game_events.native.Logic:once(function(tick)
-          log("Tick " .. tick.logicTick)
           recur(desc, chunks)
         end)
       end
 
       if ENABLE_PDB_CACHE then
-        local cached = PersistentDB:GetString(cache_key)
-        if cached ~= nil then
-          if type(cached) ~= "string" then
-            download.data:reject("Invalid cached chunk " .. #chunks)
+        --- API WORKAROUND: PersistentDB only allows 131070 characters per string, so we need to split the data into subchunks of size CACHE_SUBCHUNK_SIZE.
+
+        local length = PersistentDB:GetInt(length_key)
+        if length ~= nil then
+          if type(length) ~= "number" or length < 0 or length % 1 ~= 0 then
+            download.data:reject("Invalid cached length for chunk " .. #chunks)
             return
           end
-          accept_chunk(unescape_null_bytes(cached))
+
+          local parts = {}
+          local part_count = math.ceil(length / CACHE_SUBCHUNK_SIZE)
+          for index = 1, part_count do
+            local part = PersistentDB:GetString(cache_key .. index)
+            local expected_length = math.min(CACHE_SUBCHUNK_SIZE, length - (index - 1) * CACHE_SUBCHUNK_SIZE)
+            if type(part) ~= "string" or #part ~= expected_length then
+              download.data:reject("Invalid cached subchunk " .. index .. " of chunk " .. #chunks)
+              return
+            end
+            parts[index] = part
+          end
+          accept_chunk(unescape_null_bytes(table.concat(parts)))
           return
         end
       end
@@ -120,9 +137,14 @@ local function getPDB()
             end
 
             if ENABLE_PDB_CACHE then
-              --- FIXME: This DB write seems to always silently fail
               local escaped = escape_null_bytes(data)
-              PersistentDB:SetString(cache_key, escaped)
+              for offset = 1, #escaped, CACHE_SUBCHUNK_SIZE do
+                local index = (offset - 1) // CACHE_SUBCHUNK_SIZE + 1
+                local part = escaped:sub(offset, offset + CACHE_SUBCHUNK_SIZE - 1)
+                local part_key = cache_key .. index
+                PersistentDB:SetString(part_key, part)
+              end
+              PersistentDB:SetInt(length_key, #escaped)
             end
 
             accept_chunk(data)
@@ -219,7 +241,7 @@ ActivePuzzle.__index = ActivePuzzle
 ---@param state ct.sliders.SliderState The current puzzle state
 function ActivePuzzle:drawSolution(state)
   assert(self.state.state == "executing")
-  
+
   local arrows_inverted = var.VarPlayer.SLIDE_PUZZLE_KEYBOARD_INVERT.value ~= 0
 
   local canvas = self.solution_canvas
@@ -779,8 +801,6 @@ local initialized = false
 
 --- Activates the solver whenever it is enabled in the settings and deactivates it otherwise. Only the first call has an effect.
 function slider_solver.init()
-  log("initializing slider")
-
   if initialized then return end
   initialized = true
 

@@ -35,9 +35,9 @@ PdbSolver.__index = PdbSolver
 ---@param chain ct.sliders.pdb.RegionGraph
 ---@return ct.sliders.pdb.PdbSolv
 function PdbSolver.new(start_state, chain)
+  ---@class ct.sliders.pdb.PdbSolv : ct.sliders.SliderSolvingTask
   local self = SliderSolvingTask.new(start_state)
   setmetatable(self, PdbSolver)
-  ---@cast self ct.sliders.pdb.PdbSolv
 
   self.chain = chain
   return self
