@@ -3,33 +3,35 @@
 -- the route to the next scan spot and moves on through the tree from what the scan panel shows, or from Shift+1/2.
 -- Every pulse also rules out spots on its own, from the panel and the player's tile; once the spots left all lie under
 -- one child, the tree moves on to it.
-local coordinate_adaptor = require "cluetrainer/model/shared/coordinate_adaptor"
-local TileArea           = require "cluetrainer/model/shared/TileArea"
-local Path               = require "cluetrainer/model/shared/path"
-local Navigator          = require "cluetrainer/solving/common/navigator"
-local ActiveClueSolver   = require "cluetrainer/solving/common/ActiveClueSolver"
-local ClueStateAction    = require "cluetrainer/interfaces/cluestate/ClueStateAction"
-local TeleportAction     = require "cluetrainer/solving/common/TeleportAction"
-local scan_panel         = require "cluetrainer/solving/scan/scan_panel"
-local scan_tree          = require "cluetrainer/solving/scan/scan_tree"
-local scan_display       = require "cluetrainer/solving/scan/scan_display"
-local ScanMap            = require "cluetrainer/solving/scan/ScanMap"
-local ScanGround         = require "cluetrainer/solving/scan/ScanGround"
-local LiveNarrowing      = require "cluetrainer/solving/scan/LiveNarrowing"
-local tiles              = require "cluetrainer/model/shared/tiles"
-local array              = require "zyklib/array"
-local zyklib             = require "zyklib"
+local coordinate_adaptor         = require "cluetrainer/model/shared/coordinate_adaptor"
+local TileArea                   = require "cluetrainer/model/shared/TileArea"
+local Path                       = require "cluetrainer/model/shared/path"
+local Navigator                  = require "cluetrainer/solving/common/navigator"
+local ActiveClueSolver           = require "cluetrainer/solving/common/ActiveClueSolver"
+local ClueStateAction            = require "cluetrainer/interfaces/cluestate/ClueStateAction"
+local RichText                   = require "cluetrainer/util/RichText"
+local TeleportAction             = require "cluetrainer/solving/common/TeleportAction"
+local scan_panel                 = require "cluetrainer/solving/scan/scan_panel"
+local scan_tree                  = require "cluetrainer/solving/scan/scan_tree"
+local scan_display               = require "cluetrainer/solving/scan/scan_display"
+local ScanPulseAction            = require "cluetrainer/solving/scan/ScanPulseAction"
+local ScanMap                    = require "cluetrainer/solving/scan/ScanMap"
+local ScanGround                 = require "cluetrainer/solving/scan/ScanGround"
+local LiveNarrowing              = require "cluetrainer/solving/scan/LiveNarrowing"
+local tiles                      = require "cluetrainer/model/shared/tiles"
+local array                      = require "zyklib/array"
+local zyklib                     = require "zyklib"
 
 -- Read the panel 10 times per second (logic ticks run at 50 per second), enough for a text that changes once per pulse.
-local POLL_EVERY_TICKS   = 5
+local POLL_EVERY_TICKS           = 5
 -- Use a reading at the scan spot once the player stood there for a whole pulse or the panel changed meanwhile, so the
 -- pulse was taken there.
-local ARRIVAL_WAIT_TICKS = scan_panel.PULSE_TICKS + POLL_EVERY_TICKS
+local ARRIVAL_WAIT_TICKS         = scan_panel.PULSE_TICKS + POLL_EVERY_TICKS
 -- End the clue one poll after the panel closed, to skip a one-tick gap.
 local PANEL_CLOSED_TIMEOUT_TICKS = POLL_EVERY_TICKS
 -- End the clue once "Scanning..." shows without the area this long: destroyed. After "Start scanning" again the area
 -- shows within a pulse, so the clue keeps going.
-local DESTROYED_TIMEOUT_TICKS = 2 * scan_panel.PULSE_TICKS
+local DESTROYED_TIMEOUT_TICKS    = 2 * scan_panel.PULSE_TICKS
 
 ---@alias ct.ScanStatus
 ---| "travel" # On the way to the scan spot
@@ -46,11 +48,14 @@ local DESTROYED_TIMEOUT_TICKS = 2 * scan_panel.PULSE_TICKS
 ---@class ct.ActiveScanClue : ct.ActiveClueSolver
 ---@field clue Scan
 ---@field teleport_action ct.solving.TeleportAction
+---@field private pulse_action ct.interfaces.cluestate.ScanPulseClueStateAction
+---@field private candidates_action ct.interfaces.cluestate.TextClueStateAction
+---@field private meerkat_warning_action ct.interfaces.cluestate.TextClueStateAction
 ---@field private method Method?
 ---@field tree ScanTree.ScanTree? Nil while there is no scan tree method
 ---@field node ScanTree.ScanTreeNode
 ---@field area TileArea? Where the player scans for the current node
----@field history {node: ScanTree.ScanTreeNode, area: TileArea?, press: integer?, press_only: boolean?}[] For Shift+0
+---@field history {node: ScanTree.ScanTreeNode?, area: TileArea?, press: integer?, press_only: boolean?}[] For Shift+0 and undo
 ---@field private tick integer The current logic tick
 ---@field private candidates table<ScanTree.ScanTreeNode, TileCoordinates[]> The dig spots still possible per node
 ---@field private live ct.LiveNarrowing
@@ -68,10 +73,8 @@ local DESTROYED_TIMEOUT_TICKS = 2 * scan_panel.PULSE_TICKS
 ---@field private different_level boolean Whether the last reading was "different level", for Shift+1/2
 ---@field private status ct.ScanStatus
 ---@field private status_children ScanTree.Child[]
----@field private notice string?
----@field private rendered_signature string?
-local ScanClueSolver = setmetatable({}, { __index = ActiveClueSolver })
-ScanClueSolver.__index = ScanClueSolver
+local ScanClueSolver             = setmetatable({}, { __index = ActiveClueSolver })
+ScanClueSolver.__index           = ScanClueSolver
 
 ---@param clue Scan
 ---@param clue_state ct.ClueStateInterface
@@ -86,15 +89,24 @@ function ScanClueSolver.new(clue, clue_state)
   self.area_seen = false
 
   self.teleport_action = TeleportAction.new(nil)
+  self.pulse_action = ScanPulseAction.new("", "", function(pulse)
+    if pulse == "undo" then
+      self:back()
+    else
+      self:press(pulse)
+    end
+  end)
+  self.candidates_action = ClueStateAction.Text.new("")
+  self.meerkat_warning_action = ClueStateAction.Text.new("")
 
   self.disposable_group:add({ dispose = function() self:disposeTree() end })
 
   self.disposable_group:add(zyklib.game_events.native.Logic:subscribe(function(payload)
-    if self.tree == nil then return end
-
     local tick, tile = payload.logicTick, coordinate_adaptor.playerTile()
-    local capture, reading = self:ownPanel()
     self.tick = tick
+    self:updatePulseAction(tile)
+
+    local capture, reading = self:ownPanel()
     -- Every tick, so the tile is the one of the pulse.
     if self.live:sample(tick, tile, capture) then self:refresh() end
     if tick % POLL_EVERY_TICKS == 0 then self:poll(tick, capture, reading, tile) end
@@ -102,7 +114,6 @@ function ScanClueSolver.new(clue, clue_state)
 
   -- On key down, to read Shift while it is still held.
   self.disposable_group:add(zyklib.game_events.native.KeyDown:subscribe(function(event)
-    if self.tree == nil then return end
     if event.isRepeat or event.modifiers & ModifierKey.SHIFT == 0 then return end
 
     if event.gameKey == GameKey._1 then
@@ -144,27 +155,33 @@ function ScanClueSolver:setMethod(method)
 
   self.history = {}
   self.remaining = {}
-  self.notice = nil
   self.preview_signature = nil
-  self.rendered_signature = nil
   self.arrived_at = nil
   self.different_level = false
   self.status = "travel"
   self.status_children = {}
 
-  if method == nil or method.type ~= "scantree" then return self:buildActions() end
+  if method ~= nil and method.type == "scantree" then
+    ---@cast method Method.ScanTree
+    self.tree = method.tree
+    self.candidates = scan_tree.candidates(method.tree)
+  end
 
-  ---@cast method Method.ScanTree
-  self.tree = method.tree
-  self.candidates = scan_tree.candidates(method.tree)
-  self.navigator = Navigator.new(function(teleport)
-    self.teleport_action:setTeleport(teleport)
-  end)
-  self.map = ScanMap.new(method.tree)
+  local spots = self.tree and self.tree.ordered_spots or self.clue.spots
+  self.live = LiveNarrowing.new(spots, self.clue.range)
+  self.remaining = spots
+  self.map = ScanMap.new(spots)
   self.ground = ScanGround.new()
-  self.live = LiveNarrowing.new(method.tree.ordered_spots, self.clue.range)
 
-  self:enter(self.tree.root, scan_tree.scanArea(self.tree.root, nil))
+  if self.tree then
+    self.navigator = Navigator.new(function(teleport)
+      self.teleport_action:setTeleport(teleport)
+    end)
+    self:enter(self.tree.root, scan_tree.scanArea(self.tree.root, nil))
+  else
+    self.map:fitSpots()
+    self:refresh()
+  end
 end
 
 ---@private
@@ -210,6 +227,7 @@ end
 ---@return TileCoordinates[]
 ---@return boolean off_route Whether the spots lie off the route
 function ScanClueSolver:remainingSpots()
+  if self.tree == nil then return self.live:filter(self.clue.spots), false end
   local spots = self.candidates[self.node]
   if self.status == "triple" then
     spots = array.map(self.status_children, function(child) return child.key.spot end)
@@ -229,6 +247,14 @@ end
 --- pick that child, so its route follows; not after going back, as the player picks then.
 ---@private
 function ScanClueSolver:refresh()
+  if self.tree == nil then
+    self.remaining = self.live:filter(self.clue.spots)
+    self.map:setRemaining(self.remaining)
+    self.ground:setSpots(self.remaining)
+    self:updatePreview()
+    return self:buildActions()
+  end
+
   local off_route
   self.remaining, off_route = self:remainingSpots()
   self.map:setRemaining(self.remaining)
@@ -305,7 +331,6 @@ end
 ---@param press integer? The key press that also narrowed the spots, undone with Shift+0
 function ScanClueSolver:step(child, how, press)
   table.insert(self.history, { node = self.node, area = self.area, press = press })
-  self.notice = scan_display.pulseName(child.key) .. " (" .. how .. ")"
   self:enter(child.value, scan_tree.scanArea(child.value, self.area))
 end
 
@@ -314,7 +339,14 @@ end
 ---@private
 ---@param pulse 1 | 2 | 3
 function ScanClueSolver:press(pulse)
-  local press = pulse < 3 and self.live:press(self.tick, pulse --[[@as 1 | 2]]) or nil
+  local press = pulse < 3 and self.live:press(
+    self.tick, pulse --[[@as 1 | 2]], coordinate_adaptor.playerTile()) or nil
+  if self.tree == nil then
+    if press == nil then return end
+    table.insert(self.history, { press = press, press_only = true })
+    return self:refresh()
+  end
+
   local status = self.status
   local at_scan_area = status == "wait" or status == "choose" or status == "manual" or status == "mismatch"
   local child = at_scan_area and scan_tree.childForPulse(self.node, pulse, self.different_level) or nil
@@ -323,9 +355,7 @@ function ScanClueSolver:press(pulse)
 
   if press ~= nil then
     table.insert(self.history, { node = self.node, area = self.area, press = press, press_only = true })
-    self.notice = scan_display.pulseName({ pulse = pulse }) .. " (Shift+" .. pulse .. ", spots only)"
-  elseif pulse < 3 then
-    self.notice = "Shift+" .. pulse .. ": wait for a single or double pulse"
+    return self:refresh()
   end
   self:buildActions()
 end
@@ -337,7 +367,6 @@ function ScanClueSolver:back()
   if previous == nil then return end
 
   if previous.press then self.live:undo(previous.press) end
-  self.notice = "Went back"
   if previous.press_only then return self:refresh() end
 
   -- The same pulse would take the same step again, so the player chooses this time.
@@ -385,11 +414,20 @@ end
 ---@param tile TileCoordinates?
 function ScanClueSolver:poll(tick, capture, reading, tile)
   if self:isGone(tick, reading) then return self:finish(self.clue_state) end
+  if self.tree == nil then
+    local range = self.live:range() or self.clue.range
+    self.ground:colourByPulse(tile, range)
+    self.map:setRange(nil, range, tile, true)
+    self.map:setPlayer(tile)
+  end
+
   -- Hidden, or still the previous clue's panel: wait for this clue's.
   if capture == nil or reading == nil then return end
 
   self.panel_seen = true
   if reading.area ~= nil then self.area_seen = true end
+
+  if self.tree == nil then return end
 
   local range = self:range()
   self.ground:colourByPulse(tile, range)
@@ -466,36 +504,80 @@ end
 --- Shows the scan state in the clue state window. Only rebuilds the rows when they change.
 ---@private
 function ScanClueSolver:buildActions()
-  if self.tree == nil then
-    if self.rendered_signature == "none" then return end
-    self.rendered_signature = "none"
+  self:updatePulseAction(coordinate_adaptor.playerTile())
+  local remaining = self:remainingSpots()
+  local candidate_text
+  if #remaining == 1 then
+    local target = remaining[1]
+    candidate_text = "Dig at " .. target.x .. "|" .. target.y
+  else
+    candidate_text = #remaining .. " candidates"
+  end
+  self.candidates_action:setText(candidate_text)
 
-    self.clue_state:clearActions()
-    if self.method then self.clue_state:addAction(self.teleport_action) end
-    self.clue_state:addAction(ClueStateAction.Text.new("No scan route selected"))
-    return
+  local actions = {}
+  local meerkat_warning
+  if self.tree ~= nil then
+    local range = self.live:range()
+    if range ~= nil and range + scan_panel.MEERKATS_RANGE == self.tree.assumed_range then
+      meerkat_warning = string.format("Route assumes meerkats")
+    end
   end
 
-  local rows = scan_display.rows({
-    status = self.status,
-    tree = self.tree,
-    node = self.node,
-    children = self.status_children,
-    remaining = self.remaining,
-    range = self.live:range(),
-    notice = self.notice,
-    can_go_back = #self.history > 0,
-  })
-
-  local signature = table.concat(array.map(rows, function(row)
-    return row.state .. (row.colour or "") .. row.text
-  end), "\n")
-  if signature == self.rendered_signature then return end
-  self.rendered_signature = signature
-
   self.clue_state:clearActions()
-  self.clue_state:addAction(self.teleport_action)
-  for _, row in ipairs(rows) do self.clue_state:addAction(scan_display.action(row)) end
+  if self.method then self.clue_state:addAction(self.teleport_action) end
+  if meerkat_warning then
+    self.meerkat_warning_action:setText(
+      RichText.coloured(meerkat_warning, string.format("%06X", scan_display.WARNING_COLOUR >> 8)))
+    self.clue_state:addAction(self.meerkat_warning_action)
+  end
+  for _, action in ipairs(actions) do self.clue_state:addAction(action) end
+  self.clue_state:addAction(self.candidates_action)
+  self.clue_state:addAction(self.pulse_action)
+end
+
+---Updates the pulse controls based on whether the player can enter a pulse for the current scan node.
+---@private
+---@param tile TileCoordinates?
+function ScanClueSolver:updatePulseAction(tile)
+  local has_node = self.tree ~= nil and self.node ~= nil
+  local can_pulse = has_node and #self.node.children > 0 and self.area ~= nil
+  local at_scan_area = can_pulse and tile ~= nil and TileArea.contains(self.area, tile)
+  local enabled
+  if has_node then
+    enabled = at_scan_area
+        and (self.status == "wait" or self.status == "choose" or self.status == "manual" or self.status == "mismatch")
+  else
+    enabled = self.live ~= nil and self.live:canPress()
+  end
+
+  local content
+  local tooltip
+  if enabled then
+    content = "Enter scan pulse"
+    tooltip = "Due to an API limitation, Clue Trainer cannot automatically distinguish single and double pulses and they need to be entered manually. This will hopefully be obsolete in a future API update."
+  elseif not has_node then
+    content = "Wait for ambiguous pulse"
+    tooltip = "Single or double can be entered when the panel shows a pulse that needs disambiguation."
+  elseif #self.node.children == 0 then
+    content = "Dig at the target"
+    tooltip = "The scan tree has found the dig spot."
+  elseif self.status == "off_route" then
+    content = "Something went wrong."
+    tooltip = "Undo pulses and try again."
+  elseif not at_scan_area then
+    content = "Move to <col=00ff00>decision point</col>"
+    tooltip = "Pulse entry is enabled when you reach the current scan area."
+  else
+    content = "Wait for scan reading"
+    tooltip = "Pulse entry becomes available when the scan reading can be chosen."
+  end
+
+  if self.pulse_action.enabled ~= enabled then self.pulse_action:setEnabled(enabled) end
+  local undo_enabled = #self.history > 0
+  if self.pulse_action.undo_enabled ~= undo_enabled then self.pulse_action:setUndoEnabled(undo_enabled) end
+  if self.pulse_action.content ~= content then self.pulse_action:setText(content) end
+  if self.pulse_action.tooltip ~= tooltip then self.pulse_action:setTooltip(tooltip) end
 end
 
 return ScanClueSolver

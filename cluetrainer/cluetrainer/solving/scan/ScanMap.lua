@@ -7,7 +7,6 @@ local AreaGraphics      = require("cluetrainer/interfaces/map/elements/AreaGraph
 local SpotMarker        = require("cluetrainer/interfaces/map/elements/SpotMarker")
 local PathStepEntity    = require("cluetrainer/solving/map_navigator/PathStepEntity")
 local PathGraphics      = require("cluetrainer/interfaces/map/elements/PathGraphics")
-local MapLabel          = require("cluetrainer/interfaces/map/elements/MapLabel")
 local PlayerMarker      = require("cluetrainer/interfaces/map/elements/PlayerMarker")
 local colours           = require("cluetrainer/util/colours")
 local Path              = require("cluetrainer/model/shared/path")
@@ -57,20 +56,20 @@ local function areaGraphics(area, colour)
   return AreaGraphics.area(area, { colour = colour, opacity = AREA_STYLE_OPACITY, fillOpacity = AREA_STYLE_FILL })
 end
 
----@param tree ScanTree.ScanTree
+---@param spots TileCoordinates[]
 ---@return ct.ScanMap
-function ScanMap.new(tree)
+function ScanMap.new(spots)
   local game_map = map.get()
 
   local self = setmetatable({
     -- On every plane, so steps whose tiles have another level than the map shows (dungeons) stay visible.
     layer = luaflet.twigs.Twig.new({ allPlanes = true }):AddTo(game_map.map.twigs),
-    spots = tree.ordered_spots,
-    region = TileArea.around(tree.ordered_spots),
+    spots = spots,
+    region = TileArea.around(spots),
   }, ScanMap)
 
   self.markers = {}
-  for i, spot in ipairs(tree.ordered_spots) do
+  for i, spot in ipairs(spots) do
     self.markers[i] = SpotMarker.new({ spot = spot, spot_id = i - 1, title = "Scan spot" }):AddTo(self.layer)
   end
   self.player = PlayerMarker.new():AddTo(self.layer)
@@ -118,15 +117,25 @@ function ScanMap:fit(bounds)
   map.get():fitBounds(view, 2 * COUNTER_OFFSET + COUNTER_HEIGHT)
 end
 
+---Fits the map to all scan spots.
+function ScanMap:fitSpots()
+  local bounds = Bounds.new()
+  bounds:addArea(self.region)
+  self:fit(bounds)
+end
+
 --- Dashed squares where a pulse gives a triple, and where a double. Around the player while they are where a pulse can
 --- give a triple or double for some spot, to show what a pulse where they stand tells, also when they walk their own
 --- way; otherwise around the scan area to go to. The map follows the player when the squares leave the view.
----@param area TileArea? nil hides them
+---@param area TileArea? The scan area, or nil when there is no route
 ---@param range integer
 ---@param player TileCoordinates?
-function ScanMap:setRange(area, range, player)
+---@param follow_player boolean? Draw around the player even without a scan area
+function ScanMap:setRange(area, range, player, follow_player)
   local centre = area
-  if area and player then
+  if follow_player then
+    centre = player and TileArea.tile(player) or nil
+  elseif area and player then
     local reach = TileArea.ensure_mutable(TileArea.grow(self.region, #RANGE_COLOURS * range))
     -- Ignores the level, as the scan is drawn on every plane.
     if reach:query(player) then centre = TileArea.tile(player) end
@@ -158,7 +167,7 @@ function ScanMap:setRange(area, range, player)
     polygon:AddTo(self.range_squares)
   end
 
-  if centre ~= area then self:keepInView(outer --[[@as TileArea]], area) end
+  if follow_player or centre ~= area then self:keepInView(outer --[[@as TileArea]], area) end
 end
 
 --- Zooms to the squares around the player and the scan area once the squares leave the view.
