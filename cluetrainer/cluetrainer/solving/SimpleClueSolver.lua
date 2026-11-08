@@ -132,7 +132,7 @@ local function create_step_map_layer(step)
 
   if step.type == "skilling" then
     InteractionMarker.new({
-      coordinate = require("cluetrainer/interfaces/map/elements/geometry").coord(TileArea.ensure_mutable(step.areas[0])
+      coordinate = require("cluetrainer/interfaces/map/elements/geometry").coord(TileArea.ensure_mutable(step.areas[1])
         :center()),
       cursor = step.cursor
     })
@@ -148,9 +148,12 @@ end
 local function clue_map_bounds(step)
   local bounds = Bounds.new()
 
+  -- Skilling clues have no solution, only an area, so `sol` can be nil.
   local sol = inferSolution(step)
 
-  if sol.type == "talkto" then
+  if sol == nil then
+    -- Only the skilling area below.
+  elseif sol.type == "talkto" then
     local spot = sol.spots[1]
 
     bounds:addArea(spot.range)
@@ -161,7 +164,7 @@ local function clue_map_bounds(step)
   end
 
   if step.type == "skilling" then
-    bounds:addRectangle(TileArea.toRect(step.areas[0]))
+    bounds:addRectangle(TileArea.toRect(step.areas[1]))
   end
 
   return bounds
