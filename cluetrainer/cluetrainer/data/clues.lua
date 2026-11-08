@@ -952,7 +952,7 @@ local clues = {
     text = { "One of the sailors in Port Sarim is your next destination." },
     solution = {
       type = "talkto",
-      npc = "Captain Tobias.",
+      npc = "Captain Tobias",
       spots = {
         {
           range = { origin = { x = 3027, y = 3216, level = 0 }, size = { x = 2, y = 3 } },
@@ -4421,7 +4421,7 @@ local clues = {
           description = "at the Ritual Site"
         }
       },
-      npc = "Malignus mortifer"
+      npc = "Malignius Mortifer"
     },
     anagram = { "REIGN US IF IMMORTAL" }
   },
@@ -4454,7 +4454,7 @@ local clues = {
     },
     solution = {
       type = "talkto",
-      npc = "Philippe Carnillean",
+      npc = "Philipe Carnillean",
       spots = {
         {
           id = "before",

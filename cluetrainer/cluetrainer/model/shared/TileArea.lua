@@ -93,10 +93,11 @@ function TileArea.ensure_mutable(tile_area)
   return tile_area --[[@as TileArea.Active]]
 end
 
+---The middle tile of the area. Reads `self`, so `area:center()` works without passing the area again.
 ---@return TileCoordinates
-function ActiveTileArea:center(tile_area)
-  local sz = TileArea.ensure_mutable(tile_area):getSize()
-  local origin = tile_area.origin
+function ActiveTileArea:center()
+  local sz = self:getSize()
+  local origin = self.origin
   return {
     x = origin.x + math.floor(sz.x / 2),
     y = origin.y + math.floor(sz.y / 2),

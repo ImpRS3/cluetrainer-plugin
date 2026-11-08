@@ -32,25 +32,53 @@ end
 -- How long the clue text is read again after the window opens, in client logic ticks (50 per second).
 local READ_TIMEOUT_TICKS          = 100
 
----The master clue whose text matches, or nil.
+-- The game puts this line above every master skilling clue; the clue data holds only the text below it. Skilling
+-- clues exist only in the master tier.
+local MASTER_SKILLING_PREFIX      = "Complete the action to solve the clue:"
+
+---The clue text as the data holds it: without the skilling prefix, without leading or trailing spaces, and with
+---single spaces only, so the window's line layout does not lower the score.
 ---@param text string
----@return Step?
-local function matchMasterClue(text)
+---@return string
+local function normaliseMasterClueText(text)
+  text = text:gsub("%s+", " "):match("^ ?(.-) ?$")
+  if text:sub(1, #MASTER_SKILLING_PREFIX) == MASTER_SKILLING_PREFIX then
+    text = text:sub(#MASTER_SKILLING_PREFIX + 1):match("^ ?(.*)$")
+  end
+  return text
+end
+
+---The best matching master clue and its score, also when the score is too low to count as a match.
+---@param text string Already passed through `normaliseMasterClueText`
+---@return Step?, number
+local function bestMasterClue(text)
   local scored = zyklib.array.map(relevant_master_clues, function(clue)
     return { clue = clue, score = util.stringSimilarity(text, clue.text[1]) }
   end)
 
   local best = zyklib.array.maxBy(scored, function(entry) return entry.score end)
-
-  return best ~= nil and best.score > 0.97 and best.clue or nil
+  if best == nil then return nil, 0 end
+  return best.clue, best.score
 end
 
 ---@type zyklib.reactive.EventHandler?
 local pending_read                = nil
 
-local function stopReading()
-  if pending_read then pending_read:cancel() end
+---The last text read in the pending read and how close it came, for the log when nothing matched.
+---@type { text: string, clue: Step?, score: number }?
+local last_attempt                = nil
+
+---@param report_miss boolean? Whether to log the last text read when no clue matched, so a miss shows in the console
+local function stopReading(report_miss)
+  if pending_read then
+    pending_read:cancel()
+    if report_miss and last_attempt ~= nil then
+      log(string.format("No master clue matched (best %.2f, clue %s): %s", last_attempt.score,
+        last_attempt.clue and tostring(last_attempt.clue.id) or "-", last_attempt.text))
+    end
+  end
   pending_read = nil
+  last_attempt = nil
 end
 
 ---Reads the clue text on every logic tick until it matches a master clue, the window closes or the timeout passes, so
@@ -64,18 +92,19 @@ local function readUntilMatched()
   pending_read = zyklib.game_events.native.Logic:subscribe(function(payload)
     deadline = deadline or payload.logicTick + READ_TIMEOUT_TICKS
 
-    local text = readClueLongText()
+    local text = normaliseMasterClueText(readClueLongText())
     if text ~= "" and text ~= last_text then
       last_text = text
-      local clue = matchMasterClue(text)
-      if clue ~= nil then
+      local clue, score = bestMasterClue(text)
+      if clue ~= nil and score > 0.97 then
         stopReading()
         clue_detector.clue_detected_event:trigger(clue)
         return
       end
+      last_attempt = { text = text, clue = clue, score = score }
     end
 
-    if payload.logicTick >= deadline then stopReading() end
+    if payload.logicTick >= deadline then stopReading(true) end
   end)
 end
 
@@ -84,7 +113,7 @@ local interface_handler           = zyklib.game_events.derived.component(id.Comp
   if event ~= nil then
     readUntilMatched()
   else
-    stopReading()
+    stopReading(true)
   end
 end)
 

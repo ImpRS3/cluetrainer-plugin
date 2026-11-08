@@ -221,7 +221,7 @@ function Path.endsUp(path)
         }
       elseif movement and movement.fixed_target then
         local target = movement.fixed_target.target
-        return TileArea.ensure_mutable(target):center(target)
+        return TileArea.ensure_mutable(target):center()
       end
     end
   end
