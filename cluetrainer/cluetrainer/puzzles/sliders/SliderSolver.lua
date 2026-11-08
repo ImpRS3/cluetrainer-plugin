@@ -58,12 +58,19 @@ local function getPDB()
       -- Cache pdb for next time. FIXME: Disabled for now
       -- PersistentDB:Set("workaround_sliderpdb_mtm_huge_v0", { value = final_value })
 
-      download.data:resolve(RegionGraph.new(RegionGraph.parseTables(final_value), false))
+      -- Rejects on unreadable data, so the slider shows the failure instead of waiting forever
+      local parsed, graph = pcall(function() return RegionGraph.new(RegionGraph.parseTables(final_value), false) end)
+      if parsed then
+        download.data:resolve(graph)
+      else
+        log("Failed to read the downloaded data: " .. tostring(graph))
+        download.data:reject("Failed to read the downloaded data")
+      end
     else
       zyklib.http.get(Plugin.urls["cluetrainer"], "/data/sliderpdb/mtm_huge/v0chunk0" .. #chunks .. ".bin")
           :onCompletion(function(result, data)
             if not result then
-              log("Failed to download chunk " .. #chunks)
+              log("Failed to download chunk " .. #chunks .. ": " .. tostring(data))
               download.data:reject("Failed to download chunk " .. #chunks)
               return
             end
@@ -85,7 +92,23 @@ local function getPDB()
   return download
 end
 
-local pdb = util.lazy(getPDB)
+---@type ct.sliders.PdbDownloadState?
+local current_download = nil
+
+---The running or finished download. Starts a new one when the last one failed, so the next slider tries again without
+---reloading the plugin.
+---@return ct.sliders.PdbDownloadState
+local function pdb()
+  local download = current_download
+  if download == nil then
+    download = getPDB()
+    current_download = download
+    download.data:onFailure(function()
+      if current_download == download then current_download = nil end
+    end)
+  end
+  return download
+end
 
 local STROKE = 3
 local CONTRAST_BORDER = 2
