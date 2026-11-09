@@ -1,4 +1,4 @@
-local ClueStateAction = require("cluetrainer/interfaces/cluestate/ClueStateAction")
+local ClueStateAction = require("cluetrainer/solving/cluestateinterface/ClueStateAction")
 local scan_display = require("cluetrainer/solving/scan/scan_display")
 
 local STATE_ALPHA = { incomplete = 1.0, complete = 0.5 }

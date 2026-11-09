@@ -1,11 +1,11 @@
-local clue_detector          = require "cluetrainer/clue_detector"
+local clue_detector          = require "cluetrainer/solving/clue_detection"
 local CompassSolver          = require "cluetrainer/solving/CompassSolver"
 local EmoteClueSolver        = require "cluetrainer/solving/EmoteClueSolver"
 local SimpleClueSolver       = require "cluetrainer/solving/SimpleClueSolver"
 local ScanTreeSolver         = require "cluetrainer/solving/ScanClueSolver"
-local ClueStateInterface     = require "cluetrainer/interfaces/cluestate/cluestate"
-local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
-local map                    = require "cluetrainer/interfaces/map/map"
+local ClueStateInterface     = require "cluetrainer/solving/cluestateinterface/ClueStateInterface"
+local ClueStateAction        = require "cluetrainer/solving/cluestateinterface/ClueStateAction"
+local map                    = require "cluetrainer/map/map"
 local schema                 = require "cluetrainer/util/schema"
 local storage                = require "cluetrainer/util/storage"
 local clue_items             = require "cluetrainer/data/clue_items"
@@ -20,7 +20,7 @@ local MASTER_TYPE_ITEMS      = {
 
 ---@class ct.solving.SolvingOrchestrator : zyklib.disposable.IDisposable
 ---@field private clue_state ct.ClueStateInterface
----@field private active_solver ct.ActiveClueSolver?
+---@field private active_solver ct.AbstractClueSolver?
 ---@field private clue_detection_handler zyklib.reactive.EventHandler
 ---@field private inventory_handler zyklib.reactive.EventHandler
 ---@field private active_items string[] The items that hold the active clue

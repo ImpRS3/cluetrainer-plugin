@@ -2,7 +2,7 @@
 -- Keeps `teleport_customization.current` in sync with the stored teleport settings and the fairy ring favourites in
 -- the game, and tells the teleport displays when the shown codes may have changed.
 local zyklib        = require "zyklib"
-local customization = require "cluetrainer/model/shared/teleport_customization"
+local customization = require "cluetrainer/model/teleport_customization"
 
 local TeleportCustomization = {}
 

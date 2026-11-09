@@ -3,7 +3,6 @@ local Towers            = require "cluetrainer/puzzles/towers/Towers"
 local zyklib            = require "zyklib"
 local util              = require "cluetrainer/util"
 local schema            = require "cluetrainer/util/schema"
-local storage           = require "cluetrainer/util/storage"
 
 ---@class ct.towers.TowerSolver
 local towers_solver     = {}
@@ -19,14 +18,6 @@ local TILE_OFFSET       = 44
 
 local TR_OVERLAY_OFFSET = { x = 16, y = -10 }
 local TL_OVERLAY_OFFSET = { x = -5, y = -10 }
-
----Draws the current state of the towers puzzle.
----@param canvas ui.Canvas
----@param is_state ct.towers.Blocks
----@param should_state ct.towers.Blocks
-local function draw(canvas, is_state, should_state)
-
-end
 
 --- Gets the hints of the current puzzle
 ---@return ct.towers.Hints

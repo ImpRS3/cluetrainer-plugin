@@ -19,10 +19,10 @@ ctGlobal = {
 local function main()
   zyklib.lifecycle.setupGlobals()
 
-  local settings_dialog = require("cluetrainer/ui/SettingsDialog")
-  local MainPanel = require("cluetrainer/ui/MainPanel")
+  local settings_dialog = require("cluetrainer/SettingsDialog")
+  local MainPanel = require("cluetrainer/MainPanel")
   local SolvingOrchestrator = require("cluetrainer/solving/SolvingOrchestrator")
-  local Map = require("cluetrainer/interfaces/map/map")
+  local Map = require("cluetrainer/map/map")
 
   -- Load and initialize the individual puzzle solver modules
   require("cluetrainer/puzzles/towers/TowerSolver").init()

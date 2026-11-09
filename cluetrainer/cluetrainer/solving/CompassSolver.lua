@@ -1,19 +1,18 @@
 --- CompassSolver.lua
 
-local ctmath             = require("cluetrainer/ctlib/math")
+local ctmath             = require("cluetrainer/math/math")
 local luaflet            = require("prettymap/luaflet")
-local map                = require("cluetrainer/interfaces/map/map")
-local coordinate_adaptor = require("cluetrainer/model/shared/coordinate_adaptor")
+local map                = require("cluetrainer/map/map")
 local Bounds             = require("cluetrainer/util/Bounds")
-local Path               = require("cluetrainer/model/shared/path")
-local ActiveClueSolver   = require("cluetrainer/solving/common/ActiveClueSolver")
-local Navigator          = require("cluetrainer/solving/common/navigator")
-local MapSectionControl  = require("cluetrainer/solving/map_navigator/MapSectionControl")
-local PathStepEntity     = require("cluetrainer/solving/map_navigator/PathStepEntity")
-local PathMesh           = require("cluetrainer/model/PathMesh")
-local ClueStateAction    = require("cluetrainer/interfaces/cluestate/ClueStateAction")
-local TeleportAction     = require("cluetrainer/solving/common/TeleportAction")
-local tiles              = require("cluetrainer/model/shared/tiles")
+local Path               = require("cluetrainer/model/path")
+local AbstractClueSolver   = require("cluetrainer/solving/AbstractClueSolver")
+local Navigator          = require("cluetrainer/solving/common/Navigator")
+local MapSectionControl  = require("cluetrainer/solving/common/MapSectionControl")
+local PathStepEntity     = require("cluetrainer/map/elements/PathStepElement")
+local path_shapes           = require("cluetrainer/solving/common/path_shapes")
+local ClueStateAction    = require("cluetrainer/solving/cluestateinterface/ClueStateAction")
+local TeleportAction     = require("cluetrainer/solving/cluestateinterface/TeleportAction")
+local tiles              = ctmath.tilecoordinates
 local schema             = require("cluetrainer/util/schema")
 
 ---@class ct.compasslogic
@@ -50,7 +49,7 @@ function compasslogic.isPossible(information, spot)
   end)
 end
 
-local SpotMarker = require "cluetrainer/interfaces/map/elements/SpotMarker"
+local SpotMarker = require "cluetrainer/map/elements/SpotMarker"
 
 ---@param clue Compass
 ---@param info ct.Compass.TriangulationPoint
@@ -81,7 +80,7 @@ local function drawArrowArc(clue, info, color)
   return twig
 end
 
----@class ct.ActiveCompassSolver : ct.ActiveClueSolver
+---@class ct.ActiveCompassSolver : ct.AbstractClueSolver
 ---@field triangulation_points {info: ct.Compass.TriangulationPoint, twig: prettymap.luaflet.Twig}[]
 ---@field clue Compass
 ---@field private REDACTED_target TileCoordinates? The compass target the triangulation points were read towards. Hidden information, must not be exposed to the player
@@ -93,7 +92,7 @@ end
 ---@field private dig_highlight zyklib.Highlight?
 ---@field private clue_state ct.ClueStateInterface
 ---@field private method ct.AugmentedMethod<Method.GenericPath>?
-local CompassSolver = setmetatable({}, { __index = ActiveClueSolver })
+local CompassSolver = setmetatable({}, { __index = AbstractClueSolver })
 CompassSolver.__index = CompassSolver
 
 CompassSolver.settings = {
@@ -105,7 +104,7 @@ CompassSolver.settings = {
 ---@return ct.ActiveCompassSolver
 function CompassSolver.new(clue, state_window)
   ---@class ct.ActiveCompassSolver
-  local self = setmetatable(ActiveClueSolver.new(clue), CompassSolver)
+  local self = setmetatable(AbstractClueSolver.new(clue), CompassSolver)
   self.clue_state = state_window
   self.map_layer = luaflet.twigs.Twig.new():AddTo(map.get().map.twigs)
   self.disposable_group:add(zyklib.disposable.wrap(function()
@@ -269,13 +268,13 @@ function CompassSolver:setDigHighlight(spot)
   if self.dig_highlight then self.dig_highlight:deactivate() end
 
   self.dig_spot = spot
-  self.dig_highlight = spot and PathMesh.digHighlight(spot, self.clue.single_tile_target):activate() or nil
+  self.dig_highlight = spot and path_shapes.digHighlight(spot, self.clue.single_tile_target):activate() or nil
 end
 
 function CompassSolver:dispose()
   self:setPath(nil)
   self:setDigHighlight(nil)
-  ActiveClueSolver.dispose(self)
+  AbstractClueSolver.dispose(self)
 end
 
 ---@return ct.Compass.TriangulationPoint? # The current degree of the compass arrow, or nil if unavailable.
@@ -305,11 +304,11 @@ function CompassSolver:getCurrentInformation()
     return nil
   end
 
-  local player_position = coordinate_adaptor.playerTile()
+  local player_position = tiles.player()
   if player_position == nil then return nil end
 
   -- Hidden value, we obscure it to emulate the uncertainty of visual observation.
-  local REDACTED_target_spot = coordinate_adaptor.coord_grid_to_tile_coordinates(var.VarClient["TRAIL_DESTCOORD"]
+  local REDACTED_target_spot = tiles.fromCoordGrid(var.VarClient["TRAIL_DESTCOORD"]
     .value --[[@as CoordGrid]])
   self:followTarget(REDACTED_target_spot)
 

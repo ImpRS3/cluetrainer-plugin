@@ -2,18 +2,18 @@
 -- The scan on the Clue Trainer map: every dig spot (ruled-out ones dimmed), the route and scan area of the current
 -- step, the range squares, the faded routes of the next step, the player and a counter of the spots left.
 local luaflet           = require("prettymap/luaflet")
-local map               = require("cluetrainer/interfaces/map/map")
-local AreaGraphics      = require("cluetrainer/interfaces/map/elements/AreaGraphics")
-local SpotMarker        = require("cluetrainer/interfaces/map/elements/SpotMarker")
-local PathStepEntity    = require("cluetrainer/solving/map_navigator/PathStepEntity")
-local PathGraphics      = require("cluetrainer/interfaces/map/elements/PathGraphics")
-local PlayerMarker      = require("cluetrainer/interfaces/map/elements/PlayerMarker")
+local map               = require("cluetrainer/map/map")
+local AreaGraphics      = require("cluetrainer/map/elements/AreaGraphics")
+local SpotMarker        = require("cluetrainer/map/elements/SpotMarker")
+local PathStepEntity    = require("cluetrainer/map/elements/PathStepElement")
+local PathGraphics      = require("cluetrainer/map/elements/PathGraphics")
+local PlayerMarker      = require("cluetrainer/map/elements/PlayerMarker")
 local colours           = require("cluetrainer/util/colours")
-local Path              = require("cluetrainer/model/shared/path")
+local Path              = require("cluetrainer/model/path")
 local Bounds            = require("cluetrainer/util/Bounds")
-local TileArea          = require("cluetrainer/model/shared/TileArea")
+local TileArea          = require("cluetrainer/math/math").tilearea
 local scan_display      = require("cluetrainer/solving/scan/scan_display")
-local tiles             = require("cluetrainer/model/shared/tiles")
+local tiles             = require("cluetrainer/math/math").tilecoordinates
 local array             = require("zyklib/array")
 
 local COUNTER_WIDTH     = 120

@@ -1,8 +1,8 @@
 -- scan_tree.lua
 -- Scan tree logic without game state: the game's pulse formula, and which spots and children fit a pulse.
-local Path = require "cluetrainer/model/shared/path"
-local TileArea = require "cluetrainer/model/shared/TileArea"
-local tiles = require "cluetrainer/model/shared/tiles"
+local Path = require "cluetrainer/model/path"
+local TileArea = require("cluetrainer/math/math").tilearea
+local tiles = require("cluetrainer/math/math").tilecoordinates
 local array = require "zyklib/array"
 
 local scan_tree = {}

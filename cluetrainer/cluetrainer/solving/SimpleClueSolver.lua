@@ -1,23 +1,23 @@
-local coordinate_adaptor     = require "cluetrainer/model/shared/coordinate_adaptor"
-local PathMesh               = require "cluetrainer/model/PathMesh"
-local TileArea               = require "cluetrainer/model/shared/TileArea"
-local map                    = require "cluetrainer/interfaces/map/map"
-local TalkSolutionNpcEntity  = require "cluetrainer/interfaces/map/elements/TalkSolutionNpcEntity"
-local SearchSolutionEntity   = require "cluetrainer/interfaces/map/elements/SearchSolutionEntity"
-local DigSolutionEntity      = require "cluetrainer/interfaces/map/elements/DigSolutionEntity"
-local InteractionMarker      = require "cluetrainer/interfaces/map/elements/InteractionMarker"
+local tilecoordinates        = require("cluetrainer/math/math").tilecoordinates
+local path_shapes               = require "cluetrainer/solving/common/path_shapes"
+local TileArea               = require("cluetrainer/math/math").tilearea
+local map                    = require "cluetrainer/map/map"
+local TalkSolutionNpcEntity  = require "cluetrainer/map/elements/TalkSolutionNpcEntity"
+local SearchSolutionEntity   = require "cluetrainer/map/elements/SearchSolutionEntity"
+local DigSolutionEntity      = require "cluetrainer/map/elements/DigSolutionEntity"
+local InteractionMarker      = require "cluetrainer/map/elements/InteractionMarker"
 local Bounds                 = require "cluetrainer/util/Bounds"
-local Path                   = require "cluetrainer/model/shared/path"
-local ActiveClueSolver       = require "cluetrainer/solving/common/ActiveClueSolver"
-local Navigator              = require "cluetrainer/solving/common/navigator"
-local MapSectionControl      = require "cluetrainer/solving/map_navigator/MapSectionControl"
+local Path                   = require "cluetrainer/model/path"
+local AbstractClueSolver       = require "cluetrainer/solving/AbstractClueSolver"
+local Navigator              = require "cluetrainer/solving/common/Navigator"
+local MapSectionControl      = require "cluetrainer/solving/common/MapSectionControl"
 local luaflet                = require "prettymap/luaflet"
-local PathStepEntity         = require "cluetrainer/solving/map_navigator/PathStepEntity"
+local PathStepEntity         = require "cluetrainer/map/elements/PathStepElement"
 local RichText               = require "cluetrainer/util/RichText"
 local zyklib                 = require "zyklib"
 local MutableMesh            = require "zyklib/MutableMesh"
-local ClueStateAction        = require "cluetrainer/interfaces/cluestate/ClueStateAction"
-local TeleportAction         = require "cluetrainer/solving/common/TeleportAction"
+local ClueStateAction        = require "cluetrainer/solving/cluestateinterface/ClueStateAction"
+local TeleportAction         = require "cluetrainer/solving/cluestateinterface/TeleportAction"
 local clue_targets           = require "cluetrainer/solving/common/clue_targets"
 
 ---@param step Step
@@ -67,7 +67,7 @@ local function create_step_highlights(step)
       local spot = solution
           .spot --[[@as TileCoordinates]] -- LuaCats does not narrow the type of step.solution to DigSolution, so we need to cast this
 
-      table.insert(highlights, PathMesh.digHighlight(spot))
+      table.insert(highlights, path_shapes.digHighlight(spot))
     elseif solution.type == "talkto" then
       local target = clue_targets.for_clue(step.id)
       local areas = clue_targets.talkto_areas(solution.spots)
@@ -101,7 +101,7 @@ local function create_step_highlights(step)
       -- By id only on the spot: object ids are shared by every copy of that object, such as all crates of one kind.
       if target then
         table.insert(highlights, zyklib.highlights.LocHighlight.new({
-            coordGrid = coordinate_adaptor.tile_coordinates_to_coord_grid({ x = around.x, y = around.y, level = spot.level }),
+            coordGrid = tilecoordinates.toCoordGrid({ x = around.x, y = around.y, level = spot.level }),
             range = around.range,
             func = function(loc)
               return clue_targets.matches_id(loc, target) and clue_targets.loc_in_areas(loc, areas)
@@ -147,7 +147,7 @@ local function create_step_map_layer(step)
 
   if step.type == "skilling" then
     InteractionMarker.new({
-      coordinate = require("cluetrainer/interfaces/map/elements/geometry").coord(TileArea.ensure_mutable(step.areas[1])
+      coordinate = require("cluetrainer/map/elements/geometry").coord(TileArea.ensure_mutable(step.areas[1])
         :center()),
       cursor = step.cursor
     })
@@ -207,14 +207,14 @@ end
 ---@field solve_towers? ct.interfaces.cluestate.ClueStateAction
 
 --- An ActiveSimpleClue manages a single simple clue currently in progress.
----@class ct.ActiveSimpleClue : ct.ActiveClueSolver
+---@class ct.ActiveSimpleClue : ct.AbstractClueSolver
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
 ---@field private clue_state ct.ClueStateInterface
 ---@field private method Method.GenericPath?
 ---@field actions ct.SimpleClueActions
-local SimpleClueSolver = setmetatable({}, { __index = ActiveClueSolver })
+local SimpleClueSolver = setmetatable({}, { __index = AbstractClueSolver })
 SimpleClueSolver.__index = SimpleClueSolver
 
 ---@param clue Step
@@ -222,7 +222,7 @@ SimpleClueSolver.__index = SimpleClueSolver
 ---@return ct.ActiveSimpleClue
 function SimpleClueSolver.new(clue, clue_state)
   ---@class ct.ActiveSimpleClue
-  local self = setmetatable(ActiveClueSolver.new(clue), SimpleClueSolver)
+  local self = setmetatable(AbstractClueSolver.new(clue), SimpleClueSolver)
   self.clue_state = clue_state
 
   self.disposable_group:add(create_step_highlights(clue):activate())
@@ -341,7 +341,7 @@ end
 
 function SimpleClueSolver:dispose()
   self:setPath(nil)
-  ActiveClueSolver.dispose(self)
+  AbstractClueSolver.dispose(self)
 end
 
 return SimpleClueSolver

@@ -5,7 +5,7 @@
 -- spot again, so a wrong key press before it can't hide the dig spot.
 local scan_panel       = require "cluetrainer/solving/scan/scan_panel"
 local scan_tree        = require "cluetrainer/solving/scan/scan_tree"
-local tiles            = require "cluetrainer/model/shared/tiles"
+local tiles            = require("cluetrainer/math/math").tilecoordinates
 local array            = require "zyklib/array"
 
 local PULSE_TICKS      = scan_panel.PULSE_TICKS

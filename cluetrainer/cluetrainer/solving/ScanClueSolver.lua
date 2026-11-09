@@ -3,14 +3,13 @@
 -- the route to the next scan spot and moves on through the tree from what the scan panel shows, or from Shift+1/2.
 -- Every pulse also rules out spots on its own, from the panel and the player's tile; once the spots left all lie under
 -- one child, the tree moves on to it.
-local coordinate_adaptor         = require "cluetrainer/model/shared/coordinate_adaptor"
-local TileArea                   = require "cluetrainer/model/shared/TileArea"
-local Path                       = require "cluetrainer/model/shared/path"
-local Navigator                  = require "cluetrainer/solving/common/navigator"
-local ActiveClueSolver           = require "cluetrainer/solving/common/ActiveClueSolver"
-local ClueStateAction            = require "cluetrainer/interfaces/cluestate/ClueStateAction"
+local TileArea                   = require("cluetrainer/math/math").tilearea
+local Path                       = require "cluetrainer/model/path"
+local Navigator                  = require "cluetrainer/solving/common/Navigator"
+local AbstractClueSolver           = require "cluetrainer/solving/AbstractClueSolver"
+local ClueStateAction            = require "cluetrainer/solving/cluestateinterface/ClueStateAction"
 local RichText                   = require "cluetrainer/util/RichText"
-local TeleportAction             = require "cluetrainer/solving/common/TeleportAction"
+local TeleportAction             = require "cluetrainer/solving/cluestateinterface/TeleportAction"
 local scan_panel                 = require "cluetrainer/solving/scan/scan_panel"
 local scan_tree                  = require "cluetrainer/solving/scan/scan_tree"
 local scan_display               = require "cluetrainer/solving/scan/scan_display"
@@ -18,7 +17,7 @@ local ScanPulseAction            = require "cluetrainer/solving/scan/ScanPulseAc
 local ScanMap                    = require "cluetrainer/solving/scan/ScanMap"
 local ScanGround                 = require "cluetrainer/solving/scan/ScanGround"
 local LiveNarrowing              = require "cluetrainer/solving/scan/LiveNarrowing"
-local tiles                      = require "cluetrainer/model/shared/tiles"
+local tiles                      = require("cluetrainer/math/math").tilecoordinates
 local array                      = require "zyklib/array"
 local zyklib                     = require "zyklib"
 local schema                     = require "cluetrainer/util/schema"
@@ -47,7 +46,7 @@ local DESTROYED_TIMEOUT_TICKS    = 2 * scan_panel.PULSE_TICKS
 ---| "dig_here" # The panel says the player stands on the dig spot
 
 --- One scan clue in progress.
----@class ct.ActiveScanClue : ct.ActiveClueSolver
+---@class ct.ActiveScanClue : ct.AbstractClueSolver
 ---@field clue Scan
 ---@field teleport_action ct.solving.TeleportAction
 ---@field private pulse_action ct.interfaces.cluestate.ScanPulseClueStateAction
@@ -75,7 +74,7 @@ local DESTROYED_TIMEOUT_TICKS    = 2 * scan_panel.PULSE_TICKS
 ---@field private different_level boolean Whether the last reading was "different level", for Shift+1/2
 ---@field private status ct.ScanStatus
 ---@field private status_children ScanTree.Child[]
-local ScanClueSolver             = setmetatable({}, { __index = ActiveClueSolver })
+local ScanClueSolver             = setmetatable({}, { __index = AbstractClueSolver })
 ScanClueSolver.__index           = ScanClueSolver
 
 local function gameKeyToModifier(gameKey)
@@ -121,7 +120,7 @@ ScanClueSolver.settings = {
 ---@param clue_state ct.ClueStateInterface
 ---@return ct.ActiveScanClue
 function ScanClueSolver.new(clue, clue_state)
-  local self = setmetatable(ActiveClueSolver.new(clue), ScanClueSolver)
+  local self = setmetatable(AbstractClueSolver.new(clue), ScanClueSolver)
   ---@cast self ct.ActiveScanClue
 
   self.tick = 0
@@ -143,7 +142,7 @@ function ScanClueSolver.new(clue, clue_state)
   self.disposable_group:add({ dispose = function() self:disposeTree() end })
 
   self.disposable_group:add(zyklib.game_events.native.Logic:subscribe(function(payload)
-    local tick, tile = payload.logicTick, coordinate_adaptor.playerTile()
+    local tick, tile = payload.logicTick, tiles.player()
     self.tick = tick
     self:updatePulseAction(tile)
 
@@ -378,7 +377,7 @@ end
 ---@param pulse 1 | 2 | 3
 function ScanClueSolver:enterPulse(pulse)
   local press = pulse < 3 and self.live:press(
-    self.tick, pulse --[[@as 1 | 2]], coordinate_adaptor.playerTile()) or nil
+    self.tick, pulse --[[@as 1 | 2]], tiles.player()) or nil
   if self.tree == nil then
     if press == nil then return end
     table.insert(self.history, { press = press, press_only = true })
@@ -542,7 +541,7 @@ end
 --- Shows the scan state in the clue state window. Only rebuilds the rows when they change.
 ---@private
 function ScanClueSolver:buildActions()
-  self:updatePulseAction(coordinate_adaptor.playerTile())
+  self:updatePulseAction(tiles.player())
   local remaining = self:remainingSpots()
   local candidate_text
   if #remaining == 1 then

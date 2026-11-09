@@ -35,12 +35,10 @@ slider_solver.settings = {
 
 ---@alias ct.sliders.PdbDownloadState {progress: number, data: zyklib.async.Promise<ct.sliders.pdb.RegionGraph>}
 
-
 ---@class ct.sliders.PdbDescription
 ---@field description {multitile: boolean, regions: (0 | 1 | 2)[][]}
 ---@field file_pattern string
 ---@field file_count integer
-
 
 --- I am sorry for what you are about to read. This function downloads 170MB of data, and needs to cache it locally to avoid DDOSing cloudflare.
 --- This really pushes the limits of the API, and various performance-intensive workarounds are needed.

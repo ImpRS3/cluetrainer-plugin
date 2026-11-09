@@ -1,23 +1,23 @@
-local PathMesh          = require "cluetrainer/model/PathMesh"
-local map               = require "cluetrainer/interfaces/map/map"
-local EmoteAreaEntity   = require "cluetrainer/interfaces/map/elements/EmoteAreaEntity"
-local HideyHoleEntity   = require "cluetrainer/interfaces/map/elements/HideyHoleEntity"
-local Bounds            = require "cluetrainer/util/Bounds"
-local Path              = require "cluetrainer/model/shared/path"
-local ActiveClueSolver  = require "cluetrainer/solving/common/ActiveClueSolver"
-local Navigator         = require "cluetrainer/solving/common/navigator"
-local MapSectionControl = require "cluetrainer/solving/map_navigator/MapSectionControl"
-local luaflet           = require "prettymap/luaflet"
-local PathStepEntity    = require "cluetrainer/solving/map_navigator/PathStepEntity"
-local RichText          = require "cluetrainer/util/RichText"
-local ClueStateAction   = require("cluetrainer/interfaces/cluestate/ClueStateAction")
-local TeleportAction    = require "cluetrainer/solving/common/TeleportAction"
-local zyklib            = require "zyklib"
+local path_shapes        = require "cluetrainer/solving/common/path_shapes"
+local map                = require "cluetrainer/map/map"
+local EmoteAreaEntity    = require "cluetrainer/map/elements/EmoteAreaEntity"
+local HideyHoleEntity    = require "cluetrainer/map/elements/HideyHoleEntity"
+local Bounds             = require "cluetrainer/util/Bounds"
+local Path               = require "cluetrainer/model/path"
+local AbstractClueSolver = require "cluetrainer/solving/AbstractClueSolver"
+local Navigator          = require "cluetrainer/solving/common/Navigator"
+local MapSectionControl  = require "cluetrainer/solving/common/MapSectionControl"
+local luaflet            = require "prettymap/luaflet"
+local PathStepEntity     = require "cluetrainer/map/elements/PathStepElement"
+local RichText           = require "cluetrainer/util/RichText"
+local ClueStateAction    = require("cluetrainer/solving/cluestateinterface/ClueStateAction")
+local TeleportAction     = require "cluetrainer/solving/cluestateinterface/TeleportAction"
+local zyklib             = require "zyklib"
 
 ---@param step Emote
 local function create_step_highlights(step)
   return zyklib.highlights.HighlightGroup.new({
-    PathMesh.areaHighlight(step.area, 0x914183FF, 0x91418380)
+    path_shapes.areaHighlight(step.area, 0x914183FF, 0x91418380)
   })
 end
 
@@ -51,14 +51,14 @@ end
 ---@field emote_return_hideyhole? ct.interfaces.cluestate.ClueStateAction
 
 --- An ActiveEmoteClue manages a single emote clue currently in progress.
----@class ct.ActiveEmoteClue : ct.ActiveClueSolver
+---@class ct.ActiveEmoteClue : ct.AbstractClueSolver
 ---@field private navigator Navigator?
 ---@field private map_navigator ct.MapSectionControl?
 ---@field private path_twig prettymap.luaflet.Twig?
 ---@field private clue_state ct.ClueStateInterface
 ---@field private method Method.GenericPath?
 ---@field actions ct.EmoteClueActions
-local EmoteClueSolver = setmetatable({}, { __index = ActiveClueSolver })
+local EmoteClueSolver = setmetatable({}, { __index = AbstractClueSolver })
 EmoteClueSolver.__index = EmoteClueSolver
 
 ---@param clue Emote
@@ -66,7 +66,7 @@ EmoteClueSolver.__index = EmoteClueSolver
 ---@return ct.ActiveEmoteClue
 function EmoteClueSolver.new(clue, clue_state)
   ---@type ct.ActiveEmoteClue
-  local self = setmetatable(ActiveClueSolver.new(clue), EmoteClueSolver)
+  local self = setmetatable(AbstractClueSolver.new(clue), EmoteClueSolver)
   self.clue_state = clue_state
 
   self.disposable_group:add(create_step_highlights(clue):activate())
@@ -90,12 +90,14 @@ function EmoteClueSolver.new(clue, clue_state)
 end
 
 function EmoteClueSolver:buildActions()
+  local globetrotter_owned = var.VarPlayer.TRAIL_OUTFIT_FULL_OWNED.value == 5
+
   local clue = self.clue
   local state_panel = self.clue_state
   state_panel:clearActions()
   if self.method then state_panel:addAction(self.actions.teleport) end
 
-  if self.clue.hidey_hole ~= nil then
+  if self.clue.hidey_hole ~= nil and not globetrotter_owned then
     self.actions.emote_get_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Get hidey-hole"))
   end
 
@@ -110,7 +112,7 @@ function EmoteClueSolver:buildActions()
 
   self.actions.uri = state_panel:addAction(ClueStateAction.Text.new("Speak to Uri"))
 
-  if self.clue.hidey_hole ~= nil then
+  if self.clue.hidey_hole ~= nil and not globetrotter_owned then
     self.actions.emote_return_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Return hidey-hole"))
   end
 end
@@ -160,7 +162,7 @@ end
 
 function EmoteClueSolver:dispose()
   self:setPath(nil)
-  ActiveClueSolver.dispose(self)
+  AbstractClueSolver.dispose(self)
 end
 
 return EmoteClueSolver

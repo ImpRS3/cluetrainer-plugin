@@ -27,9 +27,6 @@ end
 ---@protected
 ---@param solution integer[]
 function SliderSolvingTask:registerSolution(solution)
-  log("Found solution")
-  log(solution)
-
   if self.best_solution == nil or #solution < #self.best_solution then
     self.best_solution = { table.unpack(solution) }
   end

@@ -1,12 +1,11 @@
 -- ScanGround.lua
 -- The scan drawn in the game world: the green area to scan in, a dig highlight per remaining spot coloured by the
 -- pulse it gives where the player stands, and the faded routes the player chooses between.
-local PathMesh           = require "cluetrainer/model/PathMesh"
-local OverlayConstants   = require "cluetrainer/model/OverlayConstants"
+local path_shapes           = require "cluetrainer/solving/common/path_shapes"
 local colours            = require "cluetrainer/util/colours"
 local scan_tree          = require "cluetrainer/solving/scan/scan_tree"
 local scan_display       = require "cluetrainer/solving/scan/scan_display"
-local tiles              = require "cluetrainer/model/shared/tiles"
+local tiles              = require("cluetrainer/math/math").tilecoordinates
 local HighlightGroup     = require "zyklib/highlights/HighlightGroup"
 
 -- Highlight colours are tints of a white mesh, see `zyklib.Highlight:setColour`. All RGBA.
@@ -18,7 +17,7 @@ local PREVIEW_FADE       = 0xFFFFFF60
 local PREVIEW_AREA_LINE_ALPHA = 0xA0
 local PREVIEW_AREA_FILL_ALPHA = 0x30
 -- Areas float a little above the ground, below the dig highlights at AREA_OVERLAY_HEIGHT.
-local AREA_HEIGHT        = OverlayConstants.AREA_OVERLAY_HEIGHT / 2
+local AREA_HEIGHT        = path_shapes.OverlayConstants.AREA_OVERLAY_HEIGHT / 2
 
 ---@class ct.ScanRoutePreview
 ---@field path Path.Raw
@@ -42,7 +41,7 @@ end
 ---@param area TileArea? nil removes it
 function ScanGround:setScanArea(area)
   if self.scan_area then self.scan_area:deactivate() end
-  self.scan_area = area and PathMesh.areaHighlight(area, SCAN_AREA_LINE, SCAN_AREA_FILL, AREA_HEIGHT):activate()
+  self.scan_area = area and path_shapes.areaHighlight(area, SCAN_AREA_LINE, SCAN_AREA_FILL, AREA_HEIGHT):activate()
 end
 
 --- Highlights the remaining spots; spots that dropped out lose their highlight.
@@ -60,7 +59,7 @@ function ScanGround:setSpots(remaining)
 
   for id, spot in pairs(wanted) do
     if self.spots[id] == nil then
-      local highlight = PathMesh.digHighlight(spot):activate()
+      local highlight = path_shapes.digHighlight(spot):activate()
       self.spots[id] = { spot = spot, highlight = highlight }
     end
   end
@@ -94,10 +93,10 @@ function ScanGround:setPreview(previews)
 
   local highlights = {}
   for _, preview in ipairs(previews) do
-    highlights[#highlights + 1] = PathMesh.pathHighlight(preview.path):setColour(PREVIEW_FADE):setIgnoreDepth(true)
+    highlights[#highlights + 1] = path_shapes.pathHighlight(preview.path):setColour(PREVIEW_FADE):setIgnoreDepth(true)
 
     if preview.area ~= nil then
-      highlights[#highlights + 1] = PathMesh.areaHighlight(preview.area,
+      highlights[#highlights + 1] = path_shapes.areaHighlight(preview.area,
         colours.withAlpha(preview.colour, PREVIEW_AREA_LINE_ALPHA), colours.withAlpha(preview.colour, PREVIEW_AREA_FILL_ALPHA),
         AREA_HEIGHT)
     end
