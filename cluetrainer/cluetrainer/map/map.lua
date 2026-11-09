@@ -23,6 +23,7 @@ local geometry = WindowGeometry.new("map_window_geometry", { size = true })
 
 ---@class ct.GameMap
 ---@field private shutdown_handler zyklib.reactive.EventHandler
+---@field private teleport_layer cluetrainer.TeleportLayer
 local GameMap = {}
 GameMap.__index = GameMap
 
@@ -77,7 +78,8 @@ function GameMap.new()
     )
   end
 
-  self.map:AddElement(teleport_layer.new())
+  self.teleport_layer = teleport_layer.new()
+  self.map:AddElement(self.teleport_layer)
 
   luaflet.twigs.prefab.FloorControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
   --luaflet.twigs.prefab.ZoomControlTwig.new({ anchor = "bottomright" }):AddTo(self.map.twigs)
@@ -94,6 +96,7 @@ function GameMap:close()
   geometry:save(self.window)
 
   self.shutdown_handler:cancel()
+  self.teleport_layer:dispose()
   self.map:Destroy()
   self.window:Destroy()
   if instance == self then instance = nil end

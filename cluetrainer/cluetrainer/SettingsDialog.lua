@@ -383,7 +383,7 @@ end
 
 local COMBO_HEIGHT = 30
 local SLOT_LABEL_WIDTH = 14
-local SLOT_COMBO_WIDTH = 175
+local SLOT_COMBO_GAP = 4
 
 local function capitalise(text)
   return text:sub(1, 1):upper() .. text:sub(2)
@@ -455,7 +455,7 @@ local function buildTeleports(page, rebuild)
 
   addSection(page, "Passages of the abyss")
   addDescription(page,
-    "Fill in what each passage of the abyss you own holds, in the order of its teleport menu. A teleport from a passage then shows its slot in front of the code, e.g. 3,2.",
+    "Fill in what each passage of the abyss you own holds, in the order of its teleport menu. A teleport from a passage then shows its slot in front of the code, e.g. 3,2. The API does not currently expose this information for automatic detection.",
     nextGroup())
 
   local jewellery = potaJewellery()
@@ -490,24 +490,20 @@ local function buildTeleports(page, rebuild)
           end
         end
 
-        -- Two slots per row.
-        local first = i % 2 == 1
         page:AddText({
           text = tostring(i),
           colour = SETTINGS_NAME_COLOUR,
           width = SLOT_LABEL_WIDTH,
           height = COMBO_HEIGHT,
-          inline = not first,
-          columnGap = first and nil or 16,
           rowBackgroundGroup = group,
         })
         page:AddComboBox({
           entries = entries,
           selectedID = selected,
-          width = SLOT_COMBO_WIDTH,
+          width = availableWidth(page) - SLOT_LABEL_WIDTH - SLOT_COMBO_GAP,
           height = COMBO_HEIGHT,
           inline = true,
-          columnGap = 4,
+          columnGap = SLOT_COMBO_GAP,
           rowBackgroundGroup = group,
           onChange = function(_, entry_id)
             local item = jewellery[(entry_id or 1) - 1]
@@ -520,12 +516,6 @@ local function buildTeleports(page, rebuild)
       end
     end
   end
-
-  addSection(page, "Fairy rings")
-  local group = nextGroup()
-  addSettingTitle(page, "Favourites", group)
-  addDescription(page,
-    "Read from the game. A favourite fairy ring shows its key instead of its code. Now: " .. favouritesText(), group)
 end
 
 --- Mounts the settings pages (navigation on the left, selected page on the right) onto a layer.
