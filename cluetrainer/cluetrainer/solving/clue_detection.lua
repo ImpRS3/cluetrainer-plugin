@@ -8,7 +8,7 @@ local util                  = require "cluetrainer/util"
 
 ---@class cluetrainer.ClueDetector
 ---@field clue_detected_event zyklib.reactive.Event<Step, nil>
-local clue_detection         = {}
+local clue_detection        = {}
 
 -- The list of relevant master clues that need to be read from the TRAIL_CLUELONG interface
 local relevant_master_clues = zyklib.array.filter(clues,
@@ -108,7 +108,7 @@ local function readUntilMatched()
   end)
 end
 
-local interface_handler           = zyklib.game_events.derived.component(id.Component
+local interface_handler            = zyklib.game_events.derived.component(id.Component
   ["TRAIL_CLUELONG__MAINMODAL_WINDOW"]):subscribeSuspended(function(event)
   if event ~= nil then
     readUntilMatched()
@@ -117,12 +117,14 @@ local interface_handler           = zyklib.game_events.derived.component(id.Comp
   end
 end)
 
-local mini_menu_handler           = zyklib.game_events.native.MiniMenuEntrySelected:subscribeSuspended(
+local mini_menu_handler            = zyklib.game_events.native.MiniMenuEntrySelected:subscribeSuspended(
   function(event)
     if not event.entry.componentData then return end
     if not event.entry.componentData.objConfig then return end
 
-    if event.entry.verbText ~= "Read" and event.entry.verbText ~= "Start scanning" then return end
+    -- Only proceed if the action is the primary action of the object
+    if not event.entry.actionEntryType ~= MiniMenuActionType.OP_OBJ1 then return end
+    -- if not zyklib.array.includes({ "Read", "Start scanning", "Observe" }, event.entry.verbText) then return end
 
     -- Find corresponding clue id
     local clue_id = clue_items[event.entry.componentData.objConfig.configName]
