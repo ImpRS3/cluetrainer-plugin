@@ -46,11 +46,17 @@ function schema.choices(options)
   end
 end
 
----@param options {default: integer}
+---@param options {default: integer, allow_transparency: boolean}
 ---@return ct.util.schema.Schema<integer>
 function schema.colour(options)
   return function(val)
-    return schema.int({ min = 0, max = 0xFFFFFFFF, default = options.default })(val) | 0xFF
+    local color =  schema.int({ min = 0, max = 0xFFFFFFFF, default = options.default })(val)
+
+    if not options.allow_transparency then
+      color = color | 0xFF
+    end
+
+    return color
   end
 end
 

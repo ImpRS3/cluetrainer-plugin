@@ -6,10 +6,12 @@ local MainPanel = {}
 ---@field onSolvingChanged fun(enabled: boolean)?
 ---@field onMapChanged fun(visible: boolean)?
 ---@field onOpenSettings fun()? Defaults to opening the settings dialog.
+---@field onOpenPatchNotes fun()? Defaults to opening the patch notes dialog.
 
 local ROW_COLOURS = { 0x24211EFF, 0x2E2825FF }
 local LABEL_COLOUR = 0xb4a092ff
 local CHECKBOX_RESERVED = 24
+local BUTTON_HORIZONTAL_SPACE = 2 * 14 + 18
 -- Panel border, inner padding and scrollbar gutter that the layer width does not account for. Estimated, tune visually.
 local PAGE_PADDING = 60
 
@@ -62,9 +64,15 @@ function MainPanel.mount(layer, options)
   addToggle(panel, "Enable clue solving", options.solving_enabled ~= false, options.onSolvingChanged)
   addToggle(panel, "Display map", options.map_visible == true, options.onMapChanged)
 
+  local button_width = math.max(1, panel.contentWidth - BUTTON_HORIZONTAL_SPACE)
+
   panel:AddSimpleButton("Open Settings", options.onOpenSettings or function()
     require("cluetrainer/SettingsDialog").open()
-  end, { marginTop = 8 })
+  end, { width = button_width, marginTop = 8 })
+
+  panel:AddSimpleButton("Open Patch Notes", options.onOpenPatchNotes or function()
+    require("cluetrainer/patch_notes/PatchNotesDialog").open()
+  end, { width = button_width, marginTop = 8 })
 
   panel:RefreshRowBackgrounds()
 end

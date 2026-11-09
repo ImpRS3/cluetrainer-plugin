@@ -21,8 +21,11 @@ local function main()
 
   local settings_dialog = require("cluetrainer/SettingsDialog")
   local MainPanel = require("cluetrainer/MainPanel")
+  local PatchNotesDialog = require("cluetrainer/patch_notes/PatchNotesDialog")
   local SolvingOrchestrator = require("cluetrainer/solving/SolvingOrchestrator")
   local Map = require("cluetrainer/map/map")
+
+  PatchNotesDialog.init()
 
   -- Load and initialize the individual puzzle solver modules
   require("cluetrainer/puzzles/towers/TowerSolver").init()
@@ -45,6 +48,9 @@ local function main()
       map_visible = Map.settings.visible:get(),
       onOpenSettings = function()
         settings_dialog.open()
+      end,
+      onOpenPatchNotes = function()
+        PatchNotesDialog.open()
       end,
       onSolvingChanged = function(enabled)
         SolvingOrchestrator.settings.enabled:set(enabled)

@@ -64,21 +64,12 @@ end
 ---@type zyklib.reactive.EventHandler?
 local pending_read = nil
 
----The last text read in the pending read and how close it came, for the log when nothing matched.
----@type { text: string, clue: Step?, score: number }?
-local last_attempt = nil
-
 ---@param report_miss boolean? Whether to log the last text read when no clue matched, so a miss shows in the console
 local function stopReading(report_miss)
   if pending_read then
     pending_read:cancel()
-    if report_miss and last_attempt ~= nil then
-      log(string.format("No master clue matched (best %.2f, clue %s): %s", last_attempt.score,
-        last_attempt.clue and tostring(last_attempt.clue.id) or "-", last_attempt.text))
-    end
   end
   pending_read = nil
-  last_attempt = nil
 end
 
 ---Reads the clue text on every logic tick until it matches a master clue, the window closes or the timeout passes, so
@@ -123,8 +114,8 @@ local mini_menu_handler            = zyklib.game_events.native.MiniMenuEntrySele
     if not event.entry.componentData.objConfig then return end
 
     -- Only proceed if the action is the primary action of the object
-    if not event.entry.actionEntryType ~= MiniMenuActionType.OP_OBJ1 then return end
-    -- if not zyklib.array.includes({ "Read", "Start scanning", "Observe" }, event.entry.verbText) then return end
+    -- TODO: Fix this to work on different game languages
+    if not zyklib.array.includes({ "Read", "Start scanning", "Observe" }, event.entry.verbText) then return end
 
     -- Find corresponding clue id
     local clue_id = clue_items[event.entry.componentData.objConfig.configName]
