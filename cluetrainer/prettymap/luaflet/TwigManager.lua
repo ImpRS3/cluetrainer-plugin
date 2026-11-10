@@ -150,7 +150,7 @@ end
 function ElementManager:_Tooltips()
     if not self.tooltips then
         local parent = self.tooltipParent
-            or ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA)
+            or ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_BOTTOM)
         self.tooltips = TooltipHost.new(parent, self.map.viewport, function() self:_Release() end)
     end
     return self.tooltips

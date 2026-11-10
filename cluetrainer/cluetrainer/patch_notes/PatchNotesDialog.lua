@@ -139,7 +139,7 @@ end
 
 --- Opens the full patch history, replacing any currently open patch notes.
 function PatchNotesDialog.open()
-  local parent = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA)
+  local parent = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_BOTTOM)
   assert(parent ~= nil and parent.visibleGlobal ~= false, "Cannot open patch notes: game interface is unavailable")
 
   if window ~= nil then
@@ -159,7 +159,7 @@ function PatchNotesDialog.init()
 
   if previous_version ~= data.current_version then
     pending = zyklib.game_events.native.Logic:subscribe(function()
-      local parent = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA)
+      local parent = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_BOTTOM)
       if parent == nil or parent.visibleGlobal == false then return end
 
       open(parent, previous_version, previous_version == nil and "first_start" or "update")

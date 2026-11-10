@@ -67,7 +67,7 @@ function ClueStateInterface.new()
   ---@type zyklib.reactive.Event<ct.AugmentedMethod<Method>?, nil>
   self.method_selected = zyklib.reactive.Event.new()
 
-  self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA), geometry:apply({
+  self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_BOTTOM), geometry:apply({
     title = "Clue Trainer",
     x = 0,
     y = 0,

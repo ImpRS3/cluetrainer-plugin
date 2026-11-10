@@ -58,7 +58,7 @@ function TeleportAction:_showTooltip(icon)
   if not self.teleport then return end
 
   local parent = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__ROOT)
-      or ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__GAME_AREA)
+      or ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_BOTTOM)
   assert(parent, "TeleportAction requires a top-level tooltip parent")
 
   local root = ui.Layer.new(parent)
