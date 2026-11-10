@@ -1,7 +1,7 @@
 {
   "name": "Clue Trainer",
-  "version": "0.1",
-  "dependencies": {},
+  "contactEmailAddress": "zyklop@cluetrainer.app",
+  "version": "83",
   "requiredPermissions": [],
   "optionalPermissions": [
     "httpAccess"
