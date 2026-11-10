@@ -1,53 +1,25 @@
-local tilecoordinates        = require("cluetrainer/math/math").tilecoordinates
-local path_shapes               = require "cluetrainer/solving/common/path_shapes"
-local TileArea               = require("cluetrainer/math/math").tilearea
-local map                    = require "cluetrainer/map/map"
-local TalkSolutionNpcEntity  = require "cluetrainer/map/elements/TalkSolutionNpcEntity"
-local SearchSolutionEntity   = require "cluetrainer/map/elements/SearchSolutionEntity"
-local DigSolutionEntity      = require "cluetrainer/map/elements/DigSolutionEntity"
-local InteractionMarker      = require "cluetrainer/map/elements/InteractionMarker"
-local Bounds                 = require "cluetrainer/util/Bounds"
-local Path                   = require "cluetrainer/model/path"
-local AbstractClueSolver       = require "cluetrainer/solving/AbstractClueSolver"
-local Navigator              = require "cluetrainer/solving/common/Navigator"
-local MapSectionControl      = require "cluetrainer/solving/common/MapSectionControl"
-local luaflet                = require "prettymap/luaflet"
-local PathStepEntity         = require "cluetrainer/map/elements/PathStepElement"
-local RichText               = require "cluetrainer/util/RichText"
-local zyklib                 = require "zyklib"
-local MutableMesh            = require "zyklib/MutableMesh"
-local ClueStateAction        = require "cluetrainer/solving/cluestateinterface/ClueStateAction"
-local TeleportAction         = require "cluetrainer/solving/cluestateinterface/TeleportAction"
-local clue_targets           = require "cluetrainer/solving/common/clue_targets"
-
----@param step Step
----@return Solution?
-local function inferSolution(step)
-  if step.solution ~= nil then return step.solution end
-
-  if step.type == "coordinates" then
-    local sextant = {
-      offsetx = 2440,
-      offsetz = 3161,
-      minutespertile = 1.875
-    }
-
-    return {
-      type = "dig",
-      spot = {
-        x = sextant.offsetx +
-            math.floor((60 * step.coordinates.longitude.degrees + step.coordinates.longitude.minutes) *
-              (step.coordinates.longitude.direction == "west" and -1 or 1) / sextant.minutespertile + 0.5),
-        y = sextant.offsetz +
-            math.floor((60 * step.coordinates.latitude.degrees + step.coordinates.latitude.minutes) *
-              (step.coordinates.latitude.direction == "south" and -1 or 1) / sextant.minutespertile + 0.5),
-        level = 0
-      }
-    }
-  end
-
-  return nil
-end
+local tilecoordinates       = require("cluetrainer/math/math").tilecoordinates
+local path_shapes           = require "cluetrainer/solving/common/path_shapes"
+local TileArea              = require("cluetrainer/math/math").tilearea
+local map                   = require "cluetrainer/map/map"
+local TalkSolutionNpcEntity = require "cluetrainer/map/elements/TalkSolutionNpcEntity"
+local SearchSolutionEntity  = require "cluetrainer/map/elements/SearchSolutionEntity"
+local DigSolutionEntity     = require "cluetrainer/map/elements/DigSolutionEntity"
+local InteractionMarker     = require "cluetrainer/map/elements/InteractionMarker"
+local Bounds                = require "cluetrainer/util/Bounds"
+local Path                  = require "cluetrainer/model/path"
+local AbstractClueSolver    = require "cluetrainer/solving/AbstractClueSolver"
+local Navigator             = require "cluetrainer/solving/common/Navigator"
+local MapSectionControl     = require "cluetrainer/solving/common/MapSectionControl"
+local luaflet               = require "prettymap/luaflet"
+local PathStepEntity        = require "cluetrainer/map/elements/PathStepElement"
+local RichText              = require "cluetrainer/util/RichText"
+local zyklib                = require "zyklib"
+local MutableMesh           = require "zyklib/MutableMesh"
+local ClueStateAction       = require "cluetrainer/solving/cluestateinterface/ClueStateAction"
+local TeleportAction        = require "cluetrainer/solving/cluestateinterface/TeleportAction"
+local clue_targets          = require "cluetrainer/solving/common/clue_targets"
+local clues                 = require "cluetrainer/model/clues"
 
 ---comment
 ---@param step Step
@@ -60,7 +32,7 @@ local function create_step_highlights(step)
   ---@type zyklib.TerrainHighlight[]
   local highlights = {}
 
-  local solution = inferSolution(step)
+  local solution = clues.getSolution(step)
 
   if solution ~= nil then
     if solution.type == "dig" then
@@ -133,7 +105,7 @@ end
 local function create_step_map_layer(step)
   local layer = luaflet.twigs.Twig.new()
 
-  local solution = inferSolution(step)
+  local solution = clues.getSolution(step)
 
   if solution ~= nil then
     if solution.type == "talkto" then
@@ -164,7 +136,7 @@ local function clue_map_bounds(step)
   local bounds = Bounds.new()
 
   -- Skilling clues have no solution, only an area, so `sol` can be nil.
-  local sol = inferSolution(step)
+  local sol = clues.getSolution(step)
 
   if sol == nil then
     -- Only the skilling area below.
@@ -249,7 +221,7 @@ function SimpleClueSolver:buildActions()
   local state_panel = self.clue_state
   state_panel:clearActions()
   if self.method then state_panel:addAction(self.actions.teleport) end
-  local sol = inferSolution(clue)
+  local sol = clues.getSolution(clue)
 
   if sol then
     if sol.type == "talkto" then
@@ -288,12 +260,11 @@ function SimpleClueSolver:buildActions()
         self.actions.solve_towers = state_panel:addAction(ClueStateAction.Text.new("Solve towers challenge"))
       elseif challenge.type == "challengescroll" then
         self.actions.enter_challenge_scroll_answer = state_panel:addAction(ClueStateAction.Text.new("Enter answer " ..
-        challenge.answers[1]
+          challenge.answers[1]
           .answer)) -- TODO: Automatically determine correct answer
       end
     end
   end
-
 end
 
 ---@param method Method.GenericPath?

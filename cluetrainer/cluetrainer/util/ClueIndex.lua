@@ -62,7 +62,7 @@ function ClueIndex:clear()
 end
 
 ---@type fun(): ct.ClueIndex<ClueSpot>
-ClueIndex.spots = util.lazy(function()
+ClueIndex.spots = zyklib.util.lazy(function()
   ---@type ct.ClueIndex<ClueSpot>
   local index = ClueIndex.new(function() return nil end)
 

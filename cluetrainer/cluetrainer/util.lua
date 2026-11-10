@@ -67,21 +67,6 @@ end
 
 util.RingBuffer = RingBuffer
 
----@generic T
----@param f fun():T
----@return fun():T
-function util.lazy(f)
-  local evaluated = false
-  local result
-  return function()
-    if not evaluated then
-      result = f()
-      evaluated = true
-    end
-    return result
-  end
-end
-
 ---Computes the Levenshtein distance between two strings.
 ---@param str1 string
 ---@param str2 string

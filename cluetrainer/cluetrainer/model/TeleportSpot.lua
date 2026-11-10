@@ -1,6 +1,7 @@
 -- TeleportSpot.lua
 local array = require "zyklib/array"
 local customization = require "cluetrainer/model/teleport_customization"
+local teleports = require "cluetrainer/model/teleports"
 
 ---@class cluetrainer.TeleportSpot
 ---@field group TeleportGroup
@@ -10,39 +11,6 @@ local customization = require "cluetrainer/model/teleport_customization"
 ---@field props TeleportProps
 local TeleportSpot = {}
 TeleportSpot.__index = TeleportSpot
-
-local PROP_KEYS = { "menu_ticks", "animation_ticks", "code", "hidden", "cache_data" }
-
-local DEFAULT_PROPS = {
-  animation_ticks = 0,
-  menu_ticks = 0,
-  code = "",
-}
-
----@param access TeleportAccess
-local function teleport_access_is_anywhere(access)
-  return access.type == "spellbook" or (access.type == "item" and access.area_restriction == nil)
-end
-
----Combines props, where earlier entries have higher priority. Nil entries are skipped.
----@param props (TeleportProps|nil)[]
----@param count integer
----@return TeleportProps
-local function combine_props(props, count)
-  local result = {}
-
-  for _, key in ipairs(PROP_KEYS) do
-    for i = 1, count do
-      local p = props[i]
-      if p ~= nil and p[key] ~= nil then
-        result[key] = p[key]
-        break
-      end
-    end
-  end
-
-  return result
-end
 
 ---@param group TeleportGroup
 ---@param spot TeleportSpot
@@ -56,18 +24,18 @@ function TeleportSpot.new(group, spot, access)
   self.access = access
 
   local visual_access = access or array.find(group.access, function(value)
-    return teleport_access_is_anywhere(value)
+    return teleports.teleport_access_is_anywhere(value)
   end)
   self.visual_access = visual_access
 
   -- Priority: access x spot props, per-access props, per-spot props, per-group props, defaults.
-  self.props = combine_props({
+  self.props = teleports.props.combineInOrder({
     access and access.per_spot_props and access.per_spot_props[spot.id] or nil,
     visual_access,
     spot,
     group,
-    DEFAULT_PROPS,
-  }, 5)
+    teleports.props.DEFAULT_PROPS,
+  })
 
   return self
 end

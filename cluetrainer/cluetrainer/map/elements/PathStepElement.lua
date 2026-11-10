@@ -33,7 +33,7 @@ local COSMETIC_ARROW_COLOUR = 0x808080 -- TODO: Path.COSMETIC_DEFAULT_COLORS.arr
 -- TODO: map more CTR icon ids to Obj ids; steps with an unknown icon get no marker.
 ---@type table<string, integer>
 local ICON_OBJECTS = {
-  ["item/rotten-potato"] = id.Obj["ROTTEN_POTATO"],
+  ["item/powerburst-of-acceleration"] = id.Obj["4DOSE_POW_MOVEMENT"],
 }
 
 ---@param hex string? Colour like "#ff8800".
@@ -193,7 +193,6 @@ local function build_cheat(self, step)
     y = (start.y + step.target.y) / 2,
     level = step.target.level,
   }) or step.target
-  add_marker(self, ItemMarker.new(geometry.coord(marker_pos), ICON_OBJECTS["item/rotten-potato"]))
 end
 
 ---@param self ct.PathStepElement

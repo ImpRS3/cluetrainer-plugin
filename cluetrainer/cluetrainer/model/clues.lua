@@ -1,6 +1,3 @@
--- clues.lua
-local clues = {}
-
 ---@alias Challenge
 ---     | { type: "wizard" }
 ---     | { type: "slider" }
@@ -172,5 +169,24 @@ clues.ClueTier = {
 ---@class ClueSpot.Id
 ---@field clue number
 ---@field spot? TileCoordinates
+
+local ctmath = require("cluetrainer/math/math")
+
+local clues = {}
+
+---@param step Step
+---@return Solution?
+function clues.getSolution(step)
+    if step.solution ~= nil then return step.solution end
+
+    if step.type == "coordinates" then
+        return {
+            type = "dig",
+            spot = ctmath.gielicoordinates.toTileCoordinates(step.coordinates)
+        }
+    end
+
+    return nil
+end
 
 return clues

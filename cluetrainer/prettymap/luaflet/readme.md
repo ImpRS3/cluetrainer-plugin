@@ -1,2 +1,0 @@
-AI Disclaimer: This module was initially created using LLM assistance that goes beyond a simple full line completion.
-This was done mostly as a self experiment to see how well AI fares with problems that are mostly solved.

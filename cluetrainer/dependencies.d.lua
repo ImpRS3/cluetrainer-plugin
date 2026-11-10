@@ -1,2 +1,0 @@
----@type PrettyUI
-prettyui = nil

@@ -194,7 +194,7 @@ local COLOR_CONTRAST = 0x000000FF
 
 -- Offset of the canvas content's top-left corner. Applied to everything drawn on the canvases.
 -- Lazily determined by the position of the puzzle layer within the UI.
-local CANVAS_OFFSET = util.lazy(function()
+local CANVAS_OFFSET = zyklib.util.lazy(function()
   -- Create the canvas for the solution overlay
   local layer = ui.Interfaces:GetComponent(id.Component.SLIDE_PUZZLE__PUZZLE_LAYER) --[[@as ui.ComponentCollection]]
 
