@@ -29,13 +29,13 @@ function TeleportSpot.new(group, spot, access)
   self.visual_access = visual_access
 
   -- Priority: access x spot props, per-access props, per-spot props, per-group props, defaults.
-  self.props = teleports.props.combineInOrder({
+  self.props = teleports.props.combineInOrder(
     access and access.per_spot_props and access.per_spot_props[spot.id] or nil,
     visual_access,
     spot,
     group,
-    teleports.props.DEFAULT_PROPS,
-  })
+    teleports.props.DEFAULT_PROPS
+  )
 
   return self
 end

@@ -24,7 +24,7 @@ local method_management = {}
 ---@field clue ClueSpot
 
 local function refreshIndex()
-  local packs = require "cluetrainer/data/methods"
+  local packs = require "cluetrainer/data/method_packs"
 
   for _, pack in ipairs(packs) do
     for _, method in ipairs(pack.methods) do
