@@ -15,6 +15,8 @@
 ---| "tetracompass"
 ---| "sandy"
 
+local clues = {}
+
 ---@type { values: ClueTier[] }
 clues.ClueTier = {
     values = {
@@ -172,7 +174,6 @@ clues.ClueTier = {
 
 local ctmath = require("cluetrainer/math/math")
 
-local clues = {}
 
 ---@param step Step
 ---@return Solution?

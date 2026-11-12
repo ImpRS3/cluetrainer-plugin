@@ -66,14 +66,18 @@ teleports.props.DEFAULT_PROPS = {
   code = "",
 }
 
----Combines props, where earlier entries have higher priority. Nil entries are skipped.
----@param props (TeleportProps|nil)[]
+---Combines props, where earlier arguments have higher priority. Nil arguments are skipped.
+---Takes varargs instead of a list so nil entries don't end the iteration early, as ipairs would.
+---@param ... TeleportProps|nil
 ---@return TeleportProps
-function teleports.props.combineInOrder(props)
+function teleports.props.combineInOrder(...)
   local result = {}
+  local count = select("#", ...)
+  local props = { ... }
 
   for _, key in ipairs(PROP_KEYS) do
-    for _, prop_i in ipairs(props) do
+    for i = 1, count do
+      local prop_i = props[i]
       if prop_i ~= nil and prop_i[key] ~= nil then
         result[key] = prop_i[key]
         break
