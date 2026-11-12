@@ -103,6 +103,11 @@ package_into target environment="production": (check-environment environment)
     rm "$TARGET/plugin.production.json" "$TARGET/plugin.test.json"
     cp "cluetrainer/plugin.{{environment}}.json" "$TARGET/plugin.json"
 
+    if grep -rln --include='*.lua' 'ExecuteConsoleCommand' "$TARGET"; then
+      echo "ExecuteConsoleCommand must not ship: the plugin hub handles permissions." >&2
+      exit 1
+    fi
+
 [private]
 apply_package_exclusions target:
     #!/usr/bin/env bash
