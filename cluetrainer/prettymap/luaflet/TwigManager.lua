@@ -13,14 +13,14 @@
 ---@field hoverQueue prettymap.luaflet.Twig[] Elements under the cursor in order of entry; the first one is hovered.
 ---@field tooltipParent ui.Component? Component tooltips are placed in; defaults to the game area.
 ---@field tooltips prettymap.TooltipHost? Created on the first tooltip.
----@field viewChangeToken table? Map listener that lays out `clipsToView` elements again; removed on `Destroy`.
+---@field viewChangeListeners table<table, fun(map: prettymap.MapView)>
 local ElementManager = {}
 ElementManager.__index = ElementManager
 
 local TooltipHost = require("prettymap/luaflet/TooltipHost")
 
 ---@type table<string, prettymap.PaneID>
-ElementManager.DEFAULT_Z_LAYERS = { overlay = 100, marker = 200 }
+ElementManager.DEFAULT_Z_LAYERS = { grid = 50, overlay = 100, marker = 200 }
 
 --- The z-layers are fixed at construction. Elements in a higher pane are always drawn above
 --- elements in a lower one; within a pane, later additions are on top (and hovered elements
@@ -57,6 +57,7 @@ function ElementManager.new(map, layer, zLayers, tooltipParent, staticLayer)
         staticLayer = staticLayer,
         elements = {},
         hoverQueue = {},
+        viewChangeListeners = {},
         panes = panes,
         paneIDs = zLayers,
         topPane = ids[#ids],
@@ -64,13 +65,34 @@ function ElementManager.new(map, layer, zLayers, tooltipParent, staticLayer)
     }, ElementManager)
 
     -- Lay out elements that clip their drawing to the view again when the map is panned, so the clipping follows.
-    self.viewChangeToken = map.overlays:AddViewChangeListener(function()
+    self:AddViewChangeListener(function()
         for element in pairs(self.elements) do
             if element.clipsToView then self:_Position(element) end
         end
     end)
 
     return self
+end
+
+--- Registers a callback invoked with the map when its view changes.
+---@param callback fun(map: prettymap.MapView)
+---@return table token
+function ElementManager:AddViewChangeListener(callback)
+    assert(type(callback) == "function", "view change callback must be a function")
+    local token = {}
+    self.viewChangeListeners[token] = callback
+    return token
+end
+
+---@param token table
+function ElementManager:RemoveViewChangeListener(token)
+    self.viewChangeListeners[token] = nil
+end
+
+function ElementManager:_NotifyViewChanged()
+    for _, callback in pairs(self.viewChangeListeners) do
+        self.map:_InvokeCallback("view change", callback, self.map)
+    end
 end
 
 ---@param element prettymap.luaflet.Twig
@@ -237,7 +259,7 @@ end
 
 ---@return nil
 function ElementManager:Destroy()
-    self.map.overlays:RemoveViewChangeListener(self.viewChangeToken)
+    self.viewChangeListeners = {}
     self.hoverQueue = {}
     if self.tooltips then
         self.tooltips:Destroy()

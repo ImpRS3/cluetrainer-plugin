@@ -78,6 +78,8 @@ function GameMap.new()
     )
   end
 
+  luaflet.twigs.GridTwig.new():AddTo(self.map.twigs)
+
   self.teleport_layer = teleport_layer.new()
   self.map:AddElement(self.teleport_layer)
 

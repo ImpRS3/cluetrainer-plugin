@@ -1,8 +1,6 @@
 local WorldMap = require("prettymap/world_map")
-local Controls = require("prettymap/controls")
 local Helpers = require("prettymap/map_helpers")
 local TileRenderer = require("prettymap/tile_renderer")
-local MapOverlays = require("prettymap/map_overlays")
 local LuafletManager = require("prettymap/luaflet/TwigManager")
 
 ---@class prettymap.MapView
@@ -10,45 +8,30 @@ local MapView = {}
 MapView.__index = MapView
 
 local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 }
-local MIN_ZOOM_INDEX = 5
+local MIN_ZOOM_INDEX = 3
 local DEFAULT_ZOOM_INDEX = 6
 local MAPSQUARE_SIZE = 64
 local DRAG_THRESHOLD = 5
 local NULL_TILE_COLOUR = 0x000000FF
-local EDGE_MARKER_SIZE = MapOverlays.EDGE_MARKER_SIZE
 local clamp = Helpers.Clamp
 local rounded = Helpers.Rounded
 
 local INVALIDATION = {
-    viewport_position = { tiles = true, edgeMarkers = true, notify = true },
+    viewport_position = { tiles = true, notify = true },
     scale = {
         destroyTiles = true,
         tiles = true,
-        sprites = true,
-        drawing = true,
-        edgeMarkers = true,
         notify = true,
     },
     plane = {
         destroyTiles = true,
         tiles = true,
-        sprites = true,
-        drawing = true,
-        edgeMarkers = true,
         notify = true,
     },
     tile_contents = { tiles = true },
-    overlay_geometry = { edgeMarkers = true },
 }
 
 local TILE_METHODS = { "SetIconsVisible", "GetIconsVisible" }
-
-local OVERLAY_METHODS = {
-    "CreateCanvas", "DestroyCanvas", "CreateOverlayLayer", "DestroyOverlayLayer",
-    "GetViewportSize", "AddViewChangeListener", "RemoveViewChangeListener",
-    "CreateSprite", "DestroySprite", "CreateEdgeMarker", "CreateMarker",
-    "SetDrawCallback", "Redraw",
-}
 
 local function optionalCallback(options, name)
     local callback = options[name]
@@ -83,15 +66,12 @@ function MapView.new(parent, options)
         customCanvases = {},
         customSprites = {},
         customOverlays = {},
-        viewChangeListeners = {},
         edgeMarkers = {},
         customMarkers = {},
         map = WorldMap,
     }, MapView)
     ---@type prettymap.tile_renderer
     self.tiles = Helpers.BindMethods(self, TileRenderer, TILE_METHODS)
-    ---@type prettymap.map_overlays
-    self.overlays = Helpers.BindMethods(self, MapOverlays, OVERLAY_METHODS)
 
     self.root = ui.Layer.new(parent)
     self.root:SetPos(options.x or 0, options.y or 0)
@@ -178,15 +158,7 @@ function MapView.new(parent, options)
 
     if onClick then self:AddClickListener(onClick) end
     self:_ApplyZoom(Helpers.Integer(options.zoom or DEFAULT_ZOOM_INDEX, "zoom"))
-    if options.showFloorControls == true then
-        self.floorControls = Controls.Floor(self.chromeLayer, self)
-    end
-    if options.showZoomControls == true then
-        self.zoomControls = Controls.Zoom(self.chromeLayer, self)
-    end
-    if options.showRegionControls == true then
-        self.regionControls = Controls.Region(self.chromeLayer, self)
-    end
+
     return self
 end
 
@@ -217,11 +189,8 @@ function MapView:_RefreshView(category)
         self.tileLevel = nil
     end
     if work.tiles then TileRenderer._RefreshTiles(self) end
-    if work.sprites then MapOverlays._RefreshCustomSprites(self) end
-    if work.drawing then MapOverlays._DrawCustomOverlay(self) end
     if work.destroyTiles then self.twigs:Refresh() end
-    if work.edgeMarkers then MapOverlays._DrawEdgeMarkers(self) end
-    if work.notify then MapOverlays._NotifyViewChanged(self) end
+    if work.notify then self.twigs:_NotifyViewChanged() end
 end
 
 function MapView:_SetScroll(x, y, deferRefresh)
@@ -285,7 +254,6 @@ function MapView:_ApplyZoom(index, centreNormalX, centreNormalY, scaleOverride)
         self:_InvokeCallback("onZoomChanged", self.onZoomChanged,
             self.zoomIndex, self.maximumZoomIndex, self:GetZoomLevelCount())
     end
-    if self.zoomControls then self.zoomControls:Refresh() end
     return true
 end
 
@@ -341,7 +309,6 @@ function MapView:SetPlane(level)
     self.reportedMissingImage = false
     self:_RefreshView("plane")
     self.twigs:_PlaneChanged(level)
-    if self.floorControls then self.floorControls:Refresh() end
     self:_InvokeCallback("onPlaneChanged", self.onPlaneChanged, level, self)
     return true
 end
@@ -486,10 +453,6 @@ function MapView:Destroy()
         marker.component = nil
         marker.hitbox = nil
     end
-    if self.regionControls then
-        self.regionControls:Destroy()
-        self.regionControls = nil
-    end
     if self.root then
         self.root:Destroy()
         self.root = nil
@@ -498,6 +461,8 @@ function MapView:Destroy()
     self.border = nil
     self.viewport = nil
     self.tileLayer = nil
+    self.tileFloorLayers = nil
+    self.tileFloorDividers = nil
     self.iconTileLayer = nil
     self.mapOverlayLayer = nil
     self.elementLayer = nil
@@ -509,12 +474,10 @@ function MapView:Destroy()
     self.customCanvases = {}
     self.customSprites = {}
     self.customOverlays = {}
-    self.viewChangeListeners = {}
     self.edgeMarkers = {}
     self.customMarkers = {}
     self.clickListeners = {}
     self.tiles = nil
-    self.overlays = nil
     return true
 end
 

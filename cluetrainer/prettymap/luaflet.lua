@@ -11,6 +11,7 @@ return {
         StaticTwig = require("prettymap/luaflet/twigs/StaticTwig"),
         SpriteTwig = require("prettymap/luaflet/twigs/SpriteTwig"),
         PolygonTwig = require("prettymap/luaflet/twigs/PolygonTwig"),
+        GridTwig = require("prettymap/luaflet/twigs/GridTwig"),
     },
     Tooltip = require("prettymap/luaflet/Tooltip"),
 }
