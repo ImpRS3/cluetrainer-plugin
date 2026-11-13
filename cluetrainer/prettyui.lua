@@ -53,10 +53,10 @@ local PrettyUI = {
     AchievementPopup = require("prettyui/achievement_popup"),
     AnchoredTooltip = require("prettyui/anchored_tooltip"),
     BarChart = BarChart,
-    BuildCategoryGroup = CategoryGroups.build,
+    BuildCategoryGroup = CategoryGroups and CategoryGroups.build,
     NewComponent = Components.new,
     RefreshComponentIDs = Components.refresh,
-    WithCategoryBatch = CategoryGroups.withBatch,
+    WithCategoryBatch = CategoryGroups and CategoryGroups.withBatch,
     BigSpinner = require("prettyui/big_spinner"),
     CheckboxButton = SelectionButtons.CheckboxButton,
     ColourPicker = require("prettyui/colour_picker"),
@@ -94,17 +94,17 @@ local PrettyUI = {
 
 PrettyUI.version = "1.3.0"
 
-PrettyMiniMenu.Start()
+if PrettyMiniMenu then PrettyMiniMenu.Start() end
 
 function PrettyUI.PluginShutdown()
-    KeybindField.Shutdown()
-    PrettyMiniMenu.Shutdown()
-    Dialog.Shutdown()
-    BuffBar.Shutdown()
-    TimeGraph.Shutdown()
-    BarChart.Shutdown()
-    Histogram.Shutdown()
-    OverheadBar.Shutdown()
+    if KeybindField then KeybindField.Shutdown() end
+    if PrettyMiniMenu then PrettyMiniMenu.Shutdown() end
+    if Dialog then Dialog.Shutdown() end
+    if BuffBar then BuffBar.Shutdown() end
+    if TimeGraph then TimeGraph.Shutdown() end
+    if BarChart then BarChart.Shutdown() end
+    if Histogram then Histogram.Shutdown() end
+    if OverheadBar then OverheadBar.Shutdown() end
 end
 
 return PrettyUI

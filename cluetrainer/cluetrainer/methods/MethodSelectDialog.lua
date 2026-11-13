@@ -1,4 +1,3 @@
-local methods = require("cluetrainer/methods/methods")
 local method_management = require("cluetrainer/methods/method_management")
 local RichText = require("cluetrainer/util/RichText")
 

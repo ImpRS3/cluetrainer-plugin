@@ -1,5 +1,4 @@
 local ClueIndex         = require "cluetrainer/util/ClueIndex"
-local storage           = require "cluetrainer/util/storage"
 local schema            = require "cluetrainer/util/schema"
 
 ---@type ct.ClueIndex<ct.AugmentedMethod<Method>>

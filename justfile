@@ -32,6 +32,7 @@ install environment="test": check-beta-dir (package_into DEV_PLUGINS / "cluetrai
     done
 
 # Replaces everything in the installed plugin except the resources folder.
+# Packaging exclusions are also removed from the installed plugin.
 install-light environment="test": check-beta-dir (check-environment environment)
     #!/usr/bin/env bash
     set -euo pipefail
@@ -54,6 +55,7 @@ install-light environment="test": check-beta-dir (check-environment environment)
 
     copy_without_resources cluetrainer
     copy_without_resources dependencies/zyklib/src
+    just apply_package_exclusions "$TARGET"
     rm "$TARGET/plugin.production.json" "$TARGET/plugin.test.json"
     cp "cluetrainer/plugin.{{environment}}.json" "$TARGET/plugin.json"
 
@@ -87,12 +89,44 @@ package-zip environment="production": (package_into "dist/cluetrainer" environme
 
 [private]
 package_into target environment="production": (check-environment environment)
-    rm -rf "{{target}}"
-    mkdir -p "{{target}}"
-    cp -R cluetrainer/. "{{target}}/"
-    cp -R dependencies/zyklib/src/. "{{target}}/"
-    rm "{{target}}/plugin.production.json" "{{target}}/plugin.test.json"
-    cp "cluetrainer/plugin.{{environment}}.json" "{{target}}/plugin.json"
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    TARGET="{{target}}"
+
+    rm -rf "$TARGET"
+    mkdir -p "$TARGET"
+    cp -R cluetrainer/. "$TARGET/"
+    cp -R dependencies/zyklib/src/. "$TARGET/"
+    just apply_package_exclusions "$TARGET"
+
+    rm "$TARGET/plugin.production.json" "$TARGET/plugin.test.json"
+    cp "cluetrainer/plugin.{{environment}}.json" "$TARGET/plugin.json"
+
+[private]
+apply_package_exclusions target:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    TARGET="{{target}}"
+
+    # Manually maintained list of paths to remove from packages and installs.
+    PACKAGE_EXCLUSIONS=(
+      prettyui/achievement_popup.lua
+      prettyui/anchored_tooltip.lua
+      prettyui/buff_bar.lua
+      prettyui/confirm.lua
+      prettyui/core/category_groups.lua
+      prettyui/minimenu.lua
+      prettyui/overhead_bar.lua
+      zyklib/game.lua
+      zyklib/game/
+      zyklib/game/equipment.lua
+    )
+
+    for path in "${PACKAGE_EXCLUSIONS[@]}"; do
+      rm -rf -- "$TARGET/$path"
+    done
 
 [private]
 check-environment environment:

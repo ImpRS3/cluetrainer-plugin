@@ -21,7 +21,6 @@ local tiles                      = require("cluetrainer/math/math").tilecoordina
 local array                      = require "zyklib/array"
 local zyklib                     = require "zyklib"
 local schema                     = require "cluetrainer/util/schema"
-local KeybindField               = require "prettyui/keybind_field"
 
 -- Read the panel 10 times per second (logic ticks run at 50 per second), enough for a text that changes once per pulse.
 local POLL_EVERY_TICKS           = 5

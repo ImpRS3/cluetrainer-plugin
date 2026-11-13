@@ -117,13 +117,4 @@ function Resources.Unload(resource)
     end
 end
 
-function Resources.WorldMap()
-    local resource, resourceError = Resources.Image("world_map.png")
-    if resource then return resource end
-    if resourceError and not resourceError:find("not found", 1, true) then
-        return nil, resourceError
-    end
-    return Resources.Image("images/world_map.png")
-end
-
 return Resources
