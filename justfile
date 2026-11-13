@@ -103,6 +103,11 @@ package_into target environment="production": (check-environment environment)
     rm "$TARGET/plugin.production.json" "$TARGET/plugin.test.json"
     cp "cluetrainer/plugin.{{environment}}.json" "$TARGET/plugin.json"
 
+    if grep -rnE '(ids|source_loc) = ([^-]*[{,])? *[0-9]' "$TARGET/cluetrainer/data"; then
+      echo "Entity ids must be names: run lua tools/entity_names/name_ids.lua" >&2
+      exit 1
+    fi
+
 [private]
 apply_package_exclusions target:
     #!/usr/bin/env bash
