@@ -104,7 +104,7 @@ package_into target environment="production": (check-environment environment)
     cp "cluetrainer/plugin.{{environment}}.json" "$TARGET/plugin.json"
 
     if grep -rnE '(ids|source_loc) = ([^-]*[{,])? *[0-9]' "$TARGET/cluetrainer/data"; then
-      echo "Entity ids must be names: run lua tools/entity_names/name_ids.lua" >&2
+      echo "Entity ids must be names: give the configs a name in the Alt1 Clue Trainer data and export the Lua there" >&2
       exit 1
     fi
 

@@ -149,6 +149,12 @@ clues.ClueTier = {
 ---@field areas TileArea[]
 ---@field answer string
 ---@field cursor MyCursorType
+---@field ingredients? Skilling.Ingredient[] Items the task uses up; tools are left out.
+
+---@class Skilling.Ingredient
+---@field name string
+---@field ids integer[] Obj config ids; any of them counts, such as raw shark, raw rocktail or raw sailfish.
+---@field amount? integer Default 1.
 
 
 ---@alias Step

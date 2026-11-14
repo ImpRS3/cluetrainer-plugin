@@ -1,14 +1,14 @@
--- The NPC (talk-to) or object (search) that each clue points to, by game config name, keyed by clue id.
+-- The NPC (talk-to, master skilling) or object (search, master skilling) that each clue points to, by game config
+-- name, keyed by clue id.
 -- ids: configs the entity can have (configID). Objects that can be opened also list their opened state.
--- parent_ids: parent configs of multi NPCs at the clue spot (parentConfigID).
--- Names are written by tools/entity_names/name_ids.lua.
--- Generated from the game cache and the RuneScape wiki (Codeberg #35). Entries marked "not confirmed" still need a check in game.
+-- parent_ids: parent configs of multi NPCs and multi objects at the clue spot (parentConfigID).
+-- Exported by Alt1 Clue Trainer from the npc_configs / entity_configs in src/data/clues.ts.
 return {
   [0] = { ids = { id.Loc.OMGE_BURTHORPE_HOUSE_DRAWERS_CLOSED, id.Loc.OMGE_BURTHORPE_HOUSE_DRAWERS_OPEN } }, -- Drawers
   [2] = { ids = { id.Loc.AREA_ARDOUGNE_BASIC_DRAWERS, id.Loc.AREA_ARDOUGNE_BASIC_DRAWERS_OPEN } }, -- Drawers
-  [14] = { ids = { id.NPC.ZOO_KEEPER, id.NPC.ZOO_KEEPER2, id.NPC.ZOO_KEEPER3 } }, -- Zookeeper (not confirmed)
+  [14] = { ids = { id.NPC.ZOO_KEEPER, id.NPC.ZOO_KEEPER2, id.NPC.ZOO_KEEPER3 } }, -- Zookeeper
   [20] = { ids = { id.NPC.CAM_THE_CAMEL } }, -- Cam the Camel
-  [24] = { -- Sabbot (not confirmed)
+  [24] = { -- Sabbot
     ids = { id.NPC.DEATH_SABBOT, id.NPC.DEATH_SABBOT_MINING },
     parent_ids = { id.NPC.DEATH_SABBOT_CAVE_MULTI, id.NPC.DEATH_SABBOT_TUNNEL_MULTI },
   },
@@ -53,7 +53,7 @@ return {
   [94] = { ids = { id.NPC.DONOVAN_THE_FAMILY_HANDYMAN } }, -- Donovan the Family Handyman
   [95] = { ids = { id.Loc.DESERT2012_PROP_CRATE_ACTIVE } }, -- Boxes
   [96] = { ids = { id.Loc.ACTIVE_CRATE } }, -- Crate
-  [97] = { ids = { id.NPC.GNOME_BRIMSTAIL } }, -- Brimstail (not confirmed)
+  [97] = { ids = { id.NPC.GNOME_BRIMSTAIL } }, -- Brimstail
   [98] = { ids = { id.NPC.WEREWOLFINNKEEPER } }, -- Roavar
   [100] = { ids = { id.Loc.OMGE_SKILL_MINING_BARREL } }, -- Barrel
   [101] = { ids = { id.Loc.AREA_ARDOUGNE_OUTDOOR_CRATE } }, -- Crate
@@ -98,7 +98,7 @@ return {
   [138] = { ids = { id.NPC.CHALLENGE_MASTER } }, -- Challenge Mistress Fara
   [139] = { ids = { id.NPC.ABBOT_LANGLEY } }, -- Abbot Langley
   [140] = { ids = { id.NPC.VKQ2_GERRANT_SICK, id.NPC.GERRANT_NPC }, parent_ids = { id.NPC.GERRANT } }, -- Gerrant
-  [141] = { ids = { id.NPC.QIP_DIGSITE_EXAMINER_02, id.NPC.QIP_DIGSITE_EXAMINER_03 } }, -- Examiner (not confirmed)
+  [141] = { ids = { id.NPC.QIP_DIGSITE_EXAMINER_02, id.NPC.QIP_DIGSITE_EXAMINER_03 } }, -- Examiner
   [142] = { ids = { id.Loc.ACTIVE_BOXES } }, -- Boxes
   [144] = { ids = { id.NPC.DUEL_MONK } }, -- Hamid
   [146] = { ids = { id.NPC.GNOMETRAINER } }, -- Gnome trainer
@@ -135,7 +135,7 @@ return {
   [187] = { ids = { id.Loc.AREA_ARDOUGNE_BASIC_DRAWERS, id.Loc.AREA_ARDOUGNE_BASIC_DRAWERS_OPEN } }, -- Drawers
   [188] = { ids = { id.Loc.SLUG2_CRATE_SINGLE } }, -- Crate
   [189] = { ids = { id.Loc.FAIRYKIT_CRATES } }, -- Crate
-  [190] = { ids = { id.Loc.MAGICTRAINING_BOOKSHELF_OLD_TALL_DOUBLE2 } }, -- Bookcase (not confirmed)
+  [190] = { ids = { id.Loc.MAGICTRAINING_BOOKSHELF_OLD_TALL_DOUBLE2 } }, -- Bookcase
   [191] = { ids = { id.Loc.CANAFIS_CRATE } }, -- Crate
   [192] = { ids = { id.Loc.HAYSTACK2 } }, -- Hay bales
   [193] = { ids = { id.Loc.DEAL_CRATE2 } }, -- Crate
@@ -190,19 +190,19 @@ return {
     ids = { id.NPC.RAG2_ODD_OLD_MAN, id.NPC.RAG2_ODD_OLD_MAN_FURS },
     parent_ids = { id.NPC.RAG2_ODD_OLD_MAN_MULTI },
   },
-  [302] = { ids = { id.NPC.FAIRY_NUFF } }, -- Fairy Nuff
+  [302] = { ids = { id.NPC.FAIRY_NUFF2, id.NPC.FAIRY_NUFF }, parent_ids = { id.NPC.FAIRY_NUFF_MULTI } }, -- Fairy Nuff
   [303] = { ids = { id.NPC.POLYPORE_SKINWEAVER } }, -- Ramokee Skinweaver
   [306] = { -- Brother Tranquility
     ids = { id.NPC.BRAIN_BROTHER_TRANQUILITY_ZOMBIE, id.NPC.BRAIN_BROTHER_TRANQUILITY_HUMAN },
     parent_ids = { id.NPC.BRAIN_TRANQUILITY, id.NPC.BRAIN_ISLAND_TRANQUILITY },
   },
   [307] = { ids = { id.NPC.ELR2_IMPLING_EXPERT } }, -- Sensei Seaworth
-  [308] = { ids = { id.NPC.FOTG2_DIGSITE_GUIDE } }, -- Celia Diggory (not confirmed)
-  [309] = { -- Malignius Mortifer (not confirmed)
+  [308] = { ids = { id.NPC.FOTG2_DIGSITE_GUIDE } }, -- Celia Diggory
+  [309] = { -- Malignius Mortifer
     ids = { id.NPC.ELEMENTAL_WIZARD_BOSS, id.NPC.QUEST_NECROMANCY_TUTORIAL_MALIGNIUS, id.NPC.NECRO_HUB_MALIGNIUS },
   },
   [310] = { ids = { id.NPC.PAWYA_ELF_GARDENER } }, -- Amaethwr
-  [311] = { -- Philipe Carnillean (not confirmed)
+  [311] = { -- Philipe Carnillean
     ids = {
       id.NPC.CARNI_PHILIPE_HAZEELCULTQUEST,
       id.NPC.CARNI_PHILIPE_FOLLOWER,
@@ -229,7 +229,7 @@ return {
   },
   [314] = { ids = { id.NPC.GWD2_SOLO_SOOTHSAYER } }, -- Soothsayer Sybil
   [315] = { ids = { id.NPC.ELFCITY_LADY_TRAHAEARN } }, -- Lady Trahaearn
-  [316] = { -- Ali The Wise (not confirmed)
+  [316] = { -- Ali The Wise
     ids = {
       id.NPC.MAH1_ALI_THE_WISE,
       id.NPC.MAH3_ALI_THE_WISE,
@@ -254,7 +254,7 @@ return {
   },
   [322] = { ids = { id.NPC.FYCIE } }, -- Fycie
   [323] = { ids = { id.NPC.DUEL_JARAAH } }, -- Jaraah
-  [326] = { ids = { id.NPC.GNOME_BRIMSTAIL } }, -- Brimstail (not confirmed)
+  [326] = { ids = { id.NPC.GNOME_BRIMSTAIL } }, -- Brimstail
   [327] = { ids = { id.NPC.COOK } }, -- Cook
   [328] = { ids = { id.NPC.ORACLE } }, -- Oracle
   [329] = { -- Caroline
@@ -276,5 +276,29 @@ return {
   [341] = { ids = { id.NPC.LOWE } }, -- Lowe
   [342] = { ids = { id.NPC.PARTYROOM_PETE } }, -- Party Pete
   [343] = { ids = { id.NPC.KING_ROALD } }, -- King Roald
+  [373] = { ids = { id.Loc.AREA_ARDOUGNE_GEMTHIEFSTALL } }, -- Gem stall
+  [375] = { ids = { id.Loc.JARO_FIREPIT } }, -- Dry patch
+  [376] = { ids = {}, parent_ids = { id.Loc.FARMING_ELDER_TREE_PATCH_1 } }, -- Elder tree
+  [377] = { ids = { id.Loc.RANGE } }, -- Range
+  [378] = { ids = { id.NPC.DORGESH_MALE_ENGINEER } }, -- Turgall
+  [381] = { -- Fire
+    ids = { id.Loc.RAID1_PERM_BONFIRE_BURN, id.Loc.RAID1_PERM_BONFIRE_COOK },
+    parent_ids = { id.Loc.RAID1_PERM_BONFIRE },
+  },
+  [386] = { -- Fire
+    ids = { id.Loc.RAID1_PERM_BONFIRE_BURN, id.Loc.RAID1_PERM_BONFIRE_COOK },
+    parent_ids = { id.Loc.RAID1_PERM_BONFIRE },
+  },
+  [387] = { ids = { id.Loc.SMITHING_HUMAN_FURNACE } }, -- Furnace
+  [388] = { ids = { id.Loc.DEATH_ALTAR } }, -- Death altar
+  [389] = { ids = { id.Loc.BLOOD_ALTAR } }, -- Blood altar
+  [390] = { ids = { id.Loc.ELFCITY_HEFIN_SEREN_STONE } }, -- Corrupted Seren Stone
+  [391] = { ids = { id.NPC.WILDERNESS_BUTTERFLY } }, -- Charming moth
+  [392] = { -- Fire
+    ids = { id.Loc.RAID1_PERM_BONFIRE_BURN, id.Loc.RAID1_PERM_BONFIRE_COOK },
+    parent_ids = { id.Loc.RAID1_PERM_BONFIRE },
+  },
+  [393] = { ids = { id.Loc.MINING_CONCENTRATED_GOLD } }, -- Concentrated gold deposit
+  [396] = { ids = { id.Loc.SMITHING_HUMAN_ANVIL } }, -- Anvil
   [471] = { ids = { id.NPC.FATHER_URHNEY } }, -- Father Urhney
 }

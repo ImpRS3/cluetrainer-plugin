@@ -3,7 +3,7 @@
 local pack = {
   name = "Default Hard Methods",
   description = "This is the default builtin pack for hard clues.",
-  author = "Ngis, Pup",
+  author = "Ngis, Jere, Pup",
   default_assumptions = {
     meerkats_active = true,
     full_globetrotter = true,
@@ -15,12 +15,12 @@ local pack = {
   type = "default",
   local_id = "default:ngishard",
   original_id = "default:ngishard",
-  timestamp = 1781371495,
+  timestamp = 1790867072,
   methods = {
     {
       id = "29be2a81-416d-4755-bbeb-f732db1a7eb6",
       type = "general_path",
-      timestamp = 1741279645,
+      timestamp = 1789166296,
       name = "Ring of Duelling",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -57,9 +57,9 @@ local pack = {
           to = { x = 3289, y = 3234, level = 0 },
           is_far_dive = true,
           target_area = {
-            origin = { x = 3288, y = 3233, level = 0 },
-            size = { x = 7, y = 8 },
-            data = "h0CA4fD7+Q=="
+            origin = { x = 3289, y = 3234, level = 0 },
+            size = { x = 6, y = 7 },
+            data = "QXAc/+8D"
           }
         }
       },
@@ -189,7 +189,7 @@ local pack = {
     {
       id = "3c3d3975-85d0-4286-8c89-0573abe06044",
       type = "general_path",
-      timestamp = 1741020327,
+      timestamp = 1789170622,
       name = "Watchtower Teleport (Yanille)",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -212,26 +212,28 @@ local pack = {
             { x = 2575, y = 3089, level = 0 },
             { x = 2576, y = 3089, level = 0 },
             { x = 2583, y = 3096, level = 0 },
-            { x = 2587, y = 3096, level = 0 }
+            { x = 2584, y = 3096, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2587, y = 3096, level = 0 },
-          to = { x = 2597, y = 3096, level = 0 }
+          from = { x = 2584, y = 3096, level = 0 },
+          to = { x = 2594, y = 3096, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2594, y = 3096, level = 0 },
+            { x = 2597, y = 3096, level = 0 }
+          }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2597, y = 3096, level = 0 },
-          to = { x = 2607, y = 3086, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2606, y = 3085, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "JwE="
-          }
+          from = { x = 2597, y = 3096, level = 0 },
+          to = { x = 2607, y = 3086, level = 0 }
         },
         {
           type = "ability",
@@ -240,12 +242,12 @@ local pack = {
           to = { x = 2615, y = 3078, level = 0 }
         }
       },
-      expected_time = 12
+      expected_time = 11
     },
     {
       id = "bdf77cae-8bbe-4be6-aa60-56107ecd4ba2",
       type = "general_path",
-      timestamp = 1741016873,
+      timestamp = 1789168102,
       name = "Cape of Legends",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -269,7 +271,7 @@ local pack = {
           type = "ability",
           ability = "dive",
           from = { x = 2728, y = 3346, level = 0 },
-          to = { x = 2723, y = 3338, level = 0 },
+          to = { x = 2723, y = 3339, level = 0 },
           target_area = {
             origin = { x = 2721, y = 3337, level = 0 },
             size = { x = 3, y = 3 }
@@ -281,7 +283,7 @@ local pack = {
     {
       id = "81b9020c-1826-450a-9ec6-e1b35e618443",
       type = "general_path",
-      timestamp = 1741016885,
+      timestamp = 1789171505,
       name = "Dave's Spellbook",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -344,7 +346,7 @@ local pack = {
     {
       id = "91f07428-e4b8-4d83-9619-1b0920d9c750",
       type = "general_path",
-      timestamp = 1741016899,
+      timestamp = 1789171617,
       name = "Slayer Cape",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -360,14 +362,9 @@ local pack = {
         {
           type = "ability",
           ability = "dive",
-          from = { x = 3052, y = 3951, level = 0 },
-          to = { x = 3042, y = 3941, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 3039, y = 3938, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
+          from = { x = 3052, y = 3951, level = 0 },
+          to = { x = 3042, y = 3941, level = 0 }
         },
         {
           type = "ability",
@@ -385,8 +382,7 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 3022, y = 3921, level = 0 },
-            { x = 3022, y = 3914, level = 0 },
-            { x = 3021, y = 3913, level = 0 }
+            { x = 3022, y = 3913, level = 0 }
           }
         }
       },
@@ -395,7 +391,7 @@ local pack = {
     {
       id = "59543fcb-93f5-4de9-9cec-58d4a1fe03aa",
       type = "general_path",
-      timestamp = 1741016911,
+      timestamp = 1789171814,
       name = "Combat Bracelet",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -409,32 +405,26 @@ local pack = {
           id = { group = "combatbracelet", spot = "monastery", access = "ring" }
         },
         {
+          type = "ability",
+          ability = "dive",
+          from = { x = 3052, y = 3488, level = 0 },
+          to = { x = 3058, y = 3491, level = 0 }
+        },
+        {
           type = "run",
           waypoints = {
-            { x = 3052, y = 3488, level = 0 },
-            { x = 3053, y = 3488, level = 0 },
-            { x = 3055, y = 3490, level = 0 },
-            { x = 3056, y = 3490, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3053, y = 3490, level = 0 },
-            size = { x = 4, y = 3 },
-            data = "7Ac="
+            { x = 3058, y = 3491, level = 0 },
+            { x = 3058, y = 3489, level = 0 }
           }
         },
         {
           type = "ability",
-          ability = "dive",
-          from = { x = 3056, y = 3490, level = 0 },
-          to = { x = 3058, y = 3484, level = 0 },
-          target_area = {
-            origin = { x = 3058, y = 3482, level = 0 },
-            size = { x = 2, y = 6 },
-            data = "/Q8="
-          }
+          ability = "surge",
+          from = { x = 3058, y = 3489, level = 0 },
+          to = { x = 3058, y = 3482, level = 0 }
         }
       },
-      expected_time = 10
+      expected_time = 9
     },
     {
       id = "31b171da-3b8c-4f5a-a4ce-7828ed194662",
@@ -533,7 +523,7 @@ local pack = {
     {
       id = "d3b780d6-1391-4451-9b83-a016466dd37f",
       type = "general_path",
-      timestamp = 1741017021,
+      timestamp = 1789172577,
       name = "Archaeology Teleport",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -566,7 +556,11 @@ local pack = {
           type = "ability",
           ability = "dive",
           from = { x = 2694, y = 3390, level = 0 },
-          to = { x = 2702, y = 3400, level = 0 }
+          to = { x = 2702, y = 3400, level = 0 },
+          target_area = {
+            origin = { x = 2702, y = 3398, level = 0 },
+            size = { x = 1, y = 3 }
+          }
         },
         {
           type = "transport",
@@ -616,7 +610,7 @@ local pack = {
           assumed_start = { x = 2702, y = 3408, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.LADDER,
+            source_loc = { "loc", id.Loc.LADDER },
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2700.5, y = 3408.5 },
@@ -644,7 +638,7 @@ local pack = {
     {
       id = "fee15662-8b12-400a-9a44-0af316d26429",
       type = "general_path",
-      timestamp = 1741017048,
+      timestamp = 1790695599,
       name = "Traveller's Necklace",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -665,30 +659,25 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 3103, y = 3180, level = 0 },
-            { x = 3103, y = 3172, level = 0 }
+            { x = 3103, y = 3173, level = 0 }
           },
           target_area = {
-            origin = { x = 3102, y = 3172, level = 0 },
-            size = { x = 2, y = 2 }
+            origin = { x = 3102, y = 3173, level = 0 },
+            size = { x = 2, y = 1 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 3103, y = 3172, level = 0 },
-          to = { x = 3103, y = 3162, level = 0 }
+          from = { x = 3103, y = 3173, level = 0 },
+          to = { x = 3103, y = 3163, level = 0 }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 3103, y = 3162, level = 0 },
-          to = { x = 3093, y = 3152, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 3091, y = 3151, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
+          from = { x = 3103, y = 3163, level = 0 },
+          to = { x = 3093, y = 3153, level = 0 }
         }
       },
       expected_time = 10
@@ -696,8 +685,8 @@ local pack = {
     {
       id = "a2123ba2-57bf-4759-84dc-024e1f554040",
       type = "general_path",
-      timestamp = 1741017059,
-      name = "Grace of the Elves",
+      timestamp = 1790862384,
+      name = "Grace of the Elves (Overgrown Idols)",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
       ["for"] = { clue = 155 },
@@ -713,16 +702,17 @@ local pack = {
           type = "ability",
           ability = "dive",
           from = { x = 2949, y = 2977, level = 0 },
-          to = { x = 2959, y = 2976, level = 0 },
+          to = { x = 2958, y = 2976, level = 0 },
           target_area = {
-            origin = { x = 2958, y = 2976, level = 0 },
-            size = { x = 2, y = 1 }
+            origin = { x = 2958, y = 2974, level = 0 },
+            size = { x = 2, y = 3 },
+            data = "Mw=="
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2959, y = 2976, level = 0 },
+          from = { x = 2958, y = 2976, level = 0 },
           to = { x = 2968, y = 2976, level = 0 }
         }
       },
@@ -731,7 +721,7 @@ local pack = {
     {
       id = "0dd8881a-21aa-4296-a239-c259d58bf7af",
       type = "general_path",
-      timestamp = 1781371275,
+      timestamp = 1790695875,
       name = "Slayer Cape",
       description = "While in combat",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -752,8 +742,8 @@ local pack = {
           },
           target_area = {
             origin = { x = 3291, y = 3543, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "qgA="
+            size = { x = 4, y = 4 },
+            data = "SBI="
           }
         },
         {
@@ -788,7 +778,7 @@ local pack = {
     {
       id = "40e2e663-0df0-4ed7-b1a6-bcb5b9c5a0ae",
       type = "general_path",
-      timestamp = 1741017113,
+      timestamp = 1790696310,
       name = "Clocktower Teleport",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -809,28 +799,22 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 2593, y = 3252, level = 0 },
-            { x = 2593, y = 3253, level = 0 },
-            { x = 2592, y = 3254, level = 0 }
+            { x = 2592, y = 3252, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2592, y = 3254, level = 0 },
-          to = { x = 2602, y = 3264, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2601, y = 3263, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
+          from = { x = 2592, y = 3252, level = 0 },
+          to = { x = 2602, y = 3262, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2602, y = 3264, level = 0 },
-            { x = 2599, y = 3267, level = 0 },
-            { x = 2598, y = 3267, level = 0 }
+            { x = 2602, y = 3262, level = 0 },
+            { x = 2602, y = 3263, level = 0 },
+            { x = 2599, y = 3266, level = 0 }
           }
         }
       },
@@ -887,7 +871,7 @@ local pack = {
     {
       id = "ccaf5289-6063-402b-921d-37bbc1c801a9",
       type = "general_path",
-      timestamp = 1741017147,
+      timestamp = 1790696519,
       name = "Bandit Camp Teleport",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -918,7 +902,8 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 3177, y = 2984, level = 0 },
-            { x = 3177, y = 2987, level = 0 }
+            { x = 3177, y = 2986, level = 0 },
+            { x = 3178, y = 2986, level = 0 }
           }
         }
       },
@@ -927,7 +912,7 @@ local pack = {
     {
       id = "9d4120b0-d0a3-49d5-9844-af7951ddafd3",
       type = "general_path",
-      timestamp = 1741017165,
+      timestamp = 1790696839,
       name = "Amulet of Glory",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -956,7 +941,7 @@ local pack = {
     {
       id = "1dcfd663-cc23-4df6-bbb9-77176cb1be8a",
       type = "general_path",
-      timestamp = 1741017174,
+      timestamp = 1790697511,
       name = "Grace of the Elves",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -970,25 +955,26 @@ local pack = {
           id = { group = "gote", spot = "overgrownidols", access = "gote" }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 2949, y = 2977, level = 0 },
-            { x = 2951, y = 2977, level = 0 },
-            { x = 2952, y = 2976, level = 0 },
-            { x = 2953, y = 2976, level = 0 }
+          type = "ability",
+          ability = "dive",
+          from = { x = 2949, y = 2977, level = 0 },
+          to = { x = 2957, y = 2974, level = 0 },
+          target_area = {
+            origin = { x = 2957, y = 2974, level = 0 },
+            size = { x = 3, y = 1 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2953, y = 2976, level = 0 },
-          to = { x = 2963, y = 2976, level = 0 }
+          from = { x = 2957, y = 2974, level = 0 },
+          to = { x = 2967, y = 2974, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2963, y = 2976, level = 0 },
-            { x = 2966, y = 2976, level = 0 },
+            { x = 2967, y = 2974, level = 0 },
+            { x = 2968, y = 2974, level = 0 },
             { x = 2969, y = 2973, level = 0 }
           }
         },
@@ -1002,7 +988,7 @@ local pack = {
           }
         }
       },
-      expected_time = 19
+      expected_time = 15
     },
     {
       id = "f328e275-9e64-4e57-8a2a-61cca47a94f8",
@@ -1166,7 +1152,7 @@ local pack = {
     {
       id = "25cb3d87-9870-4b69-a996-cdd624e8e922",
       type = "general_path",
-      timestamp = 1741017210,
+      timestamp = 1790771666,
       name = "Slayer Cape",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -1176,30 +1162,35 @@ local pack = {
       main_path = {
         {
           type = "teleport",
-          spot = { x = 3094, y = 3478, level = 0 },
+          spot = { x = 3093, y = 3478, level = 0 },
           id = { group = "slayercape", spot = "vannaka", access = "cape" }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 3093, y = 3478, level = 0 },
+          to = { x = 3094, y = 3472, level = 0 },
+          target_area = {
+            origin = { x = 3094, y = 3470, level = 0 },
+            size = { x = 1, y = 3 }
+          }
         },
         {
           type = "run",
           waypoints = {
-            { x = 3094, y = 3478, level = 0 },
-            { x = 3094, y = 3473, level = 0 },
-            { x = 3093, y = 3472, level = 0 }
+            { x = 3094, y = 3472, level = 0 },
+            { x = 3092, y = 3470, level = 0 },
+            { x = 3091, y = 3470, level = 0 },
+            { x = 3090, y = 3469, level = 0 }
           }
-        },
-        {
-          type = "ability",
-          ability = "surge",
-          from = { x = 3093, y = 3472, level = 0 },
-          to = { x = 3089, y = 3468, level = 0 }
         }
       },
-      expected_time = 9
+      expected_time = 8
     },
     {
       id = "4c981543-0b6c-4f49-bf34-c476986623c3",
       type = "general_path",
-      timestamp = 1741017316,
+      timestamp = 1790772693,
       name = "Enlightened Amulet",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -1209,52 +1200,49 @@ local pack = {
       main_path = {
         {
           type = "teleport",
-          spot = { x = 3219, y = 3656, level = 0 },
-          id = { group = "wildernessobelisk", spot = "18", access = "obelisk" }
+          spot = { x = 3233, y = 3657, level = 0 },
+          id = {
+            group = "enlightenedamulet",
+            spot = "graveyard",
+            access = "ring"
+          }
+        },
+        {
+          type = "redclick",
+          target = { kind = "static", name = "Tree Stump" },
+          where = { x = 3234, y = 3657, level = 0 },
+          how = "generic"
         },
         {
           type = "run",
           waypoints = {
-            { x = 3219, y = 3656, level = 0 },
-            { x = 3221, y = 3656, level = 0 }
+            { x = 3233, y = 3657, level = 0 },
+            { x = 3232, y = 3656, level = 0 }
           },
           target_area = {
-            origin = { x = 3221, y = 3655, level = 0 },
-            size = { x = 2, y = 3 }
+            origin = { x = 3231, y = 3655, level = 0 },
+            size = { x = 3, y = 2 },
+            data = "Mw=="
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 3221, y = 3656, level = 0 },
-          to = { x = 3231, y = 3656, level = 0 }
+          from = { x = 3232, y = 3656, level = 0 },
+          to = { x = 3242, y = 3666, level = 0 }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 3231, y = 3656, level = 0 },
-          to = { x = 3241, y = 3666, level = 0 },
-          is_far_dive = true,
+          from = { x = 3242, y = 3666, level = 0 },
+          to = { x = 3235, y = 3673, level = 0 },
           target_area = {
-            origin = { x = 3241, y = 3666, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 3241, y = 3666, level = 0 },
-            { x = 3241, y = 3667, level = 0 },
-            { x = 3239, y = 3669, level = 0 },
-            { x = 3238, y = 3669, level = 0 },
-            { x = 3237, y = 3670, level = 0 },
-            { x = 3237, y = 3672, level = 0 },
-            { x = 3236, y = 3672, level = 0 }
+            origin = { x = 3235, y = 3672, level = 0 },
+            size = { x = 1, y = 3 }
           }
         }
       },
-      expected_time = 10
+      expected_time = 7
     },
     {
       id = "13488319-ac20-46ee-a94d-af8b52482953",
@@ -1302,7 +1290,7 @@ local pack = {
     {
       id = "7e227dbd-2766-48b3-9162-fe4dca853bc8",
       type = "general_path",
-      timestamp = 1741017345,
+      timestamp = 1790773408,
       name = "Grace of the Elves",
       description = "",
       assumptions = {
@@ -1321,25 +1309,26 @@ local pack = {
           id = { group = "gote", spot = "overgrownidols", access = "gote" }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 2949, y = 2977, level = 0 },
-            { x = 2951, y = 2977, level = 0 },
-            { x = 2952, y = 2976, level = 0 },
-            { x = 2955, y = 2976, level = 0 }
+          type = "ability",
+          ability = "dive",
+          from = { x = 2949, y = 2977, level = 0 },
+          to = { x = 2957, y = 2974, level = 0 },
+          target_area = {
+            origin = { x = 2957, y = 2974, level = 0 },
+            size = { x = 3, y = 1 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2955, y = 2976, level = 0 },
-          to = { x = 2965, y = 2976, level = 0 }
+          from = { x = 2957, y = 2974, level = 0 },
+          to = { x = 2967, y = 2974, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2965, y = 2976, level = 0 },
-            { x = 2966, y = 2976, level = 0 },
+            { x = 2967, y = 2974, level = 0 },
+            { x = 2968, y = 2974, level = 0 },
             { x = 2969, y = 2973, level = 0 }
           }
         },
@@ -1353,7 +1342,7 @@ local pack = {
           }
         }
       },
-      expected_time = 21
+      expected_time = 17
     },
     {
       id = "aac83e33-5c9d-40df-bce8-5a7ed319cfcb",
@@ -1389,7 +1378,7 @@ local pack = {
     {
       id = "0987ed58-0a2b-449e-b815-88420201ee0f",
       type = "general_path",
-      timestamp = 1741017363,
+      timestamp = 1790773658,
       name = "Traveller's Necklace",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -1423,11 +1412,10 @@ local pack = {
           type = "ability",
           ability = "dive",
           from = { x = 3103, y = 3164, level = 0 },
-          to = { x = 3105, y = 3157, level = 0 },
+          to = { x = 3104, y = 3155, level = 0 },
           target_area = {
             origin = { x = 3103, y = 3154, level = 0 },
-            size = { x = 11, y = 10 },
-            data = "z3/Oc/7/hwMc4AAH+AM="
+            size = { x = 4, y = 5 }
           }
         }
       },
@@ -1704,8 +1692,8 @@ local pack = {
     {
       id = "294b6030-fdfd-4a30-af76-50a6cec10fad",
       type = "general_path",
-      timestamp = 1741017433,
-      name = "Gu'Tanoth Teleport",
+      timestamp = 1790785299,
+      name = "Gu'Tanoth Teleport (Powerburst)",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
       ["for"] = { clue = 415 },
@@ -1725,97 +1713,79 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 2523, y = 3062, level = 0 },
-            { x = 2526, y = 3062, level = 0 },
-            { x = 2527, y = 3061, level = 0 }
-          }
-        },
-        {
-          type = "ability",
-          ability = "surge",
-          from = { x = 2527, y = 3061, level = 0 },
-          to = { x = 2537, y = 3051, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2537, y = 3051, level = 0 },
-            { x = 2537, y = 3049, level = 0 },
-            { x = 2540, y = 3049, level = 0 },
-            { x = 2542, y = 3047, level = 0 }
+            { x = 2523, y = 3063, level = 0 },
+            { x = 2521, y = 3065, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2542, y = 3047, level = 0 },
-          to = { x = 2550, y = 3055, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2552, y = 3057, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
+          from = { x = 2521, y = 3065, level = 0 },
+          to = { x = 2531, y = 3055, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2550, y = 3055, level = 0 },
-          to = { x = 2560, y = 3065, level = 0 }
+          from = { x = 2531, y = 3055, level = 0 },
+          to = { x = 2541, y = 3045, level = 0 }
         },
         {
           type = "powerburst",
-          where = { x = 2560, y = 3065, level = 0 }
+          where = { x = 2541, y = 3045, level = 0 }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2560, y = 3065, level = 0 },
-          to = { x = 2570, y = 3055, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2569, y = 3054, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "JwE="
-          }
+          from = { x = 2541, y = 3045, level = 0 },
+          to = { x = 2551, y = 3055, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2570, y = 3055, level = 0 },
-          to = { x = 2580, y = 3045, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2580, y = 3045, level = 0 },
-            { x = 2584, y = 3045, level = 0 }
-          }
+          from = { x = 2551, y = 3055, level = 0 },
+          to = { x = 2561, y = 3065, level = 0 }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2584, y = 3045, level = 0 },
-          to = { x = 2594, y = 3055, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2593, y = 3054, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
+          from = { x = 2561, y = 3065, level = 0 },
+          to = { x = 2570, y = 3056, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2594, y = 3055, level = 0 },
-          to = { x = 2602, y = 3063, level = 0 }
+          from = { x = 2570, y = 3056, level = 0 },
+          to = { x = 2575, y = 3051, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2575, y = 3051, level = 0 },
+          to = { x = 2583, y = 3043, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2583, y = 3043, level = 0 },
+          to = { x = 2593, y = 3053, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2593, y = 3053, level = 0 },
+          to = { x = 2602, y = 3062, level = 0 }
         }
       },
-      expected_time = 15
+      expected_time = 13
     },
     {
       id = "90cbe3e7-7222-4676-956e-a37c3f2b6ea1",
       type = "general_path",
-      timestamp = 1741017454,
+      timestamp = 1790785779,
       name = "Enlightened Amulet",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -1871,7 +1841,7 @@ local pack = {
             { x = 3180, y = 3032, level = 0 }
           },
           target_area = {
-            origin = { x = 3179, y = 3032, level = 0 },
+            origin = { x = 3180, y = 3031, level = 0 },
             size = { x = 2, y = 2 },
             data = "Bg=="
           }
@@ -1896,7 +1866,7 @@ local pack = {
     {
       id = "5b84c376-d931-42cf-8037-540aa23f8c5f",
       type = "general_path",
-      timestamp = 1741017464,
+      timestamp = 1790785923,
       name = "Bandit Camp Teleport",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -1914,48 +1884,40 @@ local pack = {
           }
         },
         {
-          type = "ability",
-          ability = "dive",
-          from = { x = 3170, y = 2982, level = 0 },
-          to = { x = 3160, y = 2972, level = 0 },
-          is_far_dive = true,
-          target_area = {
-            origin = { x = 3157, y = 2969, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
-        },
-        {
           type = "run",
           waypoints = {
-            { x = 3160, y = 2972, level = 0 },
-            { x = 3158, y = 2972, level = 0 }
+            { x = 3170, y = 2982, level = 0 },
+            { x = 3170, y = 2981, level = 0 },
+            { x = 3167, y = 2978, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 3158, y = 2972, level = 0 },
-          to = { x = 3148, y = 2972, level = 0 }
+          from = { x = 3167, y = 2978, level = 0 },
+          to = { x = 3157, y = 2968, level = 0 }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 3148, y = 2972, level = 0 },
-            { x = 3147, y = 2972, level = 0 },
-            { x = 3143, y = 2968, level = 0 },
-            { x = 3139, y = 2968, level = 0 },
-            { x = 3138, y = 2969, level = 0 }
-          }
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3157, y = 2968, level = 0 },
+          to = { x = 3147, y = 2968, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3147, y = 2968, level = 0 },
+          to = { x = 3138, y = 2968, level = 0 }
         }
       },
-      expected_time = 13
+      expected_time = 11
     },
     {
       id = "60f6ca2f-7acf-4e84-af9a-8c43d3037f1f",
       type = "general_path",
-      timestamp = 1741017486,
-      name = "Grace of the Elves",
+      timestamp = 1790786992,
+      name = "Grace of the Elves (Overgrown Idols)",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
       ["for"] = { clue = 430 },
@@ -1970,14 +1932,9 @@ local pack = {
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2949, y = 2977, level = 0 },
-          to = { x = 2939, y = 2967, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2938, y = 2966, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
+          from = { x = 2949, y = 2977, level = 0 },
+          to = { x = 2939, y = 2967, level = 0 }
         },
         {
           type = "ability",
@@ -1993,16 +1950,19 @@ local pack = {
             { x = 2928, y = 2958, level = 0 },
             { x = 2927, y = 2959, level = 0 },
             { x = 2927, y = 2960, level = 0 },
-            { x = 2925, y = 2962, level = 0 }
+            { x = 2926, y = 2961, level = 0 },
+            { x = 2925, y = 2961, level = 0 },
+            { x = 2924, y = 2962, level = 0 },
+            { x = 2924, y = 2963, level = 0 }
           }
         }
       },
-      expected_time = 8
+      expected_time = 9
     },
     {
       id = "2cc44859-3510-4d16-9a73-dfcf0453f97a",
       type = "general_path",
-      timestamp = 1741017497,
+      timestamp = 1790787060,
       name = "Taverley Teleport",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -2023,32 +1983,32 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 2912, y = 3423, level = 0 },
-            { x = 2915, y = 3420, level = 0 }
+            { x = 2914, y = 3421, level = 0 }
+          },
+          target_area = {
+            origin = { x = 2913, y = 3421, level = 0 },
+            size = { x = 2, y = 1 }
           }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2915, y = 3420, level = 0 },
-          to = { x = 2905, y = 3410, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2904, y = 3409, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
+          from = { x = 2914, y = 3421, level = 0 },
+          to = { x = 2904, y = 3411, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2905, y = 3410, level = 0 },
-          to = { x = 2895, y = 3400, level = 0 }
+          from = { x = 2904, y = 3411, level = 0 },
+          to = { x = 2894, y = 3401, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2895, y = 3400, level = 0 },
-            { x = 2895, y = 3398, level = 0 }
+            { x = 2894, y = 3401, level = 0 },
+            { x = 2894, y = 3398, level = 0 },
+            { x = 2895, y = 3397, level = 0 }
           }
         }
       },
@@ -2227,8 +2187,8 @@ local pack = {
     {
       id = "fcdd38d2-fa22-4527-bedb-c17fef19455c",
       type = "general_path",
-      timestamp = 1741021975,
-      name = "Portable Fairy Ring (Legacy)",
+      timestamp = 1790843723,
+      name = "Portable Fairy Ring (Powerburst) (Legacy)",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
       ["for"] = { clue = 439 },
@@ -2382,7 +2342,7 @@ local pack = {
     {
       id = "f3992121-4326-4135-adfd-cc51e5f72025",
       type = "general_path",
-      timestamp = 1741018760,
+      timestamp = 1790789365,
       name = "Wilderness Lodestone",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -2396,39 +2356,33 @@ local pack = {
           id = { group = "home", spot = "wilderness", access = "spellbook" }
         },
         {
-          type = "ability",
-          ability = "dive",
-          from = { x = 3143, y = 3635, level = 0 },
-          to = { x = 3133, y = 3625, level = 0 },
-          is_far_dive = true,
-          target_area = {
-            origin = { x = 3132, y = 3624, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
-        },
-        {
-          type = "ability",
-          ability = "surge",
-          from = { x = 3133, y = 3625, level = 0 },
-          to = { x = 3123, y = 3615, level = 0 }
-        },
-        {
-          type = "ability",
-          ability = "surge",
-          from = { x = 3123, y = 3615, level = 0 },
-          to = { x = 3114, y = 3606, level = 0 }
-        },
-        {
           type = "run",
           waypoints = {
-            { x = 3114, y = 3606, level = 0 },
-            { x = 3114, y = 3603, level = 0 },
-            { x = 3113, y = 3602, level = 0 }
+            { x = 3143, y = 3635, level = 0 },
+            { x = 3143, y = 3633, level = 0 }
           }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3143, y = 3633, level = 0 },
+          to = { x = 3133, y = 3623, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3133, y = 3623, level = 0 },
+          to = { x = 3123, y = 3613, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3123, y = 3613, level = 0 },
+          to = { x = 3113, y = 3603, level = 0 }
         }
       },
-      expected_time = 12
+      expected_time = 11
     },
     {
       id = "207a0d2e-5e64-4f0c-a85e-c2fdaaa9e4b4",
@@ -2630,7 +2584,7 @@ local pack = {
     {
       id = "dcef4375-1b14-4f85-b66e-df70ed492063",
       type = "general_path",
-      timestamp = 1741018993,
+      timestamp = 1790843935,
       name = "Dareeyak Teleport",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -2651,62 +2605,52 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 2968, y = 3696, level = 0 },
-            { x = 2968, y = 3709, level = 0 },
-            { x = 2967, y = 3710, level = 0 }
-          },
-          target_area = {
-            origin = { x = 2967, y = 3710, level = 0 },
-            size = { x = 1, y = 2 }
+            { x = 2968, y = 3698, level = 0 },
+            { x = 2970, y = 3700, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2967, y = 3710, level = 0 },
-          to = { x = 2957, y = 3720, level = 0 }
+          from = { x = 2970, y = 3700, level = 0 },
+          to = { x = 2980, y = 3710, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2980, y = 3710, level = 0 },
+            { x = 2980, y = 3716, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2980, y = 3716, level = 0 },
+          to = { x = 2980, y = 3726, level = 0 }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2957, y = 3720, level = 0 },
-          to = { x = 2967, y = 3730, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2966, y = 3730, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
+          from = { x = 2980, y = 3726, level = 0 },
+          to = { x = 2970, y = 3736, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2967, y = 3730, level = 0 },
-            { x = 2968, y = 3730, level = 0 },
-            { x = 2970, y = 3732, level = 0 },
-            { x = 2970, y = 3733, level = 0 }
-          }
-        },
-        {
-          type = "ability",
-          ability = "surge",
-          from = { x = 2970, y = 3733, level = 0 },
-          to = { x = 2970, y = 3743, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2970, y = 3743, level = 0 },
+            { x = 2970, y = 3736, level = 0 },
+            { x = 2970, y = 3742, level = 0 },
             { x = 2969, y = 3743, level = 0 },
             { x = 2969, y = 3748, level = 0 }
           }
         }
       },
-      expected_time = 16
+      expected_time = 15
     },
     {
       id = "109326fd-9bf6-486c-87e8-c33405558e1e",
       type = "general_path",
-      timestamp = 1741019006,
+      timestamp = 1790844143,
       name = "Portable Obelisk",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -2720,66 +2664,52 @@ local pack = {
           id = { group = "wildernessobelisk", spot = "44", access = "obelisk" }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 2980, y = 3866, level = 0 },
-            { x = 2980, y = 3864, level = 0 }
-          },
-          target_area = {
-            origin = { x = 2979, y = 3863, level = 0 },
-            size = { x = 3, y = 2 }
-          }
-        },
-        {
-          type = "ability",
-          ability = "surge",
-          from = { x = 2980, y = 3864, level = 0 },
-          to = { x = 2980, y = 3854, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2980, y = 3854, level = 0 },
-            { x = 2980, y = 3850, level = 0 }
-          }
-        },
-        {
-          type = "ability",
-          ability = "surge",
-          from = { x = 2980, y = 3850, level = 0 },
-          to = { x = 2980, y = 3840, level = 0 }
-        },
-        {
           type = "ability",
           ability = "dive",
-          from = { x = 2980, y = 3840, level = 0 },
-          to = { x = 2970, y = 3830, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2969, y = 3829, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
+          from = { x = 2980, y = 3866, level = 0 },
+          to = { x = 2980, y = 3856, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2980, y = 3856, level = 0 },
+          to = { x = 2980, y = 3846, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2970, y = 3830, level = 0 },
-            { x = 2970, y = 3827, level = 0 },
-            { x = 2967, y = 3824, level = 0 },
-            { x = 2964, y = 3824, level = 0 },
+            { x = 2980, y = 3846, level = 0 },
+            { x = 2976, y = 3842, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2976, y = 3842, level = 0 },
+          to = { x = 2966, y = 3832, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2966, y = 3832, level = 0 },
+            { x = 2966, y = 3830, level = 0 },
+            { x = 2964, y = 3828, level = 0 },
+            { x = 2964, y = 3827, level = 0 },
+            { x = 2963, y = 3826, level = 0 },
+            { x = 2963, y = 3823, level = 0 },
             { x = 2958, y = 3818, level = 0 },
             { x = 2955, y = 3818, level = 0 },
             { x = 2952, y = 3815, level = 0 },
             { x = 2949, y = 3815, level = 0 },
             { x = 2949, y = 3816, level = 0 },
             { x = 2948, y = 3816, level = 0 },
-            { x = 2947, y = 3817, level = 0 },
-            { x = 2947, y = 3818, level = 0 }
+            { x = 2946, y = 3818, level = 0 },
+            { x = 2946, y = 3819, level = 0 }
           }
         }
       },
-      expected_time = 22
+      expected_time = 21
     },
     {
       id = "4b04a3bd-78f8-495d-adb6-919c090e537b",
@@ -2902,7 +2832,7 @@ local pack = {
     {
       id = "ae0a7b86-089e-4903-abd4-cce443b55d35",
       type = "general_path",
-      timestamp = 1741019056,
+      timestamp = 1790844255,
       name = "Slayer Cape",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -2919,24 +2849,22 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 3052, y = 3951, level = 0 },
-            { x = 3051, y = 3952, level = 0 }
+            { x = 3050, y = 3951, level = 0 }
+          },
+          target_area = {
+            origin = { x = 3048, y = 3950, level = 0 },
+            size = { x = 3, y = 2 }
           }
         },
         {
           type = "ability",
-          ability = "surge",
-          from = { x = 3051, y = 3952, level = 0 },
-          to = { x = 3041, y = 3962, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 3041, y = 3962, level = 0 },
-            { x = 3039, y = 3960, level = 0 }
-          }
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3050, y = 3951, level = 0 },
+          to = { x = 3040, y = 3961, level = 0 }
         }
       },
-      expected_time = 7
+      expected_time = 6
     },
     {
       id = "ff2ae5c7-a59c-4681-9771-9caa230af15b",
@@ -3045,7 +2973,7 @@ local pack = {
     {
       id = "55fdc0cb-6a29-4ab5-8a98-9a804ffd3add",
       type = "general_path",
-      timestamp = 1741019078,
+      timestamp = 1790844964,
       name = "Desert Amulet",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -3059,28 +2987,33 @@ local pack = {
           id = { group = "desertamulet", spot = "nardah", access = "amulet" }
         },
         {
-          type = "ability",
-          ability = "dive",
-          from = { x = 3432, y = 2917, level = 0 },
-          to = { x = 3428, y = 2918, level = 0 }
-        },
-        {
           type = "run",
           waypoints = {
-            { x = 3428, y = 2918, level = 0 },
-            { x = 3426, y = 2918, level = 0 }
+            { x = 3432, y = 2917, level = 0 },
+            { x = 3432, y = 2918, level = 0 }
+          },
+          target_area = {
+            origin = { x = 3427, y = 2918, level = 0 },
+            size = { x = 11, y = 1 }
           }
         },
         {
           type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3432, y = 2918, level = 0 },
+          to = { x = 3422, y = 2918, level = 0 }
+        },
+        {
+          type = "ability",
           ability = "surge",
-          from = { x = 3426, y = 2918, level = 0 },
-          to = { x = 3416, y = 2918, level = 0 }
+          from = { x = 3422, y = 2918, level = 0 },
+          to = { x = 3415, y = 2918, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 3416, y = 2918, level = 0 },
+            { x = 3415, y = 2918, level = 0 },
             { x = 3415, y = 2917, level = 0 },
             { x = 3412, y = 2917, level = 0 }
           }
@@ -3104,7 +3037,7 @@ local pack = {
     {
       id = "7bb60d5e-1594-4557-bf79-549487bda19c",
       type = "general_path",
-      timestamp = 1741019119,
+      timestamp = 1790845161,
       name = "Dungeoneering Cape",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -3118,42 +3051,30 @@ local pack = {
           id = { group = "dungcape", spot = "dwarvenmine", access = "cape" }
         },
         {
+          type = "run",
+          waypoints = {
+            { x = 3036, y = 9772, level = 0 },
+            { x = 3036, y = 9776, level = 0 },
+            { x = 3042, y = 9782, level = 0 }
+          }
+        },
+        {
           type = "ability",
           ability = "dive",
-          from = { x = 3036, y = 9772, level = 0 },
-          to = { x = 3045, y = 9781, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 3046, y = 9784, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 3045, y = 9781, level = 0 },
-            { x = 3045, y = 9785, level = 0 },
-            { x = 3042, y = 9788, level = 0 }
-          }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 3042, y = 9788, level = 0 },
-            { x = 3042, y = 9790, level = 0 }
-          }
+          from = { x = 3042, y = 9782, level = 0 },
+          to = { x = 3042, y = 9792, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 3042, y = 9790, level = 0 },
-          to = { x = 3042, y = 9800, level = 0 }
+          from = { x = 3042, y = 9792, level = 0 },
+          to = { x = 3042, y = 9802, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 3042, y = 9800, level = 0 },
+            { x = 3042, y = 9802, level = 0 },
             { x = 3042, y = 9806, level = 0 },
             { x = 3043, y = 9807, level = 0 },
             { x = 3043, y = 9808, level = 0 }
@@ -3174,12 +3095,12 @@ local pack = {
           }
         }
       },
-      expected_time = 16
+      expected_time = 15
     },
     {
       id = "2f554ab1-3700-4368-a660-82acf32eb109",
       type = "general_path",
-      timestamp = 1741019131,
+      timestamp = 1790845249,
       name = "Dungeoneering Cape",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -3189,47 +3110,39 @@ local pack = {
       main_path = {
         {
           type = "teleport",
-          spot = { x = 2845, y = 9557, level = 0 },
+          spot = { x = 2844, y = 9558, level = 0 },
           id = { group = "dungcape", spot = "karamjavolcano", access = "cape" }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2845, y = 9557, level = 0 },
-          to = { x = 2835, y = 9567, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2831, y = 9569, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "yQE="
-          }
+          from = { x = 2844, y = 9558, level = 0 },
+          to = { x = 2834, y = 9568, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2835, y = 9567, level = 0 },
+            { x = 2834, y = 9568, level = 0 },
             { x = 2835, y = 9568, level = 0 },
             { x = 2836, y = 9569, level = 0 },
-            { x = 2836, y = 9571, level = 0 }
-          },
-          target_area = {
-            origin = { x = 2836, y = 9570, level = 0 },
-            size = { x = 2, y = 2 }
+            { x = 2836, y = 9570, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2836, y = 9571, level = 0 },
-          to = { x = 2836, y = 9581, level = 0 }
+          from = { x = 2836, y = 9570, level = 0 },
+          to = { x = 2836, y = 9580, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2836, y = 9581, level = 0 },
-            { x = 2836, y = 9583, level = 0 },
-            { x = 2835, y = 9583, level = 0 },
-            { x = 2832, y = 9586, level = 0 }
+            { x = 2836, y = 9580, level = 0 },
+            { x = 2835, y = 9580, level = 0 },
+            { x = 2834, y = 9581, level = 0 },
+            { x = 2834, y = 9584, level = 0 },
+            { x = 2833, y = 9585, level = 0 }
           }
         }
       },
@@ -3238,7 +3151,7 @@ local pack = {
     {
       id = "64a0ff28-d356-4798-a577-93ca9d671c7b",
       type = "general_path",
-      timestamp = 1741019144,
+      timestamp = 1790845406,
       name = "Desert Amulet",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -3248,22 +3161,21 @@ local pack = {
       main_path = {
         {
           type = "teleport",
-          spot = { x = 3479, y = 3098, level = 0 },
+          spot = { x = 3480, y = 3099, level = 0 },
           id = { group = "desertamulet", spot = "uzer", access = "amulet" }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 3479, y = 3098, level = 0 },
-          to = { x = 3481, y = 3094, level = 0 }
+          from = { x = 3480, y = 3099, level = 0 },
+          to = { x = 3481, y = 3095, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 3481, y = 3094, level = 0 },
+            { x = 3481, y = 3095, level = 0 },
             { x = 3481, y = 3093, level = 0 },
-            { x = 3480, y = 3093, level = 0 },
-            { x = 3479, y = 3092, level = 0 }
+            { x = 3479, y = 3091, level = 0 }
           }
         }
       },
@@ -3272,7 +3184,7 @@ local pack = {
     {
       id = "d85c3c52-5dfa-468e-8cca-bcc2c3463ca2",
       type = "general_path",
-      timestamp = 1741019156,
+      timestamp = 1790845514,
       name = "Dungeoneering Cape",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -3282,18 +3194,14 @@ local pack = {
       main_path = {
         {
           type = "teleport",
-          spot = { x = 3165, y = 9879, level = 0 },
+          spot = { x = 3165, y = 9880, level = 0 },
           id = { group = "dungcape", spot = "varrocksewers", access = "cape" }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 3165, y = 9879, level = 0 },
-          to = { x = 3169, y = 9885, level = 0 },
-          target_area = {
-            origin = { x = 3169, y = 9883, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          from = { x = 3165, y = 9880, level = 0 },
+          to = { x = 3169, y = 9885, level = 0 }
         },
         {
           type = "run",
@@ -3352,7 +3260,7 @@ local pack = {
     {
       id = "c82ea173-d3a7-421c-b189-9ad45d5dc03d",
       type = "general_path",
-      timestamp = 1741019182,
+      timestamp = 1790845560,
       name = "Portable Obelisk",
       description = "",
       assumptions = {
@@ -3371,51 +3279,38 @@ local pack = {
           id = { group = "wildernessobelisk", spot = "18", access = "obelisk" }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 3219, y = 3656, level = 0 },
-            { x = 3219, y = 3655, level = 0 },
-            { x = 3218, y = 3654, level = 0 }
-          }
-        },
-        {
           type = "ability",
           ability = "dive",
-          from = { x = 3218, y = 3654, level = 0 },
-          to = { x = 3228, y = 3644, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 3227, y = 3643, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "JwE="
+          from = { x = 3219, y = 3656, level = 0 },
+          to = { x = 3229, y = 3646, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3229, y = 3646, level = 0 },
+          to = { x = 3239, y = 3636, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3239, y = 3636, level = 0 },
+            { x = 3239, y = 3628, level = 0 },
+            { x = 3240, y = 3627, level = 0 },
+            { x = 3240, y = 3626, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 3228, y = 3644, level = 0 },
-          to = { x = 3238, y = 3634, level = 0 }
+          from = { x = 3240, y = 3626, level = 0 },
+          to = { x = 3240, y = 3616, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 3238, y = 3634, level = 0 },
-            { x = 3238, y = 3630, level = 0 }
-          }
-        },
-        {
-          type = "ability",
-          ability = "surge",
-          from = { x = 3238, y = 3630, level = 0 },
-          to = { x = 3238, y = 3620, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 3238, y = 3620, level = 0 },
-            { x = 3238, y = 3619, level = 0 },
-            { x = 3239, y = 3618, level = 0 },
-            { x = 3239, y = 3614, level = 0 }
+            { x = 3240, y = 3616, level = 0 },
+            { x = 3240, y = 3614, level = 0 }
           }
         }
       },
@@ -3493,7 +3388,7 @@ local pack = {
     {
       id = "400290c8-d2e0-4c64-83fe-f36e216fa2a4",
       type = "general_path",
-      timestamp = 1741019218,
+      timestamp = 1790845702,
       name = "Portable Obelisk",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -3510,46 +3405,34 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 3106, y = 3794, level = 0 },
-            { x = 3108, y = 3794, level = 0 }
+            { x = 3110, y = 3794, level = 0 }
           },
           target_area = {
-            origin = { x = 3108, y = 3793, level = 0 },
-            size = { x = 2, y = 3 }
+            origin = { x = 3109, y = 3793, level = 0 },
+            size = { x = 3, y = 3 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 3108, y = 3794, level = 0 },
-          to = { x = 3118, y = 3794, level = 0 }
+          from = { x = 3110, y = 3794, level = 0 },
+          to = { x = 3120, y = 3794, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3120, y = 3794, level = 0 },
+          to = { x = 3130, y = 3794, level = 0 }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 3118, y = 3794, level = 0 },
-          to = { x = 3128, y = 3804, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 3128, y = 3803, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 3128, y = 3804, level = 0 },
-            { x = 3130, y = 3804, level = 0 }
-          }
-        },
-        {
-          type = "ability",
-          ability = "surge",
-          from = { x = 3130, y = 3804, level = 0 },
+          from = { x = 3130, y = 3794, level = 0 },
           to = { x = 3140, y = 3804, level = 0 }
         }
       },
-      expected_time = 8
+      expected_time = 9
     },
     {
       id = "037358d3-fe99-4da7-a17e-35deab84cc66",
@@ -3697,7 +3580,7 @@ local pack = {
     {
       id = "e6e3edd6-19bc-49a6-b019-032f57d34f13",
       type = "general_path",
-      timestamp = 1741019258,
+      timestamp = 1790846419,
       name = "Spirit Tree Re-Rooter",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -3718,26 +3601,26 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 2542, y = 3169, level = 0 },
-            { x = 2541, y = 3168, level = 0 },
-            { x = 2538, y = 3168, level = 0 }
+            { x = 2540, y = 3171, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2538, y = 3168, level = 0 },
-          to = { x = 2530, y = 3160, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2527, y = 3157, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
+          from = { x = 2540, y = 3171, level = 0 },
+          to = { x = 2530, y = 3161, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2530, y = 3161, level = 0 },
+          to = { x = 2527, y = 3158, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2530, y = 3160, level = 0 },
+            { x = 2527, y = 3158, level = 0 },
             { x = 2527, y = 3160, level = 0 },
             { x = 2526, y = 3161, level = 0 },
             { x = 2526, y = 3162, level = 0 }
@@ -3748,6 +3631,7 @@ local pack = {
           assumed_start = { x = 2526, y = 3162, level = 0 },
           internal = {
             type = "entity",
+            source_loc = { "loc", id.Loc.GNOME_AREA_IMP_LADDER_BOTTOM },
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2524.5, y = 3162.5 },
@@ -3767,12 +3651,11 @@ local pack = {
                   }
                 }
               }
-            },
-            source_loc = id.Loc.GNOME_AREA_IMP_LADDER_BOTTOM
+            }
           }
         }
       },
-      expected_time = 21
+      expected_time = 14
     },
     {
       id = "a758e656-4bc0-43a7-94e2-1bb00a285cbd",
@@ -3856,7 +3739,7 @@ local pack = {
     {
       id = "7825f0f5-d263-4b76-b15a-1f073130cf0b",
       type = "general_path",
-      timestamp = 1741019329,
+      timestamp = 1790846493,
       name = "Enchanted Lyre",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -3873,8 +3756,7 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 2593, y = 3880, level = 0 },
-            { x = 2592, y = 3880, level = 0 },
-            { x = 2591, y = 3879, level = 0 }
+            { x = 2592, y = 3879, level = 0 }
           }
         }
       },
@@ -3883,7 +3765,7 @@ local pack = {
     {
       id = "8a003421-ace0-4b5b-9cb7-0cecdea1557d",
       type = "general_path",
-      timestamp = 1741019404,
+      timestamp = 1790862670,
       name = "Wicked Hood",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -3897,29 +3779,24 @@ local pack = {
           id = { group = "wickedhood", spot = "nature", access = "wickedhood" }
         },
         {
+          type = "run",
+          waypoints = {
+            { x = 2865, y = 3022, level = 0 },
+            { x = 2866, y = 3023, level = 0 }
+          }
+        },
+        {
           type = "ability",
           ability = "dive",
-          from = { x = 2865, y = 3022, level = 0 },
-          to = { x = 2875, y = 3032, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2874, y = 3031, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
+          from = { x = 2866, y = 3023, level = 0 },
+          to = { x = 2876, y = 3033, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2875, y = 3032, level = 0 },
-          to = { x = 2885, y = 3042, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2885, y = 3042, level = 0 },
-            { x = 2887, y = 3044, level = 0 }
-          }
+          from = { x = 2876, y = 3033, level = 0 },
+          to = { x = 2886, y = 3043, level = 0 }
         }
       },
       expected_time = 7
@@ -3983,7 +3860,7 @@ local pack = {
     {
       id = "99b8f93b-3f13-444d-ad76-d0ed52e1fadb",
       type = "general_path",
-      timestamp = 1741019434,
+      timestamp = 1790863321,
       name = "Dark Facet of Luck",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -4001,53 +3878,60 @@ local pack = {
           waypoints = {
             { x = 2552, y = 3475, level = 0 },
             { x = 2550, y = 3475, level = 0 }
+          },
+          target_area = {
+            origin = { x = 2550, y = 3475, level = 0 },
+            size = { x = 5, y = 1 }
           }
         },
         {
           type = "ability",
-          ability = "surge",
+          ability = "dive",
+          is_far_dive = true,
           from = { x = 2550, y = 3475, level = 0 },
           to = { x = 2541, y = 3475, level = 0 }
+        },
+        {
+          type = "redclick",
+          target = { kind = "static", name = "Tree" },
+          where = { x = 2533, y = 3483, level = 0 },
+          how = "chop"
         },
         {
           type = "run",
           waypoints = {
             { x = 2541, y = 3475, level = 0 },
             { x = 2541, y = 3474, level = 0 },
-            { x = 2540, y = 3474, level = 0 },
-            { x = 2540, y = 3473, level = 0 }
-          }
-        },
-        {
-          type = "ability",
-          ability = "dive",
-          from = { x = 2540, y = 3473, level = 0 },
-          to = { x = 2531, y = 3482, level = 0 },
-          is_far_dive = true,
+            { x = 2540, y = 3474, level = 0 }
+          },
           target_area = {
-            origin = { x = 2529, y = 3482, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "yQE="
-          }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2531, y = 3482, level = 0 },
-            { x = 2531, y = 3484, level = 0 }
+            origin = { x = 2540, y = 3474, level = 0 },
+            size = { x = 2, y = 1 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2531, y = 3484, level = 0 },
-          to = { x = 2531, y = 3494, level = 0 }
+          from = { x = 2540, y = 3474, level = 0 },
+          to = { x = 2530, y = 3484, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2531, y = 3494, level = 0 },
-            { x = 2529, y = 3494, level = 0 },
+            { x = 2530, y = 3484, level = 0 },
+            { x = 2530, y = 3486, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2530, y = 3486, level = 0 },
+          to = { x = 2530, y = 3495, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2530, y = 3495, level = 0 },
             { x = 2528, y = 3495, level = 0 }
           }
         },
@@ -4170,7 +4054,7 @@ local pack = {
           }
         }
       },
-      expected_time = 21
+      expected_time = 19
     },
     {
       id = "712d1554-2fa7-42dd-82bb-121fd6b17498",
@@ -4359,7 +4243,7 @@ local pack = {
     {
       id = "e2c3413e-7b35-425b-9989-d661cc0bf456",
       type = "general_path",
-      timestamp = 1741020143,
+      timestamp = 1790863393,
       name = "Crystal Teleport Seed",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -4376,25 +4260,20 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 2330, y = 3171, level = 0 },
-            { x = 2328, y = 3171, level = 0 }
+            { x = 2329, y = 3172, level = 0 }
           },
           target_area = {
-            origin = { x = 2327, y = 3171, level = 0 },
-            size = { x = 3, y = 2 },
-            data = "Mw=="
+            origin = { x = 2328, y = 3171, level = 0 },
+            size = { x = 2, y = 2 },
+            data = "DQ=="
           }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2328, y = 3171, level = 0 },
-          to = { x = 2335, y = 3178, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2338, y = 3181, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
+          from = { x = 2329, y = 3172, level = 0 },
+          to = { x = 2335, y = 3178, level = 0 }
         },
         {
           type = "ability",
@@ -5578,7 +5457,7 @@ local pack = {
     {
       id = "852ad52d-4356-42a6-8d22-4d4616487139",
       type = "general_path",
-      timestamp = 1741020307,
+      timestamp = 1790846714,
       name = "Watchtower Teleport (Yanille)",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -5596,37 +5475,32 @@ local pack = {
           }
         },
         {
+          type = "run",
+          waypoints = { { x = 2575, y = 3089, level = 0 } },
+          target_area = {
+            origin = { x = 2575, y = 3088, level = 0 },
+            size = { x = 3, y = 4 }
+          }
+        },
+        {
           type = "ability",
           ability = "dive",
           from = { x = 2575, y = 3089, level = 0 },
-          to = { x = 2585, y = 3099, level = 0 },
-          is_far_dive = true,
-          target_area = {
-            origin = { x = 2586, y = 3100, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
-          }
+          to = { x = 2585, y = 3098, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2585, y = 3099, level = 0 },
-            { x = 2584, y = 3100, level = 0 }
+            { x = 2585, y = 3098, level = 0 },
+            { x = 2584, y = 3098, level = 0 },
+            { x = 2583, y = 3099, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2584, y = 3100, level = 0 },
-          to = { x = 2576, y = 3108, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2576, y = 3108, level = 0 },
-            { x = 2576, y = 3107, level = 0 },
-            { x = 2575, y = 3107, level = 0 }
-          }
+          from = { x = 2583, y = 3099, level = 0 },
+          to = { x = 2575, y = 3107, level = 0 }
         },
         {
           type = "transport",
@@ -5838,7 +5712,7 @@ local pack = {
           }
         }
       },
-      expected_time = 44
+      expected_time = 43
     },
     {
       id = "536a926c-9812-4037-a89d-972c763930ea",
@@ -8216,7 +8090,7 @@ local pack = {
     {
       id = "184dabb9-4779-4c0c-8906-4513056aa1c1",
       type = "general_path",
-      timestamp = 1741021202,
+      timestamp = 1790862458,
       name = "Ring of Duelling",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -8233,32 +8107,21 @@ local pack = {
           type = "run",
           waypoints = {
             { x = 3315, y = 3237, level = 0 },
-            { x = 3316, y = 3238, level = 0 }
+            { x = 3317, y = 3237, level = 0 },
+            { x = 3320, y = 3240, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 3316, y = 3238, level = 0 },
-          to = { x = 3326, y = 3248, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 3326, y = 3248, level = 0 },
-            { x = 3328, y = 3246, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3328, y = 3244, level = 0 },
-            size = { x = 2, y = 4 }
-          }
+          from = { x = 3320, y = 3240, level = 0 },
+          to = { x = 3328, y = 3248, level = 0 }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 3328, y = 3246, level = 0 },
-          to = { x = 3338, y = 3242, level = 0 },
-          target_area = { origin = { x = 3338, y = 3242, level = 0 } }
+          from = { x = 3328, y = 3248, level = 0 },
+          to = { x = 3338, y = 3242, level = 0 }
         },
         {
           type = "transport",
@@ -8304,7 +8167,7 @@ local pack = {
           to = { x = 3361, y = 3242, level = 0 }
         }
       },
-      expected_time = 18
+      expected_time = 19
     },
     {
       id = "267d4371-44e8-42d3-ad78-9e0206811b39",
@@ -8550,8 +8413,8 @@ local pack = {
     {
       id = "febf10e7-7d79-4135-b1c3-b976788fd731",
       type = "general_path",
-      timestamp = 1741021286,
-      name = "Portable Fairy Ring",
+      timestamp = 1790866253,
+      name = "Fairy Ring (Powerburst)",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
       ["for"] = { clue = 421 },
@@ -8680,48 +8543,46 @@ local pack = {
           }
         },
         {
-          type = "ability",
-          ability = "surge",
-          from = { x = 2576, y = 3029, level = 0 },
-          to = { x = 2573, y = 3026, level = 0 }
+          type = "run",
+          waypoints = {
+            { x = 2576, y = 3029, level = 0 },
+            { x = 2576, y = 3028, level = 0 },
+            { x = 2575, y = 3028, level = 0 }
+          }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2573, y = 3026, level = 0 },
-          to = { x = 2580, y = 3019, level = 0 },
-          is_far_dive = true,
+          from = { x = 2575, y = 3028, level = 0 },
+          to = { x = 2570, y = 3032, level = 0 },
           target_area = {
-            origin = { x = 2582, y = 3015, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "JwE="
+            origin = { x = 2570, y = 3032, level = 0 },
+            size = { x = 3, y = 1 }
           }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2580, y = 3019, level = 0 },
-            { x = 2580, y = 3020, level = 0 },
-            { x = 2583, y = 3023, level = 0 },
-            { x = 2583, y = 3024, level = 0 }
+            { x = 2570, y = 3032, level = 0 },
+            { x = 2572, y = 3032, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2583, y = 3024, level = 0 },
-          to = { x = 2583, y = 3031, level = 0 }
+          from = { x = 2572, y = 3032, level = 0 },
+          to = { x = 2582, y = 3032, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2583, y = 3031, level = 0 },
-            { x = 2583, y = 3030, level = 0 },
-            { x = 2582, y = 3030, level = 0 }
+            { x = 2582, y = 3032, level = 0 },
+            { x = 2581, y = 3032, level = 0 },
+            { x = 2581, y = 3031, level = 0 }
           }
         }
       },
-      expected_time = 18
+      expected_time = 17
     },
     {
       id = "0f405581-b72a-4c41-9d20-a3f06e2d19fd",
@@ -8813,8 +8674,8 @@ local pack = {
     {
       id = "05880865-7f9d-4ff9-94b4-bdd02d11de17",
       type = "general_path",
-      timestamp = 1741021312,
-      name = "Quest Cape",
+      timestamp = 1790866614,
+      name = "Quest Cape (Powerburst)",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
       ["for"] = { clue = 424 },
@@ -8827,71 +8688,54 @@ local pack = {
           id = { group = "questcape", spot = "worldgate", access = "cape" }
         },
         {
-          type = "cosmetic",
-          icon = "run",
-          position = { x = 2369, y = 3359, level = 0 },
-          area = {
-            origin = { x = 2365, y = 3359, level = 0 },
-            size = { x = 5, y = 4 }
+          type = "run",
+          waypoints = {
+            { x = 2367, y = 3360, level = 0 },
+            { x = 2365, y = 3362, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2367, y = 3360, level = 0 },
-          to = { x = 2377, y = 3360, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2380, y = 3359, level = 0 },
-            size = { x = 1, y = 4 }
-          }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2377, y = 3360, level = 0 },
-            { x = 2379, y = 3360, level = 0 },
-            { x = 2381, y = 3362, level = 0 },
-            { x = 2385, y = 3362, level = 0 },
-            { x = 2385, y = 3360, level = 0 }
-          },
-          target_area = {
-            origin = { x = 2385, y = 3360, level = 0 },
-            size = { x = 1, y = 2 }
-          }
+          from = { x = 2365, y = 3362, level = 0 },
+          to = { x = 2375, y = 3362, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2385, y = 3360, level = 0 },
-          to = { x = 2385, y = 3350, level = 0 }
+          from = { x = 2375, y = 3362, level = 0 },
+          to = { x = 2385, y = 3362, level = 0 }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 2385, y = 3350, level = 0 },
-            { x = 2385, y = 3346, level = 0 }
-          }
+          type = "powerburst",
+          where = { x = 2385, y = 3362, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2385, y = 3362, level = 0 },
+          to = { x = 2385, y = 3352, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2385, y = 3346, level = 0 },
-          to = { x = 2385, y = 3336, level = 0 }
+          from = { x = 2385, y = 3352, level = 0 },
+          to = { x = 2385, y = 3342, level = 0 }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 2385, y = 3336, level = 0 },
-            { x = 2385, y = 3335, level = 0 }
-          }
+          type = "ability",
+          ability = "surge",
+          from = { x = 2385, y = 3342, level = 0 },
+          to = { x = 2385, y = 3335, level = 0 }
         },
         {
           type = "transport",
           assumed_start = { x = 2385, y = 3335, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.OVERPASS_GATE_LEFT,
+            source_loc = { "loc", id.Loc.OVERPASS_GATE_LEFT },
             entity = { name = "Huge Gate", kind = "static" },
             clickable_area = {
               topleft = { x = 2383.5, y = 3334.5 },
@@ -8900,7 +8744,7 @@ local pack = {
             },
             actions = {
               {
-                cursor = "generic",
+                cursor = "enter",
                 interactive_area = {
                   origin = { x = 2384, y = 3333, level = 0 },
                   size = { x = 2, y = 3 },
@@ -8926,35 +8770,16 @@ local pack = {
           }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 2385, y = 3333, level = 0 },
-            { x = 2385, y = 3331, level = 0 },
-            { x = 2387, y = 3329, level = 0 }
-          }
-        },
-        {
-          type = "powerburst",
-          where = { x = 2387, y = 3329, level = 0 }
+          type = "ability",
+          ability = "surge",
+          from = { x = 2385, y = 3333, level = 0 },
+          to = { x = 2385, y = 3323, level = 0 }
         },
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2387, y = 3329, level = 0 },
-          to = { x = 2377, y = 3319, level = 0 },
-          is_far_dive = true,
-          target_area = {
-            origin = { x = 2376, y = 3318, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2377, y = 3319, level = 0 },
-            { x = 2375, y = 3319, level = 0 }
-          }
+          from = { x = 2385, y = 3323, level = 0 },
+          to = { x = 2375, y = 3319, level = 0 }
         },
         {
           type = "ability",
@@ -8971,43 +8796,24 @@ local pack = {
         {
           type = "ability",
           ability = "dive",
-          from = { x = 2358, y = 3319, level = 0 },
-          to = { x = 2349, y = 3310, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2347, y = 3308, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "TwA="
-          }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2349, y = 3310, level = 0 },
-            { x = 2347, y = 3310, level = 0 }
-          }
+          from = { x = 2358, y = 3319, level = 0 },
+          to = { x = 2349, y = 3310, level = 0 }
         },
         {
           type = "ability",
-          ability = "surge",
-          from = { x = 2347, y = 3310, level = 0 },
-          to = { x = 2337, y = 3310, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2337, y = 3310, level = 0 },
-            { x = 2338, y = 3310, level = 0 },
-            { x = 2339, y = 3311, level = 0 }
-          }
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2349, y = 3310, level = 0 },
+          to = { x = 2339, y = 3310, level = 0 }
         }
       },
-      expected_time = 22
+      expected_time = 14
     },
     {
       id = "6023bcfd-eabd-4a2f-9b0e-35aa9ec02810",
       type = "general_path",
-      timestamp = 1741021332,
+      timestamp = 1790864292,
       name = "Portable Fairy Ring",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -9025,31 +8831,23 @@ local pack = {
           }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 2801, y = 3003, level = 0 },
-            { x = 2801, y = 3002, level = 0 },
-            { x = 2802, y = 3001, level = 0 },
-            { x = 2802, y = 2999, level = 0 },
-            { x = 2803, y = 2998, level = 0 },
-            { x = 2803, y = 2997, level = 0 }
-          }
+          type = "ability",
+          ability = "dive",
+          from = { x = 2801, y = 3003, level = 0 },
+          to = { x = 2798, y = 2993, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2803, y = 2997, level = 0 },
-          to = { x = 2803, y = 2987, level = 0 }
+          from = { x = 2798, y = 2993, level = 0 },
+          to = { x = 2798, y = 2983, level = 0 }
         },
         {
-          type = "ability",
-          ability = "dive",
-          from = { x = 2803, y = 2987, level = 0 },
-          to = { x = 2795, y = 2979, level = 0 },
-          is_far_dive = true,
-          target_area = {
-            origin = { x = 2795, y = 2978, level = 0 },
-            size = { x = 1, y = 3 }
+          type = "run",
+          waypoints = {
+            { x = 2798, y = 2983, level = 0 },
+            { x = 2798, y = 2982, level = 0 },
+            { x = 2795, y = 2979, level = 0 }
           }
         },
         {
@@ -9092,26 +8890,25 @@ local pack = {
           to = { x = 2773, y = 2979, level = 0 }
         },
         {
+          type = "ability",
+          ability = "dive",
+          from = { x = 2773, y = 2979, level = 0 },
+          to = { x = 2764, y = 2972, level = 0 }
+        },
+        {
           type = "run",
           waypoints = {
-            { x = 2773, y = 2979, level = 0 },
-            { x = 2770, y = 2979, level = 0 },
-            { x = 2770, y = 2977, level = 0 },
-            { x = 2768, y = 2975, level = 0 },
-            { x = 2768, y = 2974, level = 0 },
-            { x = 2767, y = 2973, level = 0 },
-            { x = 2767, y = 2972, level = 0 },
             { x = 2764, y = 2972, level = 0 },
-            { x = 2764, y = 2973, level = 0 }
+            { x = 2764, y = 2974, level = 0 }
           }
         }
       },
-      expected_time = 30
+      expected_time = 26
     },
     {
       id = "7b83149e-a032-4777-89fc-a8291c584409",
       type = "general_path",
-      timestamp = 1741021468,
+      timestamp = 1790866717,
       name = "Edgeville Lodestone",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -9125,24 +8922,17 @@ local pack = {
           id = { group = "home", spot = "edgeville", access = "spellbook" }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 3067, y = 3505, level = 0 },
-            { x = 3066, y = 3505, level = 0 },
-            { x = 3065, y = 3506, level = 0 }
-          }
-        },
-        {
           type = "ability",
-          ability = "surge",
-          from = { x = 3065, y = 3506, level = 0 },
-          to = { x = 3055, y = 3516, level = 0 }
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3067, y = 3505, level = 0 },
+          to = { x = 3057, y = 3515, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 3055, y = 3516, level = 0 },
-            { x = 3055, y = 3518, level = 0 },
+            { x = 3057, y = 3515, level = 0 },
+            { x = 3057, y = 3516, level = 0 },
             { x = 3054, y = 3519, level = 0 },
             { x = 3054, y = 3520, level = 0 }
           }
@@ -9152,7 +8942,7 @@ local pack = {
           assumed_start = { x = 3054, y = 3520, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.WILD_IMP_BOUNDRY_WALL_LOW_3X2_VAR5,
+            source_loc = { "loc", id.Loc.WILD_IMP_BOUNDRY_WALL_LOW_3X2_VAR5 },
             entity = { name = "Wilderness wall", kind = "static" },
             clickable_area = {
               topleft = { x = 3051.5, y = 3522.5 },
@@ -9186,28 +8976,37 @@ local pack = {
           }
         },
         {
-          type = "ability",
-          ability = "dive",
-          from = { x = 3054, y = 3523, level = 0 },
-          to = { x = 3064, y = 3533, level = 0 },
-          is_far_dive = true,
-          target_area = {
-            origin = { x = 3063, y = 3532, level = 0 },
-            size = { x = 3, y = 3 },
-            data = "5AE="
+          type = "run",
+          waypoints = {
+            { x = 3054, y = 3523, level = 0 },
+            { x = 3054, y = 3524, level = 0 },
+            { x = 3055, y = 3525, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 3064, y = 3533, level = 0 },
-          to = { x = 3074, y = 3543, level = 0 }
+          from = { x = 3055, y = 3525, level = 0 },
+          to = { x = 3065, y = 3535, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 3074, y = 3543, level = 0 },
-            { x = 3074, y = 3546, level = 0 },
+            { x = 3065, y = 3535, level = 0 },
+            { x = 3065, y = 3537, level = 0 },
+            { x = 3067, y = 3539, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3067, y = 3539, level = 0 },
+          to = { x = 3077, y = 3549, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3077, y = 3549, level = 0 },
             { x = 3079, y = 3551, level = 0 },
             { x = 3079, y = 3553, level = 0 },
             { x = 3086, y = 3560, level = 0 },
@@ -9219,7 +9018,7 @@ local pack = {
           assumed_start = { x = 3086, y = 3561, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.WILDERNESS_AIRORB_SHORTCUT_INVISIBLE_1X1,
+            source_loc = { "loc", id.Loc.WILDERNESS_AIRORB_SHORTCUT_INVISIBLE_1X1 },
             entity = { name = "Rocks", kind = "static" },
             clickable_area = {
               topleft = { x = 3085.5, y = 3562.5 },
@@ -9228,7 +9027,7 @@ local pack = {
             },
             actions = {
               {
-                cursor = "generic",
+                cursor = "agility",
                 interactive_area = { origin = { x = 3086, y = 3561, level = 0 } },
                 name = "Climb",
                 movement = { { time = 6, offset = { x = 0, y = 3, level = 0 } } }
@@ -9237,17 +9036,13 @@ local pack = {
           }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 3086, y = 3564, level = 0 },
-            { x = 3086, y = 3565, level = 0 },
-            { x = 3089, y = 3568, level = 0 },
-            { x = 3089, y = 3569, level = 0 },
-            { x = 3090, y = 3570, level = 0 }
-          }
+          type = "ability",
+          ability = "dive",
+          from = { x = 3086, y = 3564, level = 0 },
+          to = { x = 3091, y = 3571, level = 0 }
         }
       },
-      expected_time = 32
+      expected_time = 29
     },
     {
       id = "45bd8c20-7fcd-49e9-a743-ed1d4fdc77cc",
@@ -10027,7 +9822,7 @@ local pack = {
     {
       id = "da3dc91f-1658-4a94-8097-4538eb845f37",
       type = "general_path",
-      timestamp = 1741021813,
+      timestamp = 1790788682,
       name = "Western Kharazi Jungle Teleport",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -10045,51 +9840,35 @@ local pack = {
           }
         },
         {
-          type = "run",
-          waypoints = {
-            { x = 2803, y = 2917, level = 0 },
-            { x = 2804, y = 2917, level = 0 },
-            { x = 2804, y = 2916, level = 0 }
-          }
-        },
-        {
           type = "ability",
           ability = "dive",
-          is_far_dive = true,
-          from = { x = 2804, y = 2916, level = 0 },
-          to = { x = 2814, y = 2916, level = 0 }
+          from = { x = 2803, y = 2917, level = 0 },
+          to = { x = 2811, y = 2909, level = 0 }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2814, y = 2916, level = 0 },
-          to = { x = 2824, y = 2916, level = 0 }
+          from = { x = 2811, y = 2909, level = 0 },
+          to = { x = 2821, y = 2899, level = 0 }
         },
         {
           type = "run",
           waypoints = {
-            { x = 2824, y = 2916, level = 0 },
-            { x = 2824, y = 2914, level = 0 },
-            { x = 2825, y = 2913, level = 0 },
-            { x = 2826, y = 2913, level = 0 }
+            { x = 2821, y = 2899, level = 0 },
+            { x = 2822, y = 2899, level = 0 },
+            { x = 2823, y = 2900, level = 0 },
+            { x = 2824, y = 2900, level = 0 },
+            { x = 2827, y = 2903, level = 0 }
           }
         },
         {
           type = "ability",
           ability = "surge",
-          from = { x = 2826, y = 2913, level = 0 },
-          to = { x = 2836, y = 2913, level = 0 }
-        },
-        {
-          type = "run",
-          waypoints = {
-            { x = 2836, y = 2913, level = 0 },
-            { x = 2837, y = 2913, level = 0 },
-            { x = 2838, y = 2914, level = 0 }
-          }
+          from = { x = 2827, y = 2903, level = 0 },
+          to = { x = 2837, y = 2913, level = 0 }
         }
       },
-      expected_time = 8
+      expected_time = 7
     },
     {
       id = "e4e6119b-4e4e-4d3a-8c5e-cbade2cda5c3",
@@ -10331,7 +10110,7 @@ local pack = {
     {
       id = "14068e90-7f36-412d-b92a-650b92b996fd",
       type = "general_path",
-      timestamp = 1781371342,
+      timestamp = 1790696019,
       name = "Fort Forinthry Lodestone",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -10723,7 +10502,7 @@ local pack = {
     {
       id = "cb09ea78-2943-4a13-9550-f7aa72e71c4e",
       type = "general_path",
-      timestamp = 1781371440,
+      timestamp = 1790867037,
       name = "RIng of Duelling",
       description = "",
       assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
@@ -10779,9 +10558,16 @@ local pack = {
           ability = "surge",
           from = { x = 2451, y = 3066, level = 0 },
           to = { x = 2441, y = 3056, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2441, y = 3056, level = 0 },
+            { x = 2441, y = 3052, level = 0 }
+          }
         }
       },
-      expected_time = 14
+      expected_time = 16
     },
     {
       id = "1bf75094-019f-49be-adda-89bf5d5c391b",
@@ -11039,6 +10825,2066 @@ local pack = {
         }
       },
       expected_time = 17
+    },
+    {
+      id = "5255256f-8b97-4c36-94ae-0c5230d69f48",
+      type = "general_path",
+      timestamp = 1789170506,
+      name = "Watchtower Teleport (Yanille) (Escape)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 41 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2575, y = 3089, level = 0 },
+          id = {
+            group = "normalspellbook",
+            spot = "watchtower-yanille",
+            access = "spellbook"
+          }
+        },
+        {
+          type = "redclick",
+          target = { kind = "static", name = "Drawers" },
+          where = { x = 2570, y = 3085, level = 0 },
+          how = "open"
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2575, y = 3089, level = 0 },
+            { x = 2574, y = 3089, level = 0 }
+          },
+          target_area = {
+            origin = { x = 2573, y = 3087, level = 0 },
+            size = { x = 5, y = 5 },
+            data = "47z/AQ=="
+          }
+        },
+        {
+          type = "ability",
+          ability = "escape",
+          from = { x = 2574, y = 3089, level = 0 },
+          to = { x = 2581, y = 3096, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2581, y = 3096, level = 0 },
+            { x = 2583, y = 3096, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2583, y = 3096, level = 0 },
+          to = { x = 2593, y = 3096, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2593, y = 3096, level = 0 },
+            { x = 2597, y = 3096, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2597, y = 3096, level = 0 },
+          to = { x = 2607, y = 3086, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2607, y = 3086, level = 0 },
+          to = { x = 2615, y = 3078, level = 0 }
+        }
+      },
+      expected_time = 9
+    },
+    {
+      id = "51018b55-1774-44e8-9721-db86e94cd247",
+      type = "general_path",
+      timestamp = 1789171474,
+      name = "Dave's Spellbook (Escape)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 43 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2538, y = 3306, level = 0 },
+          id = {
+            group = "davesspellbook",
+            spot = "ardougne",
+            access = "spellbook"
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2538, y = 3306, level = 0 },
+            { x = 2539, y = 3306, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "escape",
+          from = { x = 2539, y = 3306, level = 0 },
+          to = { x = 2532, y = 3306, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "escape",
+          from = { x = 2532, y = 3306, level = 0 },
+          to = { x = 2525, y = 3306, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2525, y = 3306, level = 0 },
+            { x = 2522, y = 3303, level = 0 },
+            { x = 2521, y = 3303, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2521, y = 3303, level = 0 },
+          to = { x = 2511, y = 3303, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2511, y = 3303, level = 0 },
+            { x = 2511, y = 3302, level = 0 },
+            { x = 2508, y = 3302, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2508, y = 3302, level = 0 },
+          to = { x = 2498, y = 3302, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 2498, y = 3302, level = 0 },
+          to = { x = 2488, y = 3309, level = 0 },
+          target_area = {
+            origin = { x = 2488, y = 3309, level = 0 },
+            size = { x = 2, y = 1 }
+          }
+        }
+      },
+      expected_time = 13
+    },
+    {
+      id = "2a267949-385d-4675-af74-b7acc7dde3cd",
+      type = "general_path",
+      timestamp = 1789171603,
+      name = "Slayer Cape (Escape)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 59 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 3052, y = 3951, level = 0 },
+          id = { group = "slayercape", spot = "mandrith", access = "cape" }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3052, y = 3951, level = 0 },
+            { x = 3052, y = 3950, level = 0 }
+          },
+          target_area = {
+            origin = { x = 3052, y = 3948, level = 0 },
+            size = { x = 1, y = 3 }
+          }
+        },
+        {
+          type = "redclick",
+          target = { kind = "npc", name = "Mandrith" },
+          where = { x = 3052, y = 3952, level = 0 },
+          how = "spellonentity"
+        },
+        {
+          type = "run",
+          waypoints = { { x = 3052, y = 3950, level = 0 } }
+        },
+        {
+          type = "ability",
+          ability = "escape",
+          from = { x = 3052, y = 3950, level = 0 },
+          to = { x = 3052, y = 3943, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3052, y = 3943, level = 0 },
+          to = { x = 3042, y = 3933, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3042, y = 3933, level = 0 },
+          to = { x = 3032, y = 3923, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3032, y = 3923, level = 0 },
+          to = { x = 3022, y = 3913, level = 0 }
+        }
+      },
+      expected_time = 10
+    },
+    {
+      id = "e2a962b0-c686-4918-af84-5236440a856f",
+      type = "general_path",
+      timestamp = 1789172903,
+      name = "North Ardougne Teleport",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 148 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2665, y = 3375, level = 0 },
+          id = {
+            group = "lunarspellbook",
+            spot = "northardougne",
+            access = "spellbook"
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2665, y = 3375, level = 0 },
+          to = { x = 2675, y = 3385, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2675, y = 3385, level = 0 },
+            { x = 2684, y = 3385, level = 0 },
+            { x = 2685, y = 3384, level = 0 },
+            { x = 2688, y = 3384, level = 0 },
+            { x = 2692, y = 3388, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2692, y = 3388, level = 0 },
+          to = { x = 2702, y = 3398, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2702, y = 3398, level = 0 },
+            { x = 2702, y = 3400, level = 0 }
+          }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 2702, y = 3400, level = 0 },
+          internal = {
+            type = "entity",
+            entity = { kind = "static", name = "Door" },
+            clickable_area = {
+              topleft = { x = 2701.5, y = 3401 },
+              botright = { x = 2702.5, y = 3400 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "open",
+                interactive_area = {
+                  origin = { x = 2702, y = 3400, level = 0 },
+                  size = { x = 1, y = 2 }
+                },
+                name = "Pass",
+                movement = {
+                  {
+                    time = 1,
+                    offset = { x = 0, y = -1, level = 0 },
+                    valid_from = { origin = { x = 2702, y = 3401, level = 0 } },
+                    orientation = "bymovement"
+                  },
+                  {
+                    time = 1,
+                    offset = { x = 0, y = 1, level = 0 },
+                    valid_from = { origin = { x = 2702, y = 3400, level = 0 } },
+                    orientation = "bymovement"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2702, y = 3401, level = 0 },
+          to = { x = 2702, y = 3408, level = 0 }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 2702, y = 3408, level = 0 },
+          internal = {
+            type = "entity",
+            source_loc = id.Loc.LADDER,
+            entity = { name = "Ladder", kind = "static" },
+            clickable_area = {
+              topleft = { x = 2700.5, y = 3408.5 },
+              botright = { x = 2701.5, y = 3407.5 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "ladderup",
+                name = "Climb-up",
+                movement = {
+                  {
+                    time = 3,
+                    offset = { x = 0, y = 0, level = 1 },
+                    orientation = "toentitybefore"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      expected_time = 18
+    },
+    {
+      id = "72bda156-d5d0-41e8-8396-e2576c27173a",
+      type = "general_path",
+      timestamp = 1790697647,
+      name = "Al Kharid Lodestone",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 168 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 3297, y = 3184, level = 0 },
+          id = { group = "home", spot = "alkharid", access = "spellbook" }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 3297, y = 3184, level = 0 },
+          to = { x = 3293, y = 3189, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3293, y = 3189, level = 0 },
+          to = { x = 3283, y = 3199, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3283, y = 3199, level = 0 },
+            { x = 3283, y = 3201, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3283, y = 3201, level = 0 },
+          to = { x = 3283, y = 3211, level = 0 }
+        },
+        {
+          type = "teleport",
+          spot = { x = 2850, y = 3494, level = 1 },
+          id = {
+            group = "gliders",
+            spot = "whitewolfmountain",
+            access = "alkharid"
+          }
+        }
+      },
+      expected_time = 19
+    },
+    {
+      id = "587cca97-9e39-43d1-8e65-10bce6e18607",
+      type = "general_path",
+      timestamp = 1790772754,
+      name = "Portable Obelisk",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 221 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 3219, y = 3656, level = 0 },
+          id = { group = "wildernessobelisk", spot = "18", access = "obelisk" }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3219, y = 3656, level = 0 },
+            { x = 3223, y = 3656, level = 0 }
+          },
+          target_area = {
+            origin = { x = 3222, y = 3655, level = 0 },
+            size = { x = 2, y = 3 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3223, y = 3656, level = 0 },
+          to = { x = 3233, y = 3656, level = 0 }
+        },
+        {
+          type = "redclick",
+          target = { kind = "static", name = "Tree Stump" },
+          where = { x = 3234, y = 3657, level = 0 },
+          how = "generic"
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3233, y = 3656, level = 0 },
+            { x = 3232, y = 3656, level = 0 }
+          },
+          target_area = {
+            origin = { x = 3231, y = 3655, level = 0 },
+            size = { x = 3, y = 2 },
+            data = "Mw=="
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3232, y = 3656, level = 0 },
+          to = { x = 3242, y = 3666, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 3242, y = 3666, level = 0 },
+          to = { x = 3235, y = 3673, level = 0 },
+          target_area = {
+            origin = { x = 3235, y = 3672, level = 0 },
+            size = { x = 1, y = 3 }
+          }
+        }
+      },
+      expected_time = 9
+    },
+    {
+      id = "a807a660-45b0-4c71-b6a0-aa59d7c5009c",
+      type = "general_path",
+      timestamp = 1790773431,
+      name = "Al Kharid Lodestone",
+      description = "",
+      assumptions = {
+        full_globetrotter = true,
+        double_surge = true,
+        double_escape = true,
+        mobile_perk = true
+      },
+      ["for"] = { clue = 227 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 3297, y = 3184, level = 0 },
+          id = { group = "home", spot = "alkharid", access = "spellbook" }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 3297, y = 3184, level = 0 },
+          to = { x = 3293, y = 3189, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3293, y = 3189, level = 0 },
+          to = { x = 3283, y = 3199, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3283, y = 3199, level = 0 },
+            { x = 3283, y = 3201, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3283, y = 3201, level = 0 },
+          to = { x = 3283, y = 3211, level = 0 }
+        },
+        {
+          type = "teleport",
+          spot = { x = 2850, y = 3494, level = 1 },
+          id = {
+            group = "gliders",
+            spot = "whitewolfmountain",
+            access = "alkharid"
+          }
+        }
+      },
+      expected_time = 21
+    },
+    {
+      id = "ebff3d08-44f9-43bf-bd04-24519f752d22",
+      type = "general_path",
+      timestamp = 1790785487,
+      name = "Yanille Lodestone",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 415 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2529, y = 3094, level = 0 },
+          id = { group = "home", spot = "yanille", access = "spellbook" }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2529, y = 3094, level = 0 },
+          to = { x = 2529, y = 3084, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2529, y = 3084, level = 0 },
+          to = { x = 2539, y = 3074, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2539, y = 3074, level = 0 },
+            { x = 2539, y = 3073, level = 0 },
+            { x = 2540, y = 3072, level = 0 },
+            { x = 2542, y = 3072, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2542, y = 3072, level = 0 },
+          to = { x = 2552, y = 3072, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2552, y = 3072, level = 0 },
+            { x = 2564, y = 3072, level = 0 },
+            { x = 2569, y = 3067, level = 0 },
+            { x = 2572, y = 3067, level = 0 },
+            { x = 2573, y = 3066, level = 0 },
+            { x = 2579, y = 3066, level = 0 },
+            { x = 2581, y = 3064, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2581, y = 3064, level = 0 },
+          to = { x = 2591, y = 3054, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2591, y = 3054, level = 0 },
+          to = { x = 2601, y = 3064, level = 0 }
+        }
+      },
+      expected_time = 25
+    },
+    {
+      id = "103b326b-8a21-444a-b326-8f118bb0edce",
+      type = "general_path",
+      timestamp = 1790790088,
+      name = "Enlightened Amulet (Powerburst)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 453 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 3233, y = 3657, level = 0 },
+          id = {
+            group = "enlightenedamulet",
+            spot = "graveyard",
+            access = "ring"
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3233, y = 3657, level = 0 },
+            { x = 3232, y = 3658, level = 0 }
+          },
+          target_area = {
+            origin = { x = 3231, y = 3655, level = 0 },
+            size = { x = 4, y = 5 },
+            data = "d3cP"
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 3232, y = 3658, level = 0 },
+          to = { x = 3237, y = 3664, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3237, y = 3664, level = 0 },
+          to = { x = 3245, y = 3672, level = 0 }
+        },
+        {
+          type = "powerburst",
+          where = { x = 3245, y = 3672, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3245, y = 3672, level = 0 },
+          to = { x = 3255, y = 3682, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3255, y = 3682, level = 0 },
+          to = { x = 3265, y = 3692, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3265, y = 3692, level = 0 },
+          to = { x = 3275, y = 3702, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3275, y = 3702, level = 0 },
+          to = { x = 3285, y = 3712, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3285, y = 3712, level = 0 },
+          to = { x = 3295, y = 3702, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3295, y = 3702, level = 0 },
+          to = { x = 3305, y = 3692, level = 0 }
+        }
+      },
+      expected_time = 10
+    },
+    {
+      id = "e23da105-ddc7-42b3-b719-a4153a19b67d",
+      type = "general_path",
+      timestamp = 1790845003,
+      name = "House Teleport (Menaphos)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 145 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 3124, y = 2634, level = 0 },
+          id = {
+            group = "houseteleports",
+            spot = "menaphos",
+            access = "spellbook"
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3124, y = 2634, level = 0 },
+            { x = 3124, y = 2633, level = 0 },
+            { x = 3123, y = 2632, level = 0 }
+          }
+        },
+        {
+          type = "teleport",
+          spot = { x = 3373, y = 2931, level = 0 },
+          id = { group = "portmasterkags", spot = "nardah", access = "menaphos" }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3373, y = 2931, level = 0 },
+            { x = 3375, y = 2929, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3375, y = 2929, level = 0 },
+          to = { x = 3385, y = 2919, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3385, y = 2919, level = 0 },
+          to = { x = 3395, y = 2919, level = 0 }
+        }
+      },
+      expected_time = 9
+    },
+    {
+      id = "59db50ce-4293-4211-adfe-2b0781bfb6b4",
+      type = "general_path",
+      timestamp = 1790846593,
+      name = "Fairy Ring (Powerburst)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 417 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2801, y = 3003, level = 0 },
+          id = {
+            group = "fairyring",
+            spot = "CKR",
+            access = "portable_fairy_ring"
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2801, y = 3003, level = 0 },
+            { x = 2803, y = 3003, level = 0 },
+            { x = 2804, y = 3004, level = 0 },
+            { x = 2806, y = 3004, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2806, y = 3004, level = 0 },
+          to = { x = 2816, y = 3014, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2816, y = 3014, level = 0 },
+          to = { x = 2826, y = 3024, level = 0 }
+        },
+        {
+          type = "powerburst",
+          where = { x = 2826, y = 3024, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2826, y = 3024, level = 0 },
+          to = { x = 2836, y = 3034, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2836, y = 3034, level = 0 },
+          to = { x = 2846, y = 3044, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2846, y = 3044, level = 0 },
+          to = { x = 2856, y = 3034, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2856, y = 3034, level = 0 },
+          to = { x = 2866, y = 3024, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2866, y = 3024, level = 0 },
+          to = { x = 2876, y = 3034, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2876, y = 3034, level = 0 },
+          to = { x = 2886, y = 3044, level = 0 }
+        }
+      },
+      expected_time = 14
+    },
+    {
+      id = "3b05c48e-eb04-4ddb-b373-5799da38926b",
+      type = "general_path",
+      timestamp = 1790846614,
+      name = "Fairy Ring",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 417 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2801, y = 3003, level = 0 },
+          id = {
+            group = "fairyring",
+            spot = "CKR",
+            access = "portable_fairy_ring"
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2801, y = 3003, level = 0 },
+          to = { x = 2811, y = 3013, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2811, y = 3013, level = 0 },
+          to = { x = 2821, y = 3023, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2821, y = 3023, level = 0 },
+            { x = 2821, y = 3022, level = 0 },
+            { x = 2822, y = 3021, level = 0 },
+            { x = 2824, y = 3021, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2824, y = 3021, level = 0 },
+          to = { x = 2834, y = 3021, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2834, y = 3021, level = 0 },
+            { x = 2841, y = 3021, level = 0 },
+            { x = 2842, y = 3022, level = 0 },
+            { x = 2845, y = 3022, level = 0 },
+            { x = 2846, y = 3021, level = 0 },
+            { x = 2850, y = 3021, level = 0 },
+            { x = 2851, y = 3022, level = 0 },
+            { x = 2852, y = 3022, level = 0 },
+            { x = 2853, y = 3023, level = 0 },
+            { x = 2866, y = 3023, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2866, y = 3023, level = 0 },
+          to = { x = 2876, y = 3033, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2876, y = 3033, level = 0 },
+          to = { x = 2886, y = 3043, level = 0 }
+        }
+      },
+      expected_time = 26
+    },
+    {
+      id = "cf983fee-d9d6-44b8-af15-126e7d86b220",
+      type = "general_path",
+      timestamp = 1790862267,
+      name = "Spirit Tree Re-Rooter",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 290 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2462, y = 3444, level = 0 },
+          id = {
+            group = "spirittree",
+            spot = "stronghold",
+            access = "spirittreererooter"
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2462, y = 3444, level = 0 },
+            { x = 2460, y = 3446, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2460, y = 3446, level = 0 },
+          to = { x = 2450, y = 3456, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2450, y = 3456, level = 0 },
+            { x = 2446, y = 3456, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2446, y = 3456, level = 0 },
+          to = { x = 2436, y = 3466, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2436, y = 3466, level = 0 },
+          to = { x = 2426, y = 3476, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2426, y = 3476, level = 0 },
+            { x = 2426, y = 3477, level = 0 },
+            { x = 2416, y = 3487, level = 0 },
+            { x = 2416, y = 3488, level = 0 },
+            { x = 2414, y = 3490, level = 0 },
+            { x = 2412, y = 3490, level = 0 },
+            { x = 2411, y = 3491, level = 0 },
+            { x = 2411, y = 3493, level = 0 },
+            { x = 2410, y = 3493, level = 0 },
+            { x = 2406, y = 3497, level = 0 }
+          }
+        }
+      },
+      expected_time = 23
+    },
+    {
+      id = "9bddd504-4c72-4111-a092-230871e849df",
+      type = "general_path",
+      timestamp = 1790862299,
+      name = "Spirit Tree Re-Rooter (Powerburst)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 290 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2462, y = 3444, level = 0 },
+          id = {
+            group = "spirittree",
+            spot = "stronghold",
+            access = "spirittreererooter"
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 2462, y = 3444, level = 0 },
+          to = { x = 2455, y = 3448, level = 0 },
+          target_area = {
+            origin = { x = 2454, y = 3448, level = 0 },
+            size = { x = 3, y = 2 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2455, y = 3448, level = 0 },
+          to = { x = 2445, y = 3458, level = 0 }
+        },
+        {
+          type = "powerburst",
+          where = { x = 2445, y = 3458, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2445, y = 3458, level = 0 },
+          to = { x = 2436, y = 3467, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2436, y = 3467, level = 0 },
+          to = { x = 2426, y = 3477, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2426, y = 3477, level = 0 },
+          to = { x = 2416, y = 3487, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2416, y = 3487, level = 0 },
+          to = { x = 2406, y = 3497, level = 0 }
+        }
+      },
+      expected_time = 10
+    },
+    {
+      id = "80f521ec-906d-4e4f-8f9c-9f7be76a9d73",
+      type = "general_path",
+      timestamp = 1790863913,
+      name = "Fishing Guild Teleport (Powerburst)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 160 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2613, y = 3383, level = 0 },
+          id = {
+            group = "lunarspellbook",
+            spot = "fishing",
+            access = "spellbook"
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2613, y = 3383, level = 0 },
+            { x = 2610, y = 3386, level = 0 },
+            { x = 2610, y = 3387, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2610, y = 3387, level = 0 },
+          to = { x = 2600, y = 3387, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2600, y = 3387, level = 0 },
+          to = { x = 2590, y = 3387, level = 0 }
+        },
+        {
+          type = "powerburst",
+          where = { x = 2590, y = 3387, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2590, y = 3387, level = 0 },
+          to = { x = 2580, y = 3397, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2580, y = 3397, level = 0 },
+          to = { x = 2570, y = 3407, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2570, y = 3407, level = 0 },
+          to = { x = 2560, y = 3417, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2560, y = 3417, level = 0 },
+          to = { x = 2560, y = 3427, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2560, y = 3427, level = 0 },
+          to = { x = 2560, y = 3437, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2560, y = 3437, level = 0 },
+          to = { x = 2560, y = 3447, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2560, y = 3447, level = 0 },
+          to = { x = 2568, y = 3455, level = 0 }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 2568, y = 3455, level = 0 },
+          internal = {
+            type = "entity",
+            entity = { kind = "static", name = "Gate" },
+            clickable_area = {
+              topleft = { x = 2567.5, y = 3456 },
+              botright = { x = 2568.5, y = 3455 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "open",
+                interactive_area = {
+                  origin = { x = 2568, y = 3455, level = 0 },
+                  size = { x = 1, y = 2 }
+                },
+                name = "Pass",
+                movement = {
+                  {
+                    time = 1,
+                    offset = { x = 0, y = -1, level = 0 },
+                    valid_from = { origin = { x = 2568, y = 3456, level = 0 } },
+                    orientation = "bymovement"
+                  },
+                  {
+                    time = 1,
+                    offset = { x = 0, y = 1, level = 0 },
+                    valid_from = { origin = { x = 2568, y = 3455, level = 0 } },
+                    orientation = "bymovement"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 2568, y = 3456, level = 0 },
+          to = { x = 2575, y = 3464, level = 0 }
+        }
+      },
+      expected_time = 12
+    },
+    {
+      id = "2ad5da80-4bb2-4bd8-a5af-3f6a72780a99",
+      type = "general_path",
+      timestamp = 1790864189,
+      name = "Dave's Spellbook (Escape)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 164 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2538, y = 3306, level = 0 },
+          id = {
+            group = "davesspellbook",
+            spot = "ardougne",
+            access = "spellbook"
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2538, y = 3306, level = 0 },
+            { x = 2537, y = 3307, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "escape",
+          from = { x = 2537, y = 3307, level = 0 },
+          to = { x = 2544, y = 3300, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2544, y = 3300, level = 0 },
+            { x = 2544, y = 3299, level = 0 },
+            { x = 2547, y = 3299, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2547, y = 3299, level = 0 },
+          to = { x = 2557, y = 3299, level = 0 }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 2557, y = 3299, level = 0 },
+          internal = {
+            type = "entity",
+            source_loc = { "loc", id.Loc.ARDOUGNEDOOR_R },
+            entity = { name = "Ardougne wall door", kind = "static" },
+            clickable_area = {
+              topleft = { x = 2557.5, y = 3299.5 },
+              botright = { x = 2558.5, y = 3298.5 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "open",
+                interactive_area = {
+                  origin = { x = 2557, y = 3299, level = 0 },
+                  size = { x = 3, y = 1 },
+                  data = "BQ=="
+                },
+                name = "Open",
+                movement = {
+                  {
+                    time = 4,
+                    valid_from = { origin = { x = 2557, y = 3299, level = 0 } },
+                    offset = { x = 3, y = 0, level = 0 }
+                  },
+                  {
+                    time = 4,
+                    valid_from = { origin = { x = 2559, y = 3299, level = 0 } },
+                    offset = { x = -3, y = 0, level = 0 }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 2560, y = 3299, level = 0 },
+          to = { x = 2564, y = 3309, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2564, y = 3309, level = 0 },
+          to = { x = 2564, y = 3317, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2564, y = 3317, level = 0 },
+            { x = 2565, y = 3317, level = 0 }
+          }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 2565, y = 3317, level = 0 },
+          internal = {
+            type = "entity",
+            entity = { kind = "static", name = "Door" },
+            clickable_area = {
+              topleft = { x = 2564.5, y = 3318 },
+              botright = { x = 2565.5, y = 3317 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "open",
+                interactive_area = {
+                  origin = { x = 2565, y = 3317, level = 0 },
+                  size = { x = 1, y = 2 }
+                },
+                name = "Pass",
+                movement = {
+                  {
+                    time = 1,
+                    offset = { x = 0, y = 1, level = 0 },
+                    valid_from = { origin = { x = 2565, y = 3317, level = 0 } },
+                    orientation = "bymovement"
+                  },
+                  {
+                    time = 1,
+                    offset = { x = 0, y = -1, level = 0 },
+                    valid_from = { origin = { x = 2565, y = 3318, level = 0 } },
+                    orientation = "bymovement"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2565, y = 3318, level = 0 },
+            { x = 2565, y = 3320, level = 0 }
+          }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 2565, y = 3320, level = 0 },
+          internal = {
+            type = "entity",
+            entity = { kind = "static", name = "Door" },
+            clickable_area = {
+              topleft = { x = 2564, y = 3320.5 },
+              botright = { x = 2565, y = 3319.5 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "open",
+                interactive_area = {
+                  origin = { x = 2564, y = 3320, level = 0 },
+                  size = { x = 2, y = 1 }
+                },
+                name = "Pass",
+                movement = {
+                  {
+                    time = 1,
+                    offset = { x = 1, y = 0, level = 0 },
+                    valid_from = { origin = { x = 2564, y = 3320, level = 0 } },
+                    orientation = "bymovement"
+                  },
+                  {
+                    time = 1,
+                    offset = { x = -1, y = 0, level = 0 },
+                    valid_from = { origin = { x = 2565, y = 3320, level = 0 } },
+                    orientation = "bymovement"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2564, y = 3320, level = 0 },
+            { x = 2563, y = 3320, level = 0 },
+            { x = 2561, y = 3322, level = 0 }
+          }
+        }
+      },
+      expected_time = 19
+    },
+    {
+      id = "97d05de6-df1f-4559-969b-e2bc59752ec5",
+      type = "general_path",
+      timestamp = 1790864229,
+      name = "Portable Fairy Ring (Escape)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 428 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2801, y = 3003, level = 0 },
+          id = {
+            group = "fairyring",
+            spot = "CKR",
+            access = "portable_fairy_ring"
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 2801, y = 3003, level = 0 },
+          to = { x = 2798, y = 2993, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2798, y = 2993, level = 0 },
+          to = { x = 2798, y = 2983, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2798, y = 2983, level = 0 },
+            { x = 2798, y = 2982, level = 0 },
+            { x = 2795, y = 2979, level = 0 }
+          }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 2795, y = 2979, level = 0 },
+          internal = {
+            type = "entity",
+            source_loc = id.Loc.ZQCLIMBINGROCKS,
+            entity = { name = "Rocks", kind = "static" },
+            clickable_area = {
+              topleft = { x = 2793.5, y = 2979.5 },
+              botright = { x = 2794.5, y = 2978.5 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "agility",
+                interactive_area = { origin = { x = 2795, y = 2979, level = 0 } },
+                name = "Climb",
+                movement = { { time = 7, offset = { x = -4, y = 0, level = 0 } } }
+              }
+            }
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2791, y = 2979, level = 0 },
+            { x = 2790, y = 2979, level = 0 },
+            { x = 2790, y = 2978, level = 0 },
+            { x = 2788, y = 2978, level = 0 },
+            { x = 2788, y = 2979, level = 0 },
+            { x = 2783, y = 2979, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2783, y = 2979, level = 0 },
+          to = { x = 2773, y = 2979, level = 0 }
+        },
+        {
+          type = "redclick",
+          target = { kind = "item", name = "Item" },
+          where = { x = 2782, y = 2986, level = 0 },
+          how = "loot"
+        },
+        {
+          type = "run",
+          waypoints = { { x = 2773, y = 2979, level = 0 } }
+        },
+        {
+          type = "ability",
+          ability = "escape",
+          from = { x = 2773, y = 2979, level = 0 },
+          to = { x = 2766, y = 2972, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2766, y = 2972, level = 0 },
+            { x = 2764, y = 2972, level = 0 },
+            { x = 2764, y = 2974, level = 0 }
+          }
+        }
+      },
+      expected_time = 26
+    },
+    {
+      id = "d910ef97-1a5f-4a22-af65-df8c43b288ff",
+      type = "general_path",
+      timestamp = 1790865399,
+      name = "Archaeology Teleport",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 166 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 3181, y = 3417, level = 0 },
+          id = { group = "archteleport", spot = "soran", access = "scrolls" }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3181, y = 3417, level = 0 },
+            { x = 3181, y = 3418, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3181, y = 3418, level = 0 },
+          to = { x = 3181, y = 3428, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 3181, y = 3428, level = 0 },
+          to = { x = 3187, y = 3433, level = 0 }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 3187, y = 3433, level = 0 },
+          internal = {
+            type = "entity",
+            entity = { kind = "static", name = "Door" },
+            clickable_area = {
+              topleft = { x = 3187, y = 3433.5 },
+              botright = { x = 3188, y = 3432.5 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "open",
+                interactive_area = {
+                  origin = { x = 3187, y = 3433, level = 0 },
+                  size = { x = 2, y = 1 }
+                },
+                name = "Pass",
+                movement = {
+                  {
+                    time = 1,
+                    offset = { x = -1, y = 0, level = 0 },
+                    valid_from = { origin = { x = 3188, y = 3433, level = 0 } },
+                    orientation = "bymovement"
+                  },
+                  {
+                    time = 1,
+                    offset = { x = 1, y = 0, level = 0 },
+                    valid_from = { origin = { x = 3187, y = 3433, level = 0 } },
+                    orientation = "bymovement"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 3188, y = 3433, level = 0 },
+          internal = {
+            type = "entity",
+            source_loc = { "loc", id.Loc.FAI_VARROCK_BANK_STAIRS },
+            entity = { name = "Staircase", kind = "static" },
+            clickable_area = {
+              topleft = { x = 3188.5, y = 3433.5 },
+              botright = { x = 3191.5, y = 3431.5 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "ladderdown",
+                name = "Climb-down",
+                movement = {
+                  {
+                    time = 3,
+                    fixed_target = { target = { origin = { x = 3190, y = 9832, level = 0 } } }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3190, y = 9832, level = 0 },
+            { x = 3190, y = 9830, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3190, y = 9830, level = 0 },
+          to = { x = 3190, y = 9826, level = 0 }
+        }
+      },
+      expected_time = 12
+    },
+    {
+      id = "285f1a45-7760-478b-a9ba-5add43beb435",
+      type = "general_path",
+      timestamp = 1790865475,
+      name = "Edgeville Lodestone",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 175 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 3067, y = 3505, level = 0 },
+          id = { group = "home", spot = "edgeville", access = "spellbook" }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          from = { x = 3067, y = 3505, level = 0 },
+          to = { x = 3066, y = 3512, level = 0 },
+          target_area = {
+            origin = { x = 3066, y = 3511, level = 0 },
+            size = { x = 4, y = 3 },
+            data = "mQE="
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3066, y = 3512, level = 0 },
+            { x = 3067, y = 3512, level = 0 },
+            { x = 3068, y = 3513, level = 0 }
+          }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 3068, y = 3513, level = 0 },
+          internal = {
+            type = "entity",
+            entity = { kind = "static", name = "Door" },
+            clickable_area = {
+              topleft = { x = 3067.5, y = 3514 },
+              botright = { x = 3068.5, y = 3513 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "open",
+                interactive_area = {
+                  origin = { x = 3068, y = 3513, level = 0 },
+                  size = { x = 1, y = 2 }
+                },
+                name = "Pass",
+                movement = {
+                  {
+                    time = 1,
+                    offset = { x = 0, y = 1, level = 0 },
+                    valid_from = { origin = { x = 3068, y = 3513, level = 0 } },
+                    orientation = "bymovement"
+                  },
+                  {
+                    time = 1,
+                    offset = { x = 0, y = -1, level = 0 },
+                    valid_from = { origin = { x = 3068, y = 3514, level = 0 } },
+                    orientation = "bymovement"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      expected_time = 11
+    },
+    {
+      id = "3bbddd37-a826-4494-b28a-80830d8a1971",
+      type = "general_path",
+      timestamp = 1790866347,
+      name = "Fairy Ring",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 421 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2571, y = 2956, level = 0 },
+          id = {
+            group = "fairyring",
+            spot = "AKS",
+            access = "portable_fairy_ring"
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2571, y = 2956, level = 0 },
+          to = { x = 2561, y = 2946, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2561, y = 2946, level = 0 },
+          to = { x = 2551, y = 2936, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2551, y = 2936, level = 0 },
+            { x = 2550, y = 2936, level = 0 },
+            { x = 2547, y = 2939, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2547, y = 2939, level = 0 },
+          to = { x = 2537, y = 2949, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2537, y = 2949, level = 0 },
+            { x = 2531, y = 2949, level = 0 },
+            { x = 2528, y = 2952, level = 0 },
+            { x = 2528, y = 2953, level = 0 },
+            { x = 2527, y = 2954, level = 0 },
+            { x = 2527, y = 2955, level = 0 },
+            { x = 2524, y = 2958, level = 0 },
+            { x = 2524, y = 2959, level = 0 },
+            { x = 2523, y = 2960, level = 0 },
+            { x = 2522, y = 2960, level = 0 },
+            { x = 2520, y = 2962, level = 0 },
+            { x = 2518, y = 2962, level = 0 },
+            { x = 2513, y = 2967, level = 0 },
+            { x = 2512, y = 2967, level = 0 },
+            { x = 2510, y = 2969, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2510, y = 2969, level = 0 },
+          to = { x = 2500, y = 2979, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2500, y = 2979, level = 0 },
+          to = { x = 2500, y = 2988, level = 0 }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 2500, y = 2988, level = 0 },
+          internal = {
+            type = "entity",
+            source_loc = { "loc", id.Loc.TOBANCAVE },
+            entity = { name = "Cave entrance", kind = "static" },
+            clickable_area = {
+              topleft = { x = 2498.5, y = 2990.5 },
+              botright = { x = 2500.5, y = 2988.5 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "enter",
+                name = "Enter",
+                movement = {
+                  {
+                    time = 1,
+                    fixed_target = { target = { origin = { x = 2576, y = 3029, level = 0 } } }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2576, y = 3029, level = 0 },
+            { x = 2576, y = 3028, level = 0 },
+            { x = 2577, y = 3027, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "escape",
+          from = { x = 2577, y = 3027, level = 0 },
+          to = { x = 2570, y = 3034, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2570, y = 3034, level = 0 },
+            { x = 2570, y = 3033, level = 0 },
+            { x = 2571, y = 3032, level = 0 },
+            { x = 2573, y = 3032, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2573, y = 3032, level = 0 },
+          to = { x = 2582, y = 3032, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2582, y = 3032, level = 0 },
+            { x = 2581, y = 3032, level = 0 },
+            { x = 2581, y = 3031, level = 0 }
+          }
+        }
+      },
+      expected_time = 30
+    },
+    {
+      id = "638f1e69-afc0-4674-8d07-07943f95c5a0",
+      type = "general_path",
+      timestamp = 1790866654,
+      name = "Quest Cape",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 424 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 2367, y = 3360, level = 0 },
+          id = { group = "questcape", spot = "worldgate", access = "cape" }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2367, y = 3360, level = 0 },
+            { x = 2369, y = 3360, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2369, y = 3360, level = 0 },
+          to = { x = 2379, y = 3360, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2379, y = 3360, level = 0 },
+            { x = 2381, y = 3362, level = 0 },
+            { x = 2385, y = 3362, level = 0 },
+            { x = 2385, y = 3360, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2385, y = 3360, level = 0 },
+          to = { x = 2385, y = 3350, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2385, y = 3350, level = 0 },
+          to = { x = 2385, y = 3340, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2385, y = 3340, level = 0 },
+            { x = 2385, y = 3335, level = 0 }
+          }
+        },
+        {
+          type = "transport",
+          assumed_start = { x = 2385, y = 3335, level = 0 },
+          internal = {
+            type = "entity",
+            source_loc = id.Loc.OVERPASS_GATE_LEFT,
+            entity = { name = "Huge Gate", kind = "static" },
+            clickable_area = {
+              topleft = { x = 2383.5, y = 3334.5 },
+              botright = { x = 2385.5, y = 3333.5 },
+              level = 0
+            },
+            actions = {
+              {
+                cursor = "generic",
+                interactive_area = {
+                  origin = { x = 2384, y = 3333, level = 0 },
+                  size = { x = 2, y = 3 },
+                  data = "Mw=="
+                },
+                name = "Enter",
+                movement = {
+                  {
+                    time = 3,
+                    valid_from = { origin = { x = 2385, y = 3335, level = 0 } },
+                    offset = { x = 0, y = -2, level = 0 },
+                    orientation = "bymovement"
+                  },
+                  {
+                    time = 3,
+                    valid_from = { origin = { x = 2385, y = 3333, level = 0 } },
+                    offset = { x = 0, y = 2, level = 0 },
+                    orientation = "bymovement"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2385, y = 3333, level = 0 },
+            { x = 2385, y = 3325, level = 0 },
+            { x = 2379, y = 3319, level = 0 }
+          }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2379, y = 3319, level = 0 },
+            { x = 2377, y = 3319, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2377, y = 3319, level = 0 },
+          to = { x = 2367, y = 3319, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2367, y = 3319, level = 0 },
+            { x = 2361, y = 3319, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 2361, y = 3319, level = 0 },
+          to = { x = 2354, y = 3312, level = 0 }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 2354, y = 3312, level = 0 },
+            { x = 2350, y = 3312, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 2350, y = 3312, level = 0 },
+          to = { x = 2340, y = 3312, level = 0 }
+        }
+      },
+      expected_time = 29
+    },
+    {
+      id = "1e83a462-a823-4772-a5d2-6c1e3608d38b",
+      type = "general_path",
+      timestamp = 1790867024,
+      name = "Portable Obelisk (Powerburst)",
+      description = "",
+      assumptions = { double_surge = true, double_escape = true, mobile_perk = true },
+      ["for"] = { clue = 216 },
+      post_path = {  },
+      pre_path = {  },
+      main_path = {
+        {
+          type = "teleport",
+          spot = { x = 3106, y = 3794, level = 0 },
+          id = { group = "wildernessobelisk", spot = "35", access = "obelisk" }
+        },
+        {
+          type = "run",
+          waypoints = {
+            { x = 3106, y = 3794, level = 0 },
+            { x = 3108, y = 3794, level = 0 },
+            { x = 3109, y = 3795, level = 0 }
+          }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3109, y = 3795, level = 0 },
+          to = { x = 3119, y = 3805, level = 0 }
+        },
+        {
+          type = "powerburst",
+          where = { x = 3119, y = 3805, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3119, y = 3805, level = 0 },
+          to = { x = 3119, y = 3815, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3119, y = 3815, level = 0 },
+          to = { x = 3119, y = 3825, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3119, y = 3825, level = 0 },
+          to = { x = 3119, y = 3835, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3119, y = 3835, level = 0 },
+          to = { x = 3129, y = 3845, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3129, y = 3845, level = 0 },
+          to = { x = 3139, y = 3855, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3139, y = 3855, level = 0 },
+          to = { x = 3149, y = 3865, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "dive",
+          is_far_dive = true,
+          from = { x = 3149, y = 3865, level = 0 },
+          to = { x = 3159, y = 3875, level = 0 }
+        },
+        {
+          type = "ability",
+          ability = "surge",
+          from = { x = 3159, y = 3875, level = 0 },
+          to = { x = 3169, y = 3885, level = 0 }
+        }
+      },
+      expected_time = 11
     }
   },
   is_real_default = true
