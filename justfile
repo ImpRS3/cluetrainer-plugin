@@ -32,32 +32,18 @@ install environment="test": check-beta-dir (package_into DEV_PLUGINS / "cluetrai
     done
 
 # Replaces everything in the installed plugin except the resources folder.
-# Packaging exclusions are also removed from the installed plugin.
 install-light environment="test": check-beta-dir (check-environment environment)
     #!/usr/bin/env bash
     set -euo pipefail
 
     TARGET="{{DEV_PLUGINS}}/cluetrainer"
 
-    mkdir -p "$TARGET"
-    find "$TARGET" -mindepth 1 -maxdepth 1 ! -name resources -exec rm -rf {} +
-
-    copy_without_resources() {
-      local src="$1"
-      (
-        cd "$src"
-        find . -path ./resources/prettymap -prune -o -type f -print0 | while IFS= read -r -d '' f; do
-          mkdir -p "$TARGET/$(dirname "$f")"
-          cp -f "$f" "$TARGET/$f"
-        done
-      )
-    }
-
-    copy_without_resources cluetrainer
-    copy_without_resources dependencies/zyklib/src
-    just apply_package_exclusions "$TARGET"
-    rm "$TARGET/plugin.production.json" "$TARGET/plugin.test.json"
-    cp "cluetrainer/plugin.{{environment}}.json" "$TARGET/plugin.json"
+    # Use preprocessor in out-of-place mode with --preserve to keep resources
+    python scripts/preprocessor/preprocess.py \
+      --input cluetrainer \
+      --output "$TARGET" \
+      --preserve "resources/prettymap" \
+      ENVIRONMENT="{{environment}}"
 
     just install_devtool
 
@@ -94,39 +80,11 @@ package_into target environment="production": (check-environment environment)
 
     TARGET="{{target}}"
 
-    rm -rf "$TARGET"
-    mkdir -p "$TARGET"
-    cp -R cluetrainer/. "$TARGET/"
-    cp -R dependencies/zyklib/src/. "$TARGET/"
-    just apply_package_exclusions "$TARGET"
-
-    rm "$TARGET/plugin.production.json" "$TARGET/plugin.test.json"
-    cp "cluetrainer/plugin.{{environment}}.json" "$TARGET/plugin.json"
-
-[private]
-apply_package_exclusions target:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    TARGET="{{target}}"
-
-    # Manually maintained list of paths to remove from packages and installs.
-    PACKAGE_EXCLUSIONS=(
-      prettyui/achievement_popup.lua
-      prettyui/anchored_tooltip.lua
-      prettyui/buff_bar.lua
-      prettyui/confirm.lua
-      prettyui/core/category_groups.lua
-      prettyui/minimenu.lua
-      prettyui/overhead_bar.lua
-      zyklib/game.lua
-      zyklib/game/
-      zyklib/game/equipment.lua
-    )
-
-    for path in "${PACKAGE_EXCLUSIONS[@]}"; do
-      rm -rf -- "$TARGET/$path"
-    done
+    # Run preprocessor in out-of-place mode to process cluetrainer
+    python scripts/preprocessor/preprocess.py \
+      --input cluetrainer \
+      --output "$TARGET" \
+      ENVIRONMENT="{{environment}}"
 
 [private]
 check-environment environment:
