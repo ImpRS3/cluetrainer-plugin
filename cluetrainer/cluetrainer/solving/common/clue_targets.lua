@@ -27,8 +27,11 @@ local function to_set(...)
   local set = {}
   -- select rather than ipairs, so a missing list does not hide the lists after it.
   for i = 1, select("#", ...) do
-    -- pairs, so a name the game does not know drops only that id, not the ids after it.
-    for _, id in pairs(select(i, ...) or {}) do set[id] = true end
+    for _, id in pairs(select(i, ...) or {}) do
+      -- The game gives -1 for a config name it does not know, such as one renamed in an update. Every NPC or object
+      -- that is not part of a multi has parentConfigID -1, so keeping it would match all of them in the clue area.
+      if id >= 0 then set[id] = true end
+    end
   end
   return set
 end

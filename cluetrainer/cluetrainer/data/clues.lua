@@ -1102,7 +1102,7 @@ local clues = {
     },
     solution = {
       type = "search",
-      entity = "Bookcase",
+      entity = "Old Bookshelf",
       spot = { level = 1, topleft = { x = 3366, y = 3319 }, botright = { x = 3366, y = 3319 } }
     }
   },
@@ -3478,6 +3478,12 @@ local clues = {
           description = "in his cave near Burthorpe",
           range = { origin = { x = 2267, y = 4752, level = 0 }, size = { x = 5, y = 9 } },
           note = "Before 'Death Plateu'"
+        },
+        {
+          id = "after-death-plateau",
+          description = "in the tunnel to Death Plateau",
+          range = { origin = { x = 3401, y = 4282, level = 2 }, size = { x = 5, y = 5 } },
+          note = "After 'Death Plateau'"
         }
       },
       npc = "Sabbot"
@@ -4349,7 +4355,7 @@ local clues = {
           note = "Harmony"
         }
       },
-      npc = "Brother Tranquility"
+      npc = "Brother Tranquillity"
     },
     anagram = { "QUIT THY BRINE RAT ROLL" }
   },

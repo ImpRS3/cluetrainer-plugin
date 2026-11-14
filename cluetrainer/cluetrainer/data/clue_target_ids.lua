@@ -135,7 +135,7 @@ return {
   [187] = { ids = { id.Loc.AREA_ARDOUGNE_BASIC_DRAWERS, id.Loc.AREA_ARDOUGNE_BASIC_DRAWERS_OPEN } }, -- Drawers
   [188] = { ids = { id.Loc.SLUG2_CRATE_SINGLE } }, -- Crate
   [189] = { ids = { id.Loc.FAIRYKIT_CRATES } }, -- Crate
-  [190] = { ids = { id.Loc.MAGICTRAINING_BOOKSHELF_OLD_TALL_DOUBLE2 } }, -- Bookcase
+  [190] = { ids = { id.Loc.MAGICTRAINING_BOOKSHELF_OLD_TALL_DOUBLE2 } }, -- Old Bookshelf
   [191] = { ids = { id.Loc.CANAFIS_CRATE } }, -- Crate
   [192] = { ids = { id.Loc.HAYSTACK2 } }, -- Hay bales
   [193] = { ids = { id.Loc.DEAL_CRATE2 } }, -- Crate
@@ -192,7 +192,7 @@ return {
   },
   [302] = { ids = { id.NPC.FAIRY_NUFF2, id.NPC.FAIRY_NUFF }, parent_ids = { id.NPC.FAIRY_NUFF_MULTI } }, -- Fairy Nuff
   [303] = { ids = { id.NPC.POLYPORE_SKINWEAVER } }, -- Ramokee Skinweaver
-  [306] = { -- Brother Tranquility
+  [306] = { -- Brother Tranquillity
     ids = { id.NPC.BRAIN_BROTHER_TRANQUILITY_ZOMBIE, id.NPC.BRAIN_BROTHER_TRANQUILITY_HUMAN },
     parent_ids = { id.NPC.BRAIN_TRANQUILITY, id.NPC.BRAIN_ISLAND_TRANQUILITY },
   },
