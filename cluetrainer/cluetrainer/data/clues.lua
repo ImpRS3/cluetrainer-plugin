@@ -1102,7 +1102,7 @@ local clues = {
     },
     solution = {
       type = "search",
-      entity = "Bookcase",
+      entity = "Old Bookshelf",
       spot = { level = 1, topleft = { x = 3366, y = 3319 }, botright = { x = 3366, y = 3319 } }
     }
   },
@@ -2330,8 +2330,8 @@ local clues = {
     text = { "X marks the spot near a rock on a peninsula." },
     solution = {
       type = "dig",
-      spot = { x = 2906, y = 3294, level = 0 },
-      description = "west of the snape grass at the tip of the hobgoblin peninsula."
+      spot = { x = 2906, y = 3292, level = 0 },
+      description = "at the tip of the hobgoblin peninsula."
     }
   },
   {
@@ -3478,6 +3478,12 @@ local clues = {
           description = "in his cave near Burthorpe",
           range = { origin = { x = 2267, y = 4752, level = 0 }, size = { x = 5, y = 9 } },
           note = "Before 'Death Plateu'"
+        },
+        {
+          id = "after-death-plateau",
+          description = "in the tunnel to Death Plateau",
+          range = { origin = { x = 3401, y = 4282, level = 2 }, size = { x = 5, y = 5 } },
+          note = "After 'Death Plateau'"
         }
       },
       npc = "Sabbot"
@@ -4349,7 +4355,7 @@ local clues = {
           note = "Harmony"
         }
       },
-      npc = "Brother Tranquility"
+      npc = "Brother Tranquillity"
     },
     anagram = { "QUIT THY BRINE RAT ROLL" }
   },
@@ -6256,6 +6262,7 @@ local clues = {
     id = 375,
     areas = { { origin = { x = 3017, y = 9242, level = 0 }, size = { x = 4, y = 4 } } },
     cursor = "burn",
+    ingredients = { { name = "Curly root", ids = { id.Obj.JARO_ROOT_CURLY } } },
     answer = "Start a firepit with a Curly Root in the Jadinko Lair."
   },
   {
@@ -6276,6 +6283,7 @@ local clues = {
     id = 377,
     answer = "Cook a wild pie. The 'Bake Pie' spell works.",
     cursor = "cook",
+    ingredients = { { name = "Raw wild pie", ids = { id.Obj.UNCOOKED_WILD_PIE } } },
     areas = { { origin = { x = 2633, y = 3164, level = 0 }, size = { x = 2, y = 2 } } }
   },
   {
@@ -6320,6 +6328,12 @@ local clues = {
     id = 381,
     answer = "Light some magic logs.",
     cursor = "burn",
+    ingredients = {
+      {
+        name = "Magic logs or corrupted magic logs",
+        ids = { id.Obj.MAGIC_LOGS, id.Obj.MENAPHOS_CORRUPTED_LOGS }
+      }
+    },
     areas = {
       {
         origin = { x = 4310, y = 823, level = 0 },
@@ -6359,6 +6373,14 @@ local clues = {
     id = 384,
     answer = "Craft a black dragonhide body.",
     cursor = "craft",
+    ingredients = {
+      {
+        name = "Black dragon leather",
+        ids = { id.Obj.DRAGON_LEATHER_BLACK },
+        amount = 3
+      },
+      { name = "Thread", ids = { id.Obj.THREAD } }
+    },
     areas = { { origin = { x = 2274, y = 3311, level = 1 }, size = { x = 5, y = 3 } } }
   },
   {
@@ -6370,6 +6392,10 @@ local clues = {
     id = 385,
     answer = "Add a fire rune to a decorated cooking urn (nr).",
     cursor = "craft",
+    ingredients = {
+      { name = "Decorated cooking urn (no rune)", ids = { id.Obj.URNS_COOKING5_NORUNE } },
+      { name = "Fire rune", ids = { id.Obj.FIRERUNE } }
+    },
     areas = { { origin = { x = 2274, y = 3311, level = 1 }, size = { x = 5, y = 3 } } }
   },
   {
@@ -6381,6 +6407,12 @@ local clues = {
     id = 386,
     answer = "Cook a raw shark, raw rocktail or raw sailfish.",
     cursor = "cook",
+    ingredients = {
+      {
+        name = "Raw shark, raw rocktail or raw sailfish",
+        ids = { id.Obj.RAW_SHARK, id.Obj.LRC_ROCKTAIL_RAW, id.Obj.DSF_RAW_SAILFISH }
+      }
+    },
     areas = { { origin = { x = 4310, y = 823, level = 0 }, size = { x = 3, y = 3 } } }
   },
   {
@@ -6390,6 +6422,7 @@ local clues = {
     id = 387,
     answer = "Smelt a Bane bar at a furnace.",
     cursor = "smith",
+    ingredients = { { name = "Banite ore", ids = { id.Obj.MAH5_BANE_ORE }, amount = 2 } },
     areas = { { origin = { x = 3225, y = 3255, level = 0 }, size = { x = 5, y = 3 } } }
   },
   {
@@ -6401,7 +6434,8 @@ local clues = {
     id = 388,
     areas = { { origin = { x = 2203, y = 4834, level = 0 }, size = { x = 5, y = 5 } } },
     answer = "Craft a death rune.",
-    cursor = "runecraft"
+    cursor = "runecraft",
+    ingredients = { { name = "Pure essence", ids = { id.Obj.BLANKRUNE_HIGH } } }
   },
   {
     type = "skilling",
@@ -6410,7 +6444,13 @@ local clues = {
     id = 389,
     areas = { { origin = { x = 2460, y = 4893, level = 1 }, size = { x = 6, y = 6 } } },
     answer = "Craft a blood rune.",
-    cursor = "runecraft"
+    cursor = "runecraft",
+    ingredients = {
+      {
+        name = "Pure or exalted essence",
+        ids = { id.Obj.BLANKRUNE_HIGH, id.Obj.EXALTED_ESSENCE }
+      }
+    }
   },
   {
     type = "skilling",
@@ -6421,7 +6461,10 @@ local clues = {
     id = 390,
     areas = { { origin = { x = 2188, y = 3446, level = 1 }, size = { x = 5, y = 5 } } },
     answer = "Completely use up a cleansing crystal on the Corrupted Seren Stone.",
-    cursor = "pray"
+    cursor = "pray",
+    ingredients = {
+      { name = "Cleansing crystal", ids = { id.Obj.ELFCITY_HEFIN_CLEANSING_CRYSTAL } }
+    }
   },
   {
     type = "skilling",
@@ -6441,6 +6484,7 @@ local clues = {
     id = 392,
     answer = "Burn some elder logs.",
     cursor = "herblore",
+    ingredients = { { name = "Elder logs", ids = { id.Obj.ELDER_LOGS } } },
     areas = {
       {
         origin = { x = 4310, y = 823, level = 0 },
@@ -6482,6 +6526,10 @@ local clues = {
     id = 395,
     answer = "Create a Saradomin brew.",
     cursor = "herblore",
+    ingredients = {
+      { name = "Toadflax potion (unfinished)", ids = { id.Obj.TOADFLAXVIAL } },
+      { name = "Crushed nest", ids = { id.Obj.CRUSHED_BIRD_NEST } }
+    },
     areas = { { origin = { x = 2274, y = 3311, level = 1 }, size = { x = 5, y = 3 } } }
   },
   {
@@ -6493,6 +6541,7 @@ local clues = {
     id = 396,
     answer = "Smith a rune med helm or rune full helm.",
     cursor = "smith",
+    ingredients = { { name = "Rune bar", ids = { id.Obj.RUNITE_BAR }, amount = 2 } },
     areas = { { origin = { x = 3228, y = 3253, level = 0 }, size = { x = 2, y = 3 } } }
   },
   {
@@ -6504,6 +6553,10 @@ local clues = {
     id = 397,
     answer = "Create a Zamorak brew.",
     cursor = "herblore",
+    ingredients = {
+      { name = "Torstol potion (unfinished)", ids = { id.Obj.TORSTOLVIAL } },
+      { name = "Jangerberries", ids = { id.Obj.JANGERBERRIES } }
+    },
     areas = { { origin = { x = 2274, y = 3311, level = 1 }, size = { x = 5, y = 3 } } }
   },
   {
