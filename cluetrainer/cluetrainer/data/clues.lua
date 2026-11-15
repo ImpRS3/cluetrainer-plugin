@@ -8,6 +8,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "OMGE_BURTHORPE_HOUSE_DRAWERS_CLOSED" },
+        { domain = "loc", name = "OMGE_BURTHORPE_HOUSE_DRAWERS_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 2914, y = 3521 }, botright = { x = 2914, y = 3521 } }
     }
   },
@@ -19,6 +23,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "AREA_ARDOUGNE_BASIC_DRAWERS" },
+        { domain = "loc", name = "AREA_ARDOUGNE_BASIC_DRAWERS_OPEN" }
+      },
       spot = { level = 1, topleft = { x = 2575, y = 3326 }, botright = { x = 2575, y = 3326 } }
     }
   },
@@ -30,6 +38,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "AREA_ARDOUGNE_OUTDOOR_CRATE_STACKED" } },
       spot = { level = 0, topleft = { x = 2620, y = 3336 }, botright = { x = 2620, y = 3336 } }
     }
   },
@@ -41,6 +50,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "FAI_FALADOR_DRAWERS" },
+        { domain = "loc", name = "FAI_FALADOR_DRAWERS_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 2830, y = 3448 }, botright = { x = 2830, y = 3448 } }
     }
   },
@@ -52,6 +65,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FARMING_CRATE_INACTIVE_VAR2" } },
       spot = { level = 0, topleft = { x = 3018, y = 3287 }, botright = { x = 3018, y = 3287 } }
     }
   },
@@ -68,7 +82,8 @@ local clues = {
           description = "at Lumbridge Castle"
         }
       },
-      npc = "Hans"
+      npc = "Hans",
+      npc_configs = { { domain = "npc", name = "HANS" } }
     }
   },
   {
@@ -79,6 +94,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "FAI_VARROCK_DRAWERS" },
+        { domain = "loc", name = "FAI_VARROCK_DRAWERS_OPEN" }
+      },
       spot = { level = 1, topleft = { x = 3206, y = 3419 }, botright = { x = 3206, y = 3419 } }
     }
   },
@@ -90,6 +109,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Chest",
+      entity_configs = {
+        { domain = "loc", name = "FAI_PORTSARIM_CHEST_CLOSED" },
+        { domain = "loc", name = "FAI_PORTSARIM_CHEST_OPEN" }
+      },
       spot = { level = 1, topleft = { x = 3016, y = 3205 }, botright = { x = 3016, y = 3205 } }
     }
   },
@@ -103,6 +126,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "AREA_ARDOUGNE_BASIC_DRAWERS" },
+        { domain = "loc", name = "AREA_ARDOUGNE_BASIC_DRAWERS_OPEN" }
+      },
       spot = { level = 1, topleft = { x = 2655, y = 3323 }, botright = { x = 2655, y = 3323 } }
     }
   },
@@ -114,6 +141,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = { { domain = "loc", name = "OMGE_TAVERLEY_DRAWERS" } },
       spot = { level = 0, topleft = { x = 2914, y = 3448 }, botright = { x = 2914, y = 3448 } }
     }
   },
@@ -125,6 +153,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "CANAFIS_CRATE" } },
       spot = { level = 0, topleft = { x = 3509, y = 3497 }, botright = { x = 3509, y = 3497 } }
     }
   },
@@ -136,6 +165,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "KR_CRATE" } },
       spot = { level = 0, topleft = { x = 2699, y = 3470 }, botright = { x = 2699, y = 3470 } }
     }
   },
@@ -147,6 +177,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Closed Chest",
+      entity_configs = {
+        { domain = "loc", name = "FALADOR2015_CHEST_CLOSED" },
+        { domain = "loc", name = "FALADOR2015_CHEST_OPEN" }
+      },
       spot = { level = 1, topleft = { x = 3041, y = 3364 }, botright = { x = 3041, y = 3364 } }
     }
   },
@@ -158,6 +192,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Chest",
+      entity_configs = {
+        { domain = "loc", name = "ICEMT_MINE_CHEST_CLOSED" },
+        { domain = "loc", name = "ICEMT_MINE_CHEST_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 3000, y = 9798 }, botright = { x = 3000, y = 9798 } }
     }
   },
@@ -169,6 +207,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "BUILD_IMP_DRAYNOR_DRAWERS1_CLOSED" },
+        { domain = "loc", name = "BUILD_IMP_DRAYNOR_DRAWERS1_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 3097, y = 3277 }, botright = { x = 3097, y = 3277 } }
     }
   },
@@ -180,6 +222,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_VARROCK_ACTIVE_RED_CRATE" } },
       spot = { level = 0, topleft = { x = 3224, y = 3492 }, botright = { x = 3224, y = 3492 } }
     }
   },
@@ -191,6 +234,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Boxes",
+      entity_configs = { { domain = "loc", name = "DESERT2012_PROP_CRATE_ACTIVE" } },
       spot = { level = 0, topleft = { x = 3289, y = 3202 }, botright = { x = 3289, y = 3202 } }
     }
   },
@@ -202,6 +246,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Boxes",
+      entity_configs = { { domain = "loc", name = "FAI_VARROCK_ACTIVE_BOXES" } },
       spot = { level = 0, topleft = { x = 3203, y = 3384 }, botright = { x = 3203, y = 3384 } }
     }
   },
@@ -213,6 +258,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_VARROCK_ACTIVE_LARGE_CRATE" } },
       spot = { level = 0, topleft = { x = 3226, y = 3452 }, botright = { x = 3226, y = 3452 } }
     }
   },
@@ -224,6 +270,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_FALADOR_SMALL_CRATES" } },
       spot = { level = 0, topleft = { x = 3029, y = 3355 }, botright = { x = 3029, y = 3355 } }
     }
   },
@@ -235,6 +282,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_DRAYNOR_ACTIVE_CRATE" } },
       spot = { level = 2, topleft = { x = 3106, y = 3369 }, botright = { x = 3106, y = 3369 } }
     }
   },
@@ -246,6 +294,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "AREA_FISHING_GUILD_CRATE_SEARCHABLE" } },
       spot = { level = 0, topleft = { x = 2636, y = 3453 }, botright = { x = 2636, y = 3453 } }
     }
   },
@@ -257,6 +306,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "OPN_PROP_CRATE_OFFSET" } },
       spot = { level = 0, topleft = { x = 3415, y = 3158 }, botright = { x = 3415, y = 3158 } }
     }
   },
@@ -273,7 +323,8 @@ local clues = {
           description = "in Sinclair Mansion"
         }
       },
-      npc = "Louisa"
+      npc = "Louisa",
+      npc_configs = { { domain = "npc", name = "LOUISA_THE_COOK" } }
     }
   },
   {
@@ -284,6 +335,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_FALADOR_SMALL_CRATES" } },
       spot = { level = 0, topleft = { x = 3060, y = 3334 }, botright = { x = 3060, y = 3334 } }
     }
   },
@@ -295,6 +347,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "RIMM_IMP_DRAYNOR_DRAWERS1_CLOSED" },
+        { domain = "loc", name = "RIMM_IMP_DRAYNOR_DRAWERS1_OPEN" }
+      },
       spot = { level = 1, topleft = { x = 2970, y = 3214 }, botright = { x = 2970, y = 3214 } }
     }
   },
@@ -306,6 +362,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "KR_SEERS_VILLAGE_DRAWERS1" },
+        { domain = "loc", name = "KR_SEERS_VILLAGE_DRAWERS1OPEN" }
+      },
       spot = { level = 1, topleft = { x = 2716, y = 3471 }, botright = { x = 2716, y = 3471 } }
     }
   },
@@ -317,6 +377,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2_OLD" } },
       spot = { level = 0, topleft = { x = 2598, y = 3105 }, botright = { x = 2598, y = 3105 } }
     }
   },
@@ -328,6 +389,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "DRAWERS2" },
+        { domain = "loc", name = "DRAWERS2OPEN" }
+      },
       spot = { level = 0, topleft = { x = 2570, y = 3085 }, botright = { x = 2570, y = 3085 } }
     }
   },
@@ -339,6 +404,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Boxes",
+      entity_configs = { { domain = "loc", name = "DESERT2012_PROP_CRATE_ACTIVE" } },
       spot = { level = 0, topleft = { x = 3308, y = 3206 }, botright = { x = 3308, y = 3206 } }
     }
   },
@@ -350,6 +416,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE" } },
       spot = { level = 0, topleft = { x = 2660, y = 3149 }, botright = { x = 2660, y = 3149 } }
     }
   },
@@ -372,6 +439,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Barrel",
+      entity_configs = { { domain = "loc", name = "OMGE_SKILL_MINING_BARREL" } },
       spot = { level = 0, topleft = { x = 2886, y = 3449 }, botright = { x = 2886, y = 3449 } }
     }
   },
@@ -383,6 +451,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "AREA_ARDOUGNE_OUTDOOR_CRATE" } },
       spot = { level = 0, topleft = { x = 2658, y = 3323 }, botright = { x = 2658, y = 3323 } }
     }
   },
@@ -394,6 +463,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Barrel",
+      entity_configs = { { domain = "loc", name = "OMGE_SKILL_MINING_BARREL" } },
       spot = { level = 0, topleft = { x = 2894, y = 3418 }, botright = { x = 2894, y = 3418 } }
     }
   },
@@ -405,6 +475,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Gaius",
+      npc_configs = { { domain = "npc", name = "GAIUS" } },
       spots = {
         {
           range = { origin = { x = 2926, y = 3546, level = 0 }, size = { x = 6, y = 7 } },
@@ -421,6 +492,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Barrel",
+      entity_configs = { { domain = "loc", name = "OMGE_SKILL_MINING_BARREL" } },
       spot = { level = 0, topleft = { x = 2912, y = 3530 }, botright = { x = 2912, y = 3530 } }
     }
   },
@@ -432,6 +504,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Arhein",
+      npc_configs = { { domain = "npc", name = "ARHEIN" } },
       spots = {
         {
           range = { origin = { x = 2803, y = 3426, level = 0 } },
@@ -448,6 +521,11 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Bartender",
+      npc_configs = {
+        { domain = "npc", name = "RUSTYANCHOR_BLAHMAN" },
+        { domain = "npc", name = "RUSTYANCHOR_BARMAN" },
+        { domain = "npc", name = "RUSTYANCHOR_BARTENDER" }
+      },
       spots = {
         {
           range = { origin = { x = 3044, y = 3255, level = 0 }, size = { x = 3, y = 4 } },
@@ -464,6 +542,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_VARROCK_ACTIVE_LARGE_CRATE" } },
       spot = { level = 0, topleft = { x = 3228, y = 3433 }, botright = { x = 3228, y = 3433 } }
     }
   },
@@ -475,6 +554,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Boxes",
+      entity_configs = { { domain = "loc", name = "FAI_LUMBRIDGE_ACTIVE_BOXES" } },
       spot = { level = 0, topleft = { x = 3247, y = 3244 }, botright = { x = 3247, y = 3244 } }
     }
   },
@@ -486,6 +566,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "FAI_FALADOR_DRAWERS" },
+        { domain = "loc", name = "FAI_FALADOR_DRAWERS_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 2969, y = 3311 }, botright = { x = 2969, y = 3311 } }
     }
   },
@@ -497,6 +581,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Ornate chest",
+      entity_configs = {
+        { domain = "loc", name = "DESERT2012_CHEST" },
+        { domain = "loc", name = "DESERT2012_CHEST_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 3301, y = 3164 }, botright = { x = 3301, y = 3164 } }
     }
   },
@@ -508,6 +596,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "AREA_ARDOUGNE_OUTDOOR_CRATE_STACKED" } },
       spot = { level = 0, topleft = { x = 2654, y = 3299 }, botright = { x = 2654, y = 3299 } }
     }
   },
@@ -519,6 +608,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "AREA_ARDOUGNE_OUTDOOR_CRATE" } },
       spot = { level = 0, topleft = { x = 2615, y = 3291 }, botright = { x = 2615, y = 3291 } }
     }
   },
@@ -530,6 +620,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Ellis",
+      npc_configs = { { domain = "npc", name = "ELLIS_TANNER" } },
       spots = {
         {
           range = { origin = { x = 3270, y = 3193, level = 0 }, size = { x = 7, y = 6 } },
@@ -546,6 +637,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Closed Chest",
+      entity_configs = {
+        { domain = "loc", name = "KR_CAMELOT_CHESTCLOSED" },
+        { domain = "loc", name = "KR_CAMELOT_CHESTOPEN" }
+      },
       spot = { level = 2, topleft = { x = 2748, y = 3495 }, botright = { x = 2748, y = 3495 } }
     }
   },
@@ -557,6 +652,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Closed Chest",
+      entity_configs = {
+        { domain = "loc", name = "FAI_LUMBRIDGE_CHEST_CLOSED2" },
+        { domain = "loc", name = "FAI_LUMBRIDGE_CHEST_OPEN2" }
+      },
       spot = { level = 1, topleft = { x = 3209, y = 3218 }, botright = { x = 3209, y = 3218 } }
     }
   },
@@ -568,6 +667,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crates",
+      entity_configs = { { domain = "loc", name = "COMBAT_ACAD_STACKED_CRATES_VAR1" } },
       spot = { level = 0, topleft = { x = 3191, y = 3257 }, botright = { x = 3192, y = 3257 } }
     }
   },
@@ -579,6 +679,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Doric",
+      npc_configs = { { domain = "npc", name = "DORIC" } },
       spots = {
         {
           range = { origin = { x = 2955, y = 3435, level = 0 }, size = { x = 9, y = 9 } },
@@ -595,6 +696,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "FAI_VARROCK_DRAWERS" },
+        { domain = "loc", name = "FAI_VARROCK_DRAWERS_OPEN" }
+      },
       spot = { level = 1, topleft = { x = 3250, y = 3420 }, botright = { x = 3250, y = 3420 } }
     }
   },
@@ -606,6 +711,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Zeke",
+      npc_configs = { { domain = "npc", name = "ZEKE" } },
       spots = {
         {
           range = { origin = { x = 3284, y = 3186, level = 0 }, size = { x = 6, y = 7 } },
@@ -622,6 +728,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Bartender",
+      npc_configs = { { domain = "npc", name = "BLUEMOON_BARTENDER" } },
       spots = {
         {
           range = { origin = { x = 3223, y = 3396, level = 0 }, size = { x = 4, y = 7 } },
@@ -638,6 +745,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_LUMBRIDGE_ACTIVE_CRATE_STACKED" } },
       spot = { level = 1, topleft = { x = 3228, y = 3212 }, botright = { x = 3228, y = 3212 } }
     }
   },
@@ -649,6 +757,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "FAI_VARROCK_DRAWERS" },
+        { domain = "loc", name = "FAI_VARROCK_DRAWERS_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 3156, y = 3406 }, botright = { x = 3156, y = 3406 } }
     }
   },
@@ -660,6 +772,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "FAI_FALADOR_DRAWERS" },
+        { domain = "loc", name = "FAI_FALADOR_DRAWERS_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 2828, y = 3457 }, botright = { x = 2828, y = 3457 } }
     }
   },
@@ -671,6 +787,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "FAI_FALADOR_DRAWERS" },
+        { domain = "loc", name = "FAI_FALADOR_DRAWERS_OPEN" }
+      },
       spot = { level = 1, topleft = { x = 2971, y = 3386 }, botright = { x = 2971, y = 3386 } }
     }
   },
@@ -682,6 +802,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Squire Asrol",
+      npc_configs = { { domain = "npc", name = "SQUIRE" } },
       spots = {
         {
           range = { origin = { x = 2970, y = 3339, level = 0 }, size = { x = 8, y = 8 } },
@@ -698,6 +819,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_FALADOR_SMALL_CRATES" } },
       spot = { level = 0, topleft = { x = 2955, y = 3390 }, botright = { x = 2955, y = 3390 } }
     }
   },
@@ -709,6 +831,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_BARBARIAN_SMALL_CRATES" } },
       spot = { level = 0, topleft = { x = 3073, y = 3430 }, botright = { x = 3073, y = 3430 } }
     }
   },
@@ -720,6 +843,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_PORTSARIM_CRATE2" } },
       spot = { level = 0, topleft = { x = 3012, y = 3222 }, botright = { x = 3012, y = 3222 } }
     }
   },
@@ -731,6 +855,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Sir Kay",
+      npc_configs = { { domain = "npc", name = "SIR_KAY" } },
       spots = {
         {
           range = { origin = { x = 2752, y = 3493, level = 0 }, size = { x = 13, y = 11 } },
@@ -747,6 +872,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Ned",
+      npc_configs = { { domain = "npc", name = "NED" } },
       spots = {
         {
           range = { origin = { x = 3097, y = 3255, level = 0 }, size = { x = 6, y = 6 } },
@@ -763,6 +889,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Challenge Mistress Fara",
+      npc_configs = { { domain = "npc", name = "CHALLENGE_MASTER" } },
       spots = {
         {
           range = { origin = { x = 2883, y = 3533, level = 0 } },
@@ -784,7 +911,8 @@ local clues = {
           description = "at Sinclair Mansion"
         }
       },
-      npc = "Donovan the Family Handyman"
+      npc = "Donovan the Family Handyman",
+      npc_configs = { { domain = "npc", name = "DONOVAN_THE_FAMILY_HANDYMAN" } }
     }
   },
   {
@@ -807,7 +935,8 @@ local clues = {
           description = "in Brimstail's cave"
         }
       },
-      npc = "Brimstail"
+      npc = "Brimstail",
+      npc_configs = { { domain = "npc", name = "GNOME_BRIMSTAIL" } }
     }
   },
   {
@@ -818,6 +947,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Roavar",
+      npc_configs = { { domain = "npc", name = "WEREWOLFINNKEEPER" } },
       spots = {
         {
           range = { origin = { x = 3489, y = 3471, level = 0 }, size = { x = 7, y = 5 } },
@@ -834,6 +964,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Ulizius",
+      npc_configs = { { domain = "npc", name = "MORT_MYRE_GATE_GUARD" } },
       spots = {
         {
           range = { origin = { x = 3440, y = 3458, level = 0 }, size = { x = 7, y = 7 } },
@@ -850,6 +981,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Hajedy",
+      npc_configs = { { domain = "npc", name = "BRIMHAVENCARTDRIVER" } },
       spots = {
         {
           range = { origin = { x = 2779, y = 3210, level = 0 }, size = { x = 4, y = 4 } },
@@ -866,6 +998,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Kangai Mau",
+      npc_configs = { { domain = "npc", name = "KANGAI_MAU" } },
       spots = {
         {
           range = { origin = { x = 2790, y = 3181, level = 0 }, size = { x = 6, y = 5 } },
@@ -889,6 +1022,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Gnome ball referee",
+      npc_configs = { { domain = "npc", name = "GNOMEREFEREE" } },
       spots = {
         {
           range = { origin = { x = 2385, y = 3488, level = 0 } },
@@ -912,6 +1046,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Hazelmere",
+      npc_configs = { { domain = "npc", name = "GRANDTREE_HAZELMERE" } },
       spots = {
         {
           range = { origin = { x = 2675, y = 3085, level = 1 }, size = { x = 5, y = 5 } },
@@ -928,6 +1063,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Barrel",
+      entity_configs = { { domain = "loc", name = "WENDLE_BARREL_POOR_LARGE" } },
       spot = { topleft = { x = 3531, y = 1483 }, botright = { x = 3532, y = 1483 }, level = 1 }
     }
   },
@@ -942,6 +1078,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "AREA_ARDOUGNE_OUTDOOR_CRATE" } },
       spot = { level = 1, topleft = { x = 2612, y = 3306 }, botright = { x = 2612, y = 3306 } }
     }
   },
@@ -953,6 +1090,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Captain Tobias",
+      npc_configs = { { domain = "npc", name = "CAPTAIN_TOBIAS" } },
       spots = {
         {
           range = { origin = { x = 3027, y = 3216, level = 0 }, size = { x = 2, y = 3 } },
@@ -974,7 +1112,8 @@ local clues = {
           description = "north of Het's Oasis"
         }
       },
-      npc = "Jeed"
+      npc = "Jeed",
+      npc_configs = { { domain = "npc", name = "DUEL_CROWDFEMALE3" } }
     }
   },
   {
@@ -988,6 +1127,10 @@ local clues = {
       type = "search",
       spot = { level = 0, topleft = { x = 3256, y = 3487 }, botright = { x = 3256, y = 3487 } },
       entity = "Closed Chest",
+      entity_configs = {
+        { domain = "loc", name = "FAI_VARROCK_CHEST_CLOSED" },
+        { domain = "loc", name = "FAI_VARROCK_CHEST_OPEN" }
+      },
       key = {
         instructions = "The chest is locked! An inscription on the chest says: Property of Clock Tower Monastery.",
         answer = "Kill a monk in the Kandarin Monastery.",
@@ -1005,6 +1148,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "ICEMT_MONASTERY_DRAWERS1" },
+        { domain = "loc", name = "ICEMT_MONASTERY_DRAWERS1OPEN" }
+      },
       spot = { level = 0, topleft = { x = 3056, y = 3497 }, botright = { x = 3056, y = 3497 } },
       key = {
         instructions = "The chest has a crude note on top. It reads 'You'll never get these drawers open now! - Zamorak Monk.'",
@@ -1021,6 +1168,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Cupboard",
+      entity_configs = { { domain = "loc", name = "WIZTOWER2012_CUPBOARD_VAR2" } },
       spot = { level = 2, topleft = { x = 3113, y = 3153 }, botright = { x = 3113, y = 3153 } },
       key = {
         instructions = "This cupboard is locked! One of the Spellwisps might have stolen the key. ",
@@ -1037,6 +1185,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE_OLD" } },
       spot = { level = 0, topleft = { x = 2800, y = 3074 }, botright = { x = 2800, y = 3074 } }
     }
   },
@@ -1048,6 +1197,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE" } },
       spot = { level = 0, topleft = { x = 2770, y = 3172 }, botright = { x = 2770, y = 3172 } }
     }
   },
@@ -1062,6 +1212,10 @@ local clues = {
       type = "search",
       spot = { level = 1, topleft = { x = 2575, y = 3326 }, botright = { x = 2575, y = 3326 } },
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "AREA_ARDOUGNE_BASIC_DRAWERS" },
+        { domain = "loc", name = "AREA_ARDOUGNE_BASIC_DRAWERS_OPEN" }
+      },
       key = {
         instructions = "The drawers are locked! A note left on the drawers reads: Beware of dog!",
         answer = "Kill a guard dog.",
@@ -1077,6 +1231,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "SLUG2_CRATE_SINGLE" } },
       spot = { level = 0, topleft = { x = 2764, y = 3273 }, botright = { x = 2764, y = 3273 } }
     }
   },
@@ -1090,6 +1245,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAIRYKIT_CRATES" } },
       spot = { level = 0, topleft = { x = 2399, y = 4471 }, botright = { x = 2399, y = 4471 } }
     }
   },
@@ -1103,6 +1259,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Old Bookshelf",
+      entity_configs = { { domain = "loc", name = "MAGICTRAINING_BOOKSHELF_OLD_TALL_DOUBLE2" } },
       spot = { level = 1, topleft = { x = 3366, y = 3319 }, botright = { x = 3366, y = 3319 } }
     }
   },
@@ -1116,6 +1273,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "CANAFIS_CRATE" } },
       spot = { level = 0, topleft = { x = 3498, y = 3507 }, botright = { x = 3498, y = 3507 } }
     }
   },
@@ -1129,6 +1287,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Hay bales",
+      entity_configs = { { domain = "loc", name = "HAYSTACK2" } },
       spot = { level = 0, topleft = { x = 2524, y = 3438 }, botright = { x = 2524, y = 3438 } }
     }
   },
@@ -1142,6 +1301,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "DEAL_CRATE2" } },
       spot = { level = 0, topleft = { x = 2905, y = 3189 }, botright = { x = 2905, y = 3189 } }
     }
   },
@@ -1156,6 +1316,10 @@ local clues = {
       type = "search",
       spot = { level = 0, topleft = { x = 2928, y = 3552 }, botright = { x = 2928, y = 3552 } },
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "OMGE_BURTHORPE_HOUSE_DRAWERS_CLOSED" },
+        { domain = "loc", name = "OMGE_BURTHORPE_HOUSE_DRAWERS_OPEN" }
+      },
       key = {
         instructions = "The drawers are locked! A note on the top of the drawer reads: Wait till I get my hands on Penda; he's nicked the key again!",
         answer = "Pickpocket Penda in the house north of Heroes's Guild.",
@@ -1173,6 +1337,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "KR_SEERS_VILLAGE_DRAWERS1" },
+        { domain = "loc", name = "KR_SEERS_VILLAGE_DRAWERS1OPEN" }
+      },
       spot = { level = 0, topleft = { x = 2709, y = 3478 }, botright = { x = 2709, y = 3478 } },
       key = {
         instructions = "Don't forget to feed the chickens",
@@ -1191,7 +1359,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2519, y = 3259 }, botright = { x = 2519, y = 3259 } },
-      entity = "Crates"
+      entity = "Crates",
+      entity_configs = { { domain = "loc", name = "LUC2_BF_CRATE" } }
     }
   },
   {
@@ -1215,7 +1384,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 3280, y = 2787 }, botright = { x = 3280, y = 2787 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "MENAPHOS_WORKER_CRATE_01_CLUE" } }
     }
   },
   {
@@ -1239,7 +1409,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 3155, y = 5727 }, botright = { x = 3155, y = 5727 } },
-      entity = "Sacks"
+      entity = "Sacks",
+      entity_configs = { { domain = "loc", name = "DI2_SACKS" } }
     }
   },
   {
@@ -1250,7 +1421,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2671, y = 3437 }, botright = { x = 2671, y = 3437 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE_OLD" } }
     }
   },
   {
@@ -1277,6 +1449,10 @@ local clues = {
       type = "search",
       spot = { level = 1, topleft = { x = 2809, y = 3165 }, botright = { x = 2809, y = 3165 } },
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "DRAWERS1" },
+        { domain = "loc", name = "DRAWERS1OPEN" }
+      },
       key = {
         instructions = "Shiver me timbers!",
         answer = "Kill a pirate in Brimhaven",
@@ -1305,6 +1481,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "TOURTRAP_QIP_CRATE_SINGLE" } },
       spot = { level = 0, topleft = { x = 3289, y = 3022 }, botright = { x = 3289, y = 3022 } }
     }
   },
@@ -1342,6 +1519,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Cupboard",
+      entity_configs = {
+        { domain = "loc", name = "CUPBOARD_GLOFFSET" },
+        { domain = "loc", name = "CUPBOARDOPEN_GLOFFSET" }
+      },
       spot = { level = 0, topleft = { x = 2811, y = 3160 }, botright = { x = 2811, y = 3160 } }
     }
   },
@@ -1354,6 +1535,10 @@ local clues = {
       type = "search",
       spot = { level = 0, topleft = { x = 3354, y = 3349 }, botright = { x = 3354, y = 3349 } },
       entity = "Closed chest",
+      entity_configs = {
+        { domain = "loc", name = "CHESTCLOSED" },
+        { domain = "loc", name = "CHESTOPEN" }
+      },
       key = {
         instructions = "The chest is locked!  Crude graffiti on the chest reads: 'Barbarians rule, okay!'",
         answer = "Kill a Barbarian in Barbarian Village.",
@@ -1369,7 +1554,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2691, y = 3508 }, botright = { x = 2691, y = 3508 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2_OLD" } }
     }
   },
   {
@@ -1383,6 +1569,10 @@ local clues = {
       type = "search",
       spot = { level = 1, topleft = { x = 2512, y = 3641 }, botright = { x = 2512, y = 3641 } },
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "DRAWERS2" },
+        { domain = "loc", name = "DRAWERS2OPEN" }
+      },
       key = {
         instructions = "The drawers are locked! A note on the top says 'I'm guarding the key at the market'.",
         answer = "Kill a Fremennik market guard in Relekka.",
@@ -1398,7 +1588,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2614, y = 3204 }, botright = { x = 2614, y = 3204 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2" } }
     }
   },
   {
@@ -1411,6 +1602,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Closed chest",
+      entity_configs = {
+        { domain = "loc", name = "CHESTCLOSED" },
+        { domain = "loc", name = "CHESTOPEN" }
+      },
       spot = { level = 1, topleft = { x = 2593, y = 3108 }, botright = { x = 2593, y = 3108 } },
       key = {
         instructions = "Stand by your man.",
@@ -1429,7 +1624,11 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2698, y = 9684 }, botright = { x = 2698, y = 9684 } },
-      entity = "Chest"
+      entity = "Chest",
+      entity_configs = {
+        { domain = "loc", name = "SLUG2_CHEST" },
+        { domain = "loc", name = "SLUG2_CHEST_OPEN" }
+      }
     }
   },
   {
@@ -1442,7 +1641,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2397, y = 3355 }, botright = { x = 2397, y = 3355 } },
-      entity = "Gnome crates"
+      entity = "Gnome crates",
+      entity_configs = { { domain = "loc", name = "ACTIVE_ALUFT_GNOME_CRATES" } }
     }
   },
   {
@@ -1468,7 +1668,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2438, y = 3165 }, botright = { x = 2438, y = 3165 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "WOLF_DRUID_LARGE_CRATE" } }
     }
   },
   {
@@ -1482,6 +1683,10 @@ local clues = {
       type = "search",
       spot = { level = 1, topleft = { x = 2610, y = 3324 }, botright = { x = 2610, y = 3324 } },
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "AREA_ARDOUGNE_BASIC_DRAWERS" },
+        { domain = "loc", name = "AREA_ARDOUGNE_BASIC_DRAWERS_OPEN" }
+      },
       key = { instructions = "It's a guard's life", answer = "Kill an ardougne guard." }
     }
   },
@@ -1519,6 +1724,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "General Bentnoze",
+      npc_configs = { { domain = "npc", name = "GENERAL_BENTNOZE_RED" } },
       spots = {
         {
           range = { origin = { x = 2954, y = 3512, level = 0 }, size = { x = 7, y = 4 } },
@@ -1538,6 +1744,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Haystack",
+      entity_configs = { { domain = "loc", name = "HAYSTACK3" } },
       spot = { level = 0, topleft = { x = 2671, y = 3416 }, botright = { x = 2671, y = 3416 } }
     }
   },
@@ -1563,7 +1770,12 @@ local clues = {
           description = "at Iorwerth Camp"
         }
       },
-      npc = "Lord Iorwerth"
+      npc = "Lord Iorwerth",
+      npc_configs = {
+        { domain = "npc", name = "LORD_IORWERTH_VIS" },
+        { domain = "npc", name = "ELFCITY_LORD_IORWERTH" },
+        { domain = "npc", name = "LORD_IORWERTH" }
+      }
     }
   },
   {
@@ -1586,7 +1798,8 @@ local clues = {
           description = "at the Edgeville Monastery"
         }
       },
-      npc = "Abbot Langley"
+      npc = "Abbot Langley",
+      npc_configs = { { domain = "npc", name = "ABBOT_LANGLEY" } }
     }
   },
   {
@@ -1605,7 +1818,12 @@ local clues = {
           description = "in the fishing shop in Port Sarim"
         }
       },
-      npc = "Gerrant"
+      npc = "Gerrant",
+      npc_configs = {
+        { domain = "npc", name = "VKQ2_GERRANT_SICK" },
+        { domain = "npc", name = "GERRANT_NPC" },
+        { domain = "npc", name = "GERRANT" }
+      }
     }
   },
   {
@@ -1619,6 +1837,10 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Examiner",
+      npc_configs = {
+        { domain = "npc", name = "QIP_DIGSITE_EXAMINER_02" },
+        { domain = "npc", name = "QIP_DIGSITE_EXAMINER_03" }
+      },
       spots = {
         {
           range = { origin = { x = 3351, y = 3342, level = 0 }, size = { x = 9, y = 8 } },
@@ -1637,7 +1859,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 1, topleft = { x = 2523, y = 3493 }, botright = { x = 2523, y = 3493 } },
-      entity = "Boxes"
+      entity = "Boxes",
+      entity_configs = { { domain = "loc", name = "ACTIVE_BOXES" } }
     }
   },
   {
@@ -1667,7 +1890,8 @@ local clues = {
           description = "on the beach in Menaphos Worker District"
         }
       },
-      npc = "Hamid"
+      npc = "Hamid",
+      npc_configs = { { domain = "npc", name = "DUEL_MONK" } }
     }
   },
   {
@@ -1697,7 +1921,8 @@ local clues = {
           description = "at the Gnome Agility Course"
         }
       },
-      npc = "Gnome trainer"
+      npc = "Gnome trainer",
+      npc_configs = { { domain = "npc", name = "GNOMETRAINER" } }
     }
   },
   {
@@ -1708,7 +1933,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 3041, y = 9820 }, botright = { x = 3041, y = 9820 } },
-      entity = "Mine Cart"
+      entity = "Mine Cart",
+      entity_configs = { { domain = "loc", name = "DWARFROCK_BOOK_CART" } }
     }
   },
   {
@@ -1719,7 +1945,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 1, topleft = { x = 2702, y = 3409 }, botright = { x = 2702, y = 3409 } },
-      entity = "Bookcase"
+      entity = "Bookcase",
+      entity_configs = { { domain = "loc", name = "BOOKCASE_OFFSET" } }
     }
   },
   {
@@ -1730,7 +1957,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 3094, y = 3153 }, botright = { x = 3095, y = 3152 } },
-      entity = "Bookcase"
+      entity = "Bookcase",
+      entity_configs = { { domain = "loc", name = "WIZTOWER2012_LIBRARY_BOOKCASE" } }
     }
   },
   {
@@ -1747,7 +1975,8 @@ local clues = {
           description = "in the south-east corner on the first floor of the Grand Tree"
         }
       },
-      npc = "Heckel Funch"
+      npc = "Heckel Funch",
+      npc_configs = { { domain = "npc", name = "GNOME_HECKELFUNCH" } }
     }
   },
   {
@@ -1760,7 +1989,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2340, y = 3187 }, botright = { x = 2340, y = 3187 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2" } }
     }
   },
   {
@@ -1784,7 +2014,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 3478, y = 3091 }, botright = { x = 3478, y = 3091 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2" } }
     }
   },
   {
@@ -1849,7 +2080,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2576, y = 9583 }, botright = { x = 2576, y = 9583 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2_OLD" } }
     }
   },
   {
@@ -1862,6 +2094,12 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        {
+          domain = "loc",
+          name = "UNDERWORLD_SURFACE_NECROMANCERS_TOWER_FURNITURE_DRAWERS"
+        }
+      },
       spot = { level = 1, topleft = { x = 2666, y = 3238 }, botright = { x = 2666, y = 3238 } }
     }
   },
@@ -1873,6 +2111,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Boxes",
+      entity_configs = { { domain = "loc", name = "DWARF_KELDAGRIM_WOODEN_BOXES" } },
       spot = { level = 0, topleft = { x = 2576, y = 3464 }, botright = { x = 2576, y = 3464 } }
     }
   },
@@ -1884,6 +2123,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2_OLD" } },
       spot = { level = 0, topleft = { x = 3219, y = 9617 }, botright = { x = 3219, y = 9617 } }
     }
   },
@@ -1895,6 +2135,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2" } },
       spot = { level = 0, topleft = { x = 3178, y = 2987 }, botright = { x = 3178, y = 2987 } }
     }
   },
@@ -1908,6 +2149,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ELEM_CRATE_1" } },
       spot = { level = 0, topleft = { x = 2723, y = 9891 }, botright = { x = 2723, y = 9891 } }
     }
   },
@@ -1919,6 +2161,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "AREA_ARDOUGNE_POSH_DRAWERS2" },
+        { domain = "loc", name = "AREA_ARDOUGNE_POSH_DRAWERS2_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 2561, y = 3323 }, botright = { x = 2561, y = 3323 } }
     }
   },
@@ -1956,6 +2202,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE3" } },
       spot = { level = 0, topleft = { x = 2648, y = 3662 }, botright = { x = 2648, y = 3662 } }
     }
   },
@@ -1973,7 +2220,8 @@ local clues = {
           description = "at the top of White Wolf Mountain"
         }
       },
-      npc = "Captain Bleemadge"
+      npc = "Captain Bleemadge",
+      npc_configs = { { domain = "npc", name = "PILOT_WHITE_WOLF" } }
     }
   },
   {
@@ -1989,7 +2237,8 @@ local clues = {
           description = "at Lumbridge Castle"
         }
       },
-      npc = "Hans"
+      npc = "Hans",
+      npc_configs = { { domain = "npc", name = "HANS" } }
     }
   },
   {
@@ -2002,6 +2251,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "FAI_LUMBRIDGE_CASTLE_DRAWERS_CLOSED" },
+        { domain = "loc", name = "FAI_LUMBRIDGE_CASTLE_DRAWERS_OPEN" }
+      },
       spot = { level = 1, topleft = { x = 3213, y = 3216 }, botright = { x = 3213, y = 3216 } }
     }
   },
@@ -2018,7 +2271,11 @@ local clues = {
           description = "in Varrock Castle"
         }
       },
-      npc = "Sir Prysin"
+      npc = "Sir Prysin",
+      npc_configs = {
+        { domain = "npc", name = "SIR_PRYSIN" },
+        { domain = "npc", name = "SIR_PRYSIN_MULTI" }
+      }
     }
   },
   {
@@ -2031,6 +2288,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "FAI_LUMBRIDGE_ACTIVE_CRATE_STACKED" } },
       spot = { level = 2, topleft = { x = 3166, y = 3309 }, botright = { x = 3166, y = 3309 } }
     }
   },
@@ -2050,7 +2308,8 @@ local clues = {
           description = "near Varrock's fountain"
         }
       },
-      npc = "Wilough"
+      npc = "Wilough",
+      npc_configs = { { domain = "npc", name = "WILOUGH" } }
     }
   },
   {
@@ -2069,7 +2328,8 @@ local clues = {
           description = "in Edgeville"
         }
       },
-      npc = "Oziach"
+      npc = "Oziach",
+      npc_configs = { { domain = "npc", name = "OZIACH" } }
     }
   },
   {
@@ -2096,6 +2356,10 @@ local clues = {
     solution = {
       type = "search",
       entity = "Drawers",
+      entity_configs = {
+        { domain = "loc", name = "ENTRANA_DRAWERS_MEDIUMCLUE" },
+        { domain = "loc", name = "ENTRANA_DRAWERS_MEDIUMCLUE_OPEN" }
+      },
       spot = { level = 0, topleft = { x = 2818, y = 3351 }, botright = { x = 2818, y = 3351 } }
     }
   },
@@ -2161,6 +2425,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Bookcase",
+      entity_configs = { { domain = "loc", name = "SHELVES_BAMBOO" } },
       spot = { level = 0, topleft = { x = 2833, y = 2992 }, botright = { x = 2833, y = 2992 } }
     }
   },
@@ -2247,7 +2512,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2565, y = 3248 }, botright = { x = 2565, y = 3248 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2" } }
     }
   },
   {
@@ -2259,7 +2525,8 @@ local clues = {
     solution = {
       type = "search",
       spot = { level = 0, topleft = { x = 2658, y = 3488 }, botright = { x = 2658, y = 3488 } },
-      entity = "Crate"
+      entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2_OLD" } }
     }
   },
   {
@@ -2381,6 +2648,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ELEM_CRATE_1" } },
       spot = { level = 0, topleft = { x = 2457, y = 3182 }, botright = { x = 2457, y = 3182 } }
     }
   },
@@ -2429,6 +2697,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "ACTIVE_CRATE2" } },
       spot = { level = 0, topleft = { x = 3026, y = 3629 }, botright = { x = 3026, y = 3629 } }
     }
   },
@@ -2441,6 +2710,7 @@ local clues = {
     solution = {
       type = "search",
       entity = "Crate",
+      entity_configs = { { domain = "loc", name = "HUMAN_STORAGE_CRATE_REGULAR_SQUARE_SEARCHABLE" } },
       spot = { level = 0, topleft = { x = 3312, y = 3528 }, botright = { x = 3312, y = 3528 } }
     }
   },
@@ -3453,6 +3723,11 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Zookeeper",
+      npc_configs = {
+        { domain = "npc", name = "ZOO_KEEPER" },
+        { domain = "npc", name = "ZOO_KEEPER2" },
+        { domain = "npc", name = "ZOO_KEEPER3" }
+      },
       spots = {
         {
           range = { origin = { x = 2607, y = 3268, level = 0 }, size = { x = 14, y = 14 } },
@@ -3486,7 +3761,13 @@ local clues = {
           note = "After 'Death Plateau'"
         }
       },
-      npc = "Sabbot"
+      npc = "Sabbot",
+      npc_configs = {
+        { domain = "npc", name = "DEATH_SABBOT" },
+        { domain = "npc", name = "DEATH_SABBOT_MINING" },
+        { domain = "npc", name = "DEATH_SABBOT_CAVE_MULTI" },
+        { domain = "npc", name = "DEATH_SABBOT_TUNNEL_MULTI" }
+      }
     },
     anagram = { "Stab Ob", "Boast B" }
   },
@@ -3505,6 +3786,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Edmond",
+      npc_configs = { { domain = "npc", name = "EDMOND" }, { domain = "npc", name = "EDMOND_TOP" } },
       spots = {
         {
           range = { origin = { x = 2564, y = 3330, level = 0 }, size = { x = 7, y = 7 } },
@@ -3529,6 +3811,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Nails Newton",
+      npc_configs = { { domain = "npc", name = "LTEP_NAILS" } },
       spots = {
         {
           range = { origin = { x = 2881, y = 3444, level = 0 } },
@@ -3553,6 +3836,11 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Valerio",
+      npc_configs = {
+        { domain = "npc", name = "OPN_VALERIO_OUTSIDE_DURINGQUEST_APPEARANCE" },
+        { domain = "npc", name = "OPN_VALERIO_OUTSIDE_POSTQUEST_APPEARANCE" },
+        { domain = "npc", name = "OPN_VALERIO_OUTSIDE" }
+      },
       spots = {
         {
           range = { origin = { x = 3400, y = 3149, level = 0 } },
@@ -3570,6 +3858,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Fycie",
+      npc_configs = { { domain = "npc", name = "FYCIE" } },
       spots = {
         {
           range = { origin = { x = 2646, y = 9390, level = 0 }, size = { x = 8, y = 9 } },
@@ -3587,6 +3876,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Jaraah",
+      npc_configs = { { domain = "npc", name = "DUEL_JARAAH" } },
       spots = {
         {
           range = { origin = { x = 3290, y = 3215, level = 0 }, size = { x = 8, y = 5 } },
@@ -3609,7 +3899,8 @@ local clues = {
           description = "in his cave at Tree Gnome Stronghold"
         }
       },
-      npc = "Brimstail"
+      npc = "Brimstail",
+      npc_configs = { { domain = "npc", name = "GNOME_BRIMSTAIL" } }
     },
     anagram = { "Bail Trims" }
   },
@@ -3628,6 +3919,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Cook",
+      npc_configs = { { domain = "npc", name = "COOK" } },
       spots = {
         {
           range = { origin = { x = 3208, y = 3215, level = 0 }, size = { x = 3, y = 1 } },
@@ -3652,6 +3944,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Oracle",
+      npc_configs = { { domain = "npc", name = "ORACLE" } },
       spots = {
         {
           range = { origin = { x = 3008, y = 3498, level = 0 }, size = { x = 12, y = 6 } },
@@ -3679,6 +3972,11 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Caroline",
+      npc_configs = {
+        { domain = "npc", name = "CAROLINE" },
+        { domain = "npc", name = "CAROLINE_MULTI" },
+        { domain = "npc", name = "KEN_CAROLINE_INSIDEHOUSE" }
+      },
       spots = {
         {
           id = "default",
@@ -3708,7 +4006,8 @@ local clues = {
           description = "in Tree Gnome Village"
         }
       },
-      npc = "King Bolren"
+      npc = "King Bolren",
+      npc_configs = { { domain = "npc", name = "KING_BOLREN" } }
     },
     anagram = { "Goblin Kern" }
   },
@@ -3727,6 +4026,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Father Urhney",
+      npc_configs = { { domain = "npc", name = "FATHER_URHNEY" } },
       spots = {
         {
           range = { origin = { x = 3203, y = 3147, level = 0 }, size = { x = 8, y = 5 } },
@@ -3751,6 +4051,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Brundt the Chieftain",
+      npc_configs = { { domain = "npc", name = "VIKING_BRUNDT" } },
       spots = {
         {
           range = { origin = { x = 2657, y = 3666, level = 0 }, size = { x = 4, y = 5 } },
@@ -3773,7 +4074,8 @@ local clues = {
           description = "at gates of Tree Gnome Stronghold"
         }
       },
-      npc = "Femi"
+      npc = "Femi",
+      npc_configs = { { domain = "npc", name = "GRANDTREE_FEMI" } }
     },
     anagram = { "Me if" }
   },
@@ -3792,6 +4094,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Karim",
+      npc_configs = { { domain = "npc", name = "KEBAB_SELLER" } },
       spots = {
         {
           range = {
@@ -3820,6 +4123,11 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Gabooty",
+      npc_configs = {
+        { domain = "npc", name = "TBWCU_GABOOTY" },
+        { domain = "npc", name = "TBWCU_GABOOTY_NOSTICKS" },
+        { domain = "npc", name = "TBWCU_GABOOTY_MULTINPC" }
+      },
       spots = {
         {
           range = { origin = { x = 2786, y = 3063, level = 0 }, size = { x = 16, y = 8 } },
@@ -3842,7 +4150,8 @@ local clues = {
           description = "at Musa Point"
         }
       },
-      npc = "Luthas"
+      npc = "Luthas",
+      npc_configs = { { domain = "npc", name = "LUTHAS" } }
     },
     anagram = { "Halt Us" }
   },
@@ -3861,6 +4170,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Recruiter",
+      npc_configs = { { domain = "npc", name = "RECRUITER" } },
       spots = {
         {
           range = { origin = { x = 2539, y = 3302, level = 0 }, size = { x = 6, y = 7 } },
@@ -3888,6 +4198,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Moldark, Emissary of Zamorak",
+      npc_configs = { { domain = "npc", name = "GODEM_ZAMORAK_EMISSARY" } },
       spots = {
         {
           range = { origin = { x = 3104, y = 3508, level = 0 }, size = { x = 2, y = 3 } },
@@ -3912,6 +4223,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Rommik",
+      npc_configs = { { domain = "npc", name = "ROMMIK" } },
       spots = {
         {
           range = { origin = { x = 2945, y = 3193, level = 0 }, size = { x = 6, y = 7 } },
@@ -3934,7 +4246,8 @@ local clues = {
           description = "in Varrock's Archery Store"
         }
       },
-      npc = "Lowe"
+      npc = "Lowe",
+      npc_configs = { { domain = "npc", name = "LOWE" } }
     },
     anagram = { "El Ow" }
   },
@@ -3951,7 +4264,8 @@ local clues = {
           description = "in the Party Room"
         }
       },
-      npc = "Party Pete"
+      npc = "Party Pete",
+      npc_configs = { { domain = "npc", name = "PARTYROOM_PETE" } }
     },
     anagram = { "Peaty Pert" }
   },
@@ -3970,6 +4284,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "King Roald",
+      npc_configs = { { domain = "npc", name = "KING_ROALD" } },
       spots = {
         {
           range = { origin = { x = 3217, y = 3471, level = 0 }, size = { x = 8, y = 8 } },
@@ -3997,7 +4312,8 @@ local clues = {
           description = "north of Al Kharid"
         }
       },
-      npc = "Cam the Camel"
+      npc = "Cam the Camel",
+      npc_configs = { { domain = "npc", name = "CAM_THE_CAMEL" } }
     },
     anagram = { "Me Am The Calc", "Ace Match Elm", "The Cal Came" }
   },
@@ -4019,7 +4335,8 @@ local clues = {
           description = "in Nardah"
         }
       },
-      npc = "Shiratti the Custodian"
+      npc = "Shiratti the Custodian",
+      npc_configs = { { domain = "npc", name = "ELID_SHIRATTI" } }
     },
     anagram = { "I Eat Its Chart Hints Do U" }
   },
@@ -4037,7 +4354,8 @@ local clues = {
           description = "in the Dwarven Tunnel under the White Wolf Mountain"
         }
       },
-      npc = "Captain Ninto"
+      npc = "Captain Ninto",
+      npc_configs = { { domain = "npc", name = "ALUFT_PILOT_NINTO" } }
     },
     anagram = { "An Paint Tonic" }
   },
@@ -4055,7 +4373,8 @@ local clues = {
           description = "at the Piscatoris Fishing Colony"
         }
       },
-      npc = "Ramara du Croissant"
+      npc = "Ramara du Croissant",
+      npc_configs = { { domain = "npc", name = "SWAN_COLONIST_3" } }
     },
     anagram = { "Arr! So I am a crust, and?" }
   },
@@ -4074,6 +4393,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Gnome Coach",
+      npc_configs = { { domain = "npc", name = "GNOME_BALL_COACH" } },
       spots = {
         {
           range = { origin = { x = 2406, y = 3498, level = 0 } },
@@ -4097,7 +4417,18 @@ local clues = {
           description = "in eastern Keldagrim"
         }
       },
-      npc = "Riki the sculptor's model"
+      npc = "Riki the sculptor's model",
+      npc_configs = {
+        { domain = "npc", name = "DWARF_CITY_SHOP_SCULPTURE_MODEL" },
+        { domain = "npc", name = "DWARF_CITY_SHOP_SCULPTURE_MODEL_BOOTS" },
+        { domain = "npc", name = "DWARF_CITY_SHOP_SCULPTURE_MODEL_TORSO" },
+        { domain = "npc", name = "DWARF_CITY_SHOP_SCULPTURE_MODEL_AXE" },
+        { domain = "npc", name = "DWARF_CITY_SHOP_SCULPTURE_MODEL_BOOTS_AND_TORSO" },
+        { domain = "npc", name = "DWARF_CITY_SHOP_SCULPTURE_MODEL_BOOTS_AND_AXE" },
+        { domain = "npc", name = "DWARF_CITY_SHOP_SCULPTURE_MODEL_TORSO_AND_AXE" },
+        { domain = "npc", name = "DWARF_CITY_SHOP_SCULPTURE_MODEL_FINISHED" },
+        { domain = "npc", name = "DWARF_CITY_SHOP_SCULPTURE_MODEL_MULTI" }
+      }
     },
     anagram = { "He Do Pose. It Is Cultrrl, Mk?" }
   },
@@ -4119,7 +4450,8 @@ local clues = {
           description = "on the ground floor of Wizard's Tower"
         }
       },
-      npc = "Professor Onglewip"
+      npc = "Professor Onglewip",
+      npc_configs = { { domain = "npc", name = "ALUFT_GNOME_MAGE" } }
     },
     anagram = { "Profs Lose Wrong Pie" }
   },
@@ -4138,6 +4470,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Cap'n Izzy No-Beard",
+      npc_configs = { { domain = "npc", name = "AGILITYARENA_CLERK" } },
       spots = {
         {
           range = { origin = { x = 2807, y = 3190, level = 0 }, size = { x = 1, y = 2 } },
@@ -4161,7 +4494,8 @@ local clues = {
           description = "in Port Sarim"
         }
       },
-      npc = "Trader Stan"
+      npc = "Trader Stan",
+      npc_configs = { { domain = "npc", name = "SAILING_TRANSPORT_TRADER_STAN" } }
     },
     anagram = { "Red Art Tans" }
   },
@@ -4179,7 +4513,8 @@ local clues = {
           description = "in the basement of Wizard's Guild"
         }
       },
-      npc = "Wizard Frumscone"
+      npc = "Wizard Frumscone",
+      npc_configs = { { domain = "npc", name = "WIZARD_FRUMSCONE" } }
     },
     anagram = { "Or Zinc Fumes Ward" }
   },
@@ -4198,6 +4533,7 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Bolkoy",
+      npc_configs = { { domain = "npc", name = "TREEVILLAGE_SHOPKEEPER1" } },
       spots = {
         {
           range = {
@@ -4231,7 +4567,12 @@ local clues = {
           description = "in Etceteria Castle"
         }
       },
-      npc = "Queen Sigrid"
+      npc = "Queen Sigrid",
+      npc_configs = {
+        { domain = "npc", name = "MISC_QUEEN_SIGRID_MULTICHILD" },
+        { domain = "npc", name = "MISC_QUEEN_SIGRID" },
+        { domain = "npc", name = "EVQ_QUEEN_SIGRID" }
+      }
     },
     anagram = { "Sequin Dirge" }
   },
@@ -4253,7 +4594,8 @@ local clues = {
           description = "in her house south of Ardougne Market"
         }
       },
-      npc = "Zenesha"
+      npc = "Zenesha",
+      npc_configs = { { domain = "npc", name = "ZENESHA" } }
     },
     anagram = { "A Zen She" }
   },
@@ -4271,7 +4613,8 @@ local clues = {
           description = "south of Castle Wars"
         }
       },
-      npc = "Uglug Nar"
+      npc = "Uglug Nar",
+      npc_configs = { { domain = "npc", name = "ZOGRE_UGLUG_NAR" } }
     },
     anagram = { "Gulag Run" }
   },
@@ -4293,7 +4636,12 @@ local clues = {
           description = "at the limestone mine"
         }
       },
-      npc = "Odd Old Man"
+      npc = "Odd Old Man",
+      npc_configs = {
+        { domain = "npc", name = "RAG2_ODD_OLD_MAN" },
+        { domain = "npc", name = "RAG2_ODD_OLD_MAN_FURS" },
+        { domain = "npc", name = "RAG2_ODD_OLD_MAN_MULTI" }
+      }
     },
     anagram = { "Land Doomd" }
   },
@@ -4311,7 +4659,12 @@ local clues = {
           description = "north of the bank in Zanaris"
         }
       },
-      npc = "Fairy Nuff"
+      npc = "Fairy Nuff",
+      npc_configs = {
+        { domain = "npc", name = "FAIRY_NUFF2" },
+        { domain = "npc", name = "FAIRY_NUFF" },
+        { domain = "npc", name = "FAIRY_NUFF_MULTI" }
+      }
     },
     anagram = { "I Faffy Run" }
   },
@@ -4330,7 +4683,8 @@ local clues = {
           description = "at the bottom of Polypore Dungeon"
         }
       },
-      npc = "Ramokee Skinweaver"
+      npc = "Ramokee Skinweaver",
+      npc_configs = { { domain = "npc", name = "POLYPORE_SKINWEAVER" } }
     },
     anagram = { "WE IRK OVER NAMESAKE" }
   },
@@ -4355,7 +4709,13 @@ local clues = {
           note = "Harmony"
         }
       },
-      npc = "Brother Tranquillity"
+      npc = "Brother Tranquillity",
+      npc_configs = {
+        { domain = "npc", name = "BRAIN_BROTHER_TRANQUILITY_ZOMBIE" },
+        { domain = "npc", name = "BRAIN_BROTHER_TRANQUILITY_HUMAN" },
+        { domain = "npc", name = "BRAIN_TRANQUILITY" },
+        { domain = "npc", name = "BRAIN_ISLAND_TRANQUILITY" }
+      }
     },
     anagram = { "QUIT THY BRINE RAT ROLL" }
   },
@@ -4373,7 +4733,8 @@ local clues = {
           description = "on Tuaei Leit"
         }
       },
-      npc = "Sensei Seaworth"
+      npc = "Sensei Seaworth",
+      npc_configs = { { domain = "npc", name = "ELR2_IMPLING_EXPERT" } }
     },
     anagram = { "O EASTERN WISHES" }
   },
@@ -4401,7 +4762,8 @@ local clues = {
           note = "Inside the empty throne room"
         }
       },
-      npc = "Celia Diggory"
+      npc = "Celia Diggory",
+      npc_configs = { { domain = "npc", name = "FOTG2_DIGSITE_GUIDE" } }
     },
     anagram = { "ERGO I DIG CLAY" }
   },
@@ -4427,7 +4789,12 @@ local clues = {
           description = "at the Ritual Site"
         }
       },
-      npc = "Malignius Mortifer"
+      npc = "Malignius Mortifer",
+      npc_configs = {
+        { domain = "npc", name = "ELEMENTAL_WIZARD_BOSS" },
+        { domain = "npc", name = "QUEST_NECROMANCY_TUTORIAL_MALIGNIUS" },
+        { domain = "npc", name = "NECRO_HUB_MALIGNIUS" }
+      }
     },
     anagram = { "REIGN US IF IMMORTAL" }
   },
@@ -4447,7 +4814,8 @@ local clues = {
           description = "in Lletya"
         }
       },
-      npc = "Amaethwr"
+      npc = "Amaethwr",
+      npc_configs = { { domain = "npc", name = "PAWYA_ELF_GARDENER" } }
     },
     anagram = { "AH; WET ARM" }
   },
@@ -4461,6 +4829,22 @@ local clues = {
     solution = {
       type = "talkto",
       npc = "Philipe Carnillean",
+      npc_configs = {
+        { domain = "npc", name = "CARNI_PHILIPE_HAZEELCULTQUEST" },
+        { domain = "npc", name = "CARNI_PHILIPE_FOLLOWER" },
+        { domain = "npc", name = "CARNI_PHILIPE_PICKPOCKET" },
+        { domain = "npc", name = "CARNI_PHILIPE_FIGHTING" },
+        { domain = "npc", name = "PHILIPE_CARNILLEAN" },
+        { domain = "npc", name = "CARNI_PHILIPE_POSTQUEST_9" },
+        { domain = "npc", name = "CARNI_PHILIPE_POSTQUEST_1" },
+        { domain = "npc", name = "CARNI_PHILIPE_POSTQUEST_2" },
+        { domain = "npc", name = "CARNI_PHILIPE_POSTQUEST_3" },
+        { domain = "npc", name = "CARNI_PHILIPE_POSTQUEST_4" },
+        { domain = "npc", name = "CARNI_PHILIPE_POSTQUEST_5" },
+        { domain = "npc", name = "CARNI_PHILIPE_POSTQUEST_6" },
+        { domain = "npc", name = "CARNI_PHILIPE_POSTQUEST_7" },
+        { domain = "npc", name = "CARNI_PHILIPE_POSTQUEST_8" }
+      },
       spots = {
         {
           id = "before",
@@ -4541,7 +4925,12 @@ local clues = {
           description = "in Draynor"
         }
       },
-      npc = "Wise Old Man"
+      npc = "Wise Old Man",
+      npc_configs = {
+        { domain = "npc", name = "WISE_OLD_MAN" },
+        { domain = "npc", name = "WOM_CUTSCENE_4" },
+        { domain = "npc", name = "WOM_MULTI" }
+      }
     },
     anagram = { "WINSOME LAD" }
   },
@@ -4568,7 +4957,12 @@ local clues = {
           description = "at the farm south of Varrock"
         }
       },
-      npc = "Paul Gower"
+      npc = "Paul Gower",
+      npc_configs = {
+        { domain = "npc", name = "GOWER_PAUL" },
+        { domain = "npc", name = "GOWER_PAUL_MULTI" },
+        { domain = "npc", name = "GOWER_PAUL_ALTAR_MULTI" }
+      }
     },
     anagram = { "A PURE GLOW" }
   },
@@ -4587,7 +4981,8 @@ local clues = {
           description = "at the entrance to Telos"
         }
       },
-      npc = "Soothsayer Sybil"
+      npc = "Soothsayer Sybil",
+      npc_configs = { { domain = "npc", name = "GWD2_SOLO_SOOTHSAYER" } }
     },
     anagram = { "TABOO RISES SHYLY" }
   },
@@ -4606,7 +5001,8 @@ local clues = {
           description = "at the seren stones"
         }
       },
-      npc = "Lady Trahaearn"
+      npc = "Lady Trahaearn",
+      npc_configs = { { domain = "npc", name = "ELFCITY_LADY_TRAHAEARN" } }
     },
     anagram = { "HEAR A LADY RANT" }
   },
@@ -4629,7 +5025,18 @@ local clues = {
           description = "in Nardaah"
         }
       },
-      npc = "Ali The Wise"
+      npc = "Ali The Wise",
+      npc_configs = {
+        { domain = "npc", name = "MAH1_ALI_THE_WISE" },
+        { domain = "npc", name = "MAH3_ALI_THE_WISE" },
+        { domain = "npc", name = "MAH5_WAVE_ALI_THE_WISE" },
+        { domain = "npc", name = "MAH5_ALI_THE_WISE" },
+        { domain = "npc", name = "MINIQUEST_EGWD_PRERELEASE_WAHISIETEL_PRESENT" },
+        { domain = "npc", name = "MAH1_ALI_THE_WISE_MULTI" },
+        { domain = "npc", name = "MAH3_ALI_THE_WISE_MULTI" },
+        { domain = "npc", name = "MAH5_ALI_THE_WISE_MULTI" },
+        { domain = "npc", name = "MINIQUEST_EGWD_PRERELEASE_WAHISIETEL" }
+      }
     },
     anagram = { "I SAW THE LIE" }
   },
@@ -4648,7 +5055,11 @@ local clues = {
           note = "Death's Office"
         }
       },
-      npc = "Death"
+      npc = "Death",
+      npc_configs = {
+        { domain = "npc", name = "ADVISOR_GRIM_REAPER" },
+        { domain = "npc", name = "DEATH_OFFICE_MULTI" }
+      }
     },
     anagram = { "HATED" }
   },
@@ -4665,7 +5076,8 @@ local clues = {
           description = "in Wendlewick"
         }
       },
-      npc = "Miriam"
+      npc = "Miriam",
+      npc_configs = { { domain = "npc", name = "WENDLE_MUSICIAN" } }
     },
     anagram = { "MR MIAI" }
   },
@@ -6244,7 +6656,9 @@ local clues = {
     id = 373,
     areas = { { origin = { x = 2666, y = 3301, level = 0 }, size = { x = 4, y = 5 } } },
     answer = "Steal from the Ardougne Gem Stall.",
-    cursor = "thieve"
+    cursor = "thieve",
+    target = "Gem stall",
+    relevant_configs = { { domain = "loc", name = "AREA_ARDOUGNE_GEMTHIEFSTALL" } }
   },
   {
     type = "skilling",
@@ -6262,7 +6676,11 @@ local clues = {
     id = 375,
     areas = { { origin = { x = 3017, y = 9242, level = 0 }, size = { x = 4, y = 4 } } },
     cursor = "burn",
-    ingredients = { { name = "Curly root", ids = { id.Obj.JARO_ROOT_CURLY } } },
+    ingredients = {
+      { name = "Curly root", configs = { { domain = "obj", name = "JARO_ROOT_CURLY" } } }
+    },
+    target = "Dry patch",
+    relevant_configs = { { domain = "loc", name = "JARO_FIREPIT" } },
     answer = "Start a firepit with a Curly Root in the Jadinko Lair."
   },
   {
@@ -6274,7 +6692,9 @@ local clues = {
     id = 376,
     areas = { { origin = { x = 2269, y = 3386, level = 1 }, size = { x = 5, y = 5 } } },
     answer = "Cut some elder logs from an elder tree.",
-    cursor = "chop"
+    cursor = "chop",
+    target = "Elder tree",
+    relevant_configs = { { domain = "loc", name = "FARMING_ELDER_TREE_PATCH_1" } }
   },
   {
     type = "skilling",
@@ -6283,7 +6703,14 @@ local clues = {
     id = 377,
     answer = "Cook a wild pie. The 'Bake Pie' spell works.",
     cursor = "cook",
-    ingredients = { { name = "Raw wild pie", ids = { id.Obj.UNCOOKED_WILD_PIE } } },
+    ingredients = {
+      {
+        name = "Raw wild pie",
+        configs = { { domain = "obj", name = "UNCOOKED_WILD_PIE" } }
+      }
+    },
+    target = "Range",
+    relevant_configs = { { domain = "loc", name = "RANGE" } },
     areas = { { origin = { x = 2633, y = 3164, level = 0 }, size = { x = 2, y = 2 } } }
   },
   {
@@ -6295,6 +6722,8 @@ local clues = {
     id = 378,
     areas = { { origin = { x = 2698, y = 5186, level = 2 }, size = { x = 50, y = 61 } } },
     cursor = "agility",
+    target = "Turgall",
+    relevant_configs = { { domain = "npc", name = "DORGESH_MALE_ENGINEER" } },
     answer = "Help Turgall at the Dorgesh-Kaan Agility Course."
   },
   {
@@ -6331,9 +6760,14 @@ local clues = {
     ingredients = {
       {
         name = "Magic logs or corrupted magic logs",
-        ids = { id.Obj.MAGIC_LOGS, id.Obj.MENAPHOS_CORRUPTED_LOGS }
+        configs = {
+          { domain = "obj", name = "MAGIC_LOGS" },
+          { domain = "obj", name = "MENAPHOS_CORRUPTED_LOGS" }
+        }
       }
     },
+    target = "Fire",
+    relevant_configs = {  },
     areas = {
       {
         origin = { x = 4310, y = 823, level = 0 },
@@ -6376,10 +6810,10 @@ local clues = {
     ingredients = {
       {
         name = "Black dragon leather",
-        ids = { id.Obj.DRAGON_LEATHER_BLACK },
+        configs = { { domain = "obj", name = "DRAGON_LEATHER_BLACK" } },
         amount = 3
       },
-      { name = "Thread", ids = { id.Obj.THREAD } }
+      { name = "Thread", configs = { { domain = "obj", name = "THREAD" } } }
     },
     areas = { { origin = { x = 2274, y = 3311, level = 1 }, size = { x = 5, y = 3 } } }
   },
@@ -6393,8 +6827,11 @@ local clues = {
     answer = "Add a fire rune to a decorated cooking urn (nr).",
     cursor = "craft",
     ingredients = {
-      { name = "Decorated cooking urn (no rune)", ids = { id.Obj.URNS_COOKING5_NORUNE } },
-      { name = "Fire rune", ids = { id.Obj.FIRERUNE } }
+      {
+        name = "Decorated cooking urn (no rune)",
+        configs = { { domain = "obj", name = "URNS_COOKING5_NORUNE" } }
+      },
+      { name = "Fire rune", configs = { { domain = "obj", name = "FIRERUNE" } } }
     },
     areas = { { origin = { x = 2274, y = 3311, level = 1 }, size = { x = 5, y = 3 } } }
   },
@@ -6410,8 +6847,18 @@ local clues = {
     ingredients = {
       {
         name = "Raw shark, raw rocktail or raw sailfish",
-        ids = { id.Obj.RAW_SHARK, id.Obj.LRC_ROCKTAIL_RAW, id.Obj.DSF_RAW_SAILFISH }
+        configs = {
+          { domain = "obj", name = "RAW_SHARK" },
+          { domain = "obj", name = "LRC_ROCKTAIL_RAW" },
+          { domain = "obj", name = "DSF_RAW_SAILFISH" }
+        }
       }
+    },
+    target = "Fire",
+    relevant_configs = {
+      { domain = "loc", name = "RAID1_PERM_BONFIRE_BURN" },
+      { domain = "loc", name = "RAID1_PERM_BONFIRE_COOK" },
+      { domain = "loc", name = "RAID1_PERM_BONFIRE" }
     },
     areas = { { origin = { x = 4310, y = 823, level = 0 }, size = { x = 3, y = 3 } } }
   },
@@ -6422,7 +6869,15 @@ local clues = {
     id = 387,
     answer = "Smelt a Bane bar at a furnace.",
     cursor = "smith",
-    ingredients = { { name = "Banite ore", ids = { id.Obj.MAH5_BANE_ORE }, amount = 2 } },
+    ingredients = {
+      {
+        name = "Banite ore",
+        configs = { { domain = "obj", name = "MAH5_BANE_ORE" } },
+        amount = 2
+      }
+    },
+    target = "Furnace",
+    relevant_configs = { { domain = "loc", name = "SMITHING_HUMAN_FURNACE" } },
     areas = { { origin = { x = 3225, y = 3255, level = 0 }, size = { x = 5, y = 3 } } }
   },
   {
@@ -6435,7 +6890,14 @@ local clues = {
     areas = { { origin = { x = 2203, y = 4834, level = 0 }, size = { x = 5, y = 5 } } },
     answer = "Craft a death rune.",
     cursor = "runecraft",
-    ingredients = { { name = "Pure essence", ids = { id.Obj.BLANKRUNE_HIGH } } }
+    ingredients = {
+      {
+        name = "Pure essence",
+        configs = { { domain = "obj", name = "BLANKRUNE_HIGH" } }
+      }
+    },
+    target = "Death altar",
+    relevant_configs = { { domain = "loc", name = "DEATH_ALTAR" } }
   },
   {
     type = "skilling",
@@ -6448,9 +6910,14 @@ local clues = {
     ingredients = {
       {
         name = "Pure or exalted essence",
-        ids = { id.Obj.BLANKRUNE_HIGH, id.Obj.EXALTED_ESSENCE }
+        configs = {
+          { domain = "obj", name = "BLANKRUNE_HIGH" },
+          { domain = "obj", name = "EXALTED_ESSENCE" }
+        }
       }
-    }
+    },
+    target = "Blood altar",
+    relevant_configs = { { domain = "loc", name = "BLOOD_ALTAR" } }
   },
   {
     type = "skilling",
@@ -6463,8 +6930,13 @@ local clues = {
     answer = "Completely use up a cleansing crystal on the Corrupted Seren Stone.",
     cursor = "pray",
     ingredients = {
-      { name = "Cleansing crystal", ids = { id.Obj.ELFCITY_HEFIN_CLEANSING_CRYSTAL } }
-    }
+      {
+        name = "Cleansing crystal",
+        configs = { { domain = "obj", name = "ELFCITY_HEFIN_CLEANSING_CRYSTAL" } }
+      }
+    },
+    target = "Corrupted Seren Stone",
+    relevant_configs = { { domain = "loc", name = "ELFCITY_HEFIN_SEREN_STONE" } }
   },
   {
     type = "skilling",
@@ -6473,7 +6945,9 @@ local clues = {
     id = 391,
     areas = { { origin = { x = 3365, y = 3730, level = 0 }, size = { x = 21, y = 21 } } },
     answer = "Catch a charming moth in the Wilderness.",
-    cursor = "hunt"
+    cursor = "hunt",
+    target = "Charming moth",
+    relevant_configs = { { domain = "npc", name = "WILDERNESS_BUTTERFLY" } }
   },
   {
     type = "skilling",
@@ -6484,7 +6958,9 @@ local clues = {
     id = 392,
     answer = "Burn some elder logs.",
     cursor = "herblore",
-    ingredients = { { name = "Elder logs", ids = { id.Obj.ELDER_LOGS } } },
+    ingredients = { { name = "Elder logs", configs = { { domain = "obj", name = "ELDER_LOGS" } } } },
+    target = "Fire",
+    relevant_configs = {  },
     areas = {
       {
         origin = { x = 4310, y = 823, level = 0 },
@@ -6500,6 +6976,8 @@ local clues = {
     id = 393,
     answer = "Mine a concentrated gold deposit in the Living Rock Caverns.",
     cursor = "mine",
+    target = "Concentrated gold deposit",
+    relevant_configs = { { domain = "loc", name = "MINING_CONCENTRATED_GOLD" } },
     areas = { { origin = { x = 3646, y = 5141, level = 0 }, size = { x = 3, y = 5 } } }
   },
   {
@@ -6527,8 +7005,14 @@ local clues = {
     answer = "Create a Saradomin brew.",
     cursor = "herblore",
     ingredients = {
-      { name = "Toadflax potion (unfinished)", ids = { id.Obj.TOADFLAXVIAL } },
-      { name = "Crushed nest", ids = { id.Obj.CRUSHED_BIRD_NEST } }
+      {
+        name = "Toadflax potion (unfinished)",
+        configs = { { domain = "obj", name = "TOADFLAXVIAL" } }
+      },
+      {
+        name = "Crushed nest",
+        configs = { { domain = "obj", name = "CRUSHED_BIRD_NEST" } }
+      }
     },
     areas = { { origin = { x = 2274, y = 3311, level = 1 }, size = { x = 5, y = 3 } } }
   },
@@ -6541,7 +7025,15 @@ local clues = {
     id = 396,
     answer = "Smith a rune med helm or rune full helm.",
     cursor = "smith",
-    ingredients = { { name = "Rune bar", ids = { id.Obj.RUNITE_BAR }, amount = 2 } },
+    ingredients = {
+      {
+        name = "Rune bar",
+        configs = { { domain = "obj", name = "RUNITE_BAR" } },
+        amount = 2
+      }
+    },
+    target = "Anvil",
+    relevant_configs = { { domain = "loc", name = "SMITHING_HUMAN_ANVIL" } },
     areas = { { origin = { x = 3228, y = 3253, level = 0 }, size = { x = 2, y = 3 } } }
   },
   {
@@ -6554,8 +7046,14 @@ local clues = {
     answer = "Create a Zamorak brew.",
     cursor = "herblore",
     ingredients = {
-      { name = "Torstol potion (unfinished)", ids = { id.Obj.TORSTOLVIAL } },
-      { name = "Jangerberries", ids = { id.Obj.JANGERBERRIES } }
+      {
+        name = "Torstol potion (unfinished)",
+        configs = { { domain = "obj", name = "TORSTOLVIAL" } }
+      },
+      {
+        name = "Jangerberries",
+        configs = { { domain = "obj", name = "JANGERBERRIES" } }
+      }
     },
     areas = { { origin = { x = 2274, y = 3311, level = 1 }, size = { x = 5, y = 3 } } }
   },

@@ -31,8 +31,8 @@
 ---@field children {key: PulseInformation, value: ScanTree.ScanTreeNode}[]
 
 ---@class ScanTree.ScanRegion
----@field name string
----@field area TileArea
+---@field name string?
+---@field area TileArea?
 
 ---@class PulseInformation
 ---@field pulse 1 | 2 | 3

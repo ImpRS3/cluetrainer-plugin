@@ -18,16 +18,55 @@ local zyklib                = require "zyklib"
 local MutableMesh           = require "zyklib/MutableMesh"
 local ClueStateAction       = require "cluetrainer/solving/cluestateinterface/ClueStateAction"
 local TeleportAction        = require "cluetrainer/solving/cluestateinterface/TeleportAction"
-local clue_targets          = require "cluetrainer/solving/common/clue_targets"
 local clues                 = require "cluetrainer/model/clues"
 
----comment
+
+
 ---@param step Step
 local function create_step_highlights(step)
   local cube = MutableMesh.new()
       :add(MutableMesh.cube():faces_only():recolor(0xFFFFFF80))
       :add(MutableMesh.cube():lines_only():recolor(0xFFFFFFFF))
       :shapeData()
+
+  ---@param config ct.ConfigId.Npc | ct.ConfigId.Loc
+  ---@param coordinates TileCoordinates?
+  local function highlight_config(config, coordinates)
+    if config.domain == "npc" then
+      local npc_id = id.NPC[config.name]
+      return zyklib.highlights.NpcHighlight.new(function(npc) return npc.configID == npc_id end,
+        function(npc)
+          return {
+            shapeData = cube,
+            translation = npc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) - Vector3.new(0.1) * npc.aabb
+                .dimensions,
+            scale = Vector3.new(1.2) * npc.aabb.dimensions,
+            colour = 0xFFFF00A0
+          }
+        end
+      )
+    else
+      return zyklib.highlights.LocHighlight.new({
+          coordGrid = coordinates and
+              tilecoordinates.toCoordGrid({ x = coordinates.x, y = coordinates.y, level = coordinates.level }),
+          range = 2,
+          configID = id.Loc[config.name]
+        },
+        function(loc)
+          -- Width and length at most the object's own tiles (512 units each), so an object placed diagonally,
+          -- such as the crates of clues 84, 153 and 158, isn't drawn larger than the same object placed straight.
+          local d = loc.aabb.dimensions
+          local size = Vector3.new(math.min(d.x, loc.width * 512), d.y, math.min(d.z, loc.length * 512))
+          return {
+            shapeData = cube,
+            translation = loc.aabb.centre - Vector3.new(LOC_SCALE / 2) * size,
+            scale = Vector3.new(LOC_SCALE) * size,
+            colour = 0x00FFFFA0
+          }
+        end
+      )
+    end
+  end
 
   ---@type zyklib.TerrainHighlight[]
   local highlights = {}
@@ -36,63 +75,27 @@ local function create_step_highlights(step)
 
   if solution ~= nil then
     if solution.type == "dig" then
-      local spot = solution
-          .spot --[[@as TileCoordinates]] -- LuaCats does not narrow the type of step.solution to DigSolution, so we need to cast this
+      --[[@as TileCoordinates]] -- LuaCats does not narrow the type of step.solution to DigSolution, so we need to cast this
+      local spot = solution.spot
 
       table.insert(highlights, path_shapes.digHighlight(spot))
     elseif solution.type == "talkto" then
-      local target = clue_targets.for_clue(step.id)
-      local areas = clue_targets.talkto_areas(solution.spots)
-
-      -- By id only near the spots: some ids are used at more places, such as Hazelmere's in White Knights' Castle.
-      if target then
-        table.insert(highlights, zyklib.highlights.NpcHighlight.new(function(npc)
-            return clue_targets.matches_id(npc, target) and clue_targets.in_areas(npc.coordGrid, areas)
-          end,
-          function(npc)
-            return {
-              shapeData = cube,
-              translation = npc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) - Vector3.new(0.1) * npc.aabb.dimensions,
-              scale = Vector3.new(1.2) * npc.aabb.dimensions,
-              colour = 0xFFFF00A0
-            }
-          end
-        ))
+      for _, npc_config in pairs(solution.npc_configs) do
+        table.insert(highlights, highlight_config(npc_config))
       end
     elseif solution.type == "search" then
-      local spot = solution
-          .spot --[[@as TileRectangle]] -- LuaCats does not narrow the type of step.solution to SearchSolution, so we need to cast this
+      -- LuaCats does not narrow the type of step.solution to SearchSolution, so we need to cast the following
+      local spot = solution.spot --[[@as TileRectangle]]
 
-      local LOC_SCALE = 2
-
-      local target = clue_targets.for_clue(step.id)
-      local areas = clue_targets.search_areas(spot)
-      -- 1 extra tile, so objects of 2 by 2 tiles that only partly cover the spot are in the query.
-      local around = clue_targets.query_around(areas[1], 1)
-
-      -- By id only on the spot: object ids are shared by every copy of that object, such as all crates of one kind.
-      if target then
-        table.insert(highlights, zyklib.highlights.LocHighlight.new({
-            coordGrid = tilecoordinates.toCoordGrid({ x = around.x, y = around.y, level = spot.level }),
-            range = around.range,
-            func = function(loc)
-              return clue_targets.matches_id(loc, target) and clue_targets.loc_in_areas(loc, areas)
-            end
-          },
-          function(loc)
-            -- Width and length at most the object's own tiles (512 units each), so an object placed diagonally,
-            -- such as the crates of clues 84, 153 and 158, isn't drawn larger than the same object placed straight.
-            local d = loc.aabb.dimensions
-            local size = Vector3.new(math.min(d.x, loc.width * 512), d.y, math.min(d.z, loc.length * 512))
-            return {
-              shapeData = cube,
-              translation = loc.aabb.centre - Vector3.new(LOC_SCALE / 2) * size,
-              scale = Vector3.new(LOC_SCALE) * size,
-              colour = 0x00FFFFA0
-            }
-          end
-        ))
+      for _, value in pairs(solution.entity_configs or {}) do
+        table.insert(highlights, highlight_config(value, { x = spot.topleft.x, y = spot.botright.y, level = spot.level }))
       end
+    end
+  end
+
+  if step.type == "skilling" then
+    for _, config in pairs(step.relevant_configs or {}) do
+      table.insert(highlights, highlight_config(config))
     end
   end
 

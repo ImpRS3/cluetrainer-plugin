@@ -1,5 +1,4 @@
--- hard_methods.lua
---- @type MethodPack
+---@type MethodPack
 local pack = {
   name = "Default Hard Methods",
   description = "This is the default builtin pack for hard clues.",
@@ -83,17 +82,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2957, y = 3510, level = 0 },
-            { x = 2957, y = 3511, level = 0 }
-          }
+          waypoints = { { x = 2957, y = 3510, level = 0 }, { x = 2957, y = 3511, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2957, y = 3511, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.GOB_VILLAGE_2012_MAKESHIFT_DOOR_VAR1_CLOSED,
+            source_loc = 77969,
             entity = { kind = "static", name = "Door" },
             clickable_area = {
               topleft = { x = 2956.5, y = 3512 },
@@ -103,10 +99,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2957, y = 3511, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2957, y = 3511, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -141,18 +134,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2443, y = 3180, level = 0 },
-          id = {
-            group = "davesspellbook",
-            spot = "watchtower",
-            access = "spellbook"
-          }
+          id = { group = "davesspellbook", spot = "watchtower", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2443, y = 3180, level = 0 },
-            { x = 2447, y = 3176, level = 0 }
-          }
+          waypoints = { { x = 2443, y = 3180, level = 0 }, { x = 2447, y = 3176, level = 0 } }
         },
         {
           type = "ability",
@@ -200,11 +186,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2575, y = 3089, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "watchtower-yanille",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "watchtower-yanille", access = "spellbook" }
         },
         {
           type = "run",
@@ -223,10 +205,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2594, y = 3096, level = 0 },
-            { x = 2597, y = 3096, level = 0 }
-          }
+          waypoints = { { x = 2594, y = 3096, level = 0 }, { x = 2597, y = 3096, level = 0 } }
         },
         {
           type = "ability",
@@ -262,20 +241,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2728, y = 3348, level = 0 },
-            { x = 2728, y = 3346, level = 0 }
-          }
+          waypoints = { { x = 2728, y = 3348, level = 0 }, { x = 2728, y = 3346, level = 0 } }
         },
         {
           type = "ability",
           ability = "dive",
           from = { x = 2728, y = 3346, level = 0 },
           to = { x = 2723, y = 3339, level = 0 },
-          target_area = {
-            origin = { x = 2721, y = 3337, level = 0 },
-            size = { x = 3, y = 3 }
-          }
+          target_area = { origin = { x = 2721, y = 3337, level = 0 }, size = { x = 3, y = 3 } }
         }
       },
       expected_time = 6
@@ -294,18 +267,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2538, y = 3306, level = 0 },
-          id = {
-            group = "davesspellbook",
-            spot = "ardougne",
-            access = "spellbook"
-          }
+          id = { group = "davesspellbook", spot = "ardougne", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2538, y = 3306, level = 0 },
-            { x = 2536, y = 3306, level = 0 }
-          }
+          waypoints = { { x = 2538, y = 3306, level = 0 }, { x = 2536, y = 3306, level = 0 } }
         },
         {
           type = "ability",
@@ -335,10 +301,7 @@ local pack = {
           ability = "dive",
           from = { x = 2498, y = 3302, level = 0 },
           to = { x = 2488, y = 3309, level = 0 },
-          target_area = {
-            origin = { x = 2488, y = 3309, level = 0 },
-            size = { x = 2, y = 1 }
-          }
+          target_area = { origin = { x = 2488, y = 3309, level = 0 }, size = { x = 2, y = 1 } }
         }
       },
       expected_time = 16
@@ -380,10 +343,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3022, y = 3921, level = 0 },
-            { x = 3022, y = 3913, level = 0 }
-          }
+          waypoints = { { x = 3022, y = 3921, level = 0 }, { x = 3022, y = 3913, level = 0 } }
         }
       },
       expected_time = 11
@@ -412,10 +372,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3058, y = 3491, level = 0 },
-            { x = 3058, y = 3489, level = 0 }
-          }
+          waypoints = { { x = 3058, y = 3491, level = 0 }, { x = 3058, y = 3489, level = 0 } }
         },
         {
           type = "ability",
@@ -447,10 +404,7 @@ local pack = {
           ability = "dive",
           from = { x = 3011, y = 3215, level = 0 },
           to = { x = 3013, y = 3225, level = 0 },
-          target_area = {
-            origin = { x = 3013, y = 3223, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          target_area = { origin = { x = 3013, y = 3223, level = 0 }, size = { x = 1, y = 3 } }
         }
       },
       expected_time = 9
@@ -499,11 +453,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2462, y = 3444, level = 0 },
-          id = {
-            group = "spirittree",
-            spot = "stronghold",
-            access = "spirittreererooter"
-          }
+          id = { group = "spirittree", spot = "stronghold", access = "spirittreererooter" }
         },
         {
           type = "ability",
@@ -557,10 +507,7 @@ local pack = {
           ability = "dive",
           from = { x = 2694, y = 3390, level = 0 },
           to = { x = 2702, y = 3400, level = 0 },
-          target_area = {
-            origin = { x = 2702, y = 3398, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          target_area = { origin = { x = 2702, y = 3398, level = 0 }, size = { x = 1, y = 3 } }
         },
         {
           type = "transport",
@@ -576,10 +523,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2702, y = 3400, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2702, y = 3400, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -610,7 +554,7 @@ local pack = {
           assumed_start = { x = 2702, y = 3408, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.LADDER },
+            source_loc = { "loc", 1747 },
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2700.5, y = 3408.5 },
@@ -622,11 +566,7 @@ local pack = {
                 cursor = "ladderup",
                 name = "Climb-up",
                 movement = {
-                  {
-                    time = 3,
-                    offset = { x = 0, y = 0, level = 1 },
-                    orientation = "toentitybefore"
-                  }
+                  { time = 3, offset = { x = 0, y = 0, level = 1 }, orientation = "toentitybefore" }
                 }
               }
             }
@@ -649,22 +589,12 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3103, y = 3180, level = 0 },
-          id = {
-            group = "travellersnecklace",
-            spot = "wizardstower",
-            access = "ring"
-          }
+          id = { group = "travellersnecklace", spot = "wizardstower", access = "ring" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3103, y = 3180, level = 0 },
-            { x = 3103, y = 3173, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3102, y = 3173, level = 0 },
-            size = { x = 2, y = 1 }
-          }
+          waypoints = { { x = 3103, y = 3180, level = 0 }, { x = 3103, y = 3173, level = 0 } },
+          target_area = { origin = { x = 3102, y = 3173, level = 0 }, size = { x = 2, y = 1 } }
         },
         {
           type = "ability",
@@ -736,10 +666,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3292, y = 3544, level = 0 },
-            { x = 3293, y = 3544, level = 0 }
-          },
+          waypoints = { { x = 3292, y = 3544, level = 0 }, { x = 3293, y = 3544, level = 0 } },
           target_area = {
             origin = { x = 3291, y = 3543, level = 0 },
             size = { x = 4, y = 4 },
@@ -789,18 +716,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2593, y = 3252, level = 0 },
-          id = {
-            group = "teleportscrolls",
-            spot = "clocktower",
-            access = "globetrotter"
-          }
+          id = { group = "teleportscrolls", spot = "clocktower", access = "globetrotter" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2593, y = 3252, level = 0 },
-            { x = 2592, y = 3252, level = 0 }
-          }
+          waypoints = { { x = 2593, y = 3252, level = 0 }, { x = 2592, y = 3252, level = 0 } }
         },
         {
           type = "ability",
@@ -834,11 +754,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2520, y = 3571, level = 0 },
-          id = {
-            group = "gamesnecklace",
-            spot = "barbarianoutpost",
-            access = "necklace"
-          }
+          id = { group = "gamesnecklace", spot = "barbarianoutpost", access = "necklace" }
         },
         {
           type = "run",
@@ -854,10 +770,7 @@ local pack = {
           from = { x = 2519, y = 3573, level = 0 },
           to = { x = 2519, y = 3583, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2518, y = 3584, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2518, y = 3584, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "ability",
@@ -882,21 +795,14 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3170, y = 2982, level = 0 },
-          id = {
-            group = "teleportscrolls",
-            spot = "banditcamp",
-            access = "globetrotter"
-          }
+          id = { group = "teleportscrolls", spot = "banditcamp", access = "globetrotter" }
         },
         {
           type = "ability",
           ability = "dive",
           from = { x = 3170, y = 2982, level = 0 },
           to = { x = 3177, y = 2984, level = 0 },
-          target_area = {
-            origin = { x = 3176, y = 2983, level = 0 },
-            size = { x = 3, y = 2 }
-          }
+          target_area = { origin = { x = 3176, y = 2983, level = 0 }, size = { x = 3, y = 2 } }
         },
         {
           type = "run",
@@ -930,10 +836,7 @@ local pack = {
           ability = "dive",
           from = { x = 3080, y = 3250, level = 0 },
           to = { x = 3084, y = 3257, level = 0 },
-          target_area = {
-            origin = { x = 3083, y = 3256, level = 0 },
-            size = { x = 2, y = 2 }
-          }
+          target_area = { origin = { x = 3083, y = 3256, level = 0 }, size = { x = 2, y = 2 } }
         }
       },
       expected_time = 7
@@ -959,10 +862,7 @@ local pack = {
           ability = "dive",
           from = { x = 2949, y = 2977, level = 0 },
           to = { x = 2957, y = 2974, level = 0 },
-          target_area = {
-            origin = { x = 2957, y = 2974, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2957, y = 2974, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "ability",
@@ -981,11 +881,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2850, y = 3494, level = 1 },
-          id = {
-            group = "gliders",
-            spot = "whitewolfmountain",
-            access = "karamja"
-          }
+          id = { group = "gliders", spot = "whitewolfmountain", access = "karamja" }
         }
       },
       expected_time = 15
@@ -1023,22 +919,12 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3212, y = 3434, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "varrock",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "varrock", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3212, y = 3434, level = 0 },
-            { x = 3212, y = 3438, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3212, y = 3438, level = 0 },
-            size = { x = 2, y = 2 }
-          }
+          waypoints = { { x = 3212, y = 3434, level = 0 }, { x = 3212, y = 3438, level = 0 } },
+          target_area = { origin = { x = 3212, y = 3438, level = 0 }, size = { x = 2, y = 2 } }
         },
         {
           type = "ability",
@@ -1046,10 +932,7 @@ local pack = {
           from = { x = 3212, y = 3438, level = 0 },
           to = { x = 3212, y = 3448, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 3211, y = 3450, level = 0 },
-            size = { x = 4, y = 1 }
-          }
+          target_area = { origin = { x = 3211, y = 3450, level = 0 }, size = { x = 4, y = 1 } }
         },
         {
           type = "ability",
@@ -1059,10 +942,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3212, y = 3458, level = 0 },
-            { x = 3212, y = 3462, level = 0 }
-          }
+          waypoints = { { x = 3212, y = 3458, level = 0 }, { x = 3212, y = 3462, level = 0 } }
         },
         {
           type = "ability",
@@ -1072,17 +952,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3212, y = 3472, level = 0 },
-            { x = 3207, y = 3472, level = 0 }
-          }
+          waypoints = { { x = 3212, y = 3472, level = 0 }, { x = 3207, y = 3472, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 3207, y = 3472, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.FAI_VARROCK_CASTLE_DOOR,
+            source_loc = 15536,
             entity = { kind = "static", name = "Door" },
             clickable_area = {
               topleft = { x = 3206, y = 3472.5 },
@@ -1092,10 +969,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3206, y = 3472, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 3206, y = 3472, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -1130,21 +1004,14 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3212, y = 3434, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "varrock",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "varrock", access = "spellbook" }
         },
         {
           type = "ability",
           ability = "dive",
           from = { x = 3212, y = 3434, level = 0 },
           to = { x = 3220, y = 3435, level = 0 },
-          target_area = {
-            origin = { x = 3219, y = 3434, level = 0 },
-            size = { x = 2, y = 2 }
-          }
+          target_area = { origin = { x = 3219, y = 3434, level = 0 }, size = { x = 2, y = 2 } }
         }
       },
       expected_time = 5
@@ -1170,10 +1037,7 @@ local pack = {
           ability = "dive",
           from = { x = 3093, y = 3478, level = 0 },
           to = { x = 3094, y = 3472, level = 0 },
-          target_area = {
-            origin = { x = 3094, y = 3470, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          target_area = { origin = { x = 3094, y = 3470, level = 0 }, size = { x = 1, y = 3 } }
         },
         {
           type = "run",
@@ -1201,11 +1065,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3233, y = 3657, level = 0 },
-          id = {
-            group = "enlightenedamulet",
-            spot = "graveyard",
-            access = "ring"
-          }
+          id = { group = "enlightenedamulet", spot = "graveyard", access = "ring" }
         },
         {
           type = "redclick",
@@ -1215,10 +1075,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3233, y = 3657, level = 0 },
-            { x = 3232, y = 3656, level = 0 }
-          },
+          waypoints = { { x = 3233, y = 3657, level = 0 }, { x = 3232, y = 3656, level = 0 } },
           target_area = {
             origin = { x = 3231, y = 3655, level = 0 },
             size = { x = 3, y = 2 },
@@ -1236,10 +1093,7 @@ local pack = {
           ability = "dive",
           from = { x = 3242, y = 3666, level = 0 },
           to = { x = 3235, y = 3673, level = 0 },
-          target_area = {
-            origin = { x = 3235, y = 3672, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          target_area = { origin = { x = 3235, y = 3672, level = 0 }, size = { x = 1, y = 3 } }
         }
       },
       expected_time = 7
@@ -1258,18 +1112,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3597, y = 3495, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "ALQ",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "ALQ", access = "portable_fairy_ring" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3597, y = 3495, level = 0 },
-            { x = 3599, y = 3493, level = 0 }
-          }
+          waypoints = { { x = 3597, y = 3495, level = 0 }, { x = 3599, y = 3493, level = 0 } }
         },
         {
           type = "ability",
@@ -1279,10 +1126,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3609, y = 3483, level = 0 },
-            { x = 3611, y = 3483, level = 0 }
-          }
+          waypoints = { { x = 3609, y = 3483, level = 0 }, { x = 3611, y = 3483, level = 0 } }
         }
       },
       expected_time = 14
@@ -1313,10 +1157,7 @@ local pack = {
           ability = "dive",
           from = { x = 2949, y = 2977, level = 0 },
           to = { x = 2957, y = 2974, level = 0 },
-          target_area = {
-            origin = { x = 2957, y = 2974, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2957, y = 2974, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "ability",
@@ -1335,11 +1176,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2850, y = 3494, level = 1 },
-          id = {
-            group = "gliders",
-            spot = "whitewolfmountain",
-            access = "karamja"
-          }
+          id = { group = "gliders", spot = "whitewolfmountain", access = "karamja" }
         }
       },
       expected_time = 17
@@ -1367,10 +1204,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2918, y = 3176, level = 0 },
-            { x = 2918, y = 3174, level = 0 }
-          }
+          waypoints = { { x = 2918, y = 3176, level = 0 }, { x = 2918, y = 3174, level = 0 } }
         }
       },
       expected_time = 11
@@ -1389,18 +1223,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3103, y = 3180, level = 0 },
-          id = {
-            group = "travellersnecklace",
-            spot = "wizardstower",
-            access = "ring"
-          }
+          id = { group = "travellersnecklace", spot = "wizardstower", access = "ring" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3103, y = 3180, level = 0 },
-            { x = 3103, y = 3174, level = 0 }
-          }
+          waypoints = { { x = 3103, y = 3180, level = 0 }, { x = 3103, y = 3174, level = 0 } }
         },
         {
           type = "ability",
@@ -1413,10 +1240,7 @@ local pack = {
           ability = "dive",
           from = { x = 3103, y = 3164, level = 0 },
           to = { x = 3104, y = 3155, level = 0 },
-          target_area = {
-            origin = { x = 3103, y = 3154, level = 0 },
-            size = { x = 4, y = 5 }
-          }
+          target_area = { origin = { x = 3103, y = 3154, level = 0 }, size = { x = 4, y = 5 } }
         }
       },
       expected_time = 10
@@ -1435,21 +1259,14 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2800, y = 3203, level = 0 },
-          id = {
-            group = "spirittree",
-            spot = "brimhaven",
-            access = "spirittreererooter"
-          }
+          id = { group = "spirittree", spot = "brimhaven", access = "spirittreererooter" }
         },
         {
           type = "ability",
           ability = "dive",
           from = { x = 2800, y = 3203, level = 0 },
           to = { x = 2802, y = 3197, level = 0 },
-          target_area = {
-            origin = { x = 2802, y = 3196, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          target_area = { origin = { x = 2802, y = 3196, level = 0 }, size = { x = 1, y = 3 } }
         },
         {
           type = "ability",
@@ -1563,11 +1380,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2661, y = 3302, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "ardougne",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "ardougne", access = "spellbook" }
         },
         {
           type = "ability",
@@ -1575,24 +1388,18 @@ local pack = {
           from = { x = 2661, y = 3302, level = 0 },
           to = { x = 2661, y = 3294, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2661, y = 3294, level = 0 },
-            size = { x = 2, y = 3 }
-          }
+          target_area = { origin = { x = 2661, y = 3294, level = 0 }, size = { x = 2, y = 3 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2661, y = 3294, level = 0 },
-            { x = 2660, y = 3294, level = 0 }
-          }
+          waypoints = { { x = 2661, y = 3294, level = 0 }, { x = 2660, y = 3294, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2660, y = 3294, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.AREA_ARDOUGNE_DOOR1_CLOSED,
+            source_loc = 34807,
             entity = { kind = "static", name = "Door" },
             clickable_area = {
               topleft = { x = 2659.5, y = 3294 },
@@ -1602,10 +1409,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2660, y = 3293, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2660, y = 3293, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -1640,11 +1444,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2412, y = 4434, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "AIP",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "AIP", access = "portable_fairy_ring" }
         },
         {
           type = "run",
@@ -1675,10 +1475,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2387, y = 4453, level = 0 },
-            { x = 2387, y = 4457, level = 0 }
-          }
+          waypoints = { { x = 2387, y = 4453, level = 0 }, { x = 2387, y = 4457, level = 0 } }
         },
         {
           type = "ability",
@@ -1703,11 +1500,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2523, y = 3062, level = 0 },
-          id = {
-            group = "teleportscrolls",
-            spot = "gutanoth",
-            access = "globetrotter"
-          }
+          id = { group = "teleportscrolls", spot = "gutanoth", access = "globetrotter" }
         },
         {
           type = "run",
@@ -1730,10 +1523,7 @@ local pack = {
           from = { x = 2531, y = 3055, level = 0 },
           to = { x = 2541, y = 3045, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 2541, y = 3045, level = 0 }
-        },
+        { type = "powerburst", where = { x = 2541, y = 3045, level = 0 } },
         {
           type = "ability",
           ability = "dive",
@@ -1796,11 +1586,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3171, y = 2996, level = 0 },
-          id = {
-            group = "enlightenedamulet",
-            spot = "banditcamp",
-            access = "ring"
-          }
+          id = { group = "enlightenedamulet", spot = "banditcamp", access = "ring" }
         },
         {
           type = "ability",
@@ -1822,10 +1608,7 @@ local pack = {
             { x = 3185, y = 3012, level = 0 },
             { x = 3185, y = 3014, level = 0 }
           },
-          target_area = {
-            origin = { x = 3185, y = 3013, level = 0 },
-            size = { x = 1, y = 2 }
-          }
+          target_area = { origin = { x = 3185, y = 3013, level = 0 }, size = { x = 1, y = 2 } }
         },
         {
           type = "ability",
@@ -1877,11 +1660,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3170, y = 2982, level = 0 },
-          id = {
-            group = "teleportscrolls",
-            spot = "banditcamp",
-            access = "globetrotter"
-          }
+          id = { group = "teleportscrolls", spot = "banditcamp", access = "globetrotter" }
         },
         {
           type = "run",
@@ -1973,22 +1752,12 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2912, y = 3423, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "taverley",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "taverley", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2912, y = 3423, level = 0 },
-            { x = 2914, y = 3421, level = 0 }
-          },
-          target_area = {
-            origin = { x = 2913, y = 3421, level = 0 },
-            size = { x = 2, y = 1 }
-          }
+          waypoints = { { x = 2912, y = 3423, level = 0 }, { x = 2914, y = 3421, level = 0 } },
+          target_area = { origin = { x = 2913, y = 3421, level = 0 }, size = { x = 2, y = 1 } }
         },
         {
           type = "ability",
@@ -2073,18 +1842,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2901, y = 2930, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "CJS",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "CJS", access = "portable_fairy_ring" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2901, y = 2930, level = 0 },
-            { x = 2899, y = 2930, level = 0 }
-          }
+          waypoints = { { x = 2901, y = 2930, level = 0 }, { x = 2899, y = 2930, level = 0 } }
         },
         {
           type = "ability",
@@ -2101,10 +1863,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2879, y = 2920, level = 0 },
-            { x = 2875, y = 2920, level = 0 }
-          }
+          waypoints = { { x = 2879, y = 2920, level = 0 }, { x = 2875, y = 2920, level = 0 } }
         },
         {
           type = "ability",
@@ -2139,11 +1898,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3469, y = 3431, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "BKR",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "BKR", access = "portable_fairy_ring" }
         },
         {
           type = "run",
@@ -2198,11 +1953,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2901, y = 2930, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "CJS",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "CJS", access = "portable_fairy_ring" }
         },
         {
           type = "ability",
@@ -2217,10 +1968,7 @@ local pack = {
           from = { x = 2892, y = 2921, level = 0 },
           to = { x = 2882, y = 2911, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 2882, y = 2911, level = 0 }
-        },
+        { type = "powerburst", where = { x = 2882, y = 2911, level = 0 } },
         {
           type = "ability",
           ability = "surge",
@@ -2317,10 +2065,7 @@ local pack = {
           from = { x = 2366, y = 3479, level = 0 },
           to = { x = 2366, y = 3469, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2365, y = 3468, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2365, y = 3468, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "ability",
@@ -2357,10 +2102,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3143, y = 3635, level = 0 },
-            { x = 3143, y = 3633, level = 0 }
-          }
+          waypoints = { { x = 3143, y = 3635, level = 0 }, { x = 3143, y = 3633, level = 0 } }
         },
         {
           type = "ability",
@@ -2398,11 +2140,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2882, y = 3668, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "trollheim",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "trollheim", access = "spellbook" }
         },
         {
           type = "run",
@@ -2429,21 +2167,14 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2968, y = 3696, level = 0 },
-          id = {
-            group = "ancientspellook",
-            spot = "dareeyak",
-            access = "spellbook"
-          }
+          id = { group = "ancientspellook", spot = "dareeyak", access = "spellbook" }
         },
         {
           type = "ability",
           ability = "dive",
           from = { x = 2968, y = 3696, level = 0 },
           to = { x = 2967, y = 3689, level = 0 },
-          target_area = {
-            origin = { x = 2967, y = 3688, level = 0 },
-            size = { x = 2, y = 3 }
-          }
+          target_area = { origin = { x = 2967, y = 3688, level = 0 }, size = { x = 2, y = 3 } }
         }
       },
       expected_time = 4
@@ -2462,11 +2193,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3233, y = 3657, level = 0 },
-          id = {
-            group = "enlightenedamulet",
-            spot = "graveyard",
-            access = "ring"
-          }
+          id = { group = "enlightenedamulet", spot = "graveyard", access = "ring" }
         },
         {
           type = "run",
@@ -2502,10 +2229,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3265, y = 3692, level = 0 },
-            { x = 3295, y = 3692, level = 0 }
-          }
+          waypoints = { { x = 3265, y = 3692, level = 0 }, { x = 3295, y = 3692, level = 0 } }
         },
         {
           type = "ability",
@@ -2530,11 +2254,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2744, y = 3719, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "DKS",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "DKS", access = "portable_fairy_ring" }
         },
         {
           type = "run",
@@ -2543,10 +2263,7 @@ local pack = {
             { x = 2743, y = 3719, level = 0 },
             { x = 2742, y = 3720, level = 0 }
           },
-          target_area = {
-            origin = { x = 2742, y = 3720, level = 0 },
-            size = { x = 2, y = 2 }
-          }
+          target_area = { origin = { x = 2742, y = 3720, level = 0 }, size = { x = 2, y = 2 } }
         },
         {
           type = "ability",
@@ -2556,10 +2273,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2732, y = 3730, level = 0 },
-            { x = 2728, y = 3730, level = 0 }
-          }
+          waypoints = { { x = 2732, y = 3730, level = 0 }, { x = 2728, y = 3730, level = 0 } }
         },
         {
           type = "ability",
@@ -2595,11 +2309,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2968, y = 3696, level = 0 },
-          id = {
-            group = "ancientspellook",
-            spot = "dareeyak",
-            access = "spellbook"
-          }
+          id = { group = "ancientspellook", spot = "dareeyak", access = "spellbook" }
         },
         {
           type = "run",
@@ -2617,10 +2327,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2980, y = 3710, level = 0 },
-            { x = 2980, y = 3716, level = 0 }
-          }
+          waypoints = { { x = 2980, y = 3710, level = 0 }, { x = 2980, y = 3716, level = 0 } }
         },
         {
           type = "ability",
@@ -2678,10 +2385,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2980, y = 3846, level = 0 },
-            { x = 2976, y = 3842, level = 0 }
-          }
+          waypoints = { { x = 2980, y = 3846, level = 0 }, { x = 2976, y = 3842, level = 0 } }
         },
         {
           type = "ability",
@@ -2725,11 +2429,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2976, y = 3872, level = 0 },
-          id = {
-            group = "ancientspellook",
-            spot = "ghorrock",
-            access = "spellbook"
-          }
+          id = { group = "ancientspellook", spot = "ghorrock", access = "spellbook" }
         },
         {
           type = "ability",
@@ -2737,10 +2437,7 @@ local pack = {
           from = { x = 2976, y = 3872, level = 0 },
           to = { x = 2986, y = 3872, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2989, y = 3870, level = 0 },
-            size = { x = 1, y = 5 }
-          }
+          target_area = { origin = { x = 2989, y = 3870, level = 0 }, size = { x = 1, y = 5 } }
         },
         {
           type = "ability",
@@ -2750,10 +2447,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2996, y = 3872, level = 0 },
-            { x = 3000, y = 3872, level = 0 }
-          }
+          waypoints = { { x = 2996, y = 3872, level = 0 }, { x = 3000, y = 3872, level = 0 } }
         },
         {
           type = "ability",
@@ -2772,10 +2466,7 @@ local pack = {
             { x = 3034, y = 3868, level = 0 },
             { x = 3039, y = 3863, level = 0 }
           },
-          target_area = {
-            origin = { x = 3037, y = 3863, level = 0 },
-            size = { x = 3, y = 3 }
-          }
+          target_area = { origin = { x = 3037, y = 3863, level = 0 }, size = { x = 3, y = 3 } }
         },
         {
           type = "ability",
@@ -2812,11 +2503,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3288, y = 3886, level = 0 },
-          id = {
-            group = "ancientspellook",
-            spot = "annakarl",
-            access = "spellbook"
-          }
+          id = { group = "ancientspellook", spot = "annakarl", access = "spellbook" }
         },
         {
           type = "run",
@@ -2847,14 +2534,8 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3052, y = 3951, level = 0 },
-            { x = 3050, y = 3951, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3048, y = 3950, level = 0 },
-            size = { x = 3, y = 2 }
-          }
+          waypoints = { { x = 3052, y = 3951, level = 0 }, { x = 3050, y = 3951, level = 0 } },
+          target_area = { origin = { x = 3048, y = 3950, level = 0 }, size = { x = 3, y = 2 } }
         },
         {
           type = "ability",
@@ -2904,10 +2585,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2117, y = 5135, level = 0 },
-            { x = 2119, y = 5135, level = 0 }
-          }
+          waypoints = { { x = 2117, y = 5135, level = 0 }, { x = 2119, y = 5135, level = 0 } }
         },
         {
           type = "ability",
@@ -2988,14 +2666,8 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3432, y = 2917, level = 0 },
-            { x = 3432, y = 2918, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3427, y = 2918, level = 0 },
-            size = { x = 11, y = 1 }
-          }
+          waypoints = { { x = 3432, y = 2917, level = 0 }, { x = 3432, y = 2918, level = 0 } },
+          target_area = { origin = { x = 3427, y = 2918, level = 0 }, size = { x = 11, y = 1 } }
         },
         {
           type = "ability",
@@ -3026,10 +2698,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3402, y = 2917, level = 0 },
-            { x = 3396, y = 2917, level = 0 }
-          }
+          waypoints = { { x = 3402, y = 2917, level = 0 }, { x = 3396, y = 2917, level = 0 } }
         }
       },
       expected_time = 15
@@ -3205,10 +2874,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3169, y = 9885, level = 0 },
-            { x = 3169, y = 9887, level = 0 }
-          }
+          waypoints = { { x = 3169, y = 9885, level = 0 }, { x = 3169, y = 9887, level = 0 } }
         },
         {
           type = "ability",
@@ -3308,10 +2974,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3240, y = 3616, level = 0 },
-            { x = 3240, y = 3614, level = 0 }
-          }
+          waypoints = { { x = 3240, y = 3616, level = 0 }, { x = 3240, y = 3614, level = 0 } }
         }
       },
       expected_time = 14
@@ -3347,10 +3010,7 @@ local pack = {
           ability = "dive",
           from = { x = 3432, y = 2917, level = 0 },
           to = { x = 3426, y = 2927, level = 0 },
-          target_area = {
-            origin = { x = 3426, y = 2926, level = 0 },
-            size = { x = 2, y = 2 }
-          }
+          target_area = { origin = { x = 3426, y = 2926, level = 0 }, size = { x = 2, y = 2 } }
         }
       },
       expected_time = 10
@@ -3369,18 +3029,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2949, y = 2905, level = 0 },
-          id = {
-            group = "amuletofnature",
-            spot = "herblorehabitat",
-            access = "cape"
-          }
+          id = { group = "amuletofnature", spot = "herblorehabitat", access = "cape" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2949, y = 2905, level = 0 },
-            { x = 2949, y = 2903, level = 0 }
-          }
+          waypoints = { { x = 2949, y = 2905, level = 0 }, { x = 2949, y = 2903, level = 0 } }
         }
       },
       expected_time = 5
@@ -3403,14 +3056,8 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3106, y = 3794, level = 0 },
-            { x = 3110, y = 3794, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3109, y = 3793, level = 0 },
-            size = { x = 3, y = 3 }
-          }
+          waypoints = { { x = 3106, y = 3794, level = 0 }, { x = 3110, y = 3794, level = 0 } },
+          target_area = { origin = { x = 3109, y = 3793, level = 0 }, size = { x = 3, y = 3 } }
         },
         {
           type = "ability",
@@ -3470,10 +3117,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3000, y = 3846, level = 0 },
-            { x = 3004, y = 3842, level = 0 }
-          }
+          waypoints = { { x = 3000, y = 3846, level = 0 }, { x = 3004, y = 3842, level = 0 } }
         },
         {
           type = "ability",
@@ -3511,14 +3155,8 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3307, y = 3916, level = 0 },
-            { x = 3305, y = 3916, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3304, y = 3915, level = 0 },
-            size = { x = 2, y = 3 }
-          }
+          waypoints = { { x = 3307, y = 3916, level = 0 }, { x = 3305, y = 3916, level = 0 } },
+          target_area = { origin = { x = 3304, y = 3915, level = 0 }, size = { x = 2, y = 3 } }
         },
         {
           type = "ability",
@@ -3535,10 +3173,7 @@ local pack = {
             { x = 3287, y = 3918, level = 0 },
             { x = 3287, y = 3922, level = 0 }
           },
-          target_area = {
-            origin = { x = 3287, y = 3922, level = 0 },
-            size = { x = 2, y = 1 }
-          }
+          target_area = { origin = { x = 3287, y = 3922, level = 0 }, size = { x = 2, y = 1 } }
         },
         {
           type = "ability",
@@ -3569,10 +3204,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3288, y = 3945, level = 0 },
-            { x = 3286, y = 3943, level = 0 }
-          }
+          waypoints = { { x = 3288, y = 3945, level = 0 }, { x = 3286, y = 3943, level = 0 } }
         }
       },
       expected_time = 16
@@ -3591,18 +3223,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2542, y = 3169, level = 0 },
-          id = {
-            group = "spirittree",
-            spot = "village",
-            access = "spirittreererooter"
-          }
+          id = { group = "spirittree", spot = "village", access = "spirittreererooter" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2542, y = 3169, level = 0 },
-            { x = 2540, y = 3171, level = 0 }
-          }
+          waypoints = { { x = 2542, y = 3169, level = 0 }, { x = 2540, y = 3171, level = 0 } }
         },
         {
           type = "ability",
@@ -3631,7 +3256,7 @@ local pack = {
           assumed_start = { x = 2526, y = 3162, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.GNOME_AREA_IMP_LADDER_BOTTOM },
+            source_loc = { "loc", 69499 },
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2524.5, y = 3162.5 },
@@ -3644,11 +3269,7 @@ local pack = {
                 interactive_area = { origin = { x = 2526, y = 3162, level = 0 } },
                 name = "Climb-up",
                 movement = {
-                  {
-                    time = 3,
-                    offset = { x = 0, y = 0, level = 1 },
-                    orientation = "toentitybefore"
-                  }
+                  { time = 3, offset = { x = 0, y = 0, level = 1 }, orientation = "toentitybefore" }
                 }
               }
             }
@@ -3671,11 +3292,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3362, y = 3503, level = 0 },
-          id = {
-            group = "greenteleport",
-            spot = "skelettalhorror",
-            access = "spellbook"
-          }
+          id = { group = "greenteleport", spot = "skelettalhorror", access = "spellbook" }
         }
       },
       expected_time = 5
@@ -3694,11 +3311,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2975, y = 3938, level = 0 },
-          id = {
-            group = "lunarspellbook",
-            spot = "iceplateu",
-            access = "spellbook"
-          }
+          id = { group = "lunarspellbook", spot = "iceplateu", access = "spellbook" }
         },
         {
           type = "ability",
@@ -3714,10 +3327,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2985, y = 3948, level = 0 },
-            { x = 2985, y = 3950, level = 0 }
-          }
+          waypoints = { { x = 2985, y = 3948, level = 0 }, { x = 2985, y = 3950, level = 0 } }
         },
         {
           type = "ability",
@@ -3754,10 +3364,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2593, y = 3880, level = 0 },
-            { x = 2592, y = 3879, level = 0 }
-          }
+          waypoints = { { x = 2593, y = 3880, level = 0 }, { x = 2592, y = 3879, level = 0 } }
         }
       },
       expected_time = 9
@@ -3780,10 +3387,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2865, y = 3022, level = 0 },
-            { x = 2866, y = 3023, level = 0 }
-          }
+          waypoints = { { x = 2865, y = 3022, level = 0 }, { x = 2866, y = 3023, level = 0 } }
         },
         {
           type = "ability",
@@ -3815,18 +3419,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2185, y = 3311, level = 1 },
-          id = {
-            group = "teleportseed",
-            spot = "iorwerth",
-            access = "attunedseed"
-          }
+          id = { group = "teleportseed", spot = "iorwerth", access = "attunedseed" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2185, y = 3311, level = 1 },
-            { x = 2185, y = 3307, level = 1 }
-          }
+          waypoints = { { x = 2185, y = 3311, level = 1 }, { x = 2185, y = 3307, level = 1 } }
         },
         {
           type = "ability",
@@ -3849,10 +3446,7 @@ local pack = {
           from = { x = 2187, y = 3294, level = 1 },
           to = { x = 2187, y = 3284, level = 1 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2186, y = 3283, level = 1 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2186, y = 3283, level = 1 }, size = { x = 3, y = 1 } }
         }
       },
       expected_time = 12
@@ -3875,14 +3469,8 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2552, y = 3475, level = 0 },
-            { x = 2550, y = 3475, level = 0 }
-          },
-          target_area = {
-            origin = { x = 2550, y = 3475, level = 0 },
-            size = { x = 5, y = 1 }
-          }
+          waypoints = { { x = 2552, y = 3475, level = 0 }, { x = 2550, y = 3475, level = 0 } },
+          target_area = { origin = { x = 2550, y = 3475, level = 0 }, size = { x = 5, y = 1 } }
         },
         {
           type = "ability",
@@ -3904,10 +3492,7 @@ local pack = {
             { x = 2541, y = 3474, level = 0 },
             { x = 2540, y = 3474, level = 0 }
           },
-          target_area = {
-            origin = { x = 2540, y = 3474, level = 0 },
-            size = { x = 2, y = 1 }
-          }
+          target_area = { origin = { x = 2540, y = 3474, level = 0 }, size = { x = 2, y = 1 } }
         },
         {
           type = "ability",
@@ -3917,10 +3502,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2530, y = 3484, level = 0 },
-            { x = 2530, y = 3486, level = 0 }
-          }
+          waypoints = { { x = 2530, y = 3484, level = 0 }, { x = 2530, y = 3486, level = 0 } }
         },
         {
           type = "ability",
@@ -3930,10 +3512,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2530, y = 3495, level = 0 },
-            { x = 2528, y = 3495, level = 0 }
-          }
+          waypoints = { { x = 2530, y = 3495, level = 0 }, { x = 2528, y = 3495, level = 0 } }
         },
         {
           type = "transport",
@@ -3949,10 +3528,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2527, y = 3495, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2527, y = 3495, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -3972,10 +3548,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2527, y = 3495, level = 0 },
-            { x = 2525, y = 3495, level = 0 }
-          }
+          waypoints = { { x = 2527, y = 3495, level = 0 }, { x = 2525, y = 3495, level = 0 } }
         },
         {
           type = "transport",
@@ -3991,10 +3564,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2524, y = 3495, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2524, y = 3495, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -4036,11 +3606,7 @@ local pack = {
                 cursor = "ladderup",
                 name = "Climb-up",
                 movement = {
-                  {
-                    time = 3,
-                    offset = { x = 0, y = 0, level = 1 },
-                    orientation = "toentitybefore"
-                  }
+                  { time = 3, offset = { x = 0, y = 0, level = 1 }, orientation = "toentitybefore" }
                 }
               }
             }
@@ -4048,10 +3614,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2521, y = 3494, level = 1 },
-            { x = 2523, y = 3494, level = 1 }
-          }
+          waypoints = { { x = 2521, y = 3494, level = 1 }, { x = 2523, y = 3494, level = 1 } }
         }
       },
       expected_time = 19
@@ -4070,11 +3633,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2512, y = 3511, level = 0 },
-          id = {
-            group = "dragontrinkets",
-            spot = "brutalgreen",
-            access = "trinkets"
-          }
+          id = { group = "dragontrinkets", spot = "brutalgreen", access = "trinkets" }
         },
         {
           type = "ability",
@@ -4090,17 +3649,11 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2522, y = 3521, level = 0 },
-            { x = 2526, y = 3517, level = 0 }
-          }
+          waypoints = { { x = 2522, y = 3521, level = 0 }, { x = 2526, y = 3517, level = 0 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2526, y = 3517, level = 0 },
-            { x = 2526, y = 3515, level = 0 }
-          }
+          waypoints = { { x = 2526, y = 3517, level = 0 }, { x = 2526, y = 3515, level = 0 } }
         },
         {
           type = "ability",
@@ -4132,10 +3685,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2527, y = 3496, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2527, y = 3496, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -4175,10 +3725,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2524, y = 3495, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2524, y = 3495, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -4220,11 +3767,7 @@ local pack = {
                 cursor = "ladderup",
                 name = "Climb-up",
                 movement = {
-                  {
-                    time = 3,
-                    offset = { x = 0, y = 0, level = 1 },
-                    orientation = "toentitybefore"
-                  }
+                  { time = 3, offset = { x = 0, y = 0, level = 1 }, orientation = "toentitybefore" }
                 }
               }
             }
@@ -4232,10 +3775,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2521, y = 3494, level = 1 },
-            { x = 2523, y = 3494, level = 1 }
-          }
+          waypoints = { { x = 2521, y = 3494, level = 1 }, { x = 2523, y = 3494, level = 1 } }
         }
       },
       expected_time = 23
@@ -4258,10 +3798,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2330, y = 3171, level = 0 },
-            { x = 2329, y = 3172, level = 0 }
-          },
+          waypoints = { { x = 2330, y = 3171, level = 0 }, { x = 2329, y = 3172, level = 0 } },
           target_area = {
             origin = { x = 2328, y = 3171, level = 0 },
             size = { x = 2, y = 2 },
@@ -4310,14 +3847,8 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2643, y = 3677, level = 0 },
-            { x = 2646, y = 3674, level = 0 }
-          },
-          target_area = {
-            origin = { x = 2646, y = 3673, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          waypoints = { { x = 2643, y = 3677, level = 0 }, { x = 2646, y = 3674, level = 0 } },
+          target_area = { origin = { x = 2646, y = 3673, level = 0 }, size = { x = 1, y = 3 } }
         },
         {
           type = "ability",
@@ -4325,17 +3856,11 @@ local pack = {
           from = { x = 2646, y = 3674, level = 0 },
           to = { x = 2646, y = 3664, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2645, y = 3662, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2645, y = 3662, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2646, y = 3664, level = 0 },
-            { x = 2645, y = 3663, level = 0 }
-          }
+          waypoints = { { x = 2646, y = 3664, level = 0 }, { x = 2645, y = 3663, level = 0 } }
         },
         {
           type = "transport",
@@ -4351,10 +3876,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2645, y = 3662, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2645, y = 3662, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -4406,10 +3928,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2869, y = 2981, level = 1 },
-            { x = 2869, y = 2980, level = 1 }
-          }
+          waypoints = { { x = 2869, y = 2981, level = 1 }, { x = 2869, y = 2980, level = 1 } }
         },
         {
           type = "ability",
@@ -4419,10 +3938,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2869, y = 2970, level = 1 },
-            { x = 2870, y = 2971, level = 1 }
-          }
+          waypoints = { { x = 2869, y = 2970, level = 1 }, { x = 2870, y = 2971, level = 1 } }
         },
         {
           type = "transport",
@@ -4440,11 +3956,7 @@ local pack = {
                 cursor = "ladderdown",
                 name = "Climb-down",
                 movement = {
-                  {
-                    time = 3,
-                    offset = { x = 0, y = 0, level = -1 },
-                    orientation = "toentitybefore"
-                  }
+                  { time = 3, offset = { x = 0, y = 0, level = -1 }, orientation = "toentitybefore" }
                 }
               }
             }
@@ -4452,10 +3964,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2870, y = 2971, level = 0 },
-            { x = 2870, y = 2966, level = 0 }
-          }
+          waypoints = { { x = 2870, y = 2971, level = 0 }, { x = 2870, y = 2966, level = 0 } }
         },
         {
           type = "ability",
@@ -4500,10 +4009,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2615, y = 3385, level = 0 },
-            { x = 2614, y = 3386, level = 0 }
-          }
+          waypoints = { { x = 2615, y = 3385, level = 0 }, { x = 2614, y = 3386, level = 0 } }
         },
         {
           type = "transport",
@@ -4519,10 +4025,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2614, y = 3386, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2614, y = 3386, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -4560,10 +4063,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2596, y = 3401, level = 0 },
-            { x = 2596, y = 3403, level = 0 }
-          }
+          waypoints = { { x = 2596, y = 3401, level = 0 }, { x = 2596, y = 3403, level = 0 } }
         },
         {
           type = "ability",
@@ -4600,11 +4100,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3501, y = 3484, level = 0 },
-          id = {
-            group = "ancientspellook",
-            spot = "kharyll",
-            access = "spellbook"
-          }
+          id = { group = "ancientspellook", spot = "kharyll", access = "spellbook" }
         },
         {
           type = "run",
@@ -4613,10 +4109,7 @@ local pack = {
             { x = 3505, y = 3480, level = 0 },
             { x = 3505, y = 3477, level = 0 }
           },
-          target_area = {
-            origin = { x = 3505, y = 3476, level = 0 },
-            size = { x = 1, y = 2 }
-          }
+          target_area = { origin = { x = 3505, y = 3476, level = 0 }, size = { x = 1, y = 2 } }
         },
         {
           type = "ability",
@@ -4632,10 +4125,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3495, y = 3467, level = 0 },
-            { x = 3495, y = 3466, level = 0 }
-          }
+          waypoints = { { x = 3495, y = 3467, level = 0 }, { x = 3495, y = 3466, level = 0 } }
         },
         {
           type = "cosmetic",
@@ -4648,7 +4138,7 @@ local pack = {
           assumed_start = { x = 3495, y = 3466, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.THRT_TAVERN_TRAP_DOOR,
+            source_loc = 5055,
             entity = { name = "Trapdoor", kind = "static" },
             clickable_area = {
               topleft = { x = 3494.5, y = 3465.5 },
@@ -4677,17 +4167,11 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3519, y = 3285, level = 0 },
-            { x = 3517, y = 3287, level = 0 }
-          }
+          waypoints = { { x = 3519, y = 3285, level = 0 }, { x = 3517, y = 3287, level = 0 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3517, y = 3287, level = 0 },
-            { x = 3515, y = 3287, level = 0 }
-          }
+          waypoints = { { x = 3517, y = 3287, level = 0 }, { x = 3515, y = 3287, level = 0 } }
         },
         {
           type = "ability",
@@ -4697,10 +4181,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3505, y = 3287, level = 0 },
-            { x = 3499, y = 3287, level = 0 }
-          }
+          waypoints = { { x = 3505, y = 3287, level = 0 }, { x = 3499, y = 3287, level = 0 } }
         },
         {
           type = "ability",
@@ -4740,7 +4221,7 @@ local pack = {
           assumed_start = { x = 2657, y = 3438, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.RANGING_GUILD_DOOR,
+            source_loc = 2514,
             entity = { name = "Guild door", kind = "static" },
             clickable_area = {
               topleft = { x = 2657.5, y = 3438.5 },
@@ -4764,10 +4245,7 @@ local pack = {
                       size = { x = 2, y = 2 },
                       data = "CQ=="
                     },
-                    fixed_target = {
-                      target = { origin = { x = 2659, y = 3437, level = 0 } },
-                      relative = true
-                    },
+                    fixed_target = { target = { origin = { x = 2659, y = 3437, level = 0 } }, relative = true },
                     orientation = "forced",
                     forced_orientation = { dir = 7, relative = false }
                   },
@@ -4778,10 +4256,7 @@ local pack = {
                       size = { x = 2, y = 2 },
                       data = "CQ=="
                     },
-                    fixed_target = {
-                      target = { origin = { x = 2657, y = 3439, level = 0 } },
-                      relative = true
-                    },
+                    fixed_target = { target = { origin = { x = 2657, y = 3439, level = 0 } }, relative = true },
                     orientation = "forced",
                     forced_orientation = { dir = 5, relative = false }
                   }
@@ -4792,10 +4267,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2659, y = 3437, level = 0 },
-            { x = 2660, y = 3436, level = 0 }
-          },
+          waypoints = { { x = 2659, y = 3437, level = 0 }, { x = 2660, y = 3436, level = 0 } },
           target_area = {
             origin = { x = 2660, y = 3435, level = 0 },
             size = { x = 2, y = 2 },
@@ -4814,10 +4286,7 @@ local pack = {
           from = { x = 2670, y = 3426, level = 0 },
           to = { x = 2670, y = 3416, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2669, y = 3415, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2669, y = 3415, level = 0 }, size = { x = 3, y = 1 } }
         }
       },
       expected_time = 15
@@ -4836,11 +4305,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2968, y = 3696, level = 0 },
-          id = {
-            group = "ancientspellook",
-            spot = "dareeyak",
-            access = "spellbook"
-          }
+          id = { group = "ancientspellook", spot = "dareeyak", access = "spellbook" }
         },
         {
           type = "run",
@@ -4852,10 +4317,7 @@ local pack = {
             { x = 2958, y = 3693, level = 0 },
             { x = 2958, y = 3691, level = 0 }
           },
-          target_area = {
-            origin = { x = 2958, y = 3691, level = 0 },
-            size = { x = 1, y = 2 }
-          }
+          target_area = { origin = { x = 2958, y = 3691, level = 0 }, size = { x = 1, y = 2 } }
         },
         {
           type = "ability",
@@ -4923,7 +4385,7 @@ local pack = {
           assumed_start = { x = 3020, y = 3632, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.WILD_IMP_ROGUE_DOUBLE_DOOR_2X1,
+            source_loc = 64833,
             entity = { name = "Gate", kind = "static" },
             clickable_area = {
               topleft = { x = 3020.5, y = 3632.5 },
@@ -4942,18 +4404,12 @@ local pack = {
                 movement = {
                   {
                     time = 2,
-                    valid_from = {
-                      origin = { x = 3020, y = 3631, level = 0 },
-                      size = { x = 1, y = 2 }
-                    },
+                    valid_from = { origin = { x = 3020, y = 3631, level = 0 }, size = { x = 1, y = 2 } },
                     offset = { x = 2, y = 0, level = 0 }
                   },
                   {
                     time = 2,
-                    valid_from = {
-                      origin = { x = 3022, y = 3631, level = 0 },
-                      size = { x = 1, y = 2 }
-                    },
+                    valid_from = { origin = { x = 3022, y = 3631, level = 0 }, size = { x = 1, y = 2 } },
                     offset = { x = -2, y = 0, level = 0 }
                   }
                 }
@@ -4983,10 +4439,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3023, y = 3628, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 3023, y = 3628, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -5029,10 +4482,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3025, y = 3626, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 3025, y = 3626, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -5072,10 +4522,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3032, y = 3626, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 3032, y = 3626, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -5097,10 +4544,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3033, y = 3626, level = 0 },
-            { x = 3035, y = 3628, level = 0 }
-          }
+          waypoints = { { x = 3033, y = 3626, level = 0 }, { x = 3035, y = 3628, level = 0 } }
         },
         {
           type = "transport",
@@ -5116,10 +4560,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3035, y = 3628, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 3035, y = 3628, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -5152,7 +4593,7 @@ local pack = {
           assumed_start = { x = 3034, y = 3631, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.WILD_IMP_ROGUE_DOUBLE_DOOR_2X1,
+            source_loc = 64833,
             entity = { name = "Gate", kind = "static" },
             clickable_area = {
               topleft = { x = 3032.5, y = 3632.5 },
@@ -5171,18 +4612,12 @@ local pack = {
                 movement = {
                   {
                     time = 2,
-                    valid_from = {
-                      origin = { x = 3032, y = 3631, level = 0 },
-                      size = { x = 1, y = 2 }
-                    },
+                    valid_from = { origin = { x = 3032, y = 3631, level = 0 }, size = { x = 1, y = 2 } },
                     offset = { x = 2, y = 0, level = 0 }
                   },
                   {
                     time = 2,
-                    valid_from = {
-                      origin = { x = 3034, y = 3631, level = 0 },
-                      size = { x = 1, y = 2 }
-                    },
+                    valid_from = { origin = { x = 3034, y = 3631, level = 0 }, size = { x = 1, y = 2 } },
                     offset = { x = -2, y = 0, level = 0 }
                   }
                 }
@@ -5224,10 +4659,7 @@ local pack = {
             { x = 3157, y = 2796, level = 0 },
             { x = 3157, y = 2793, level = 0 }
           },
-          target_area = {
-            origin = { x = 3157, y = 2792, level = 0 },
-            size = { x = 2, y = 2 }
-          }
+          target_area = { origin = { x = 3157, y = 2792, level = 0 }, size = { x = 2, y = 2 } }
         },
         {
           type = "ability",
@@ -5288,18 +4720,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2462, y = 3444, level = 0 },
-          id = {
-            group = "spirittree",
-            spot = "stronghold",
-            access = "spirittreererooter"
-          }
+          id = { group = "spirittree", spot = "stronghold", access = "spirittreererooter" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2462, y = 3444, level = 0 },
-            { x = 2466, y = 3448, level = 0 }
-          }
+          waypoints = { { x = 2462, y = 3444, level = 0 }, { x = 2466, y = 3448, level = 0 } }
         },
         {
           type = "ability",
@@ -5307,10 +4732,7 @@ local pack = {
           from = { x = 2466, y = 3448, level = 0 },
           to = { x = 2466, y = 3458, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2465, y = 3459, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2465, y = 3459, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "ability",
@@ -5335,17 +4757,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2465, y = 3490, level = 0 },
-            { x = 2465, y = 3491, level = 0 }
-          }
+          waypoints = { { x = 2465, y = 3490, level = 0 }, { x = 2465, y = 3491, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2465, y = 3491, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.GNOME_IMP_TREEDOORL,
+            source_loc = 69197,
             entity = { name = "Tree Door", kind = "static" },
             clickable_area = {
               topleft = { x = 2464.5, y = 3492.5 },
@@ -5379,17 +4798,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2465, y = 3493, level = 0 },
-            { x = 2466, y = 3494, level = 0 }
-          }
+          waypoints = { { x = 2465, y = 3493, level = 0 }, { x = 2466, y = 3494, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2466, y = 3494, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.GNOME_GRAND_TREE_LADDERBOTTOM,
+            source_loc = 107376,
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2465.5, y = 3495.5 },
@@ -5402,11 +4818,7 @@ local pack = {
                 interactive_area = { origin = { x = 2466, y = 3494, level = 0 } },
                 name = "Climb-up",
                 movement = {
-                  {
-                    time = 3,
-                    offset = { x = 0, y = 0, level = 1 },
-                    orientation = "toentitybefore"
-                  }
+                  { time = 3, offset = { x = 0, y = 0, level = 1 }, orientation = "toentitybefore" }
                 }
               }
             }
@@ -5428,10 +4840,7 @@ local pack = {
           ability = "dive",
           from = { x = 2474, y = 3493, level = 1 },
           to = { x = 2484, y = 3486, level = 1 },
-          target_area = {
-            origin = { x = 2483, y = 3486, level = 1 },
-            size = { x = 2, y = 1 }
-          }
+          target_area = { origin = { x = 2483, y = 3486, level = 1 }, size = { x = 2, y = 1 } }
         },
         {
           type = "run",
@@ -5440,10 +4849,7 @@ local pack = {
             { x = 2484, y = 3488, level = 1 },
             { x = 2486, y = 3488, level = 1 }
           },
-          target_area = {
-            origin = { x = 2485, y = 3488, level = 1 },
-            size = { x = 2, y = 1 }
-          }
+          target_area = { origin = { x = 2485, y = 3488, level = 1 }, size = { x = 2, y = 1 } }
         },
         {
           type = "ability",
@@ -5468,19 +4874,12 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2575, y = 3089, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "watchtower-yanille",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "watchtower-yanille", access = "spellbook" }
         },
         {
           type = "run",
           waypoints = { { x = 2575, y = 3089, level = 0 } },
-          target_area = {
-            origin = { x = 2575, y = 3088, level = 0 },
-            size = { x = 3, y = 4 }
-          }
+          target_area = { origin = { x = 2575, y = 3088, level = 0 }, size = { x = 3, y = 4 } }
         },
         {
           type = "ability",
@@ -5507,7 +4906,7 @@ local pack = {
           assumed_start = { x = 2575, y = 3107, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.YANILLE_CASTLEWALL_SC,
+            source_loc = 9301,
             entity = { name = "Underwall tunnel", kind = "static" },
             clickable_area = {
               topleft = { x = 2574.5, y = 3108.5 },
@@ -5519,30 +4918,21 @@ local pack = {
                 cursor = "generic",
                 interactive_area = { origin = { x = 2575, y = 3107, level = 0 } },
                 name = "Climb-under",
-                movement = {
-                  {
-                    time = 8,
-                    offset = { x = 0, y = 5, level = 0 },
-                    orientation = "bymovement"
-                  }
-                }
+                movement = { { time = 8, offset = { x = 0, y = 5, level = 0 }, orientation = "bymovement" } }
               }
             }
           }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2575, y = 3112, level = 0 },
-            { x = 2570, y = 3117, level = 0 }
-          }
+          waypoints = { { x = 2575, y = 3112, level = 0 }, { x = 2570, y = 3117, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2570, y = 3117, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.BIGWEB_SLASHABLE,
+            source_loc = 733,
             entity = { name = "Web", kind = "static" },
             clickable_area = {
               topleft = { x = 2569.5, y = 3118.5 },
@@ -5585,7 +4975,7 @@ local pack = {
           assumed_start = { x = 2570, y = 3121, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.DI2_STAIRS_ABOVE_GROUND_02,
+            source_loc = 37023,
             entity = { name = "Staircase", kind = "static" },
             clickable_area = {
               topleft = { x = 2567.5, y = 3125.5 },
@@ -5595,10 +4985,7 @@ local pack = {
             actions = {
               {
                 cursor = "ladderdown",
-                interactive_area = {
-                  origin = { x = 2569, y = 3121, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2569, y = 3121, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Climb-down",
                 movement = {
                   {
@@ -5629,7 +5016,7 @@ local pack = {
           assumed_start = { x = 2580, y = 9520, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.BALANCING_LEDGE3_MIRROR,
+            source_loc = 35969,
             entity = { name = "Balancing ledge", kind = "static" },
             clickable_area = {
               topleft = { x = 2579.5, y = 9519.5 },
@@ -5642,11 +5029,7 @@ local pack = {
                 interactive_area = { origin = { x = 2580, y = 9520, level = 0 } },
                 name = "Walk-across",
                 movement = {
-                  {
-                    time = 10,
-                    offset = { x = 0, y = -8, level = 0 },
-                    orientation = "bymovement"
-                  }
+                  { time = 10, offset = { x = 0, y = -8, level = 0 }, orientation = "bymovement" }
                 }
               }
             }
@@ -5671,7 +5054,7 @@ local pack = {
           assumed_start = { x = 2572, y = 9499, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.TRAPPEDCHAOSALTAR,
+            source_loc = 412,
             entity = { name = "Chaos altar", kind = "static" },
             clickable_area = {
               topleft = { x = 2570.5, y = 9500.5 },
@@ -5706,10 +5089,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2578, y = 9583, level = 0 },
-            { x = 2577, y = 9583, level = 0 }
-          }
+          waypoints = { { x = 2578, y = 9583, level = 0 }, { x = 2577, y = 9583, level = 0 } }
         }
       },
       expected_time = 43
@@ -5728,28 +5108,18 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2658, y = 3230, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "DJP",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "DJP", access = "portable_fairy_ring" }
         },
         {
           type = "ability",
           ability = "dive",
           from = { x = 2658, y = 3230, level = 0 },
           to = { x = 2664, y = 3240, level = 0 },
-          target_area = {
-            origin = { x = 2663, y = 3239, level = 0 },
-            size = { x = 2, y = 2 }
-          }
+          target_area = { origin = { x = 2663, y = 3239, level = 0 }, size = { x = 2, y = 2 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2664, y = 3240, level = 0 },
-            { x = 2665, y = 3240, level = 0 }
-          }
+          waypoints = { { x = 2664, y = 3240, level = 0 }, { x = 2665, y = 3240, level = 0 } }
         },
         {
           type = "transport",
@@ -5765,10 +5135,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2665, y = 3240, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2665, y = 3240, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -5800,7 +5167,7 @@ local pack = {
           assumed_start = { x = 2668, y = 3243, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.UNDERWORLD_SURFACE_NECROMANCERS_TOWER_BUILDING_STAIRS,
+            source_loc = 126967,
             entity = { name = "Stairs", kind = "static" },
             clickable_area = {
               topleft = { x = 2667.5, y = 3244.5 },
@@ -5867,10 +5234,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2554, y = 3474, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2554, y = 3474, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -5897,10 +5261,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2565, y = 3464, level = 0 },
-            { x = 2567, y = 3464, level = 0 }
-          }
+          waypoints = { { x = 2565, y = 3464, level = 0 }, { x = 2567, y = 3464, level = 0 } }
         },
         {
           type = "ability",
@@ -5936,10 +5297,7 @@ local pack = {
             { x = 3219, y = 3216, level = 0 },
             { x = 3217, y = 3214, level = 0 }
           },
-          target_area = {
-            origin = { x = 3217, y = 3212, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          target_area = { origin = { x = 3217, y = 3212, level = 0 }, size = { x = 1, y = 3 } }
         },
         {
           type = "ability",
@@ -5961,10 +5319,7 @@ local pack = {
             { x = 3203, y = 3206, level = 0 },
             { x = 3203, y = 3207, level = 0 }
           },
-          target_area = {
-            origin = { x = 3203, y = 3207, level = 0 },
-            size = { x = 1, y = 2 }
-          }
+          target_area = { origin = { x = 3203, y = 3207, level = 0 }, size = { x = 1, y = 2 } }
         },
         {
           type = "ability",
@@ -5974,17 +5329,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3211, y = 3215, level = 0 },
-            { x = 3210, y = 3216, level = 0 }
-          }
+          waypoints = { { x = 3211, y = 3215, level = 0 }, { x = 3210, y = 3216, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 3210, y = 3216, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.QIP_COOK_TRAPDOOR_OPEN,
+            source_loc = 36687,
             entity = { name = "Trapdoor", kind = "static" },
             clickable_area = {
               topleft = { x = 3208.5, y = 3216.5 },
@@ -6008,27 +5360,18 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3208, y = 9616, level = 0 },
-            { x = 3208, y = 9620, level = 0 }
-          }
+          waypoints = { { x = 3208, y = 9616, level = 0 }, { x = 3208, y = 9620, level = 0 } }
         },
         {
           type = "ability",
           ability = "dive",
           from = { x = 3208, y = 9620, level = 0 },
           to = { x = 3218, y = 9616, level = 0 },
-          target_area = {
-            origin = { x = 3216, y = 9616, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 3216, y = 9616, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3218, y = 9616, level = 0 },
-            { x = 3218, y = 9617, level = 0 }
-          }
+          waypoints = { { x = 3218, y = 9616, level = 0 }, { x = 3218, y = 9617, level = 0 } }
         }
       },
       expected_time = 19
@@ -6047,11 +5390,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2706, y = 3483, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "camelot-seers",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "camelot-seers", access = "spellbook" }
         },
         {
           type = "run",
@@ -6071,10 +5410,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2708, y = 3495, level = 0 },
-            { x = 2709, y = 3495, level = 0 }
-          }
+          waypoints = { { x = 2708, y = 3495, level = 0 }, { x = 2709, y = 3495, level = 0 } }
         },
         {
           type = "transport",
@@ -6090,10 +5426,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2709, y = 3495, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2709, y = 3495, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -6113,17 +5446,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2709, y = 3496, level = 0 },
-            { x = 2709, y = 3498, level = 0 }
-          }
+          waypoints = { { x = 2709, y = 3496, level = 0 }, { x = 2709, y = 3498, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2709, y = 3498, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.ELEMENTAL_WORKSHOP_SPIRALSTAIRSTOP,
+            source_loc = 3415,
             entity = { name = "Staircase", kind = "static" },
             clickable_area = {
               topleft = { x = 2709.5, y = 3498.5 },
@@ -6176,18 +5506,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2538, y = 3306, level = 0 },
-          id = {
-            group = "davesspellbook",
-            spot = "ardougne",
-            access = "spellbook"
-          }
+          id = { group = "davesspellbook", spot = "ardougne", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2538, y = 3306, level = 0 },
-            { x = 2540, y = 3306, level = 0 }
-          }
+          waypoints = { { x = 2538, y = 3306, level = 0 }, { x = 2540, y = 3306, level = 0 } }
         },
         {
           type = "ability",
@@ -6212,7 +5535,7 @@ local pack = {
           assumed_start = { x = 2557, y = 3299, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.ARDOUGNEDOOR_R,
+            source_loc = 9738,
             entity = { name = "Ardougne wall door", kind = "static" },
             clickable_area = {
               topleft = { x = 2557.5, y = 3299.5 },
@@ -6281,10 +5604,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2565, y = 3317, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2565, y = 3317, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -6306,10 +5626,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2565, y = 3318, level = 0 },
-            { x = 2565, y = 3320, level = 0 }
-          }
+          waypoints = { { x = 2565, y = 3318, level = 0 }, { x = 2565, y = 3320, level = 0 } }
         },
         {
           type = "transport",
@@ -6325,10 +5642,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2564, y = 3320, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2564, y = 3320, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -6373,11 +5687,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3212, y = 3434, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "varrock",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "varrock", access = "spellbook" }
         },
         {
           type = "run",
@@ -6389,10 +5699,7 @@ local pack = {
             { x = 3205, y = 3430, level = 0 },
             { x = 3204, y = 3430, level = 0 }
           },
-          target_area = {
-            origin = { x = 3203, y = 3430, level = 0 },
-            size = { x = 2, y = 1 }
-          }
+          target_area = { origin = { x = 3203, y = 3430, level = 0 }, size = { x = 2, y = 1 } }
         },
         {
           type = "ability",
@@ -6405,17 +5712,11 @@ local pack = {
           ability = "dive",
           from = { x = 3194, y = 3430, level = 0 },
           to = { x = 3186, y = 3433, level = 0 },
-          target_area = {
-            origin = { x = 3185, y = 3432, level = 0 },
-            size = { x = 2, y = 4 }
-          }
+          target_area = { origin = { x = 3185, y = 3432, level = 0 }, size = { x = 2, y = 4 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3186, y = 3433, level = 0 },
-            { x = 3187, y = 3433, level = 0 }
-          }
+          waypoints = { { x = 3186, y = 3433, level = 0 }, { x = 3187, y = 3433, level = 0 } }
         },
         {
           type = "transport",
@@ -6431,10 +5732,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3187, y = 3433, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 3187, y = 3433, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -6457,7 +5755,7 @@ local pack = {
           assumed_start = { x = 3188, y = 3433, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.FAI_VARROCK_BANK_STAIRS,
+            source_loc = 24360,
             entity = { name = "Staircase", kind = "static" },
             clickable_area = {
               topleft = { x = 3188.5, y = 3433.5 },
@@ -6480,10 +5778,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3190, y = 9834, level = 0 },
-            { x = 3190, y = 9833, level = 0 }
-          }
+          waypoints = { { x = 3190, y = 9834, level = 0 }, { x = 3190, y = 9833, level = 0 } }
         },
         {
           type = "ability",
@@ -6508,18 +5803,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3087, y = 3496, level = 0 },
-          id = {
-            group = "amuletofglory",
-            spot = "edgeville",
-            access = "necklace"
-          }
+          id = { group = "amuletofglory", spot = "edgeville", access = "necklace" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3087, y = 3496, level = 0 },
-            { x = 3086, y = 3495, level = 0 }
-          }
+          waypoints = { { x = 3087, y = 3496, level = 0 }, { x = 3086, y = 3495, level = 0 } }
         },
         {
           type = "ability",
@@ -6553,10 +5841,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3068, y = 3513, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 3068, y = 3513, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -6593,11 +5878,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3058, y = 3257, level = 0 },
-          id = {
-            group = "spirittree",
-            spot = "sarim",
-            access = "spirittreererooter"
-          }
+          id = { group = "spirittree", spot = "sarim", access = "spirittreererooter" }
         },
         {
           type = "ability",
@@ -6668,10 +5949,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2824, y = 3354, level = 0 },
-            { x = 2823, y = 3354, level = 0 }
-          }
+          waypoints = { { x = 2824, y = 3354, level = 0 }, { x = 2823, y = 3354, level = 0 } }
         },
         {
           type = "transport",
@@ -6687,10 +5965,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2822, y = 3354, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2822, y = 3354, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -6750,7 +6025,7 @@ local pack = {
           assumed_start = { x = 3090, y = 3474, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.WILDINLEVER,
+            source_loc = 1814,
             entity = { name = "Lever", kind = "static" },
             clickable_area = {
               topleft = { x = 3089.5, y = 3474.5 },
@@ -6793,17 +6068,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2840, y = 9387, level = 0 },
-            { x = 2838, y = 9387, level = 0 }
-          }
+          waypoints = { { x = 2840, y = 9387, level = 0 }, { x = 2838, y = 9387, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2838, y = 9387, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.ATJUN_MINE_LADDER,
+            source_loc = 23584,
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2837.5, y = 9388.5 },
@@ -6862,18 +6134,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2790, y = 3615, level = 0 },
-          id = {
-            group = "ringofslaying",
-            spot = "slayerdungeon",
-            access = "ring"
-          }
+          id = { group = "ringofslaying", spot = "slayerdungeon", access = "ring" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2790, y = 3615, level = 0 },
-            { x = 2788, y = 3615, level = 0 }
-          }
+          waypoints = { { x = 2790, y = 3615, level = 0 }, { x = 2788, y = 3615, level = 0 } }
         },
         {
           type = "ability",
@@ -6910,7 +6175,7 @@ local pack = {
           assumed_start = { x = 2759, y = 3653, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.MDAUGHTER_ROCKSLIDE,
+            source_loc = 5847,
             entity = { name = "Rockslide", kind = "static" },
             clickable_area = {
               topleft = { x = 2759.5, y = 3655.5 },
@@ -6963,10 +6228,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2760, y = 3670, level = 0 },
-            { x = 2762, y = 3670, level = 0 }
-          }
+          waypoints = { { x = 2760, y = 3670, level = 0 }, { x = 2762, y = 3670, level = 0 } }
         },
         {
           type = "ability",
@@ -6976,10 +6238,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2772, y = 3670, level = 0 },
-            { x = 2780, y = 3670, level = 0 }
-          }
+          waypoints = { { x = 2772, y = 3670, level = 0 }, { x = 2780, y = 3670, level = 0 } }
         },
         {
           type = "ability",
@@ -7009,18 +6268,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 1942, y = 4498, level = 0 },
-          id = {
-            group = "sceptreofthegods",
-            spot = "pyramidpain",
-            access = "sotg"
-          }
+          id = { group = "sceptreofthegods", spot = "pyramidpain", access = "sotg" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 1942, y = 4498, level = 0 },
-            { x = 1942, y = 4499, level = 0 }
-          }
+          waypoints = { { x = 1942, y = 4498, level = 0 }, { x = 1942, y = 4499, level = 0 } }
         },
         {
           type = "ability",
@@ -7033,7 +6285,7 @@ local pack = {
           assumed_start = { x = 1942, y = 4492, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.PYRAMID_PLUNDER_2014_WALL_DOOR1_EXIT_WAITINGROOM,
+            source_loc = 95658,
             entity = { name = "Tomb door", kind = "static" },
             clickable_area = {
               topleft = { x = 1941.5, y = 4491.5 },
@@ -7066,10 +6318,7 @@ local pack = {
           is_far_dive = true,
           from = { x = 3295, y = 2794, level = 0 },
           to = { x = 3295, y = 2784, level = 0 },
-          target_area = {
-            origin = { x = 3294, y = 2783, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 3294, y = 2783, level = 0 }, size = { x = 3, y = 1 } }
         }
       },
       expected_time = 11
@@ -7093,11 +6342,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2513, y = 3628, level = 0 },
-          id = {
-            group = "teleportscrolls",
-            spot = "lighthouse",
-            access = "globetrotter"
-          }
+          id = { group = "teleportscrolls", spot = "lighthouse", access = "globetrotter" }
         },
         {
           type = "ability",
@@ -7119,10 +6364,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2509, y = 3635, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2509, y = 3635, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -7155,7 +6397,7 @@ local pack = {
           assumed_start = { x = 2507, y = 3639, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.HORROR_LIGHTHOUSE_SPIRALSTAIRS_BASE,
+            source_loc = 4568,
             entity = { name = "Staircase", kind = "static" },
             clickable_area = {
               topleft = { x = 2505.5, y = 3641.5 },
@@ -7169,10 +6411,7 @@ local pack = {
                 movement = {
                   {
                     time = 1,
-                    fixed_target = {
-                      target = { origin = { x = 2505, y = 3641, level = 1 } },
-                      relative = true
-                    }
+                    fixed_target = { target = { origin = { x = 2505, y = 3641, level = 1 } }, relative = true }
                   }
                 }
               }
@@ -7196,11 +6435,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2884, y = 3452, level = 0 },
-          id = {
-            group = "houseteleports",
-            spot = "taverley",
-            access = "spellbook"
-          }
+          id = { group = "houseteleports", spot = "taverley", access = "spellbook" }
         },
         {
           type = "run",
@@ -7215,7 +6450,7 @@ local pack = {
           assumed_start = { x = 2880, y = 3459, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.FISHING_CONTEST_CAVE_ENTRANCE,
+            source_loc = 66990,
             entity = { name = "Cave", kind = "static" },
             clickable_area = {
               topleft = { x = 2878.5, y = 3459.5 },
@@ -7238,20 +6473,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2875, y = 9880, level = 0 },
-            { x = 2873, y = 9880, level = 0 }
-          }
+          waypoints = { { x = 2875, y = 9880, level = 0 }, { x = 2873, y = 9880, level = 0 } }
         },
         {
           type = "ability",
           ability = "dive",
           from = { x = 2873, y = 9880, level = 0 },
           to = { x = 2863, y = 9881, level = 0 },
-          target_area = {
-            origin = { x = 2863, y = 9881, level = 0 },
-            size = { x = 2, y = 1 }
-          }
+          target_area = { origin = { x = 2863, y = 9881, level = 0 }, size = { x = 2, y = 1 } }
         },
         {
           type = "run",
@@ -7281,11 +6510,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2319, y = 3619, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "AKQ",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "AKQ", access = "portable_fairy_ring" }
         },
         {
           type = "ability",
@@ -7324,7 +6549,7 @@ local pack = {
           assumed_start = { x = 2344, y = 3650, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.SWAN_HOLE,
+            source_loc = 14922,
             entity = { name = "Hole", kind = "static" },
             clickable_area = {
               topleft = { x = 2343.5, y = 3651.5 },
@@ -7343,10 +6568,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2344, y = 3655, level = 0 },
-            { x = 2344, y = 3662, level = 0 }
-          }
+          waypoints = { { x = 2344, y = 3655, level = 0 }, { x = 2344, y = 3662, level = 0 } }
         },
         {
           type = "transport",
@@ -7362,10 +6584,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2344, y = 3662, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2344, y = 3662, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -7419,10 +6638,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2337, y = 3675, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2337, y = 3675, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -7486,7 +6702,7 @@ local pack = {
           assumed_start = { x = 2379, y = 3467, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.GNOME_AREA_IMP_FENCE_STYLE,
+            source_loc = 91457,
             entity = { name = "Stile", kind = "static" },
             clickable_area = {
               topleft = { x = 2379.5, y = 3467.5 },
@@ -7573,7 +6789,7 @@ local pack = {
           assumed_start = { x = 2177, y = 5663, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.RA4_LAVA_FLOW_AREA_EXIT,
+            source_loc = 56989,
             entity = { name = "Exit", kind = "static" },
             clickable_area = {
               topleft = { x = 2175.5, y = 5664.5 },
@@ -7608,10 +6824,7 @@ local pack = {
           ability = "dive",
           from = { x = 2936, y = 10201, level = 0 },
           to = { x = 2927, y = 10199, level = 0 },
-          target_area = {
-            origin = { x = 2924, y = 10199, level = 0 },
-            size = { x = 5, y = 1 }
-          }
+          target_area = { origin = { x = 2924, y = 10199, level = 0 }, size = { x = 5, y = 1 } }
         },
         {
           type = "ability",
@@ -7627,10 +6840,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2907, y = 10199, level = 0 },
-            { x = 2906, y = 10200, level = 0 }
-          }
+          waypoints = { { x = 2907, y = 10199, level = 0 }, { x = 2906, y = 10200, level = 0 } }
         },
         {
           type = "transport",
@@ -7646,10 +6856,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2906, y = 10200, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2906, y = 10200, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -7694,20 +6901,13 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2575, y = 3089, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "watchtower-yanille",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "watchtower-yanille", access = "spellbook" }
         },
         {
           type = "cosmetic",
           icon = "run",
           position = { x = 2574, y = 3091, level = 0 },
-          area = {
-            origin = { x = 2574, y = 3087, level = 0 },
-            size = { x = 4, y = 5 }
-          }
+          area = { origin = { x = 2574, y = 3087, level = 0 }, size = { x = 4, y = 5 } }
         },
         {
           type = "ability",
@@ -7729,10 +6929,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2584, y = 3087, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2584, y = 3087, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -7760,17 +6957,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2595, y = 3087, level = 0 },
-            { x = 2594, y = 3086, level = 0 }
-          }
+          waypoints = { { x = 2595, y = 3087, level = 0 }, { x = 2594, y = 3086, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2594, y = 3086, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.LADDER_CELLAR,
+            source_loc = 1754,
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2593.5, y = 3085.5 },
@@ -7826,10 +7020,7 @@ local pack = {
             { x = 2186, y = 3148, level = 0 },
             { x = 2188, y = 3150, level = 0 }
           },
-          target_area = {
-            origin = { x = 2188, y = 3149, level = 0 },
-            size = { x = 1, y = 4 }
-          }
+          target_area = { origin = { x = 2188, y = 3149, level = 0 }, size = { x = 1, y = 4 } }
         },
         {
           type = "ability",
@@ -7837,24 +7028,18 @@ local pack = {
           from = { x = 2188, y = 3150, level = 0 },
           to = { x = 2188, y = 3160, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2187, y = 3163, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2187, y = 3163, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2188, y = 3160, level = 0 },
-            { x = 2188, y = 3162, level = 0 }
-          }
+          waypoints = { { x = 2188, y = 3160, level = 0 }, { x = 2188, y = 3162, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2188, y = 3162, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.REGICIDE_CROSS_OVER1_TYRAS_CAMP,
+            source_loc = 3999,
             entity = { name = "Dense forest", kind = "static" },
             clickable_area = {
               topleft = { x = 2186.5, y = 3164.5 },
@@ -7880,10 +7065,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2188, y = 3171, level = 0 },
-            { x = 2189, y = 3172, level = 0 }
-          }
+          waypoints = { { x = 2188, y = 3171, level = 0 }, { x = 2189, y = 3172, level = 0 } }
         },
         {
           type = "ability",
@@ -7893,10 +7075,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2199, y = 3182, level = 0 },
-            { x = 2199, y = 3178, level = 0 }
-          }
+          waypoints = { { x = 2199, y = 3182, level = 0 }, { x = 2199, y = 3178, level = 0 } }
         },
         {
           type = "ability",
@@ -7909,7 +7088,7 @@ local pack = {
           assumed_start = { x = 2199, y = 3169, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.REGICIDE_TRAP_WOODSPRING,
+            source_loc = 3922,
             entity = { name = "Sticks", kind = "static" },
             clickable_area = {
               topleft = { x = 2199.5, y = 3169.5 },
@@ -7994,7 +7173,7 @@ local pack = {
           assumed_start = { x = 2196, y = 3237, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.REGICIDE_LOGBALANCE1_START,
+            source_loc = 3931,
             entity = { name = "Log balance", kind = "static" },
             clickable_area = {
               topleft = { x = 2196.5, y = 3237.5 },
@@ -8035,17 +7214,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2181, y = 3211, level = 0 },
-            { x = 2181, y = 3212, level = 0 }
-          }
+          waypoints = { { x = 2181, y = 3211, level = 0 }, { x = 2181, y = 3212, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2181, y = 3212, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.REGICIDE_TRAP_WOODSPRING,
+            source_loc = 3922,
             entity = { name = "Sticks", kind = "static" },
             clickable_area = {
               topleft = { x = 2180.5, y = 3211.5 },
@@ -8079,10 +7255,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2181, y = 3209, level = 0 },
-            { x = 2181, y = 3206, level = 0 }
-          }
+          waypoints = { { x = 2181, y = 3209, level = 0 }, { x = 2181, y = 3206, level = 0 } }
         }
       },
       expected_time = 32
@@ -8138,13 +7311,7 @@ local pack = {
               {
                 cursor = "agility",
                 name = "Run across",
-                movement = {
-                  {
-                    offset = { x = 6, y = 0, level = 0 },
-                    orientation = "bymovement",
-                    time = 5
-                  }
-                }
+                movement = { { offset = { x = 6, y = 0, level = 0 }, orientation = "bymovement", time = 5 } }
               }
             }
           }
@@ -8183,18 +7350,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2523, y = 3062, level = 0 },
-          id = {
-            group = "teleportscrolls",
-            spot = "gutanoth",
-            access = "globetrotter"
-          }
+          id = { group = "teleportscrolls", spot = "gutanoth", access = "globetrotter" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2523, y = 3062, level = 0 },
-            { x = 2519, y = 3062, level = 0 }
-          }
+          waypoints = { { x = 2523, y = 3062, level = 0 }, { x = 2519, y = 3062, level = 0 } }
         },
         {
           type = "ability",
@@ -8229,10 +7389,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2503, y = 3062, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2503, y = 3062, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -8287,10 +7444,7 @@ local pack = {
           ability = "dive",
           from = { x = 2499, y = 3030, level = 0 },
           to = { x = 2500, y = 3020, level = 0 },
-          target_area = {
-            origin = { x = 2500, y = 3020, level = 0 },
-            size = { x = 2, y = 2 }
-          }
+          target_area = { origin = { x = 2500, y = 3020, level = 0 }, size = { x = 2, y = 2 } }
         },
         {
           type = "ability",
@@ -8300,17 +7454,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2500, y = 3011, level = 0 },
-            { x = 2506, y = 3011, level = 0 }
-          }
+          waypoints = { { x = 2500, y = 3011, level = 0 }, { x = 2506, y = 3011, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2506, y = 3011, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.GANOTHBATTLEMENT,
+            source_loc = 2832,
             entity = { name = "Battlement", kind = "static" },
             clickable_area = {
               topleft = { x = 2506.5, y = 3011.5 },
@@ -8358,17 +7509,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2530, y = 3022, level = 0 },
-            { x = 2530, y = 3025, level = 0 }
-          }
+          waypoints = { { x = 2530, y = 3022, level = 0 }, { x = 2530, y = 3025, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2530, y = 3025, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.TANOTHJUMP1,
+            source_loc = 2830,
             entity = { name = "Gap", kind = "static" },
             clickable_area = {
               topleft = { x = 2529.5, y = 3026.5 },
@@ -8382,10 +7530,7 @@ local pack = {
                 movement = {
                   {
                     time = 4,
-                    fixed_target = {
-                      target = { origin = { x = 2530, y = 3029, level = 0 } },
-                      relative = true
-                    }
+                    fixed_target = { target = { origin = { x = 2530, y = 3029, level = 0 } }, relative = true }
                   }
                 }
               }
@@ -8424,11 +7569,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2571, y = 2956, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "AKS",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "AKS", access = "portable_fairy_ring" }
         },
         {
           type = "ability",
@@ -8448,20 +7589,14 @@ local pack = {
           from = { x = 2561, y = 2946, level = 0 },
           to = { x = 2551, y = 2936, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 2551, y = 2936, level = 0 }
-        },
+        { type = "powerburst", where = { x = 2551, y = 2936, level = 0 } },
         {
           type = "ability",
           ability = "dive",
           from = { x = 2551, y = 2936, level = 0 },
           to = { x = 2541, y = 2936, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2540, y = 2935, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          target_area = { origin = { x = 2540, y = 2935, level = 0 }, size = { x = 1, y = 3 } }
         },
         {
           type = "ability",
@@ -8499,10 +7634,7 @@ local pack = {
           from = { x = 2501, y = 2966, level = 0 },
           to = { x = 2501, y = 2976, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2500, y = 2977, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2500, y = 2977, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "ability",
@@ -8521,7 +7653,7 @@ local pack = {
           assumed_start = { x = 2501, y = 2989, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.TOBANCAVE,
+            source_loc = 2811,
             entity = { name = "Cave entrance", kind = "static" },
             clickable_area = {
               topleft = { x = 2498.5, y = 2990.5 },
@@ -8555,17 +7687,11 @@ local pack = {
           ability = "dive",
           from = { x = 2575, y = 3028, level = 0 },
           to = { x = 2570, y = 3032, level = 0 },
-          target_area = {
-            origin = { x = 2570, y = 3032, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2570, y = 3032, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2570, y = 3032, level = 0 },
-            { x = 2572, y = 3032, level = 0 }
-          }
+          waypoints = { { x = 2570, y = 3032, level = 0 }, { x = 2572, y = 3032, level = 0 } }
         },
         {
           type = "ability",
@@ -8598,11 +7724,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2794, y = 3418, level = 0 },
-          id = {
-            group = "davesspellbook",
-            spot = "camelot",
-            access = "spellbook"
-          }
+          id = { group = "davesspellbook", spot = "camelot", access = "spellbook" }
         },
         {
           type = "ability",
@@ -8610,10 +7732,7 @@ local pack = {
           from = { x = 2794, y = 3418, level = 0 },
           to = { x = 2794, y = 3408, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 2793, y = 3407, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 2793, y = 3407, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "teleport",
@@ -8622,10 +7741,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3001, y = 3032, level = 0 },
-            { x = 3001, y = 3036, level = 0 }
-          }
+          waypoints = { { x = 3001, y = 3032, level = 0 }, { x = 3001, y = 3036, level = 0 } }
         },
         {
           type = "ability",
@@ -8689,10 +7805,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2367, y = 3360, level = 0 },
-            { x = 2365, y = 3362, level = 0 }
-          }
+          waypoints = { { x = 2367, y = 3360, level = 0 }, { x = 2365, y = 3362, level = 0 } }
         },
         {
           type = "ability",
@@ -8707,10 +7820,7 @@ local pack = {
           from = { x = 2375, y = 3362, level = 0 },
           to = { x = 2385, y = 3362, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 2385, y = 3362, level = 0 }
-        },
+        { type = "powerburst", where = { x = 2385, y = 3362, level = 0 } },
         {
           type = "ability",
           ability = "dive",
@@ -8735,7 +7845,7 @@ local pack = {
           assumed_start = { x = 2385, y = 3335, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.OVERPASS_GATE_LEFT },
+            source_loc = { "loc", 3945 },
             entity = { name = "Huge Gate", kind = "static" },
             clickable_area = {
               topleft = { x = 2383.5, y = 3334.5 },
@@ -8824,11 +7934,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2801, y = 3003, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "CKR",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "CKR", access = "portable_fairy_ring" }
         },
         {
           type = "ability",
@@ -8855,7 +7961,7 @@ local pack = {
           assumed_start = { x = 2795, y = 2979, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.ZQCLIMBINGROCKS,
+            source_loc = 2231,
             entity = { name = "Rocks", kind = "static" },
             clickable_area = {
               topleft = { x = 2793.5, y = 2979.5 },
@@ -8897,10 +8003,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2764, y = 2972, level = 0 },
-            { x = 2764, y = 2974, level = 0 }
-          }
+          waypoints = { { x = 2764, y = 2972, level = 0 }, { x = 2764, y = 2974, level = 0 } }
         }
       },
       expected_time = 26
@@ -8942,7 +8045,7 @@ local pack = {
           assumed_start = { x = 3054, y = 3520, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.WILD_IMP_BOUNDRY_WALL_LOW_3X2_VAR5 },
+            source_loc = { "loc", 65084 },
             entity = { name = "Wilderness wall", kind = "static" },
             clickable_area = {
               topleft = { x = 3051.5, y = 3522.5 },
@@ -8956,18 +8059,12 @@ local pack = {
                 movement = {
                   {
                     time = 3,
-                    valid_from = {
-                      origin = { x = 3052, y = 3520, level = 0 },
-                      size = { x = 3, y = 1 }
-                    },
+                    valid_from = { origin = { x = 3052, y = 3520, level = 0 }, size = { x = 3, y = 1 } },
                     offset = { x = 0, y = 3, level = 0 }
                   },
                   {
                     time = 3,
-                    valid_from = {
-                      origin = { x = 3052, y = 3523, level = 0 },
-                      size = { x = 3, y = 1 }
-                    },
+                    valid_from = { origin = { x = 3052, y = 3523, level = 0 }, size = { x = 3, y = 1 } },
                     offset = { x = 0, y = -3, level = 0 }
                   }
                 }
@@ -9018,7 +8115,7 @@ local pack = {
           assumed_start = { x = 3086, y = 3561, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.WILDERNESS_AIRORB_SHORTCUT_INVISIBLE_1X1 },
+            source_loc = { "loc", 104319 },
             entity = { name = "Rocks", kind = "static" },
             clickable_area = {
               topleft = { x = 3085.5, y = 3562.5 },
@@ -9058,11 +8155,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2817, y = 3676, level = 0 },
-          id = {
-            group = "lunarspellbook",
-            spot = "trollheim",
-            access = "spellbook"
-          }
+          id = { group = "lunarspellbook", spot = "trollheim", access = "spellbook" }
         },
         {
           type = "run",
@@ -9077,7 +8170,7 @@ local pack = {
           assumed_start = { x = 2812, y = 3669, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.MYARM_EXIT,
+            source_loc = 18833,
             entity = { name = "Troll ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2811.5, y = 3668.5 },
@@ -9148,7 +8241,7 @@ local pack = {
           assumed_start = { x = 2837, y = 10089, level = 2 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.TROLL_STRONGHOLD_TOP_EXIT_MID,
+            source_loc = 3774,
             entity = { name = "Exit", kind = "static" },
             clickable_area = {
               topleft = { x = 2837.5, y = 10091.5 },
@@ -9171,10 +8264,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2848, y = 3686, level = 0 },
-            { x = 2848, y = 3684, level = 0 }
-          }
+          waypoints = { { x = 2848, y = 3686, level = 0 }, { x = 2848, y = 3684, level = 0 } }
         }
       },
       expected_time = 25
@@ -9193,18 +8283,14 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2885, y = 4372, level = 2 },
-          id = {
-            group = "gamesnecklace",
-            spot = "corporealbeast",
-            access = "necklace"
-          }
+          id = { group = "gamesnecklace", spot = "corporealbeast", access = "necklace" }
         },
         {
           type = "transport",
           assumed_start = { x = 2885, y = 4372, level = 2 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.SUM1_CAVE_EXIT,
+            source_loc = 37928,
             entity = { name = "Exit", kind = "static" },
             clickable_area = {
               topleft = { x = 2882.5, y = 4371.5 },
@@ -9285,18 +8371,14 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2885, y = 4372, level = 2 },
-          id = {
-            group = "gamesnecklace",
-            spot = "corporealbeast",
-            access = "necklace"
-          }
+          id = { group = "gamesnecklace", spot = "corporealbeast", access = "necklace" }
         },
         {
           type = "transport",
           assumed_start = { x = 2885, y = 4372, level = 2 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.SUM1_CAVE_EXIT,
+            source_loc = 37928,
             entity = { name = "Exit", kind = "static" },
             clickable_area = {
               topleft = { x = 2882.5, y = 4371.5 },
@@ -9319,10 +8401,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3214, y = 3782, level = 0 },
-            { x = 3215, y = 3782, level = 0 }
-          }
+          waypoints = { { x = 3214, y = 3782, level = 0 }, { x = 3215, y = 3782, level = 0 } }
         },
         {
           type = "ability",
@@ -9382,7 +8461,7 @@ local pack = {
           assumed_start = { x = 3090, y = 3474, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.WILDINLEVER,
+            source_loc = 1814,
             entity = { name = "Lever", kind = "static" },
             clickable_area = {
               topleft = { x = 3089.5, y = 3474.5 },
@@ -9420,10 +8499,7 @@ local pack = {
           from = { x = 3158, y = 3928, level = 0 },
           to = { x = 3158, y = 3938, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 3157, y = 3939, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 3157, y = 3939, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "ability",
@@ -9433,17 +8509,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3158, y = 3948, level = 0 },
-            { x = 3158, y = 3950, level = 0 }
-          }
+          waypoints = { { x = 3158, y = 3948, level = 0 }, { x = 3158, y = 3950, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 3158, y = 3950, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.BIGWEB_SLASHABLE_WILDERNESS,
+            source_loc = 65346,
             entity = { name = "Web", kind = "static" },
             clickable_area = {
               topleft = { x = 3157.5, y = 3951.5 },
@@ -9453,10 +8526,7 @@ local pack = {
             actions = {
               {
                 cursor = "generic",
-                interactive_area = {
-                  origin = { x = 3158, y = 3950, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 3158, y = 3950, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Slash",
                 movement = {
                   {
@@ -9580,10 +8650,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3007, y = 3849, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 3007, y = 3849, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -9626,18 +8693,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2613, y = 3383, level = 0 },
-          id = {
-            group = "lunarspellbook",
-            spot = "fishing",
-            access = "spellbook"
-          }
+          id = { group = "lunarspellbook", spot = "fishing", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2613, y = 3383, level = 0 },
-            { x = 2611, y = 3383, level = 0 }
-          }
+          waypoints = { { x = 2613, y = 3383, level = 0 }, { x = 2611, y = 3383, level = 0 } }
         },
         {
           type = "ability",
@@ -9690,10 +8750,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2565, y = 3441, level = 0 },
-            { x = 2565, y = 3443, level = 0 }
-          }
+          waypoints = { { x = 2565, y = 3441, level = 0 }, { x = 2565, y = 3443, level = 0 } }
         },
         {
           type = "ability",
@@ -9703,10 +8760,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2565, y = 3453, level = 0 },
-            { x = 2567, y = 3455, level = 0 }
-          }
+          waypoints = { { x = 2565, y = 3453, level = 0 }, { x = 2567, y = 3455, level = 0 } }
         },
         {
           type = "transport",
@@ -9722,10 +8776,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2567, y = 3455, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2567, y = 3455, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -9790,11 +8841,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2785, y = 3664, level = 0 },
-          id = {
-            group = "lunarspellbook",
-            spot = "mountaincamp",
-            access = "spellbook"
-          }
+          id = { group = "lunarspellbook", spot = "mountaincamp", access = "spellbook" }
         },
         {
           type = "run",
@@ -9833,11 +8880,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2803, y = 2917, level = 0 },
-          id = {
-            group = "lunarspellbook",
-            spot = "westernkharazi",
-            access = "spellbook"
-          }
+          id = { group = "lunarspellbook", spot = "westernkharazi", access = "spellbook" }
         },
         {
           type = "ability",
@@ -9884,18 +8927,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2803, y = 2917, level = 0 },
-          id = {
-            group = "lunarspellbook",
-            spot = "westernkharazi",
-            access = "spellbook"
-          }
+          id = { group = "lunarspellbook", spot = "westernkharazi", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2803, y = 2917, level = 0 },
-            { x = 2804, y = 2917, level = 0 }
-          }
+          waypoints = { { x = 2803, y = 2917, level = 0 }, { x = 2804, y = 2917, level = 0 } }
         },
         {
           type = "ability",
@@ -9956,7 +8992,7 @@ local pack = {
           assumed_start = { x = 2466, y = 3494, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.GNOME_GRAND_TREE_LADDERBOTTOM },
+            source_loc = { "loc", 107376 },
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2465.5, y = 3495.5 },
@@ -9969,11 +9005,7 @@ local pack = {
                 interactive_area = { origin = { x = 2466, y = 3494, level = 0 } },
                 name = "Climb-up",
                 movement = {
-                  {
-                    time = 3,
-                    offset = { x = 0, y = 0, level = 1 },
-                    orientation = "toentitybefore"
-                  }
+                  { time = 3, offset = { x = 0, y = 0, level = 1 }, orientation = "toentitybefore" }
                 }
               }
             }
@@ -10009,10 +9041,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2482, y = 3482, level = 1 },
-            { x = 2482, y = 3484, level = 1 }
-          }
+          waypoints = { { x = 2482, y = 3482, level = 1 }, { x = 2482, y = 3484, level = 1 } }
         },
         {
           type = "ability",
@@ -10022,10 +9051,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2486, y = 3488, level = 1 },
-            { x = 2490, y = 3488, level = 1 }
-          }
+          waypoints = { { x = 2486, y = 3488, level = 1 }, { x = 2490, y = 3488, level = 1 } }
         }
       },
       expected_time = 17
@@ -10068,10 +9094,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3157, y = 2785, level = 0 },
-            { x = 3157, y = 2783, level = 0 }
-          }
+          waypoints = { { x = 3157, y = 2785, level = 0 }, { x = 3157, y = 2783, level = 0 } }
         },
         {
           type = "ability",
@@ -10125,10 +9148,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3298, y = 3525, level = 0 },
-            { x = 3300, y = 3525, level = 0 }
-          }
+          waypoints = { { x = 3298, y = 3525, level = 0 }, { x = 3300, y = 3525, level = 0 } }
         },
         {
           type = "ability",
@@ -10173,10 +9193,7 @@ local pack = {
             { x = 3215, y = 3218, level = 0 },
             { x = 3215, y = 3216, level = 0 }
           },
-          target_area = {
-            origin = { x = 3215, y = 3215, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          target_area = { origin = { x = 3215, y = 3215, level = 0 }, size = { x = 1, y = 3 } }
         },
         {
           type = "ability",
@@ -10195,7 +9212,7 @@ local pack = {
           assumed_start = { x = 3205, y = 3209, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.FAI_LUMBRIDGE_SPIRAL_STAIRS_BOTTOM,
+            source_loc = 36773,
             entity = { name = "Staircase", kind = "static" },
             clickable_area = {
               topleft = { x = 3203.5, y = 3208.5 },
@@ -10239,18 +9256,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3219, y = 3248, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "lumbridge",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "lumbridge", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3219, y = 3248, level = 0 },
-            { x = 3221, y = 3246, level = 0 }
-          }
+          waypoints = { { x = 3219, y = 3248, level = 0 }, { x = 3221, y = 3246, level = 0 } }
         },
         {
           type = "ability",
@@ -10265,10 +9275,7 @@ local pack = {
           from = { x = 3211, y = 3246, level = 0 },
           to = { x = 3201, y = 3246, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 3201, y = 3246, level = 0 }
-        },
+        { type = "powerburst", where = { x = 3201, y = 3246, level = 0 } },
         {
           type = "ability",
           ability = "surge",
@@ -10333,10 +9340,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3167, y = 3302, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 3167, y = 3302, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -10380,7 +9384,7 @@ local pack = {
           assumed_start = { x = 3165, y = 3307, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.FAI_LUMBRIDGE_WINDMILL_LADDER_UP },
+            source_loc = { "loc", 36795 },
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 3163.5, y = 3307.5 },
@@ -10393,11 +9397,7 @@ local pack = {
                 interactive_area = { origin = { x = 3165, y = 3307, level = 0 } },
                 name = "Climb-top",
                 movement = {
-                  {
-                    time = 3,
-                    offset = { x = 0, y = 0, level = 2 },
-                    orientation = "toentitybefore"
-                  }
+                  { time = 3, offset = { x = 0, y = 0, level = 2 }, orientation = "toentitybefore" }
                 }
               }
             }
@@ -10432,14 +9432,8 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3106, y = 3794, level = 0 },
-            { x = 3108, y = 3794, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3108, y = 3793, level = 0 },
-            size = { x = 2, y = 3 }
-          }
+          waypoints = { { x = 3106, y = 3794, level = 0 }, { x = 3108, y = 3794, level = 0 } },
+          target_area = { origin = { x = 3108, y = 3793, level = 0 }, size = { x = 2, y = 3 } }
         },
         {
           type = "ability",
@@ -10523,10 +9517,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2444, y = 3090, level = 0 },
-            { x = 2451, y = 3090, level = 0 }
-          }
+          waypoints = { { x = 2444, y = 3090, level = 0 }, { x = 2451, y = 3090, level = 0 } }
         },
         {
           type = "ability",
@@ -10536,10 +9527,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2461, y = 3080, level = 0 },
-            { x = 2461, y = 3076, level = 0 }
-          }
+          waypoints = { { x = 2461, y = 3080, level = 0 }, { x = 2461, y = 3076, level = 0 } }
         },
         {
           type = "ability",
@@ -10561,10 +9549,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2441, y = 3056, level = 0 },
-            { x = 2441, y = 3052, level = 0 }
-          }
+          waypoints = { { x = 2441, y = 3056, level = 0 }, { x = 2441, y = 3052, level = 0 } }
         }
       },
       expected_time = 16
@@ -10583,18 +9568,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3447, y = 3470, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "CKS",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "CKS", access = "portable_fairy_ring" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3447, y = 3470, level = 0 },
-            { x = 3447, y = 3468, level = 0 }
-          }
+          waypoints = { { x = 3447, y = 3470, level = 0 }, { x = 3447, y = 3468, level = 0 } }
         },
         {
           type = "ability",
@@ -10615,7 +9593,7 @@ local pack = {
           assumed_start = { x = 3444, y = 3458, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.MORTMYRE_METALGATECLOSED_L,
+            source_loc = 3506,
             entity = { name = "Gate", kind = "static" },
             clickable_area = {
               topleft = { x = 3443.5, y = 3458.5 },
@@ -10642,24 +9620,18 @@ local pack = {
           ability = "dive",
           from = { x = 3431, y = 3328, level = 0 },
           to = { x = 3440, y = 3327, level = 0 },
-          target_area = {
-            origin = { x = 3440, y = 3327, level = 0 },
-            size = { x = 2, y = 1 }
-          }
+          target_area = { origin = { x = 3440, y = 3327, level = 0 }, size = { x = 2, y = 1 } }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3440, y = 3327, level = 0 },
-            { x = 3440, y = 3329, level = 0 }
-          }
+          waypoints = { { x = 3440, y = 3327, level = 0 }, { x = 3440, y = 3329, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 3440, y = 3329, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.DRUIDJUMP_LOC },
+            source_loc = { "loc", 3522 },
             entity = { name = "Bridge", kind = "static" },
             clickable_area = {
               topleft = { x = 3439.5, y = 3329.5 },
@@ -10725,7 +9697,7 @@ local pack = {
           assumed_start = { x = 3090, y = 3474, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.WILDINLEVER,
+            source_loc = 1814,
             entity = { name = "Lever", kind = "static" },
             clickable_area = {
               topleft = { x = 3089.5, y = 3474.5 },
@@ -10763,10 +9735,7 @@ local pack = {
           from = { x = 3158, y = 3928, level = 0 },
           to = { x = 3158, y = 3938, level = 0 },
           is_far_dive = true,
-          target_area = {
-            origin = { x = 3157, y = 3939, level = 0 },
-            size = { x = 3, y = 1 }
-          }
+          target_area = { origin = { x = 3157, y = 3939, level = 0 }, size = { x = 3, y = 1 } }
         },
         {
           type = "ability",
@@ -10776,17 +9745,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3158, y = 3948, level = 0 },
-            { x = 3158, y = 3950, level = 0 }
-          }
+          waypoints = { { x = 3158, y = 3948, level = 0 }, { x = 3158, y = 3950, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 3158, y = 3950, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.BIGWEB_SLASHABLE_WILDERNESS,
+            source_loc = 65346,
             entity = { name = "Web", kind = "static" },
             clickable_area = {
               topleft = { x = 3157.5, y = 3951.5 },
@@ -10796,10 +9762,7 @@ local pack = {
             actions = {
               {
                 cursor = "generic",
-                interactive_area = {
-                  origin = { x = 3158, y = 3950, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 3158, y = 3950, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Slash",
                 movement = {
                   {
@@ -10840,11 +9803,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2575, y = 3089, level = 0 },
-          id = {
-            group = "normalspellbook",
-            spot = "watchtower-yanille",
-            access = "spellbook"
-          }
+          id = { group = "normalspellbook", spot = "watchtower-yanille", access = "spellbook" }
         },
         {
           type = "redclick",
@@ -10854,10 +9813,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2575, y = 3089, level = 0 },
-            { x = 2574, y = 3089, level = 0 }
-          },
+          waypoints = { { x = 2575, y = 3089, level = 0 }, { x = 2574, y = 3089, level = 0 } },
           target_area = {
             origin = { x = 2573, y = 3087, level = 0 },
             size = { x = 5, y = 5 },
@@ -10872,10 +9828,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2581, y = 3096, level = 0 },
-            { x = 2583, y = 3096, level = 0 }
-          }
+          waypoints = { { x = 2581, y = 3096, level = 0 }, { x = 2583, y = 3096, level = 0 } }
         },
         {
           type = "ability",
@@ -10885,10 +9838,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2593, y = 3096, level = 0 },
-            { x = 2597, y = 3096, level = 0 }
-          }
+          waypoints = { { x = 2593, y = 3096, level = 0 }, { x = 2597, y = 3096, level = 0 } }
         },
         {
           type = "ability",
@@ -10920,18 +9870,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2538, y = 3306, level = 0 },
-          id = {
-            group = "davesspellbook",
-            spot = "ardougne",
-            access = "spellbook"
-          }
+          id = { group = "davesspellbook", spot = "ardougne", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2538, y = 3306, level = 0 },
-            { x = 2539, y = 3306, level = 0 }
-          }
+          waypoints = { { x = 2538, y = 3306, level = 0 }, { x = 2539, y = 3306, level = 0 } }
         },
         {
           type = "ability",
@@ -10978,10 +9921,7 @@ local pack = {
           ability = "dive",
           from = { x = 2498, y = 3302, level = 0 },
           to = { x = 2488, y = 3309, level = 0 },
-          target_area = {
-            origin = { x = 2488, y = 3309, level = 0 },
-            size = { x = 2, y = 1 }
-          }
+          target_area = { origin = { x = 2488, y = 3309, level = 0 }, size = { x = 2, y = 1 } }
         }
       },
       expected_time = 13
@@ -11004,14 +9944,8 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3052, y = 3951, level = 0 },
-            { x = 3052, y = 3950, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3052, y = 3948, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          waypoints = { { x = 3052, y = 3951, level = 0 }, { x = 3052, y = 3950, level = 0 } },
+          target_area = { origin = { x = 3052, y = 3948, level = 0 }, size = { x = 1, y = 3 } }
         },
         {
           type = "redclick",
@@ -11019,10 +9953,7 @@ local pack = {
           where = { x = 3052, y = 3952, level = 0 },
           how = "spellonentity"
         },
-        {
-          type = "run",
-          waypoints = { { x = 3052, y = 3950, level = 0 } }
-        },
+        { type = "run", waypoints = { { x = 3052, y = 3950, level = 0 } } },
         {
           type = "ability",
           ability = "escape",
@@ -11065,11 +9996,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2665, y = 3375, level = 0 },
-          id = {
-            group = "lunarspellbook",
-            spot = "northardougne",
-            access = "spellbook"
-          }
+          id = { group = "lunarspellbook", spot = "northardougne", access = "spellbook" }
         },
         {
           type = "ability",
@@ -11096,10 +10023,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2702, y = 3398, level = 0 },
-            { x = 2702, y = 3400, level = 0 }
-          }
+          waypoints = { { x = 2702, y = 3398, level = 0 }, { x = 2702, y = 3400, level = 0 } }
         },
         {
           type = "transport",
@@ -11115,10 +10039,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2702, y = 3400, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2702, y = 3400, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -11149,7 +10070,7 @@ local pack = {
           assumed_start = { x = 2702, y = 3408, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.LADDER,
+            source_loc = 1747,
             entity = { name = "Ladder", kind = "static" },
             clickable_area = {
               topleft = { x = 2700.5, y = 3408.5 },
@@ -11161,11 +10082,7 @@ local pack = {
                 cursor = "ladderup",
                 name = "Climb-up",
                 movement = {
-                  {
-                    time = 3,
-                    offset = { x = 0, y = 0, level = 1 },
-                    orientation = "toentitybefore"
-                  }
+                  { time = 3, offset = { x = 0, y = 0, level = 1 }, orientation = "toentitybefore" }
                 }
               }
             }
@@ -11204,10 +10121,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3283, y = 3199, level = 0 },
-            { x = 3283, y = 3201, level = 0 }
-          }
+          waypoints = { { x = 3283, y = 3199, level = 0 }, { x = 3283, y = 3201, level = 0 } }
         },
         {
           type = "ability",
@@ -11218,11 +10132,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2850, y = 3494, level = 1 },
-          id = {
-            group = "gliders",
-            spot = "whitewolfmountain",
-            access = "alkharid"
-          }
+          id = { group = "gliders", spot = "whitewolfmountain", access = "alkharid" }
         }
       },
       expected_time = 19
@@ -11245,14 +10155,8 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3219, y = 3656, level = 0 },
-            { x = 3223, y = 3656, level = 0 }
-          },
-          target_area = {
-            origin = { x = 3222, y = 3655, level = 0 },
-            size = { x = 2, y = 3 }
-          }
+          waypoints = { { x = 3219, y = 3656, level = 0 }, { x = 3223, y = 3656, level = 0 } },
+          target_area = { origin = { x = 3222, y = 3655, level = 0 }, size = { x = 2, y = 3 } }
         },
         {
           type = "ability",
@@ -11268,10 +10172,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3233, y = 3656, level = 0 },
-            { x = 3232, y = 3656, level = 0 }
-          },
+          waypoints = { { x = 3233, y = 3656, level = 0 }, { x = 3232, y = 3656, level = 0 } },
           target_area = {
             origin = { x = 3231, y = 3655, level = 0 },
             size = { x = 3, y = 2 },
@@ -11289,10 +10190,7 @@ local pack = {
           ability = "dive",
           from = { x = 3242, y = 3666, level = 0 },
           to = { x = 3235, y = 3673, level = 0 },
-          target_area = {
-            origin = { x = 3235, y = 3672, level = 0 },
-            size = { x = 1, y = 3 }
-          }
+          target_area = { origin = { x = 3235, y = 3672, level = 0 }, size = { x = 1, y = 3 } }
         }
       },
       expected_time = 9
@@ -11332,10 +10230,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3283, y = 3199, level = 0 },
-            { x = 3283, y = 3201, level = 0 }
-          }
+          waypoints = { { x = 3283, y = 3199, level = 0 }, { x = 3283, y = 3201, level = 0 } }
         },
         {
           type = "ability",
@@ -11346,11 +10241,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2850, y = 3494, level = 1 },
-          id = {
-            group = "gliders",
-            spot = "whitewolfmountain",
-            access = "alkharid"
-          }
+          id = { group = "gliders", spot = "whitewolfmountain", access = "alkharid" }
         }
       },
       expected_time = 21
@@ -11441,18 +10332,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3233, y = 3657, level = 0 },
-          id = {
-            group = "enlightenedamulet",
-            spot = "graveyard",
-            access = "ring"
-          }
+          id = { group = "enlightenedamulet", spot = "graveyard", access = "ring" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3233, y = 3657, level = 0 },
-            { x = 3232, y = 3658, level = 0 }
-          },
+          waypoints = { { x = 3233, y = 3657, level = 0 }, { x = 3232, y = 3658, level = 0 } },
           target_area = {
             origin = { x = 3231, y = 3655, level = 0 },
             size = { x = 4, y = 5 },
@@ -11471,10 +10355,7 @@ local pack = {
           from = { x = 3237, y = 3664, level = 0 },
           to = { x = 3245, y = 3672, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 3245, y = 3672, level = 0 }
-        },
+        { type = "powerburst", where = { x = 3245, y = 3672, level = 0 } },
         {
           type = "ability",
           ability = "surge",
@@ -11530,11 +10411,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 3124, y = 2634, level = 0 },
-          id = {
-            group = "houseteleports",
-            spot = "menaphos",
-            access = "spellbook"
-          }
+          id = { group = "houseteleports", spot = "menaphos", access = "spellbook" }
         },
         {
           type = "run",
@@ -11551,10 +10428,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3373, y = 2931, level = 0 },
-            { x = 3375, y = 2929, level = 0 }
-          }
+          waypoints = { { x = 3373, y = 2931, level = 0 }, { x = 3375, y = 2929, level = 0 } }
         },
         {
           type = "ability",
@@ -11586,11 +10460,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2801, y = 3003, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "CKR",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "CKR", access = "portable_fairy_ring" }
         },
         {
           type = "run",
@@ -11614,10 +10484,7 @@ local pack = {
           from = { x = 2816, y = 3014, level = 0 },
           to = { x = 2826, y = 3024, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 2826, y = 3024, level = 0 }
-        },
+        { type = "powerburst", where = { x = 2826, y = 3024, level = 0 } },
         {
           type = "ability",
           ability = "surge",
@@ -11673,11 +10540,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2801, y = 3003, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "CKR",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "CKR", access = "portable_fairy_ring" }
         },
         {
           type = "ability",
@@ -11752,18 +10615,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2462, y = 3444, level = 0 },
-          id = {
-            group = "spirittree",
-            spot = "stronghold",
-            access = "spirittreererooter"
-          }
+          id = { group = "spirittree", spot = "stronghold", access = "spirittreererooter" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2462, y = 3444, level = 0 },
-            { x = 2460, y = 3446, level = 0 }
-          }
+          waypoints = { { x = 2462, y = 3444, level = 0 }, { x = 2460, y = 3446, level = 0 } }
         },
         {
           type = "ability",
@@ -11773,10 +10629,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2450, y = 3456, level = 0 },
-            { x = 2446, y = 3456, level = 0 }
-          }
+          waypoints = { { x = 2450, y = 3456, level = 0 }, { x = 2446, y = 3456, level = 0 } }
         },
         {
           type = "ability",
@@ -11823,21 +10676,14 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2462, y = 3444, level = 0 },
-          id = {
-            group = "spirittree",
-            spot = "stronghold",
-            access = "spirittreererooter"
-          }
+          id = { group = "spirittree", spot = "stronghold", access = "spirittreererooter" }
         },
         {
           type = "ability",
           ability = "dive",
           from = { x = 2462, y = 3444, level = 0 },
           to = { x = 2455, y = 3448, level = 0 },
-          target_area = {
-            origin = { x = 2454, y = 3448, level = 0 },
-            size = { x = 3, y = 2 }
-          }
+          target_area = { origin = { x = 2454, y = 3448, level = 0 }, size = { x = 3, y = 2 } }
         },
         {
           type = "ability",
@@ -11845,10 +10691,7 @@ local pack = {
           from = { x = 2455, y = 3448, level = 0 },
           to = { x = 2445, y = 3458, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 2445, y = 3458, level = 0 }
-        },
+        { type = "powerburst", where = { x = 2445, y = 3458, level = 0 } },
         {
           type = "ability",
           ability = "dive",
@@ -11891,11 +10734,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2613, y = 3383, level = 0 },
-          id = {
-            group = "lunarspellbook",
-            spot = "fishing",
-            access = "spellbook"
-          }
+          id = { group = "lunarspellbook", spot = "fishing", access = "spellbook" }
         },
         {
           type = "run",
@@ -11918,10 +10757,7 @@ local pack = {
           from = { x = 2600, y = 3387, level = 0 },
           to = { x = 2590, y = 3387, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 2590, y = 3387, level = 0 }
-        },
+        { type = "powerburst", where = { x = 2590, y = 3387, level = 0 } },
         {
           type = "ability",
           ability = "dive",
@@ -11981,10 +10817,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2568, y = 3455, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2568, y = 3455, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -12027,18 +10860,11 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2538, y = 3306, level = 0 },
-          id = {
-            group = "davesspellbook",
-            spot = "ardougne",
-            access = "spellbook"
-          }
+          id = { group = "davesspellbook", spot = "ardougne", access = "spellbook" }
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2538, y = 3306, level = 0 },
-            { x = 2537, y = 3307, level = 0 }
-          }
+          waypoints = { { x = 2538, y = 3306, level = 0 }, { x = 2537, y = 3307, level = 0 } }
         },
         {
           type = "ability",
@@ -12065,7 +10891,7 @@ local pack = {
           assumed_start = { x = 2557, y = 3299, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.ARDOUGNEDOOR_R },
+            source_loc = { "loc", 9738 },
             entity = { name = "Ardougne wall door", kind = "static" },
             clickable_area = {
               topleft = { x = 2557.5, y = 3299.5 },
@@ -12111,10 +10937,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2564, y = 3317, level = 0 },
-            { x = 2565, y = 3317, level = 0 }
-          }
+          waypoints = { { x = 2564, y = 3317, level = 0 }, { x = 2565, y = 3317, level = 0 } }
         },
         {
           type = "transport",
@@ -12130,10 +10953,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2565, y = 3317, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 2565, y = 3317, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -12155,10 +10975,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2565, y = 3318, level = 0 },
-            { x = 2565, y = 3320, level = 0 }
-          }
+          waypoints = { { x = 2565, y = 3318, level = 0 }, { x = 2565, y = 3320, level = 0 } }
         },
         {
           type = "transport",
@@ -12174,10 +10991,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 2564, y = 3320, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 2564, y = 3320, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -12222,11 +11036,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2801, y = 3003, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "CKR",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "CKR", access = "portable_fairy_ring" }
         },
         {
           type = "ability",
@@ -12253,7 +11063,7 @@ local pack = {
           assumed_start = { x = 2795, y = 2979, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.ZQCLIMBINGROCKS,
+            source_loc = 2231,
             entity = { name = "Rocks", kind = "static" },
             clickable_area = {
               topleft = { x = 2793.5, y = 2979.5 },
@@ -12293,10 +11103,7 @@ local pack = {
           where = { x = 2782, y = 2986, level = 0 },
           how = "loot"
         },
-        {
-          type = "run",
-          waypoints = { { x = 2773, y = 2979, level = 0 } }
-        },
+        { type = "run", waypoints = { { x = 2773, y = 2979, level = 0 } } },
         {
           type = "ability",
           ability = "escape",
@@ -12332,10 +11139,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3181, y = 3417, level = 0 },
-            { x = 3181, y = 3418, level = 0 }
-          }
+          waypoints = { { x = 3181, y = 3417, level = 0 }, { x = 3181, y = 3418, level = 0 } }
         },
         {
           type = "ability",
@@ -12363,10 +11167,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3187, y = 3433, level = 0 },
-                  size = { x = 2, y = 1 }
-                },
+                interactive_area = { origin = { x = 3187, y = 3433, level = 0 }, size = { x = 2, y = 1 } },
                 name = "Pass",
                 movement = {
                   {
@@ -12391,7 +11192,7 @@ local pack = {
           assumed_start = { x = 3188, y = 3433, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.FAI_VARROCK_BANK_STAIRS },
+            source_loc = { "loc", 24360 },
             entity = { name = "Staircase", kind = "static" },
             clickable_area = {
               topleft = { x = 3188.5, y = 3433.5 },
@@ -12414,10 +11215,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 3190, y = 9832, level = 0 },
-            { x = 3190, y = 9830, level = 0 }
-          }
+          waypoints = { { x = 3190, y = 9832, level = 0 }, { x = 3190, y = 9830, level = 0 } }
         },
         {
           type = "ability",
@@ -12477,10 +11275,7 @@ local pack = {
             actions = {
               {
                 cursor = "open",
-                interactive_area = {
-                  origin = { x = 3068, y = 3513, level = 0 },
-                  size = { x = 1, y = 2 }
-                },
+                interactive_area = { origin = { x = 3068, y = 3513, level = 0 }, size = { x = 1, y = 2 } },
                 name = "Pass",
                 movement = {
                   {
@@ -12517,11 +11312,7 @@ local pack = {
         {
           type = "teleport",
           spot = { x = 2571, y = 2956, level = 0 },
-          id = {
-            group = "fairyring",
-            spot = "AKS",
-            access = "portable_fairy_ring"
-          }
+          id = { group = "fairyring", spot = "AKS", access = "portable_fairy_ring" }
         },
         {
           type = "ability",
@@ -12588,7 +11379,7 @@ local pack = {
           assumed_start = { x = 2500, y = 2988, level = 0 },
           internal = {
             type = "entity",
-            source_loc = { "loc", id.Loc.TOBANCAVE },
+            source_loc = { "loc", 2811 },
             entity = { name = "Cave entrance", kind = "static" },
             clickable_area = {
               topleft = { x = 2498.5, y = 2990.5 },
@@ -12667,10 +11458,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2367, y = 3360, level = 0 },
-            { x = 2369, y = 3360, level = 0 }
-          }
+          waypoints = { { x = 2367, y = 3360, level = 0 }, { x = 2369, y = 3360, level = 0 } }
         },
         {
           type = "ability",
@@ -12702,17 +11490,14 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2385, y = 3340, level = 0 },
-            { x = 2385, y = 3335, level = 0 }
-          }
+          waypoints = { { x = 2385, y = 3340, level = 0 }, { x = 2385, y = 3335, level = 0 } }
         },
         {
           type = "transport",
           assumed_start = { x = 2385, y = 3335, level = 0 },
           internal = {
             type = "entity",
-            source_loc = id.Loc.OVERPASS_GATE_LEFT,
+            source_loc = 3945,
             entity = { name = "Huge Gate", kind = "static" },
             clickable_area = {
               topleft = { x = 2383.5, y = 3334.5 },
@@ -12756,10 +11541,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2379, y = 3319, level = 0 },
-            { x = 2377, y = 3319, level = 0 }
-          }
+          waypoints = { { x = 2379, y = 3319, level = 0 }, { x = 2377, y = 3319, level = 0 } }
         },
         {
           type = "ability",
@@ -12769,10 +11551,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2367, y = 3319, level = 0 },
-            { x = 2361, y = 3319, level = 0 }
-          }
+          waypoints = { { x = 2367, y = 3319, level = 0 }, { x = 2361, y = 3319, level = 0 } }
         },
         {
           type = "ability",
@@ -12783,10 +11562,7 @@ local pack = {
         },
         {
           type = "run",
-          waypoints = {
-            { x = 2354, y = 3312, level = 0 },
-            { x = 2350, y = 3312, level = 0 }
-          }
+          waypoints = { { x = 2354, y = 3312, level = 0 }, { x = 2350, y = 3312, level = 0 } }
         },
         {
           type = "ability",
@@ -12828,10 +11604,7 @@ local pack = {
           from = { x = 3109, y = 3795, level = 0 },
           to = { x = 3119, y = 3805, level = 0 }
         },
-        {
-          type = "powerburst",
-          where = { x = 3119, y = 3805, level = 0 }
-        },
+        { type = "powerburst", where = { x = 3119, y = 3805, level = 0 } },
         {
           type = "ability",
           ability = "dive",

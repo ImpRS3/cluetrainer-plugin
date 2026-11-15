@@ -90,7 +90,7 @@ function EmoteClueSolver.new(clue, clue_state)
 end
 
 function EmoteClueSolver:buildActions()
-  local globetrotter_owned = var.VarPlayer.TRAIL_OUTFIT_FULL_OWNED.value == 5
+  local globetrotter_owned = var.VarPlayer.TRAIL_OUTFIT_FULL_OWNED.value == 31
 
   local clue = self.clue
   local state_panel = self.clue_state

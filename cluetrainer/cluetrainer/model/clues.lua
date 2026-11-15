@@ -1,3 +1,17 @@
+---@class ct.ConfigId.Loc
+---@field domain "loc"
+---@field name string
+
+---@class ct.ConfigId.Npc
+---@field domain "npc"
+---@field name string
+
+---@class ct.ConfigId.Obj
+---@field domain "obj"
+---@field name string
+
+---@alias ct.ConfigId ct.ConfigId.Loc|ct.ConfigId.Npc|ct.ConfigId.Obj
+
 ---@alias Challenge
 ---     | { type: "wizard" }
 ---     | { type: "slider" }
@@ -59,8 +73,8 @@ clues.ClueTier = {
 ---@class Solution.TalkTo
 ---@field type "talkto"
 ---@field npc string
+---@field npc_configs ct.ConfigId.Npc[]?
 ---@field spots Solution.TalkToSpot[]
-
 
 ---@class Solution.Dig
 ---@field type "dig"
@@ -78,6 +92,7 @@ clues.ClueTier = {
 ---@field type "search"
 ---@field spot TileRectangle
 ---@field entity string
+---@field entity_configs? ct.ConfigId.Loc[]?
 ---@field key? Solution.SearchKey
 
 ---@class StepShared
@@ -124,13 +139,9 @@ clues.ClueTier = {
 ---@field double_agent boolean
 ---@field hidey_hole Emote.HideyHole|nil
 
-
 ---@class Map : StepShared
 ---@field type "map"
----@field ocr_data number[]
 ---@field solution Solution
----@field image_url string
-
 
 ---@class Scan : StepShared
 ---@field type "scan"
@@ -149,11 +160,12 @@ clues.ClueTier = {
 ---@field areas TileArea[]
 ---@field answer string
 ---@field cursor MyCursorType
+---@field relevant_configs (ct.ConfigId.Npc | ct.ConfigId.Loc)[]?
 ---@field ingredients? Skilling.Ingredient[] Items the task uses up; tools are left out.
 
 ---@class Skilling.Ingredient
 ---@field name string
----@field ids integer[] Obj config ids; any of them counts, such as raw shark, raw rocktail or raw sailfish.
+---@field configs ct.ConfigId.Obj[]
 ---@field amount? integer Default 1.
 
 
