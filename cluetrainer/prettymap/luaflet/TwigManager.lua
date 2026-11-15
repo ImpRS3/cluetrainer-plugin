@@ -90,6 +90,7 @@ function ElementManager:RemoveViewChangeListener(token)
 end
 
 function ElementManager:_NotifyViewChanged()
+    self:_PruneHoverQueue() -- Prune off-screen or hidden elements from the hover queue
     for _, callback in pairs(self.viewChangeListeners) do
         self.map:_InvokeCallback("view change", callback, self.map)
     end
@@ -150,6 +151,30 @@ end
 function ElementManager:_Release()
     local element = self.hoverQueue[1]
     if element then self:_Leave(element) end
+end
+
+--- Removes off-screen or hidden entries from the hover queue.
+--- Prevents lingering hover states for elements that are no longer visible on the screen.
+function ElementManager:_PruneHoverQueue()
+    local map = self.map
+    for i = #self.hoverQueue, 1, -1 do
+        local element = self.hoverQueue[i]
+        local component = element.component
+        local x, y = element.screenX, element.screenY
+        local visible = component and not component.hidden and x ~= nil and y ~= nil
+        if visible then
+            local left, top
+            if element.static then
+                left, top = x, y
+            else
+                left = x - math.floor(element.width * element.pivotX) - (map.viewport.scrollX or 0)
+                top = y - math.floor(element.height * element.pivotY) - (map.viewport.scrollY or 0)
+            end
+            visible = left < map.viewportWidth and left + element.width > 0
+                and top < map.viewportHeight and top + element.height > 0
+        end
+        if not visible then self:_Leave(element) end
+    end
 end
 
 --- Removes `element` from the queue; if it was hovered, un-hovers it and hands over to the next.
