@@ -23,11 +23,4 @@ function AbstractClueSolver:dispose()
   self.disposable_group:dispose()
 end
 
----@param clue_state ct.ClueStateInterface
-function AbstractClueSolver:finish(clue_state)
-  self:dispose()
-  clue_state:clearActions()
-  clue_state:setClueSpot(nil)
-end
-
 return AbstractClueSolver

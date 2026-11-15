@@ -6,7 +6,7 @@
 local TileArea                   = require("cluetrainer/math/math").tilearea
 local Path                       = require "cluetrainer/model/path"
 local Navigator                  = require "cluetrainer/solving/common/Navigator"
-local AbstractClueSolver           = require "cluetrainer/solving/AbstractClueSolver"
+local AbstractClueSolver         = require "cluetrainer/solving/AbstractClueSolver"
 local ClueStateAction            = require "cluetrainer/solving/cluestateinterface/ClueStateAction"
 local RichText                   = require "cluetrainer/util/RichText"
 local TeleportAction             = require "cluetrainer/solving/cluestateinterface/TeleportAction"
@@ -27,11 +27,6 @@ local POLL_EVERY_TICKS           = 5
 -- Use a reading at the scan spot once the player stood there for a whole pulse or the panel changed meanwhile, so the
 -- pulse was taken there.
 local ARRIVAL_WAIT_TICKS         = scan_panel.PULSE_TICKS + POLL_EVERY_TICKS
--- End the clue one poll after the panel closed, to skip a one-tick gap.
-local PANEL_CLOSED_TIMEOUT_TICKS = POLL_EVERY_TICKS
--- End the clue once "Scanning..." shows without the area this long: destroyed. After "Start scanning" again the area
--- shows within a pulse, so the clue keeps going.
-local DESTROYED_TIMEOUT_TICKS    = 2 * scan_panel.PULSE_TICKS
 
 ---@alias ct.ScanStatus
 ---| "travel" # On the way to the scan spot
@@ -65,8 +60,6 @@ local DESTROYED_TIMEOUT_TICKS    = 2 * scan_panel.PULSE_TICKS
 ---@field private map ct.ScanMap
 ---@field private ground ct.ScanGround
 ---@field private preview_signature string?
----@field private gone_since integer? Logic tick since when the panel shows the clue is gone
----@field private panel_seen boolean
 ---@field private area_seen boolean
 ---@field private arrived_at integer?
 ---@field private text_at_arrival string?
@@ -124,7 +117,6 @@ function ScanClueSolver.new(clue, clue_state)
 
   self.tick = 0
   self.clue_state = clue_state
-  self.panel_seen = false
   self.area_seen = false
 
   self.teleport_action = TeleportAction.new(nil)
@@ -140,15 +132,22 @@ function ScanClueSolver.new(clue, clue_state)
 
   self.disposable_group:add({ dispose = function() self:disposeTree() end })
 
-  self.disposable_group:add(zyklib.game_events.native.Logic:subscribe(function(payload)
-    local tick, tile = payload.logicTick, tiles.player()
-    self.tick = tick
+  self.disposable_group:add(zyklib.game_events.native.ServerLogic:subscribe(function(payload)
+    local tile = tiles.player()
     self:updatePulseAction(tile)
+  end))
 
-    local capture, reading = self:ownPanel()
-    -- Every tick, so the tile is the one of the pulse.
-    if self.live:sample(tick, tile, capture) then self:refresh() end
-    if tick % POLL_EVERY_TICKS == 0 then self:poll(tick, capture, reading, tile) end
+  self.disposable_group:add(zyklib.game_events.native.Logic:subscribe(function(payload)
+    local tick = payload.logicTick
+    local tile = tiles.player()
+
+    self.tick = tick
+
+    if tick % POLL_EVERY_TICKS == 0 then
+      local capture, reading = self:ownPanel()
+      if self.live:sample(tick, tile, capture) then self:refresh() end
+      self:poll(tick, capture, reading, tile)
+    end
   end))
 
   -- On key down, to read Shift while it is still held.
@@ -303,7 +302,7 @@ function ScanClueSolver:refresh()
   if self.status ~= "manual" then
     local children = self.status == "triple" and self.status_children or self.node.children
     local child = scan_tree.onlyChildWith(children, self.remaining, self.candidates)
-    if child then return self:step(child, "spots left") end
+    if child then return self:step(child) end
   end
 
   self:updatePreview()
@@ -363,9 +362,8 @@ end
 --- Moves on to a child, remembering where the player came from for Shift+0.
 ---@private
 ---@param child ScanTree.Child
----@param how string How the pulse was told, for the "Last:" row
 ---@param press integer? The key press that also narrowed the spots, undone with Shift+0
-function ScanClueSolver:step(child, how, press)
+function ScanClueSolver:step(child, press)
   table.insert(self.history, { node = self.node, area = self.area, press = press })
   self:enter(child.value, scan_tree.scanArea(child.value, self.area))
 end
@@ -387,7 +385,7 @@ function ScanClueSolver:enterPulse(pulse)
   local at_scan_area = status == "wait" or status == "choose" or status == "manual" or status == "mismatch"
   local child = at_scan_area and scan_tree.childForPulse(self.node, pulse, self.different_level) or nil
 
-  if child ~= nil then return self:step(child, "Shift+" .. pulse, press) end
+  if child ~= nil then return self:step(child, press) end
 
   if press ~= nil then
     table.insert(self.history, { node = self.node, area = self.area, press = press, press_only = true })
@@ -423,25 +421,7 @@ function ScanClueSolver:ownPanel()
   return capture, reading
 end
 
---- Whether the clue is gone: the panel closed after it was open, or shows "Scanning..." without the area after the
---- area showed (destroyed). A hidden panel or one of another clue doesn't count, so opening a bank doesn't end it.
----@private
----@param tick integer
----@param reading ct.ScanPanel.Reading?
----@return boolean
-function ScanClueSolver:isGone(tick, reading)
-  local closed = self.panel_seen and not scan_panel.isOpen()
-  local destroyed = self.area_seen and reading ~= nil and reading.area == nil and reading.state == "scanning"
-  if not (closed or destroyed) then
-    self.gone_since = nil
-    return false
-  end
-
-  self.gone_since = self.gone_since or tick
-  return tick - self.gone_since >= (closed and PANEL_CLOSED_TIMEOUT_TICKS or DESTROYED_TIMEOUT_TICKS)
-end
-
---- Reads the panel and the player's tile: ends the clue when it is gone, updates the spot colours and the map, and
+--- Reads the panel and the player's tile: updates the spot colours and the map, and
 --- works out the status; at the scan area a pulse taken there moves the tree on.
 ---@private
 ---@param tick integer
@@ -449,7 +429,6 @@ end
 ---@param reading ct.ScanPanel.Reading?
 ---@param tile TileCoordinates?
 function ScanClueSolver:poll(tick, capture, reading, tile)
-  if self:isGone(tick, reading) then return self:finish(self.clue_state) end
   if self.tree == nil then
     local range = self.live:range() or self.clue.range
     self.ground:colourByPulse(tile, range)
@@ -460,7 +439,6 @@ function ScanClueSolver:poll(tick, capture, reading, tile)
   -- Hidden, or still the previous clue's panel: wait for this clue's.
   if capture == nil or reading == nil then return end
 
-  self.panel_seen = true
   if reading.area ~= nil then self.area_seen = true end
 
   if self.tree == nil then return end
@@ -518,7 +496,7 @@ function ScanClueSolver:decide(reading, tile)
   if #fits == 0 then
     self:setStatus("mismatch")
   elseif #fits == 1 then
-    self:step(fits[1], "auto")
+    self:step(fits[1])
   elseif array.forAll(fits, function(child) return child.key.pulse == 3 end) then
     self:setStatus("triple", fits)
     self:refresh()
@@ -549,25 +527,35 @@ function ScanClueSolver:buildActions()
   else
     candidate_text = #remaining .. " candidates"
   end
-  self.candidates_action:setText(candidate_text)
-
-  local actions = {}
-  local meerkat_warning
+  local meerkat_warning = false
   if self.tree ~= nil then
     local range = self.live:range()
     if range ~= nil and range + scan_panel.MEERKATS_RANGE == self.tree.assumed_range then
-      meerkat_warning = string.format("Route assumes meerkats")
+      meerkat_warning = true
     end
   end
+
+  local rebuild = not self.candidates_action.constructed or not self.pulse_action.constructed
+      or self.teleport_action.constructed ~= (self.method ~= nil)
+      or self.meerkat_warning_action.constructed ~= meerkat_warning
+  if self.candidates_action.content ~= candidate_text then
+    if not rebuild then
+      local width = self.clue_state.window.contentWidth
+      rebuild = ClueStateAction.rowHeight(self.candidates_action.content, width)
+          ~= ClueStateAction.rowHeight(candidate_text, width)
+    end
+    self.candidates_action:setText(candidate_text)
+  end
+
+  if not rebuild then return end
 
   self.clue_state:clearActions()
   if self.method then self.clue_state:addAction(self.teleport_action) end
   if meerkat_warning then
     self.meerkat_warning_action:setText(
-      RichText.coloured(meerkat_warning, string.format("%06X", scan_display.WARNING_COLOUR >> 8)))
+      RichText.coloured("Route assumes meerkats", string.format("%06X", scan_display.WARNING_COLOUR >> 8)))
     self.clue_state:addAction(self.meerkat_warning_action)
   end
-  for _, action in ipairs(actions) do self.clue_state:addAction(action) end
   self.clue_state:addAction(self.candidates_action)
   self.clue_state:addAction(self.pulse_action)
 end

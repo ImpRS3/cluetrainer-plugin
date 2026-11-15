@@ -1,18 +1,18 @@
-local clue_detector          = require "cluetrainer/solving/clue_detection"
-local CompassSolver          = require "cluetrainer/solving/CompassSolver"
-local EmoteClueSolver        = require "cluetrainer/solving/EmoteClueSolver"
-local SimpleClueSolver       = require "cluetrainer/solving/SimpleClueSolver"
-local ScanTreeSolver         = require "cluetrainer/solving/ScanClueSolver"
-local ClueStateInterface     = require "cluetrainer/solving/cluestateinterface/ClueStateInterface"
-local ClueStateAction        = require "cluetrainer/solving/cluestateinterface/ClueStateAction"
-local map                    = require "cluetrainer/map/map"
-local schema                 = require "cluetrainer/util/schema"
-local storage                = require "cluetrainer/util/storage"
-local clue_items             = require "cluetrainer/data/clue_items"
+local clue_detector         = require "cluetrainer/solving/clue_detection"
+local CompassSolver         = require "cluetrainer/solving/CompassSolver"
+local EmoteClueSolver       = require "cluetrainer/solving/EmoteClueSolver"
+local SimpleClueSolver      = require "cluetrainer/solving/SimpleClueSolver"
+local ScanTreeSolver        = require "cluetrainer/solving/ScanClueSolver"
+local ClueStateInterface    = require "cluetrainer/solving/cluestateinterface/ClueStateInterface"
+local ClueStateAction       = require "cluetrainer/solving/cluestateinterface/ClueStateAction"
+local map                   = require "cluetrainer/map/map"
+local schema                = require "cluetrainer/util/schema"
+local storage               = require "cluetrainer/util/storage"
+local clue_items            = require "cluetrainer/data/clue_items"
 
 -- The items of the master clues that are recognised by their text, which `clue_items` has no entry for. All clues of
 -- one type share the item.
-local MASTER_TYPE_ITEMS      = {
+local MASTER_TYPE_ITEMS     = {
   anagram = "TRAIL_CLUE_MASTER_ANAGRAM",
   emote = "TRAIL_CLUE_MASTER_EMOTE",
   skilling = "TRAIL_CLUE_MASTER_SKILL_RIDDLE",
@@ -26,8 +26,8 @@ local MASTER_TYPE_ITEMS      = {
 ---@field private active_items string[] The items that hold the active clue
 ---@field private active_item_seen boolean Whether an item of the active clue was in the backpack since it became active
 ---@field private map_hidden boolean? Whether the cross hid the map, which the next clue shows again
-local SolvingOrchestrator    = {}
-SolvingOrchestrator.__index  = SolvingOrchestrator
+local SolvingOrchestrator   = {}
+SolvingOrchestrator.__index = SolvingOrchestrator
 
 ---The items that hold a clue, such as `TRAIL_CLUE_ELITE_COMPASS` for every elite compass.
 ---@param clue Step
@@ -98,7 +98,7 @@ function SolvingOrchestrator:endIfClueItemGone()
   if count > 0 then
     self.active_item_seen = true
   elseif self.active_item_seen then
-    active:finish(self.clue_state)
+    self:reset()
   end
 end
 
@@ -119,14 +119,6 @@ function SolvingOrchestrator:reset()
 
   self.clue_state:setClueSpot(nil)
   self.clue_state:clearActions()
-
-  -- Hidden until the next clue, so the cross closes both windows. The main panel's toggles stay as they are.
-  self.clue_state:setVisible(false)
-  local game_map = map.current()
-  if game_map ~= nil and game_map:isVisible() then
-    game_map:setVisible(false)
-    self.map_hidden = true
-  end
 end
 
 ---@param clue Step?
