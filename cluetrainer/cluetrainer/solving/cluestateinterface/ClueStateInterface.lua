@@ -1,34 +1,34 @@
-local WindowGeometry       = require("cluetrainer/util/WindowGeometry")
-local prettyui_workarounds = require("cluetrainer/util/prettyui_workarounds")
-local item_icon            = require("cluetrainer/util/item_icon")
-local method_management    = require("cluetrainer/methods/method_management")
-local MethodSelectDialog   = require("cluetrainer/methods/MethodSelectDialog")
+local WindowGeometry          = require("cluetrainer/util/WindowGeometry")
+local prettyui_workarounds    = require("cluetrainer/util/prettyui_workarounds")
+local item_icon               = require("cluetrainer/util/item_icon")
+local method_management       = require("cluetrainer/methods/method_management")
+local MethodSelectDialog      = require("cluetrainer/methods/MethodSelectDialog")
 
-local geometry             = WindowGeometry.new("cluestate_interface_geometry")
+local geometry                = WindowGeometry.new("cluestate_interface_geometry")
 
-local WINDOW_WIDTH         = 260
+local WINDOW_WIDTH            = 260
 -- Mirrors the PrettyUI window chrome, which is not exposed.
-local PANEL_BORDER         = 8
-local ROW_HEIGHT           = 24
+local PANEL_BORDER            = 8
+local ROW_HEIGHT              = 24
 -- Native settings panel row colours
-local ROW_COLOURS          = { 0x24211EFF, 0x2E2825FF }
+local ROW_COLOURS             = { 0x24211EFF, 0x2E2825FF }
 
 -- Keeps the clue text and the inline reset button on the same row background.
-local HEADER_GROUP         = "clue_header"
-local RESET_BUTTON_SIZE    = 20
-local RESET_BUTTON_MARGIN  = 4
-local METHOD_BUTTON_WIDTH  = 90
-local METHOD_BUTTON_MARGIN = 4
+local HEADER_GROUP            = "clue_header"
+local RESET_BUTTON_SIZE       = 20
+local RESET_BUTTON_MARGIN     = 4
+local METHOD_BUTTON_WIDTH     = 90
+local METHOD_BUTTON_MARGIN    = 4
 local METHOD_SEPARATOR_MARGIN = 4
-local METHOD_SEPARATOR_X   = -(METHOD_BUTTON_WIDTH + METHOD_BUTTON_MARGIN + 6 + METHOD_SEPARATOR_MARGIN)
-local ACTIVE_RESET_X       = METHOD_SEPARATOR_X - RESET_BUTTON_SIZE - RESET_BUTTON_MARGIN
-local TIER_ICON_SIZE       = 20
-local TIER_ICON_X          = 4
-local TIER_TEXT_X          = TIER_ICON_X + TIER_ICON_SIZE + 4
+local METHOD_SEPARATOR_X      = -(METHOD_BUTTON_WIDTH + METHOD_BUTTON_MARGIN + 6 + METHOD_SEPARATOR_MARGIN)
+local ACTIVE_RESET_X          = METHOD_SEPARATOR_X - RESET_BUTTON_SIZE - RESET_BUTTON_MARGIN
+local TIER_ICON_SIZE          = 20
+local TIER_ICON_X             = 4
+local TIER_TEXT_X             = TIER_ICON_X + TIER_ICON_SIZE + 4
 
 ---Object ids of the items displayed as the sprite of each clue tier. Fill in the ids, tiers without an id show no icon.
 ---@type table<ClueTier, string?>
-local TIER_OBJECT_IDS      = {
+local TIER_OBJECT_IDS         = {
   easy         = "TRAIL17_TRAIL_START_EASY",
   medium       = "TRAIL17_TRAIL_START_MEDIUM",
   hard         = "TRAIL17_TRAIL_START_HARD",
@@ -37,7 +37,7 @@ local TIER_OBJECT_IDS      = {
   tetracompass = "ARCH_TETRACOMPASS_POWERED"
 }
 
-local PLACEHOLDER_ALPHA    = 0.5
+local PLACEHOLDER_ALPHA       = 0.5
 
 ---@class ct.ClueStateInterface: zyklib.disposable.IDisposable
 ---@field window PrettyUI.Panel
@@ -54,8 +54,8 @@ local PLACEHOLDER_ALPHA    = 0.5
 ---@field private method_dialog PrettyUI.Dialog?
 ---@field divider PrettyUI.Divider
 ---@field private reset_rows fun() Puts the flow layout back to right after the header, see `prettyui_workarounds`
-local ClueStateInterface   = {}
-ClueStateInterface.__index = ClueStateInterface
+local ClueStateInterface      = {}
+ClueStateInterface.__index    = ClueStateInterface
 
 ---@return ct.ClueStateInterface
 function ClueStateInterface.new()
@@ -67,22 +67,23 @@ function ClueStateInterface.new()
   ---@type zyklib.reactive.Event<ct.AugmentedMethod<Method>?, nil>
   self.method_selected = zyklib.reactive.Event.new()
 
-  self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_BOTTOM), geometry:apply({
-    title = "Clue Trainer",
-    x = 0,
-    y = 0,
-    width = WINDOW_WIDTH,
-    height = PANEL_BORDER,
-    resizable = false,
-    scrollable = false,
-    backgroundAlpha = 0.5,
-    destroyOnClose = false,
-    -- Called once a drag of the panel ends
-    onPositionChange = function(panel) geometry:save(panel) end,
-    rowBackgroundColours = ROW_COLOURS,
-    rowBackgroundEdgeToEdge = true,
-    layout = { startY = 0, padding = 0, rowGap = 0 },
-  }))
+  self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_BOTTOM),
+    geometry:apply({
+      title = "Clue Trainer",
+      x = 0,
+      y = 0,
+      width = WINDOW_WIDTH,
+      height = PANEL_BORDER,
+      resizable = false,
+      scrollable = false,
+      backgroundAlpha = 0.5,
+      destroyOnClose = false,
+      -- Called once a drag of the panel ends
+      onPositionChange = function(panel) geometry:save(panel) end,
+      rowBackgroundColours = ROW_COLOURS,
+      rowBackgroundEdgeToEdge = true,
+      layout = { startY = 0, padding = 0, rowGap = 0 },
+    }))
 
   self.actions = {}
 
@@ -182,7 +183,7 @@ end
 function ClueStateInterface:_updateMethodButton()
   local method = self.selected_method
   local active = self:_isMethodSelectorActive()
-  local label = not active and "-" or ((method and method.method.id:sub(1, 4) or "None"))
+  local label = not active and "-" or ((method and "Method" or "No Method"))
   local tooltip = not active and "Identify the spot first"
       or (method and ("Method: " .. method.method.name .. "<br>" .. method.method.id) or "No method selected")
   self.method_button.dock.content.content = label

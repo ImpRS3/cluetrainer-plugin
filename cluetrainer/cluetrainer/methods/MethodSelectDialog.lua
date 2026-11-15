@@ -69,7 +69,7 @@ end
 ---@return PrettyUI.RadioButton
 local function addNoneOption(window, group, selected, onPicked)
   window:AddText({
-    text = "None: Does not show teleports or movement.",
+    text = "No Method: Do not show teleports or movement.",
     marginTop = 6,
     marginBottom = 6,
     x = RADIO_INDENT,

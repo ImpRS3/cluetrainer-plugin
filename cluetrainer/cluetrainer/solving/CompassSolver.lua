@@ -5,11 +5,11 @@ local luaflet            = require("prettymap/luaflet")
 local map                = require("cluetrainer/map/map")
 local Bounds             = require("cluetrainer/util/Bounds")
 local Path               = require("cluetrainer/model/path")
-local AbstractClueSolver   = require("cluetrainer/solving/AbstractClueSolver")
+local AbstractClueSolver = require("cluetrainer/solving/AbstractClueSolver")
 local Navigator          = require("cluetrainer/solving/common/Navigator")
 local MapSectionControl  = require("cluetrainer/solving/common/MapSectionControl")
 local PathStepEntity     = require("cluetrainer/map/elements/PathStepElement")
-local path_shapes           = require("cluetrainer/solving/common/path_shapes")
+local path_shapes        = require("cluetrainer/solving/common/path_shapes")
 local ClueStateAction    = require("cluetrainer/solving/cluestateinterface/ClueStateAction")
 local TeleportAction     = require("cluetrainer/solving/cluestateinterface/TeleportAction")
 local tiles              = ctmath.tilecoordinates
@@ -96,7 +96,8 @@ local CompassSolver = setmetatable({}, { __index = AbstractClueSolver })
 CompassSolver.__index = CompassSolver
 
 CompassSolver.settings = {
-  beam_color = ctGlobal.persistence:profileVariable("compasses/beam_color", schema.colour({ default = 0x3388ff50, allow_transparency = true }), "int"),
+  beam_color = ctGlobal.persistence:profileVariable("compasses/beam_color",
+    schema.colour({ default = 0x3388ff50, allow_transparency = true }), "int"),
 }
 
 ---@param clue Compass
@@ -163,17 +164,18 @@ function CompassSolver:maybePushInformation(info)
   if not is_new then return end
 
   table.insert(self.triangulation_points,
-  { info = info, twig = drawArrowArc(self.clue, info, CompassSolver.settings.beam_color:get()):AddTo(self.map_layer) })
+    { info = info, twig = drawArrowArc(self.clue, info, CompassSolver.settings.beam_color:get()):AddTo(self.map_layer) })
 
   self:update()
 end
 
 function CompassSolver:update()
   local remaining_candidates = 0
-  local identified_solution = nil
+
+  local identified_solution_index = nil
 
   -- Update state of all candidates
-  for _, candidate in ipairs(self.candidates) do
+  for i, candidate in ipairs(self.candidates) do
     candidate.possible = zyklib.array.forAll(self.triangulation_points, function(tp)
       return compasslogic.isPossible({ tp.info }, candidate.spot)
     end)
@@ -182,17 +184,20 @@ function CompassSolver:update()
       remaining_candidates = remaining_candidates + 1
 
       if remaining_candidates == 1 then
-        identified_solution = candidate.spot
+        identified_solution_index = i
       else
-        identified_solution = nil
+        identified_solution_index = nil
       end
     end
 
     candidate.marker:setPossible(candidate.possible)
   end
 
+  local identified_solution = identified_solution_index and self.candidates[identified_solution_index].spot or nil
+
   self.actions.identify
-      :setText(identified_solution and ("Dig at " .. (identified_solution.x .. "|" .. identified_solution.y)) or
+      :setText(identified_solution and
+        ("Dig at spot " .. identified_solution_index .. " (" .. (identified_solution.x .. "|" .. identified_solution.y) .. ")") or
         (remaining_candidates .. " candidates"))
   -- :setState(identified_solution and "complete" or "incomplete")
 

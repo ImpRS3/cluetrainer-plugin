@@ -6,7 +6,7 @@ local geometry = require("cluetrainer/map/elements/geometry")
 local PathGraphics = {}
 
 local DASH_LENGTH = 0.25 -- tiles
-local HEAD_ANGLE = math.rad(30)
+local HEAD_ANGLE = math.rad(45)
 -- Corners of the polygon a circle is drawn as.
 local CIRCLE_SEGMENTS = 12
 
@@ -83,11 +83,11 @@ function PathGraphics.arrow(from, to, style)
     line(polygon, to.x - arm, to.y - arm, to.x + arm, to.y + arm, level, weight, style.colour)
     line(polygon, to.x - arm, to.y + arm, to.x + arm, to.y - arm, level, weight, style.colour)
   else
-    -- local angle = math.atan2(from.y - to.y, from.x - to.x)
-    -- for _, sign in ipairs({ -1, 1 }) do
-    --   local a = angle + sign * HEAD_ANGLE
-    --   line(polygon, to.x, to.y, to.x + math.cos(a) * arm, to.y + math.sin(a) * arm, level, weight, style.colour)
-    -- end
+    local angle = math.atan(from.y - to.y, from.x - to.x)
+    for _, sign in ipairs({ -1, 1 }) do
+      local a = angle + sign * HEAD_ANGLE
+      line(polygon, to.x, to.y, to.x + math.cos(a) * arm, to.y + math.sin(a) * arm, level, weight, style.colour)
+    end
   end
 
   return polygon

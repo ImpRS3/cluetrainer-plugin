@@ -2,7 +2,6 @@ local luaflet = require("prettymap/luaflet")
 local Path = require("cluetrainer/model/path")
 local TeleportSpot = require("cluetrainer/model/TeleportSpot")
 local geometry = require("cluetrainer/map/elements/geometry")
-local AreaGraphics = require("cluetrainer/map/elements/AreaGraphics")
 local PathGraphics = require("cluetrainer/map/elements/PathGraphics")
 local InteractionMarker = require("cluetrainer/map/elements/InteractionMarker")
 local ItemMarker = require("cluetrainer/map/elements/ItemMarker")
@@ -111,8 +110,14 @@ local function build_run(self, step)
   luaflet.twigs.PolygonTwig.new()
       :AddPolyline(points, WEIGHT, colours.rgba(RUN_COLOUR, 1)):AddTo(self)
 
-
-  self:Add(PathGraphics.cross(last, 0.1, colours.rgba(RUN_END_COLOUR, 1), 5))
+  local second_last = waypoints[#waypoints - 1]
+  if second_last then
+    self:Add(PathGraphics.arrow(PathGraphics.offset_towards(second_last, last, 0.2), last, {
+      colour = colours.rgba(RUN_COLOUR, 1), weight = WEIGHT, head = "tip", arm_length = 0.5,
+    }))
+  else
+    self:Add(PathGraphics.cross(last, 0.1, colours.rgba(RUN_END_COLOUR, 1), 5))
+  end
 end
 
 ---@param self ct.PathStepElement
