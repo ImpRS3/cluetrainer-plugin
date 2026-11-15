@@ -2629,7 +2629,7 @@ local pack = {
           waypoints = { { x = 2722, y = 5257, level = 1 }, { x = 2722, y = 5255, level = 1 } }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2722, y = 5255, level = 1 },
           target = { x = 2722, y = 5248, level = 3 },
           ticks = 1,
@@ -2659,7 +2659,7 @@ local pack = {
           to = { x = 2742, y = 5236, level = 3 }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2742, y = 5236, level = 3 },
           target = { x = 2742, y = 5239, level = 2 },
           ticks = 1,
@@ -2671,7 +2671,7 @@ local pack = {
           position = { x = 2743, y = 5240, level = 2 }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2742, y = 5239, level = 2 },
           target = { x = 2742, y = 5236, level = 3 },
           ticks = 0,
@@ -2710,7 +2710,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2719, y = 5241, level = 3 },
           target = { x = 2709, y = 5241, level = 3 },
           ticks = 6,
@@ -2723,7 +2723,7 @@ local pack = {
           to = { x = 2705, y = 5233, level = 3 }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2705, y = 5233, level = 3 },
           target = { x = 2705, y = 5223, level = 3 },
           ticks = 6,
@@ -2738,7 +2738,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2704, y = 5221, level = 3 },
           target = { x = 2704, y = 5211, level = 3 },
           ticks = 6,
@@ -2759,7 +2759,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2703, y = 5197, level = 3 },
           target = { x = 2703, y = 5194, level = 2 },
           ticks = 1,
@@ -2783,7 +2783,7 @@ local pack = {
           waypoints = { { x = 2702, y = 5192, level = 2 }, { x = 2702, y = 5194, level = 2 } }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2702, y = 5194, level = 2 },
           target = { x = 2702, y = 5197, level = 3 },
           ticks = 3,
@@ -2804,7 +2804,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2704, y = 5211, level = 3 },
           target = { x = 2704, y = 5221, level = 3 },
           ticks = 6,
@@ -2819,7 +2819,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2705, y = 5223, level = 3 },
           target = { x = 2705, y = 5233, level = 3 },
           ticks = 6,
@@ -2832,7 +2832,7 @@ local pack = {
           to = { x = 2709, y = 5241, level = 3 }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2709, y = 5241, level = 3 },
           target = { x = 2719, y = 5241, level = 3 },
           ticks = 6,
@@ -2873,7 +2873,7 @@ local pack = {
           to = { x = 2742, y = 5236, level = 3 }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2742, y = 5236, level = 3 },
           target = { x = 2742, y = 5239, level = 2 },
           ticks = 1,
@@ -3043,7 +3043,7 @@ local pack = {
           waypoints = { { x = 3096, y = 3156, level = 3 }, { x = 3096, y = 3152, level = 3 } }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 3096, y = 3152, level = 3 },
           target = { x = 4297, y = 6040, level = 1 },
           ticks = 3,
@@ -3068,7 +3068,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 4307, y = 6031, level = 1 },
           target = { x = 4310, y = 6031, level = 1 },
           ticks = 100,
@@ -3079,7 +3079,7 @@ local pack = {
           waypoints = { { x = 4310, y = 6031, level = 1 }, { x = 4311, y = 6031, level = 1 } }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 4311, y = 6031, level = 1 },
           target = { x = 4319, y = 6031, level = 1 },
           ticks = 4,
@@ -3101,7 +3101,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 4332, y = 6033, level = 1 },
           target = { x = 4332, y = 6041, level = 1 },
           ticks = 4,
@@ -8332,7 +8332,7 @@ local pack = {
       pre_path = {  },
       main_path = {
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = nil,
           target = { x = 4654, y = 5427, level = 1 },
           ticks = 5
@@ -11301,7 +11301,7 @@ local pack = {
                                 waypoints = { { x = 1359, y = 5635, level = 0 }, { x = 1360, y = 5636, level = 0 } }
                               },
                               {
-                                type = "cheat",
+                                type = "freeform",
                                 assumed_start = { x = 1359, y = 5635, level = 0 },
                                 target = { x = 1379, y = 5639, level = 0 },
                                 ticks = 2,
@@ -11321,7 +11321,7 @@ local pack = {
                                 waypoints = { { x = 1359, y = 5635, level = 0 }, { x = 1360, y = 5636, level = 0 } }
                               },
                               {
-                                type = "cheat",
+                                type = "freeform",
                                 assumed_start = { x = 1359, y = 5635, level = 0 },
                                 target = { x = 1379, y = 5639, level = 0 },
                                 ticks = 2,
@@ -11456,7 +11456,7 @@ local pack = {
                           waypoints = { { x = 1359, y = 5635, level = 0 }, { x = 1360, y = 5636, level = 0 } }
                         },
                         {
-                          type = "cheat",
+                          type = "freeform",
                           assumed_start = { x = 1360, y = 5636, level = 0 },
                           target = { x = 1379, y = 5639, level = 0 },
                           ticks = 2,

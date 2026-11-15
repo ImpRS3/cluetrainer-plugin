@@ -7303,7 +7303,7 @@ local pack = {
           is_far_dive = true
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 3284, y = 10147, level = 0 },
           target = { x = 3565, y = 3314, level = 0 },
           ticks = 0,
@@ -11230,7 +11230,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2925, y = 2951, level = 0 },
           target = { x = 2925, y = 2947, level = 0 },
           ticks = 4,
@@ -16009,7 +16009,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2552, y = 3035, level = 0 },
           target = { x = 2563, y = 3024, level = 0 },
           ticks = 8,
@@ -17002,7 +17002,7 @@ local pack = {
           position = { x = 3392, y = 3935.5, level = 0 }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 3388, y = 3930, level = 0 },
           target = { x = 3388, y = 3930, level = 0 },
           ticks = 50,
@@ -21490,7 +21490,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2835, y = 3591, level = 0 },
           target = { x = 2835, y = 3593, level = 0 },
           ticks = 3,
@@ -24862,7 +24862,7 @@ local pack = {
           is_far_dive = true
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 3284, y = 10147, level = 0 },
           target = { x = 3542, y = 3313, level = 0 },
           ticks = 0,
@@ -28250,7 +28250,7 @@ local pack = {
           waypoints = { { x = 2923, y = 2951, level = 0 }, { x = 2925, y = 2951, level = 0 } }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 2925, y = 2951, level = 0 },
           target = { x = 2925, y = 2947, level = 0 },
           ticks = 4,

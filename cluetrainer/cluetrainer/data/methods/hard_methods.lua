@@ -5919,14 +5919,14 @@ local pack = {
           to = { x = 3049, y = 3236, level = 0 }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 3047, y = 3236, level = 0 },
           target = { x = 3047, y = 3236, level = 0 },
           ticks = 1,
           orientation = 0
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 3047, y = 3236, level = 0 },
           target = { x = 2834, y = 3335, level = 0 },
           ticks = 3,

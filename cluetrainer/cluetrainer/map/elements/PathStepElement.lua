@@ -181,8 +181,8 @@ local function build_transport(self, step)
 end
 
 ---@param self ct.PathStepElement
----@param step Path.Step.Cheat
-local function build_cheat(self, step)
+---@param step Path.Step.Freeform
+local function build_freeform(self, step)
   local start = step.assumed_start
   local colour = colours.rgba(TRANSPORT_COLOUR, 1)
 
@@ -230,7 +230,7 @@ local BUILDERS = {
   redclick = build_redclick,
   powerburst = build_powerburst,
   transport = build_transport,
-  cheat = build_cheat,
+  freeform = build_freeform,
   cosmetic = build_cosmetic,
 }
 

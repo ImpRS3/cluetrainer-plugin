@@ -66,8 +66,8 @@ local tiles = require("cluetrainer/math/math").tilecoordinates
 ---@field where TileCoordinates
 
 
----@class Path.Step.Cheat : Path.Step.Base
----@field type "cheat"
+---@class Path.Step.Freeform : Path.Step.Base
+---@field type "freeform"
 ---@field assumed_start TileCoordinates?
 ---@field target TileCoordinates
 ---@field orientation? Direction
@@ -92,7 +92,7 @@ local tiles = require("cluetrainer/math/math").tilecoordinates
 ---| Path.Step.Transport
 ---| Path.Step.RedClick
 ---| Path.Step.Powerburst
----| Path.Step.Cheat
+---| Path.Step.Freeform
 ---| Path.Step.Cosmetic
 
 ---@alias Path.Raw Path.Step[]
@@ -139,7 +139,7 @@ function Path.endsUpArea(path)
       return TileArea.tile(step.to)
     elseif step.type == "run" then
       return TileArea.tile(step.waypoints[#step.waypoints])
-    elseif step.type == "cheat" then
+    elseif step.type == "freeform" then
       return TileArea.tile(step.target)
     elseif step.type == "teleport" then
       return resolve_teleport(step.id)
@@ -165,7 +165,7 @@ function Path.firstTeleport(path)
 end
 
 -- Steps that move the player over the ground, drawn as a line to follow.
-local MOVEMENT_STEPS = { run = true, ability = true, redclick = true, transport = true, cheat = true }
+local MOVEMENT_STEPS = { run = true, ability = true, redclick = true, transport = true, freeform = true }
 
 --- Whether the path moves the player over the ground besides teleporting, i.e. has a line to follow.
 ---@param path Path.Raw
@@ -197,7 +197,7 @@ function Path.endsUp(path)
   for i = #path, 1, -1 do
     local step = path[i]
 
-    if step.type == "cheat" then
+    if step.type == "freeform" then
       return step.target
     elseif step.type == "ability" then
       return step.to
@@ -239,7 +239,7 @@ local FAR_TRANSPORT_THRESHOLD = 16
 function Path.isFar(step, context, threshold)
   threshold = threshold or FAR_TRANSPORT_THRESHOLD
 
-  if step.type == "transport" or step.type == "cheat" then
+  if step.type == "transport" or step.type == "freeform" then
     local new_pos = Path.endsUp({ step })
     local start = step.assumed_start
     if not new_pos or not start then return false end
@@ -255,7 +255,7 @@ function Path.isFar(step, context, threshold)
   return false
 end
 
---- Splits a path into sections. A far transport or cheat arrives in the section it ends and is repeated
+--- Splits a path into sections. A far transport or freeform arrives in the section it ends and is repeated
 --- as an arrival-only step at the start of the next one.
 ---@param path Path.Raw
 ---@param far_threshold number?
@@ -282,7 +282,7 @@ function Path.split_into_sections(path, far_threshold)
       else
         division(i)
       end
-    elseif (step.type == "transport" or step.type == "cheat") and pos then
+    elseif (step.type == "transport" or step.type == "freeform") and pos then
       if (new_pos and new_pos.level ~= pos.level) or Path.isFar(step) then
         division(i + 1)
       end
@@ -320,7 +320,7 @@ function Path.split_into_sections(path, far_threshold)
   return sections
 end
 
---- The box around the tiles a path visits. A far transport or cheat (see `Path.isFar`) adds only one of its ends, as
+--- The box around the tiles a path visits. A far transport or freeform (see `Path.isFar`) adds only one of its ends, as
 --- in Alt1: its destination when it is the first step, otherwise its start. That keeps a section ending in a far
 --- transport framed on where the player departs; the next section starts with its arrival.
 ---@param path Path.Raw
@@ -343,7 +343,7 @@ function Path.bounds(path)
       bounds:addTile(step.position)
       bounds:addArea(step.area)
       if step.arrow then bounds:addTile(step.arrow[1], step.arrow[2]) end
-    elseif type == "transport" or type == "cheat" then
+    elseif type == "transport" or type == "freeform" then
       local destination = Path.endsUp({ step })
       if step.is_arrival_only or not step.assumed_start then
         bounds:addTile(destination)

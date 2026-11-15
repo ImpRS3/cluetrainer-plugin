@@ -11,7 +11,7 @@ local zyklib          = require "zyklib"
 -- outside it. Being somewhere when it becomes a candidate is not an arrival, so a route that comes back past an earlier
 -- spot or ends near where the player stands doesn't fade early. Progress only moves forward, so steps already walked stay
 -- done when the route turns back past them.
----Tiles around a drawn end point (run, ability, cheat) that still count: players stop next to a waypoint, not on it.
+---Tiles around a drawn end point (run, ability, freeform) that still count: players stop next to a waypoint, not on it.
 local MARGIN          = 2
 ---Teleport and transport ends are areas the game puts the player in, so they count as they are.
 local EXACT           = { teleport = true, transport = true }

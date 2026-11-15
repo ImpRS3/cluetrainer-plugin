@@ -44,7 +44,7 @@ local COLORS         = {
     powerburst = api_util.color_rgba(255, 215, 0, 255),
     redclick = api_util.color_rgba(255, 50, 50, 255),
     ability = api_util.color_rgba(255, 255, 255, 255),
-    cheat = api_util.color_rgba(0, 255, 200, 255),
+    freeform = api_util.color_rgba(0, 255, 200, 255),
     cosmetic = api_util.color_rgba(0, 0, 0, 0),
     orientation = api_util.color_rgba(0, 0, 0, 0),
 }
@@ -585,7 +585,7 @@ function path_shapes.buildStepMesh(step, context)
             )
         end
     elseif step.type == "orientation"
-        or step.type == "cheat"
+        or step.type == "freeform"
         or step.type == "cosmetic"
     then
         -- No geometry.

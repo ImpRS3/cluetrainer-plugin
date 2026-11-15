@@ -6887,7 +6887,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 3525, y = 1481, level = 0 },
           target = { x = 3526, y = 1481, level = 0 },
           ticks = 1,
@@ -6902,7 +6902,7 @@ local pack = {
           }
         },
         {
-          type = "cheat",
+          type = "freeform",
           assumed_start = { x = 3531, y = 1482, level = 0 },
           target = { x = 3531, y = 1482, level = 1 },
           ticks = 2,
