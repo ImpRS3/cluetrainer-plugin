@@ -376,7 +376,6 @@ function ActivePuzzle:drawProgress()
   local progress = executing and (completed / solution_length) or 0
   local length = math.min(2 * solution_length, 250)
   drawProgressBar(canvas, cx, cy, length, progress, 2, 1)
-  drawCenteredText(canvas, cx + length / 2 + 20, cy, tostring(solution_length), SMALL_TEXT_CONFIG)
 
   -- Always draw elapsed time
   drawCenteredText(canvas, cx - (length / 2 + 25), cy,
@@ -568,7 +567,7 @@ function ActivePuzzle:logictick()
 
   -- We may have switched to the "solving" state, which we handle immediately
   if s.state == "solving" then
-    local SOLVER_TICK_BUDGET = 512 -- How many states to process per tick
+    local SOLVER_TICK_BUDGET = 512 -- How many states to process per tick. TODO: Make this configurable based on performance or user settings
 
     local done = s.solver:tick(SOLVER_TICK_BUDGET)
 
