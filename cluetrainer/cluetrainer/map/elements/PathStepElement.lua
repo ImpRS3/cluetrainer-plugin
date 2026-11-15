@@ -80,9 +80,9 @@ end
 local function build_ability(self, step)
   local colour = ABILITY_COLOURS[step.ability] or DEFAULT_ABILITY_COLOUR
 
-  if step.target_area then
-    self:Add(AreaGraphics.area(step.target_area, { colour = colour, weight = 1, opacity = 0.3, fillOpacity = 0.2 }))
-  end
+  -- if step.target_area then
+  --   self:Add(AreaGraphics.area(step.target_area, { colour = colour, weight = 1, opacity = 0.3, fillOpacity = 0.2 }))
+  -- end
 
   local head = (step.is_far_dive or step.ability ~= "dive") and { head = "tip", arm_length = 0.5 }
       or { head = "x", arm_length = 0.25 }
@@ -98,10 +98,10 @@ local function build_run(self, step)
   local waypoints = step.waypoints
   local last = waypoints[#waypoints]
 
-  if step.target_area then
-    self:Add(AreaGraphics.area(step.target_area,
-      { colour = RUN_AREA_COLOUR, weight = 1, opacity = 0.6, fillOpacity = 0.2 }))
-  end
+  -- if step.target_area then
+  --   self:Add(AreaGraphics.area(step.target_area,
+  --     { colour = RUN_AREA_COLOUR, weight = 1, opacity = 0.6, fillOpacity = 0.2 }))
+  -- end
 
   local points = {}
   for i, waypoint in ipairs(waypoints) do
@@ -204,11 +204,11 @@ local function build_cosmetic(self, step)
   -- Without hover support on groups, hidden-until-hovered extras stay hidden.
   if step.hide_when_not_hovered then return end
 
-  if step.area then
-    self:Add(AreaGraphics.area(step.area, {
-      colour = parse_colour(step.area_color, COSMETIC_AREA_COLOUR), weight = 1, opacity = 0.3, fillOpacity = 0.2,
-    }))
-  end
+  -- if step.area then
+  --   self:Add(AreaGraphics.area(step.area, {
+  --     colour = parse_colour(step.area_color, COSMETIC_AREA_COLOUR), weight = 1, opacity = 0.3, fillOpacity = 0.2,
+  --   }))
+  -- end
 
   if step.arrow then
     self:Add(PathGraphics.arrow(step.arrow[1], step.arrow[2], {
