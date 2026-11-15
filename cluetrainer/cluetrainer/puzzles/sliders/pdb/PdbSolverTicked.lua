@@ -35,6 +35,7 @@ local move_translation_identity = {
 ---@field private tick_handler zyklib.disposable.IDisposable?
 ---@field private started boolean
 ---@field private stack StackItem[]
+---@field private seen table<ct.sliders.pdb.RegionGraph.Node, table<string, integer>> per node: board -> fewest moves pushed with
 local PdbSolverTicked           = {}
 PdbSolverTicked.__index         = PdbSolverTicked
 
@@ -52,6 +53,7 @@ function PdbSolverTicked.new(start_state, chain, use_multitile)
   self.finished = false
   self.started = false
   self.stack = {}
+  self.seen = {}
 
   return self
 end
@@ -64,11 +66,14 @@ function PdbSolverTicked:start()
 
   local state = SliderState.fromPermutation(self.start_state)
 
-  -- Initialize stack with all entry points
+  -- Initialize stack with all entry points. A mirrored entry gets the mirrored board, as step does for mirrored
+  -- children, because its table is indexed in mirrored coordinates.
   for _, entry in ipairs(self.chain:getEntryPoints()) do
+    if entry.reflected then SliderState.reflect(state) end
     self:pushState(entry, state, {},
       entry.table:getDistanceByIndex(entry.table.indexing:stateIndex(state))
     )
+    if entry.reflected then SliderState.reflect(state) end
   end
 end
 
@@ -94,6 +99,7 @@ end
 --- Abandons the search. `best_solution` keeps what was found so far.
 function PdbSolverTicked:cancel()
   self.stack = {}
+  self.seen = {}
   self.state = nil
   self.finished = true
 end
@@ -115,6 +121,19 @@ function PdbSolverTicked:pushState(region, state, moves, known_distance)
   if #self.stack > 512 then
     return -- Discard state when there are too many open ends
   end
+
+  -- Skip a board this node was already given with no more moves: that search covers this one, so it saves budget for
+  -- other branches. Keyed per node, because the same board has a different distance in another table. The key is the
+  -- 25 tile ids as one string (one byte each), which is the cheapest table key; the blank position follows from it.
+  local seen = self.seen[region]
+  if seen == nil then
+    seen = {}
+    self.seen[region] = seen
+  end
+  local board = string.char(table.unpack(state, 1, 25))
+  local reached_with = seen[board]
+  if reached_with ~= nil and reached_with <= #moves then return end
+  seen[board] = #moves
 
   self.stack[#self.stack + 1] = {
     region = region,
@@ -147,6 +166,7 @@ function PdbSolverTicked:step()
   local current_region = frame.region
   local indexing = current_region.table.indexing
   local distance_table = current_region.table
+  local modulus = distance_table.modulus
 
   local move_translation = current_region.reflected
       and SliderState.move_translation_reflect
@@ -160,8 +180,8 @@ function PdbSolverTicked:step()
   while true do
     number_of_iterations = number_of_iterations + 1
 
-    if self.best_solution and #move_list > #self.best_solution then
-      -- Stop exploring this branch as it cannot yield a better solution
+    if self.best_solution and #move_list >= #self.best_solution then
+      -- Stop exploring this branch: it is already as long as the best solution, so it cannot yield a shorter one
       break
     end
 
@@ -180,7 +200,7 @@ function PdbSolverTicked:step()
 
       local child_distance = distance_table:getDistanceByIndex(child_index)
 
-      if (child_distance + 1) % 4 == known_distance then
+      if (child_distance + 1) % modulus == known_distance then -- one move closer to the goal of this table
         if next_move == nil then
           next_move = move
           next_distance = child_distance
@@ -258,7 +278,10 @@ function PdbSolverTicked:tick(budget)
     budget = budget - used_budged
   end
 
-  if #self.stack == 0 then self.finished = true end
+  if #self.stack == 0 then
+    self.finished = true
+    self.seen = {} -- frees the boards of this search
+  end
 
   return self.finished
 end
