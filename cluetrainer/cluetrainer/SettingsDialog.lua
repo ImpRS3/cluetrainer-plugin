@@ -462,22 +462,26 @@ local function buildTeleports(page, rebuild)
 
   for _, colour in ipairs(customization.POTA_COLOURS) do
     addTeleportToggle(page, capitalise(colour) .. " passage of the abyss", "",
-      function(settings) return customization.pota(settings, colour) ~= nil end,
+      function(settings)
+        local pota = customization.pota(settings, colour)
+        return pota ~= nil and pota.active
+      end,
       function(settings, owned)
-        if owned and not customization.pota(settings, colour) then
-          settings.potas[#settings.potas + 1] = { colour = colour, slots = customization.emptySlots() }
-        elseif not owned then
-          for i, pota in ipairs(settings.potas) do
-            if pota.colour == colour then
-              table.remove(settings.potas, i)
-              break
-            end
+        local existing_entry = customization.pota(settings, colour)
+
+        if owned then
+          if existing_entry then
+            existing_entry.active = true
+          else
+            settings.potas[#settings.potas + 1] = { colour = colour, active = true, slots = customization.emptySlots() }
           end
+        elseif existing_entry then
+          existing_entry.active = false
         end
       end, rebuild)
 
-    local pota = customization.pota(current, colour)
-    if pota then
+    local pota = customization.pota(TeleportCustomization.get(), colour)
+    if pota and pota.active then
       local group = nextGroup()
       for i = 1, customization.POTA_SLOTS do
         -- Entry ids are positions: 1 is empty, 2.. are the jewellery.

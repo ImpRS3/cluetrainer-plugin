@@ -28,6 +28,7 @@ M.FAVOURITE_COUNT = 10
 
 ---@class ct.PotaSetup
 ---@field colour ct.PotaColour
+---@field active boolean
 ---@field slots (ct.PotaSlot|false)[] Always POTA_SLOTS entries, false for an empty slot
 
 ---@class ct.TeleportCustomization
@@ -85,7 +86,7 @@ function M.normalize(value)
       local slots = M.emptySlots()
       local stored = type(pota.slots) == "table" and pota.slots or {}
       for i = 1, M.POTA_SLOTS do slots[i] = normalizeSlot(stored[i]) end
-      potas[#potas + 1] = { colour = pota.colour, slots = slots }
+      potas[#potas + 1] = { colour = pota.colour, active = pota.active ~= false, slots = slots }
     end
   end
 
@@ -114,7 +115,7 @@ end
 function M.potaSlotFor(settings, group_id)
   for _, colour in ipairs(M.POTA_COLOURS) do
     local pota = M.pota(settings, colour)
-    if pota then
+    if pota and pota.active then
       for i, slot in ipairs(pota.slots) do
         if slot and slot.group == group_id then return { colour = colour, slot = i } end
       end
