@@ -10,7 +10,7 @@ local lockbox_solver    = {}
 lockbox_solver.settings = {
   enabled = ctGlobal.persistence:profileVariable("lockboxes/enabled", schema.bool({ default = true })),
   optimization_coefficient = ctGlobal.persistence:profileVariable("lockboxes/optimization_coefficient",
-    schema.int({ min = 10, max = 50, default = 13 })),
+    schema.int({ min = 10, max = 50, default = 13 }), "int"),
 }
 
 ---@return ct.lockbox.LockboxState

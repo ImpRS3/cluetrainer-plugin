@@ -1,16 +1,10 @@
 -- SliderSolver.lua
--- This is an AI assited translation of the coroutine based PDBSolver.
--- It's less efficient, but at least is doesn't crash the client
 local zyklib          = require("zyklib")
 local schema          = require("cluetrainer/util/schema")
-local storage         = require("cluetrainer/util/storage")
 local SliderState     = require("cluetrainer/puzzles/sliders/SliderState")
 local Move            = require("cluetrainer/puzzles/sliders/Move")
--- The pattern database solver is disabled for now. To re-enable it, restore these requires, the `graph` below and the PdbSolver call in ActivePuzzle.new.
 local RegionGraph     = require("cluetrainer/puzzles/sliders/pdb/RegionGraph")
-local util            = require("cluetrainer/util")
 local PdbSolverTicked = require("cluetrainer/puzzles/sliders/pdb/PdbSolverTicked")
-
 
 
 ---@class ct.sliders.SliderSolver
@@ -22,15 +16,15 @@ slider_solver.settings = {
   mode = ctGlobal.persistence:profileVariable("sliders/mode",
     schema.choices({ choices = { "keyboard", "mouse", "hybrid" }, default = "mouse" })),
   prevent_overlap = ctGlobal.persistence:profileVariable("sliders/prevent_overlap", schema.bool({ default = true })),
-  lookahead = ctGlobal.persistence:profileVariable("sliders/lookahead", schema.int({ min = 2, max = 10, default = 5 })),
+  lookahead = ctGlobal.persistence:profileVariable("sliders/lookahead", schema.int({ min = 2, max = 10, default = 5 }), "int"),
   show_recovery_moves = ctGlobal.persistence:profileVariable("sliders/show_recovery_moves",
     schema.bool({ default = true })),
   color_mainline = ctGlobal.persistence:profileVariable("sliders/color_mainline",
-    schema.colour({ default = 0x00FF00FF, allow_transparency = false })),
+    schema.colour({ default = 0x00FF00FF, allow_transparency = false }), "int"),
   color_recovery = ctGlobal.persistence:profileVariable("sliders/color_recovery",
-    schema.colour({ default = 0xff6600FF, allow_transparency = false })),
+    schema.colour({ default = 0xff6600FF, allow_transparency = false }), "int"),
   solve_time = ctGlobal.persistence:profileVariable("sliders/solve_time",
-    schema.int({ min = 100, max = 5000, default = 200 })),
+    schema.int({ min = 100, max = 5000, default = 200 }), "int"),
   estimate_slider_speed = ctGlobal.persistence:profileVariable("sliders/estimate_slider_speed",
     schema.bool({ default = true })),
 }

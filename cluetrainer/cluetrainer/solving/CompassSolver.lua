@@ -96,7 +96,7 @@ local CompassSolver = setmetatable({}, { __index = AbstractClueSolver })
 CompassSolver.__index = CompassSolver
 
 CompassSolver.settings = {
-  beam_color = ctGlobal.persistence:profileVariable("compasses/beam_color", schema.colour({ default = 0x3388ff50, allow_transparency = true })),
+  beam_color = ctGlobal.persistence:profileVariable("compasses/beam_color", schema.colour({ default = 0x3388ff50, allow_transparency = true }), "int"),
 }
 
 ---@param clue Compass

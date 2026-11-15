@@ -1,9 +1,32 @@
-local storage = {}
-
 local zyklib = require "zyklib"
+
+---@alias ct.util.PersistentVariableType "int" | "generic"
+
+---@param key string
+---@param type ct.util.PersistentVariableType
+---@return any?
+local function persistent_get(key, type)
+  if type == "int" then
+    return PersistentDB:GetInt(key)
+  else
+    return PersistentDB:Get(key)
+  end
+end
+
+---@param key string
+---@param type ct.util.PersistentVariableType
+---@param value any
+local function persistent_set(key, type, value)
+  if type == "int" then
+    PersistentDB:SetInt(key, value)
+  else
+    PersistentDB:Set(key, value)
+  end
+end
 
 ---@class ct.util.PersistentVariable<T>
 ---@field parent ct.util.StorageManager
+---@field type ct.util.PersistentVariableType
 ---@field name string
 ---@field schema fun(value: any): T
 ---@field _observable zyklib.reactive.Observable<T>?
@@ -15,8 +38,9 @@ PersistentVariable.__index = PersistentVariable
 ---@param name string
 ---@param schema fun(value: any): T
 ---@param is_profile_specific boolean
+---@param type ct.util.PersistentVariableType?
 ---@return ct.util.PersistentVariable
-function PersistentVariable.new(parent, name, schema, is_profile_specific)
+function PersistentVariable.new(parent, name, schema, is_profile_specific, type)
   local self
 
   --- @class ct.util.PersistentVariable<T>
@@ -26,13 +50,12 @@ function PersistentVariable.new(parent, name, schema, is_profile_specific)
     schema = schema,
     is_profile_specific = is_profile_specific,
     _observable = nil,
+    type = type or "generic",
     value = nil
   }, PersistentVariable)
 
   if is_profile_specific then
-    parent.active_profile:observable():subscribe(function(current_profile)
-      self:reload()
-    end, true)
+    parent.active_profile:observable():subscribe(function() self:reload() end)
   end
 
   self:reload()
@@ -58,7 +81,9 @@ end
 
 ---Reloads the value of this persistent variable from the database
 function PersistentVariable:reload()
-  self.value = self.schema(PersistentDB:Get(self:fullKey()))
+  local loaded_value = persistent_get(self:fullKey(), self.type)
+
+  self.value = self.schema(loaded_value)
 
   if self._observable ~= nil then
     self._observable:set(self.value)
@@ -77,12 +102,13 @@ end
 ---@param value T
 ---@return nil
 function PersistentVariable:set(value)
-  PersistentDB:Set(self:fullKey(), value)
+  persistent_set(self:fullKey(), self.type, value)
   self.value = value
 
   if self._observable ~= nil then
     self._observable:set(self.value)
   end
+  self:reload()
 end
 
 ---@class ct.util.StorageManager
@@ -112,18 +138,20 @@ end
 ---@generic T
 ---@param name string
 ---@param schema ct.util.schema.Schema<T>
+---@param type ct.util.PersistentVariableType?
 ---@return ct.util.PersistentVariable<T>
-function StorageManager:profileVariable(name, schema)
-  return PersistentVariable.new(self, name, schema, true)
+function StorageManager:profileVariable(name, schema, type)
+  return PersistentVariable.new(self, name, schema, true, type or "generic")
 end
 
 ---Create a global variable that is not tied to any specific profile
 ---@generic T
 ---@param name string
 ---@param schema ct.util.schema.Schema<T>
+---@param type ct.util.PersistentVariableType?
 ---@return ct.util.PersistentVariable<T>
-function StorageManager:globalVariable(name, schema)
-  return PersistentVariable.new(self, name, schema, false)
+function StorageManager:globalVariable(name, schema, type)
+  return PersistentVariable.new(self, name, schema, false, type or "generic")
 end
 
 return StorageManager

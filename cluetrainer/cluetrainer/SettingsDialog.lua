@@ -145,7 +145,7 @@ end
 
 --- Adds a colour picker with a label and an explanation.
 ---@param setting zyklib.reactive.Observable<integer>
-local function addColour(page, title, description, setting)
+local function addColour(page, title, description, setting, showAlpha)
   local group = nextGroup()
 
   local title_text = addSettingTitle(page, title, group, COLOUR_RESERVED)
@@ -153,6 +153,7 @@ local function addColour(page, title, description, setting)
   page:AddColourPicker({
     value = setting:get(),
     windowTitle = title,
+    showAlpha = showAlpha,
     inline = true,
     offsetY = centeredOffset(title_text, text, COLOUR_HEIGHT),
     rowBackgroundGroup = group,
@@ -182,7 +183,6 @@ local function addKeybind(page, title, description, setting)
     offsetY = centeredOffset(title_text, text, KEYBIND_HEIGHT),
     rowBackgroundGroup = group,
     onChange = function(_, value)
-      log(value)
       setting:set(value)
     end,
   })
@@ -378,7 +378,7 @@ local function buildCompasses(page)
   addPageTitle(page, "Compasses")
 
   addColour(page, "Beam colour", "Colour used to draw compass beams.",
-    settings.compasses.beam_color)
+    settings.compasses.beam_color, true)
 end
 
 local COMBO_HEIGHT = 30
