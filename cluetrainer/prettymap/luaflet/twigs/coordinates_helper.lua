@@ -1,5 +1,4 @@
----@class prettymap.luaflet.Coord The only coordinate type of luaflet.
---- Integers are tile centres; fractional values lie between them (x.5 is the edge between two tiles).
+---@class prettymap.luaflet.Coord The only coordinate type of luaflet. Integers are tile centres; fractional values lie between them (x.5 is the edge between two tiles)
 ---@field x number East-west position in tiles.
 ---@field y number North-south position in tiles.
 ---@field level integer? Floor (0-3). Without one, the coordinate is valid on every floor.

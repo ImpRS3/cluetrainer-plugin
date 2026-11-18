@@ -9,6 +9,8 @@ MapView.__index = MapView
 
 local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 }
 local MIN_ZOOM_INDEX = 3
+local MAX_ZOOM_INDEX = 9
+
 local DEFAULT_ZOOM_INDEX = 6
 local MAPSQUARE_SIZE = 64
 local DRAG_THRESHOLD = 5
@@ -55,7 +57,7 @@ function MapView.new(parent, options)
         viewportHeight = Helpers.PositiveInteger(options.height or 460, "height"),
         zoomIndex = DEFAULT_ZOOM_INDEX,
         zoomLevelMinimum = MIN_ZOOM_INDEX,
-        maximumZoomIndex = #ZOOM_LEVELS,
+        maximumZoomIndex = MAX_ZOOM_INDEX,
         plane = clamp(Helpers.Integer(options.plane or 0, "plane"), 0, 3),
         onError = optionalCallback(options, "onError"),
         onZoomChanged = optionalCallback(options, "onZoomChanged"),
@@ -212,7 +214,12 @@ function MapView:_ApplyZoom(index, centreNormalX, centreNormalY, scaleOverride)
         self.viewportWidth / WorldMap.width,
         self.viewportHeight / WorldMap.height
     )
-    index = clamp(index, MIN_ZOOM_INDEX, #ZOOM_LEVELS)
+    index = clamp(index, MIN_ZOOM_INDEX, MAX_ZOOM_INDEX)
+    if scaleOverride then
+        scaleOverride = clamp(scaleOverride,
+            fitScale * ZOOM_LEVELS[MIN_ZOOM_INDEX],
+            fitScale * ZOOM_LEVELS[MAX_ZOOM_INDEX])
+    end
     if self.mapWidth and self.zoomIndex == index and self.scaleOverride == scaleOverride then
         return false
     end
@@ -427,9 +434,13 @@ function MapView:ZoomToMapSquare(coordinate)
         self.viewportWidth / WorldMap.width,
         self.viewportHeight / WorldMap.height
     )
+    targetScale = clamp(targetScale,
+        fitScale * ZOOM_LEVELS[MIN_ZOOM_INDEX],
+        fitScale * ZOOM_LEVELS[MAX_ZOOM_INDEX])
     local targetMultiplier = targetScale / fitScale
-    local nearestIndex, nearestDistance = 1, math.huge
-    for index, multiplier in ipairs(ZOOM_LEVELS) do
+    local nearestIndex, nearestDistance = MIN_ZOOM_INDEX, math.huge
+    for index = MIN_ZOOM_INDEX, MAX_ZOOM_INDEX do
+        local multiplier = ZOOM_LEVELS[index]
         local distance = math.abs(multiplier - targetMultiplier)
         if distance < nearestDistance then
             nearestIndex, nearestDistance = index, distance

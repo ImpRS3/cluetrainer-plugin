@@ -12,8 +12,7 @@ local storage = require("cluetrainer/util/storage")
 local PANEL_BORDER = 8
 
 -- Mirrors prettymap's internal zoom steps and world size, which are not exposed.
-local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
-local MIN_ZOOM_INDEX = 4
+local ZOOM_LEVELS = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 }
 local WORLD_WIDTH = 12800
 local WORLD_HEIGHT = 12800
 -- A panel over the top of the map never takes more than this part of the view when fitting bounds.
@@ -165,14 +164,15 @@ function GameMap:fitBounds(bounds, top_inset)
     map.viewportWidth / WORLD_WIDTH,
     map.viewportHeight / WORLD_HEIGHT
   )
+  local _, minZoomIndex, maxZoomIndex = map:GetZoom()
   targetScale = math.max(
-    fitScale * ZOOM_LEVELS[MIN_ZOOM_INDEX],
-    math.min(fitScale * ZOOM_LEVELS[#ZOOM_LEVELS], targetScale)
+    fitScale * ZOOM_LEVELS[minZoomIndex],
+    math.min(fitScale * ZOOM_LEVELS[maxZoomIndex], targetScale)
   )
   local targetMultiplier = targetScale / fitScale
 
-  local nearestIndex, nearestDistance = MIN_ZOOM_INDEX, math.huge
-  for index = MIN_ZOOM_INDEX, #ZOOM_LEVELS do
+  local nearestIndex, nearestDistance = minZoomIndex, math.huge
+  for index = minZoomIndex, maxZoomIndex do
     local distance = math.abs(ZOOM_LEVELS[index] - targetMultiplier)
     if distance < nearestDistance then
       nearestIndex, nearestDistance = index, distance
