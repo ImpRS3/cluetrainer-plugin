@@ -104,8 +104,15 @@ CompassSolver.settings = {
 ---@param state_window ct.ClueStateInterface
 ---@return ct.ActiveCompassSolver
 function CompassSolver.new(clue, state_window)
-  ---@class ct.ActiveCompassSolver
-  local self = setmetatable(AbstractClueSolver.new(clue), CompassSolver)
+  return AbstractClueSolver.create(CompassSolver, clue, state_window)
+end
+
+---Builds the solver; see `AbstractClueSolver.create`, which disposes it should this fail.
+---@private
+---@param clue Compass
+---@param state_window ct.ClueStateInterface
+function CompassSolver:init(clue, state_window)
+  ---@cast self ct.ActiveCompassSolver
   self.clue_state = state_window
   self.map_layer = luaflet.twigs.Twig.new():AddTo(map.get().map.twigs)
   self.disposable_group:add(zyklib.disposable.wrap(function()
@@ -150,8 +157,6 @@ function CompassSolver.new(clue, state_window)
 
   state_window:setClueSpot({ clue = clue })
   self:update()
-
-  return self
 end
 
 ---@param info ct.Compass.TriangulationPoint
