@@ -71,6 +71,7 @@ return {
         list {
           item "Fixed a bug that caused clue detection to stop working after a search clue.",
           item "Added improved error resiliency for several types of failures.",
+          item "Optimized map performance in several to reduce issues with the plugin not enabling properly."
         },
       },
     }, {
