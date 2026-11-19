@@ -3,4 +3,4 @@
 	url = https://github.com/FriendlyDevelopment/runescape-api-stubs.git
 [submodule "dependencies/zyklib"]
 	path = dependencies/zyklib
-	url = https://codeberg.org/ZyklopMarco/runescape-api-zyklib.git
+	url = git@github.com:Zyklop-RS-Plugins/zyklib.git
