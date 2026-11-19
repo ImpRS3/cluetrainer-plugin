@@ -165,8 +165,7 @@ function SolvingOrchestrator:setClue(clue)
     self.active_solver = solver
   else
     self.active_solver = nil
-    -- Through "%s", as log takes a format string and the error may contain a "%".
-    log("%s", "ERROR [Clue Trainer] could not start solving clue " .. tostring(clue and clue.id) .. ": " .. tostring(solver))
+    log("ERROR [Clue Trainer] could not start solving clue " .. tostring(clue and clue.id) .. ": " .. tostring(solver))
     self.clue_state:clearActions()
     self.clue_state:addAction(ClueStateAction.Text.new(
       "Clue Trainer hit an error on this clue.<br>Please report the developer console output."))

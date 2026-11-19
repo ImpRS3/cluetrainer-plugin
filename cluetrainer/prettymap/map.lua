@@ -18,15 +18,18 @@ local NULL_TILE_COLOUR = 0x000000FF
 local clamp = Helpers.Clamp
 local rounded = Helpers.Rounded
 
+-- `relayout`: tiles and elements are placed again. Tiles keep their loaded images instead of reloading every tile image
+-- on each zoom, which is the slowest part of a zoom. The tile renderer still swaps them when the tile level changes or
+-- a tile leaves the view.
 local INVALIDATION = {
     viewport_position = { tiles = true, notify = true },
     scale = {
-        destroyTiles = true,
+        relayout = true,
         tiles = true,
         notify = true,
     },
     plane = {
-        destroyTiles = true,
+        relayout = true,
         tiles = true,
         notify = true,
     },
@@ -186,12 +189,10 @@ end
 
 function MapView:_RefreshView(category)
     local work = assert(INVALIDATION[category], "unknown view invalidation: " .. tostring(category))
-    if work.destroyTiles then
-        TileRenderer._DestroyTiles(self)
-        self.tileLevel = nil
-    end
+    -- Forces the tiles to be placed again, also where the visible tile range is unchanged.
+    if work.relayout then self.tileViewportKey = nil end
     if work.tiles then TileRenderer._RefreshTiles(self) end
-    if work.destroyTiles then self.twigs:Refresh() end
+    if work.relayout then self.twigs:Refresh() end
     if work.notify then self.twigs:_NotifyViewChanged() end
 end
 
