@@ -564,16 +564,12 @@ function path_shapes.buildStepMesh(step, context)
         elseif step.target.kind == "static" then
             local LOC_SCALE = 1.05
 
-            log("static redclick")
-
             return LocHighlight.new({
                     name = step.target.name,
                     coordGrid = tilecoordinates.toCoordGrid(step.where),
                     range = 2
                 },
                 function(loc)
-                    log("Creating loc")
-
                     return {
                         shapeData = cube,
                         translation = loc.aabb:GetCorner(BoxCornerType.LEFT_BOTTOM_NEAR) -

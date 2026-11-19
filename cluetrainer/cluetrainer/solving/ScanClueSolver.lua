@@ -112,7 +112,14 @@ ScanClueSolver.settings = {
 ---@param clue_state ct.ClueStateInterface
 ---@return ct.ActiveScanClue
 function ScanClueSolver.new(clue, clue_state)
-  local self = setmetatable(AbstractClueSolver.new(clue), ScanClueSolver)
+  return AbstractClueSolver.create(ScanClueSolver, clue, clue_state)
+end
+
+---Builds the solver; see `AbstractClueSolver.create`, which disposes it should this fail.
+---@private
+---@param clue Scan
+---@param clue_state ct.ClueStateInterface
+function ScanClueSolver:init(clue, clue_state)
   ---@cast self ct.ActiveScanClue
 
   self.tick = 0
@@ -167,8 +174,6 @@ function ScanClueSolver.new(clue, clue_state)
     self:setMethod(selected and selected.method)
   end))
   clue_state:setClueSpot({ clue = clue })
-
-  return self
 end
 
 ---Releases everything that belongs to the current scan tree.

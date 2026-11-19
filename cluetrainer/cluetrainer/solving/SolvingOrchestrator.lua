@@ -145,7 +145,9 @@ function SolvingOrchestrator:setClue(clue)
     end
   end
 
-  self.active_solver = (function()
+  -- Protected, so a solver that fails to start shows a message instead of an empty panel. The solver has already
+  -- disposed what it built (see AbstractClueSolver.create).
+  local ok, solver = pcall(function()
     if clue == nil then
       return nil
     elseif clue.type == "compass" then
@@ -157,7 +159,18 @@ function SolvingOrchestrator:setClue(clue)
     else
       return SimpleClueSolver.new(clue, self.clue_state)
     end
-  end)()
+  end)
+
+  if ok then
+    self.active_solver = solver
+  else
+    self.active_solver = nil
+    -- Through "%s", as log takes a format string and the error may contain a "%".
+    log("%s", "ERROR [Clue Trainer] could not start solving clue " .. tostring(clue and clue.id) .. ": " .. tostring(solver))
+    self.clue_state:clearActions()
+    self.clue_state:addAction(ClueStateAction.Text.new(
+      "Clue Trainer hit an error on this clue.<br>Please report the developer console output."))
+  end
 
   self.active_items = clue and itemsOf(clue) or {}
   self.active_item_seen = false

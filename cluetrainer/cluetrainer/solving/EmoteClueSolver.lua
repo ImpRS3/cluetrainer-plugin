@@ -65,8 +65,15 @@ EmoteClueSolver.__index = EmoteClueSolver
 ---@param clue_state ct.ClueStateInterface
 ---@return ct.ActiveEmoteClue
 function EmoteClueSolver.new(clue, clue_state)
-  ---@type ct.ActiveEmoteClue
-  local self = setmetatable(AbstractClueSolver.new(clue), EmoteClueSolver)
+  return AbstractClueSolver.create(EmoteClueSolver, clue, clue_state)
+end
+
+---Builds the solver; see `AbstractClueSolver.create`, which disposes it should this fail.
+---@private
+---@param clue Emote
+---@param clue_state ct.ClueStateInterface
+function EmoteClueSolver:init(clue, clue_state)
+  ---@cast self ct.ActiveEmoteClue
   self.clue_state = clue_state
 
   self.disposable_group:add(create_step_highlights(clue):activate())
@@ -85,8 +92,6 @@ function EmoteClueSolver.new(clue, clue_state)
     bounds:addArea(clue.area)
     map.get():fitBounds(bounds)
   end
-
-  return self
 end
 
 function EmoteClueSolver:buildActions()

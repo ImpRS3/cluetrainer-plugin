@@ -16,6 +16,36 @@ function AbstractClueSolver.new(clue)
   }, AbstractClueSolver)
 end
 
+-- The client may not offer the debug library. Without it, an error message still names the line it was raised on.
+local debug_library = rawget(_G, "debug")
+
+---@param err any
+---@return string
+local function withTraceback(err)
+  if debug_library and debug_library.traceback then return debug_library.traceback(tostring(err), 2) end
+  return tostring(err)
+end
+
+---Builds a solver of the given class: the base object, then `Class.init(self, clue, ...)`. Should `init` fail, the
+---solver is disposed before the error is raised again, so a solver that fails halfway leaves no highlights, map
+---elements or event handlers behind. Every solver's `dispose` copes with the parts `init` did not get to.
+---@param Class { init: fun(self: any, clue: Step, ...) } The solver class
+---@param clue Step
+---@param ... any Passed on to `init`
+---@return any
+function AbstractClueSolver.create(Class, clue, ...)
+  local self = setmetatable(AbstractClueSolver.new(clue), Class)
+
+  local ok, err = xpcall(Class.init, withTraceback, self, clue, ...)
+  if not ok then
+    -- Protected as well, so a failing cleanup doesn't replace the original error.
+    pcall(self.dispose, self)
+    error(err, 0)
+  end
+
+  return self
+end
+
 --- Runs once, so a solver that stopped on its own can be disposed again when the next clue replaces it.
 function AbstractClueSolver:dispose()
   if self.ended then return end

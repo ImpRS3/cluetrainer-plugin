@@ -20,6 +20,8 @@ local ClueStateAction       = require "cluetrainer/solving/cluestateinterface/Cl
 local TeleportAction        = require "cluetrainer/solving/cluestateinterface/TeleportAction"
 local clues                 = require "cluetrainer/model/clues"
 
+-- Size of a loc highlight relative to the loc itself (the value before 0163504 dropped it).
+local LOC_SCALE             = 2
 
 
 ---@param step Step
@@ -210,8 +212,15 @@ SimpleClueSolver.__index = SimpleClueSolver
 ---@param clue_state ct.ClueStateInterface
 ---@return ct.ActiveSimpleClue
 function SimpleClueSolver.new(clue, clue_state)
-  ---@class ct.ActiveSimpleClue
-  local self = setmetatable(AbstractClueSolver.new(clue), SimpleClueSolver)
+  return AbstractClueSolver.create(SimpleClueSolver, clue, clue_state)
+end
+
+---Builds the solver; see `AbstractClueSolver.create`, which disposes it should this fail.
+---@private
+---@param clue Step
+---@param clue_state ct.ClueStateInterface
+function SimpleClueSolver:init(clue, clue_state)
+  ---@cast self ct.ActiveSimpleClue
   self.clue_state = clue_state
 
   self.disposable_group:add(create_step_highlights(clue):activate())
@@ -229,8 +238,6 @@ function SimpleClueSolver.new(clue, clue_state)
     --- Only fit to the basic clue target bounds if there is no method available initially
     map.get():fitBounds(bounds)
   end
-
-  return self
 end
 
 function SimpleClueSolver:buildActions()
