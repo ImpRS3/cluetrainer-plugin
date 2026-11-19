@@ -20,9 +20,8 @@ local ClueStateAction       = require "cluetrainer/solving/cluestateinterface/Cl
 local TeleportAction        = require "cluetrainer/solving/cluestateinterface/TeleportAction"
 local clues                 = require "cluetrainer/model/clues"
 
--- Size of a loc highlight relative to the loc itself (the value before 0163504 dropped it).
+-- Size of a loc highlight relative to the loc itself
 local LOC_SCALE             = 2
-
 
 ---@param step Step
 local function create_step_highlights(step)

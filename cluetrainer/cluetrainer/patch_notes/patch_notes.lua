@@ -54,31 +54,44 @@ return {
   -- Keep this in sync with the plugin manifest versions.
   current_version = "83",
   messages = {
-    first_start = "Thanks for installing and Welcome to Clue Trainer! Clue Trainer is continuously iterated on, and this window will show whenever the plugin has received an update to keep you informed about the latest changes and improvements.",
-    update = "Clue Trainer has been updated. If you enjoy Clue Trainer, please consider supporting continuous development at Ko-fi.com/zyklopmarco.<br><br>You can also join the Clue Chasers discord to leave praise and criticism, report issues, request features, get support or just come by and say hi in the #clue-trainer channel.",
-    manual = "If you enjoy Clue Trainer, please consider supporting continuous development at Ko-fi.com/zyklopmarco.<br><br>You can also join the Clue Chasers discord to leave praise and criticism, report issues, request features, get support or just come by and say hi in the #clue-trainer channel.",
+    first_start =
+    "Thanks for installing and Welcome to Clue Trainer! Clue Trainer is continuously iterated on, and this window will show whenever the plugin has received an update to keep you informed about the latest changes and improvements.",
+    update =
+    "Clue Trainer has been updated. If you enjoy Clue Trainer, please consider supporting continuous development at Ko-fi.com/zyklopmarco.<br><br>You can also join the Clue Chasers discord to leave praise and criticism, report issues, request features, get support or just come by and say hi in the #clue-trainer channel.",
+    manual =
+    "If you enjoy Clue Trainer, please consider supporting continuous development at Ko-fi.com/zyklopmarco.<br><br>You can also join the Clue Chasers discord to leave praise and criticism, report issues, request features, get support or just come by and say hi in the #clue-trainer channel.",
   },
   ---@type ct.PatchNotes.Patch[]
   patches = {
     {
-      version = "83",
-      date = "2026-11-19",
-      name = "Clue Trainer (Plugin API)",
+      version = "84",
+      date = "2026-11-20",
+      name = "Bugfixes",
       content = {
-        header "About this version",
-        paragraph "This is the initial release of Clue Trainer for the official RuneScape Client plugin API. You may wonder why this version is labelled as version 83. Clue Trainer has a long history as a plugin for the Alt 1 toolkit, and this version is a direct continuation of that lineage, equipped with all the learnings from more than three years of development.",
-        paragraph "You will notice that this version is still rough around the edges. The will be visual issues, glitches, suboptimal UX, and missing features. Just like with the previous 82 versions for the Alt 1 toolkit, we will continue to iterate on Clue Trainer to make it better than ever. Please feel free to report any feedback you have in the Clue Chasers discord, the Mod.io page, or directly on the plugin's issue tracker at Codeberg.",
-        header "Patch Notes",
         list {
-          item "Ported Clue Trainer to the official RuneScape Client plugin API.",
-          item "Added in-game highlighting of dig spots, npcs, containers, and emote areas.",
-          item "Added in-game rendering of paths as threedimensional shapes.",
-          item "Automated detection of fairy ring favourites.",
-          item "Eliminated issues with misreads of interface puzzles and compass angles.",
-          item "Clue Trainer now supports any interface scaling.",
-          item "Compass clues now automatically detect your position and the compass angle, no manual input required."
+          item "Fixed a bug that caused clue detection to stop working after a search clue.",
+          item "Added improved error resiliency for several types of failures.",
         },
       },
+    }, {
+    version = "83",
+    date = "2026-11-19",
+    name = "Clue Trainer (Plugin API)",
+    content = {
+      header "About this version",
+      paragraph "This is the initial release of Clue Trainer for the official RuneScape Client plugin API. You may wonder why this version is labelled as version 83. Clue Trainer has a long history as a plugin for the Alt 1 toolkit, and this version is a direct continuation of that lineage, equipped with all the learnings from more than three years of development.",
+      paragraph "You will notice that this version is still rough around the edges. The will be visual issues, glitches, suboptimal UX, and missing features. Just like with the previous 82 versions for the Alt 1 toolkit, we will continue to iterate on Clue Trainer to make it better than ever. Please feel free to report any feedback you have in the Clue Chasers discord, the Mod.io page, or directly on the plugin's issue tracker at Codeberg.",
+      header "Patch Notes",
+      list {
+        item "Ported Clue Trainer to the official RuneScape Client plugin API.",
+        item "Added in-game highlighting of dig spots, npcs, containers, and emote areas.",
+        item "Added in-game rendering of paths as threedimensional shapes.",
+        item "Automated detection of fairy ring favourites.",
+        item "Eliminated issues with misreads of interface puzzles and compass angles.",
+        item "Clue Trainer now supports any interface scaling.",
+        item "Compass clues now automatically detect your position and the compass angle, no manual input required."
+      },
     },
+  },
   },
 }
