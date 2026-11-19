@@ -5,6 +5,7 @@ local WindowGeometry = require("cluetrainer/util/WindowGeometry")
 local prettyui_workarounds = require("cluetrainer/util/prettyui_workarounds")
 
 local luaflet = require("prettymap/luaflet")
+local WorldMap = require("prettymap/world_map")
 local schema = require("cluetrainer/util/schema")
 local storage = require("cluetrainer/util/storage")
 
@@ -179,7 +180,16 @@ function GameMap:fitBounds(bounds, top_inset)
     end
   end
 
-  map:_ApplyZoom(nearestIndex, nil, nil, targetScale)
+  local normalX, normalY = WorldMap.ToPixel(cx, cz, 1, 1, nil, level)
+  if not normalX then
+    -- Outside the world: zoom only, as there is nothing to centre on.
+    map:_ApplyZoom(nearestIndex, nil, nil, targetScale)
+    return false
+  end
+
+  -- Zooms around the centre in one go: zooming and then centring places everything twice and loads the tiles around
+  -- the old centre for nothing. Only an unchanged zoom needs centring.
+  if map:_ApplyZoom(nearestIndex, normalX, normalY, targetScale) then return true end
   return map:CentreOn(centre)
 end
 

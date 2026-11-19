@@ -120,7 +120,12 @@ function TileRenderer:_RefreshTiles()
         local requiredSet = tileSet == self.tileSprites and required or requiredIcons
         requiredSet[key] = true
         local tile = tileSet[key]
-        if not tile then
+        if tile then
+            -- Kept through a zoom or plane change: placed again for the current scale.
+            local x, y, width, height = TileRenderer._TileBounds(self, level, atlasX, atlasZ)
+            tile.sprite:SetPos(x, y)
+            tile.sprite:SetSize(width, height)
+        else
             local filename
             if type(availableResource) == "string" then
                 filename = availableResource
