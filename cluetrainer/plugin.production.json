@@ -1,7 +1,7 @@
 {
   "name": "Clue Trainer",
   "contactEmailAddress": "zyklop@cluetrainer.app",
-  "version": "83",
+  "version": "84",
   "requiredPermissions": [],
   "optionalPermissions": [],
   "hasSettingsIcon" : true,
