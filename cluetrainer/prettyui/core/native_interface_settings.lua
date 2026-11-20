@@ -1,11 +1,14 @@
 -- The player's own interface settings that PrettyUI components may follow: the
 -- "lock interface" customisation toggle and the interface transparency slider.
+-- Classic UI ignores the native lock (patch 1.3.2 temporary solution).
 local NativeInterfaceSettings = {}
 local EVENT_ID = "prettyui_native_interface_settings"
 local LOCK_VARBIT = "TOPLEVEL_V2_CUSTOMIZATION_LOCK"
 -- The lock is a one-bit varbit: the server transmits only its base variable, so that is
 -- the id watched, while the lock itself is read from the varbit.
 local LOCK_BASE_VAR = "TOPLEVEL_V2_SKINS_VARP"
+local CLASSIC_VARBIT = "TOPLEVEL_V2_LEGACY_INTERFACE"
+local CLASSIC_BASE_VAR = "TOPLEVEL_V2_GENERAL_VARP"
 local TRANSPARENCY_VAR = "TOPLEVEL_V2_TRANSPARENCY"
 local TRANSPARENCY_MAX = 255
 
@@ -23,9 +26,15 @@ local function readID(name)
     return nil
 end
 
+local function isClassicUI()
+    return readValue(CLASSIC_VARBIT) == 1
+end
+
+local classicVarID = readID(CLASSIC_BASE_VAR)
+
 local lock = {
     varID = readID(LOCK_BASE_VAR),
-    read = function() return readValue(LOCK_VARBIT) ~= 0 end,
+    read = function() return readValue(LOCK_VARBIT) ~= 0 and not isClassicUI() end,
     watchers = {},
 }
 
@@ -35,11 +44,6 @@ local transparency = {
     read = function() return readValue(TRANSPARENCY_VAR) / TRANSPARENCY_MAX end,
     watchers = {},
 }
-
--- Settings by the id of the variable the server transmits for them.
-local settingsByVarID = {}
-if lock.varID then settingsByVarID[lock.varID] = lock end
-if transparency.varID then settingsByVarID[transparency.varID] = transparency end
 
 local function anyWatched()
     return next(lock.watchers) ~= nil or next(transparency.watchers) ~= nil
@@ -54,8 +58,9 @@ local function refresh(setting)
 end
 
 local function onVarTransmit(event)
-    local setting = settingsByVarID[event.var.id]
-    if setting then refresh(setting) end
+    local varID = event.var.id
+    if varID == lock.varID or varID == classicVarID then refresh(lock) end
+    if varID == transparency.varID then refresh(transparency) end
 end
 
 -- Calls back with the setting's value at once and again whenever it changes, until

@@ -52,7 +52,7 @@ end
 -- Use header "Section", paragraph "Text", and list { item "Change" } in content.
 return {
   -- Keep this in sync with the plugin manifest versions.
-  current_version = "84",
+  current_version = "85",
   messages = {
     first_start =
     "Thanks for installing and Welcome to Clue Trainer! Clue Trainer is continuously iterated on, and this window will show whenever the plugin has received an update to keep you informed about the latest changes and improvements.",
@@ -62,24 +62,34 @@ return {
     "Join the Clue Chasers discord to leave praise and criticism, report issues, request features, get support or just come by and say hi in the #clue-trainer channel. If you enjoy Clue Trainer, consider supporting continuous development at Ko-fi.com/zyklopmarco.",
   },
   ---@type ct.PatchNotes.Patch[]
-  patches = {
-    {
-      version = "84",
-      date = "2026-11-20",
-      name = "Bugfixes",
-      content = {
-        list {
-          item "Fixed a bug that caused clue detection to stop working after a search clue.",
-          item "Added improved error resiliency for several types of internal failures.",
-          item "Optimized map performance in several ways to reduce issues with the plugin not enabling properly.",
-          item "Worked around an API bug that caused colour settings to not be properly persisted and fall back to black.",
-          item "Fixed detection of a master anagram clue.",
-          item "Fixed an incorrectly placed scan decision point for the Lumbridge caves scan.",
-          item "Fixed that Clue Trainer interfaces could hide behind native UI components.",
-          item "Fixed starting position of the clue info panel so that it no longer hides in the top-left corner.",
-        },
+  patches = { {
+    version = "85",
+    date = "2026-11-20",
+    name = "PrettyUI Update",
+    content = {
+      list {
+        item "Updated to PrettyUI 1.3.2. This allows moving the interface even in classic mode. Hold Alt to drag the interfaces.",
       },
-    }, {
+      header "Why does Clue Trainer not depend on PrettyUI?",
+      paragraph "Clue Trainer uses PrettyUI, but ships its own copy to work around intolerable performance issues that arose when dynamically depending on PrettyUI. In a future update, these issues may be resolved, allowing for the standard dependency approach."
+    },
+  }, {
+    version = "84",
+    date = "2026-11-20",
+    name = "Bugfixes",
+    content = {
+      list {
+        item "Fixed a bug that caused clue detection to stop working after a search clue.",
+        item "Added improved error resiliency for several types of internal failures.",
+        item "Optimized map performance in several ways to reduce issues with the plugin not enabling properly.",
+        item "Worked around an API bug that caused colour settings to not be properly persisted and fall back to black.",
+        item "Fixed detection of a master anagram clue.",
+        item "Fixed an incorrectly placed scan decision point for the Lumbridge caves scan.",
+        item "Fixed that Clue Trainer interfaces could hide behind native UI components.",
+        item "Fixed starting position of the clue info panel so that it no longer hides in the top-left corner.",
+      },
+    },
+  }, {
     version = "83",
     date = "2026-11-19",
     name = "Clue Trainer (Plugin API)",
