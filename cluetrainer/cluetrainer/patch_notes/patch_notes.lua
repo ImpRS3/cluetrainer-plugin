@@ -52,7 +52,7 @@ end
 -- Use header "Section", paragraph "Text", and list { item "Change" } in content.
 return {
   -- Keep this in sync with the plugin manifest versions.
-  current_version = "83",
+  current_version = "84",
   messages = {
     first_start =
     "Thanks for installing and Welcome to Clue Trainer! Clue Trainer is continuously iterated on, and this window will show whenever the plugin has received an update to keep you informed about the latest changes and improvements.",
@@ -75,6 +75,8 @@ return {
           item "Worked around an API bug that caused colour settings to not be properly persisted and fall back to black.",
           item "Fixed detection of a master anagram clue.",
           item "Fixed an incorrectly placed scan decision point for the Lumbridge caves scan.",
+          item "Fixed that Clue Trainer interfaces could hide behind native UI components.",
+          item "Fixed starting position of the clue info panel so that it no longer hides in the top-left corner.",
         },
       },
     }, {

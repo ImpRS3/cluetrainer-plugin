@@ -43,7 +43,7 @@ function GameMap.new()
   local self = setmetatable({}, GameMap)
   self.visible = true
 
-  self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_BOTTOM), geometry:apply({
+  self.window = prettyui.Panel.new(ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_TOP), geometry:apply({
     x = -210,
     y = -150,
     xAnchor = 0.5,

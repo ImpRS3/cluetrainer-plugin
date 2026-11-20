@@ -33,11 +33,11 @@ local function main()
   require("cluetrainer/puzzles/knot/KnotSolver").init()
   require("cluetrainer/puzzles/sliders/SliderSolver").init()
 
-  SolvingOrchestrator.setActive(SolvingOrchestrator.settings.enabled:get())
   if Map.settings.visible:get() then
     -- In a callback of its own: built here, it pushed startup over the client's limit of 1000 ms per callback.
     zyklib.game_events.native.Logic:once(function()
       Map.get():setVisible(true)
+      SolvingOrchestrator.setActive(SolvingOrchestrator.settings.enabled:get())
     end)
   end
 

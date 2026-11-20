@@ -619,7 +619,7 @@ function SettingsDialog.open()
     return
   end
 
-  local parent = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_BOTTOM)
+  local parent = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_TOP)
 
   local WINDOW_WIDTH = 588 -- Mimics the width of the builtin settings window
   local WINDOW_HEIGHT = 460
