@@ -456,8 +456,8 @@ end
 -- Size of an object highlight relative to the object itself.
 local LOC_HIGHLIGHT_SCALE = 1.05
 
----The usual highlight of an object to interact with, such as a container to search or a hidey-hole: a cyan box
----around each object that matches the filter. Not activated yet.
+---The usual highlight of an object to interact with, such as a container to search or a hidey-hole: a box around
+---each object that matches the filter, cyan unless `colour_of` gives another colour. Not activated yet.
 ---@param filter LocListFilterSettings
 ---@param colour_of (fun(loc: LocEntity): ColourRGBA)? The colour of each object's box. Default is cyan.
 ---@return zyklib.LocHighlight
