@@ -4693,7 +4693,7 @@ local clues = {
     type = "anagram",
     tier = "master",
     text = {
-      "This anagram reveals who to speak to next: He often preaches of QUIT THY BRINE RAT ROLL"
+      "This anagram reveals who to speak to next: QUIT THY BRINE RAT ROLL"
     },
     solution = {
       type = "talkto",
