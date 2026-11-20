@@ -57,9 +57,9 @@ return {
     first_start =
     "Thanks for installing and Welcome to Clue Trainer! Clue Trainer is continuously iterated on, and this window will show whenever the plugin has received an update to keep you informed about the latest changes and improvements.",
     update =
-    "Clue Trainer has been updated. If you enjoy Clue Trainer, please consider supporting continuous development at Ko-fi.com/zyklopmarco.<br><br>You can also join the Clue Chasers discord to leave praise and criticism, report issues, request features, get support or just come by and say hi in the #clue-trainer channel.",
+    "Clue Trainer has been updated. Join the Clue Chasers discord to leave praise and criticism, report issues, request features, get support or just come by and say hi in the #clue-trainer channel. If you enjoy Clue Trainer, consider supporting continuous development at Ko-fi.com/zyklopmarco.",
     manual =
-    "If you enjoy Clue Trainer, please consider supporting continuous development at Ko-fi.com/zyklopmarco.<br><br>You can also join the Clue Chasers discord to leave praise and criticism, report issues, request features, get support or just come by and say hi in the #clue-trainer channel.",
+    "Join the Clue Chasers discord to leave praise and criticism, report issues, request features, get support or just come by and say hi in the #clue-trainer channel. If you enjoy Clue Trainer, consider supporting continuous development at Ko-fi.com/zyklopmarco.",
   },
   ---@type ct.PatchNotes.Patch[]
   patches = {
