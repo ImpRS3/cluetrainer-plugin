@@ -11135,7 +11135,7 @@ local pack = {
                         }
                       },
                       region = {
-                        area = { origin = { x = 3220, y = 9550, level = 2 }, size = { x = 3, y = 3 } },
+                        area = { origin = { x = 3220, y = 9550, level = 0 }, size = { x = 3, y = 3 } },
                         name = ""
                       }
                     }

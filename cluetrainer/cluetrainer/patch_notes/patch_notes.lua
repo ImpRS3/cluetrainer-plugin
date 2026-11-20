@@ -74,6 +74,7 @@ return {
           item "Optimized map performance in several to reduce issues with the plugin not enabling properly.",
           item "Worked around an API bug that caused colour settings to not be properly persisted and fall back to black.",
           item "Fixed detection of a master anagram clue.",
+          item "Fixed an incorrectly placed scan decision point for the Lumbridge caves scan.",
         },
       },
     }, {
