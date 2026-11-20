@@ -1,6 +1,6 @@
 local zyklib = require "zyklib"
 
----@alias ct.util.PersistentVariableType "int" | "generic"
+---@alias ct.util.PersistentVariableType "int" | "uint32" | "generic"
 
 ---@param key string
 ---@param type ct.util.PersistentVariableType
@@ -8,6 +8,12 @@ local zyklib = require "zyklib"
 local function persistent_get(key, type)
   if type == "int" then
     return PersistentDB:GetInt(key)
+  elseif type == "uint32" then
+    --- Another bug workaround: PersistentDB messes up saved integers by treating them as signed 32 bit integers,
+    --- but returns them as signed Lua 64 bit numbers, causing the values to differ.
+    --- To work around this, we mask the value with 0xFFFFFFFF to get the correct unsigned 32 bit value.
+    local value = PersistentDB:GetInt(key)
+    if value ~= nil then return value & 0xFFFFFFFF end
   else
     return PersistentDB:Get(key)
   end
@@ -17,7 +23,7 @@ end
 ---@param type ct.util.PersistentVariableType
 ---@param value any
 local function persistent_set(key, type, value)
-  if type == "int" then
+  if type == "int" or type == "uint32" then
     PersistentDB:SetInt(key, value)
   else
     PersistentDB:Set(key, value)
