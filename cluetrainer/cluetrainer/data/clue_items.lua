@@ -54,8 +54,7 @@ clue_items["TRAIL_CLUE_EASY_SIMPLE013"]              = 127
 clue_items["TRAIL_CLUE_EASY_SIMPLE014"]              = 134
 clue_items["TRAIL_CLUE_EASY_SIMPLE015"]              = 131
 clue_items["TRAIL_CLUE_EASY_SIMPLE016"]              = 133
--- Talk to one of the squires in the White Knights' castle in Falador
-clue_items["TRAIL_CLUE_EASY_SIMPLE017"]              = DOES_NOT_EXIST
+clue_items["TRAIL_CLUE_EASY_SIMPLE017"]              = 132
 clue_items["TRAIL_CLUE_EASY_SIMPLE018"]              = 111
 clue_items["TRAIL_CLUE_EASY_SIMPLE019"]              = 135
 clue_items["TRAIL_CLUE_EASY_SIMPLE020"]              = 107
