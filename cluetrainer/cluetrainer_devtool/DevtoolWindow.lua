@@ -100,8 +100,9 @@ end
 --- puzzles of the tier. Row 4: teleport to the start of the method or the solution of the chosen clue. Row 5: a
 --- teleport to pick and go to. Row 6: fill the globetrotter outfit, and make the current step of each trail unfinished
 --- again.
----@return prettyui.Window
-function DevtoolWindow.open()
+---@param onClose fun(window: PrettyUI.Window)? Called when the window is closed
+---@return PrettyUI.Window
+function DevtoolWindow.open(onClose)
   local tier_options = groupOptions("tier")
   local type_options = groupOptions("type", "All types")
   local tele_options = teleOptions()
@@ -155,6 +156,8 @@ function DevtoolWindow.open()
     title = "Clue Trainer Devtool",
     width = WINDOW_WIDTH,
     scrollable = false,
+    destroyOnClose = true,
+    onClose = onClose,
   })
 
   -- Row 1: tier and type.

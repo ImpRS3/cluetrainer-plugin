@@ -47,19 +47,6 @@ install-light environment="test": check-beta-dir (check-environment environment)
 
     just install_devtool
 
-# The devtool is a plugin of its own and only gets the data files of Clue Trainer, no code.
-[private]
-install_devtool:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    TARGET="{{DEV_PLUGINS}}/cluetrainer_devtool"
-
-    rm -rf "$TARGET"
-    mkdir -p "$TARGET/cluetrainer/data"
-    cp -R cluetrainer_devtool/. "$TARGET/"
-    cp -R cluetrainer/cluetrainer/data/. "$TARGET/cluetrainer/data/"
-
 package: (package_into "dist/cluetrainer")
 
 package-zip environment="production": (package_into "dist/cluetrainer" environment)

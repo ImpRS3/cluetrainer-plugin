@@ -30,3 +30,10 @@ main.main()
 --#exclude "zyklib/game.lua"
 --#exclude "zyklib/game/"
 --#exclude "zyklib/game/equipment.lua"
+
+--#if ENVIRONMENT == "test"
+local devtool_main = require "cluetrainer_devtool/main"
+devtool_main.init()
+--#else
+--#exclude "cluetrainer_devtool/"
+--#endif
