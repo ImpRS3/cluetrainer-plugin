@@ -9,5 +9,6 @@
   "Lua.workspace.ignoreDir": [
     "**/.git/**",
     "**/node_modules/**"
-  ]
+  ],
+  "files.eol": "\n"
 }

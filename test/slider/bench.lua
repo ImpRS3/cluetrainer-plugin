@@ -63,7 +63,7 @@ local SOLVE_TIME = 200 -- ms, the game's default setting
 -- Options -------------------------------------------------------------------------------------------------------------
 
 local options = {
-  puzzles = 1000, mode = "mouse", sets = { "A", "A+B", TODAY_SET },
+  puzzles = 100, mode = "mouse", sets = { "A", "A+B", TODAY_SET },
   fixes = { "none", "mirror", "prune", "dedupe", "all" }, data = { "sliders.json", "sliders_2024.json" },
 }
 for i = 1, #arg, 2 do

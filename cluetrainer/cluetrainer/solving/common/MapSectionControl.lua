@@ -7,7 +7,6 @@ local BUTTON_SIZE = 23
 local BORDER = 4
 local INSET_MARGIN = 8
 
--- TODO: use dedicated previous/next section sprites; these are the zoom button sprites.
 local PREVIOUS_SPRITES = common.SPRITES.ARROW_LEFT
 local NEXT_SPRITES = common.SPRITES.ARROW_RIGHT
 
