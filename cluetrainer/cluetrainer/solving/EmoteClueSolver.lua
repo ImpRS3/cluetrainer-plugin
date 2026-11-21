@@ -15,21 +15,6 @@ local ClueStateAction    = require("cluetrainer/solving/cluestateinterface/ClueS
 local TeleportAction     = require "cluetrainer/solving/cluestateinterface/TeleportAction"
 local zyklib             = require "zyklib"
 
----@param config LocType?
----@return boolean
-local function is_hidey_hole_config(config)
-  return config ~= nil and config.configName ~= nil
-      and string.find(string.upper(config.configName), "^TRAIL17_STASH_") ~= nil
-end
-
--- Hidey-holes are multilocs whose configs, in every state (unbuilt, built, filled), share the internal name prefix
--- TRAIL17_STASH_.
----@param loc LocEntity
----@return boolean
-local function is_hidey_hole(loc)
-  return is_hidey_hole_config(loc.config) or (loc.isMultiLoc and is_hidey_hole_config(loc.parentConfig))
-end
-
 -- The box colour per state of a hidey-hole, by the suffix of the internal name of its current config.
 local HIDEY_HOLE_STATE_COLOURS = {
   { suffix = "_UNBUILT", colour = 0xFF0000A0 }, -- Red: not built yet
@@ -57,13 +42,13 @@ local function create_step_highlights(step)
 
   local hole = step.hidey_hole
   if hole ~= nil then
-    -- Any hidey-hole object on or next to the hole's tile, whether it is unbuilt, built or filled.
+    -- Hidey-holes are multilocs: matching the master loc finds the hidey-hole whether it is unbuilt, built or filled.
     -- The same south-west corner as for containers in SimpleClueSolver.
     local location = hole.location
     table.insert(highlights, path_shapes.locHighlight({
       coordGrid = tilecoordinates.toCoordGrid({ x = location.topleft.x, y = location.botright.y, level = location.level }),
       range = 2,
-      func = is_hidey_hole
+      parentConfigID = id.Loc[hole.config]
     }, hidey_hole_colour))
   end
 
