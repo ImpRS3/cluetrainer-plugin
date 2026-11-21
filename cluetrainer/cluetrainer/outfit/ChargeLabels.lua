@@ -1,5 +1,4 @@
 -- ChargeLabels.lua
-local zyklib = require "zyklib"
 local schema = require "cluetrainer/util/schema"
 local OutfitCharges = require "cluetrainer/outfit/OutfitCharges"
 
@@ -13,18 +12,30 @@ ChargeLabels.settings = {
   boots = ctGlobal.persistence:profileVariable("outfit_charges/boots", schema.bool({ default = false })),
 }
 
----@param piece ct.outfit.OutfitPiece
+---@class ct.outfit.ChargeLabels.Entry
+---@field piece ct.outfit.OutfitPiece
+---@field optional boolean Whether the piece's charges are only shown when asked for
+
+--- The pieces that get a label.
+---@type ct.outfit.ChargeLabels.Entry[]
+local ENTRIES = {
+  { piece = OutfitCharges.pieces.jacket,   optional = false },
+  { piece = OutfitCharges.pieces.backpack, optional = false },
+  { piece = OutfitCharges.pieces.boots,    optional = true },
+}
+
+---@param entry ct.outfit.ChargeLabels.Entry
 ---@return boolean
-local function isShown(piece)
+local function isShown(entry)
   if not ChargeLabels.settings.enabled:get() then return false end
-  return not piece.optional or ChargeLabels.settings.boots:get()
+  return not entry.optional or ChargeLabels.settings.boots:get()
 end
 
 local FONT = id.Font.MUSEO_SANS_13PT_REGULAR
 local COLOUR = 0xFFFFFFFF
 local EMPTY_COLOUR = 0xFF5959FF
 
----@type table<ct.outfit.OutfitPiece, ui.Text>
+---@type table<ct.outfit.ChargeLabels.Entry, ui.Text>
 local labels = {}
 
 ---@param label ui.Text?
@@ -50,30 +61,30 @@ end
 local function sync()
   local layer = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2_WORN__ITEM_LAYER) --[[@as ui.ComponentCollection?]]
 
-  ---@type table<ct.outfit.OutfitPiece, ui.Component>
+  ---@type table<ct.outfit.ChargeLabels.Entry, ui.Component>
   local sprites = {}
   if layer ~= nil then
     layer:IterateDynamicComponents(function(component)
-      for _, piece in ipairs(OutfitCharges.pieces) do
-        if piece.obj_ids[component.associatedObjectID] then sprites[piece] = component end
+      for _, entry in ipairs(ENTRIES) do
+        if entry.piece.obj_ids[component.associatedObjectID] then sprites[entry] = component end
       end
       return false
     end)
   end
 
-  for _, piece in ipairs(OutfitCharges.pieces) do
-    local sprite = isShown(piece) and sprites[piece] or nil
-    local label = labels[piece]
+  for _, entry in ipairs(ENTRIES) do
+    local sprite = isShown(entry) and sprites[entry] or nil
+    local label = labels[entry]
 
     if sprite == nil then
       if exists(label) then label.hidden = true end
     else
       if not exists(label) then
         label = createLabel(layer --[[@as ui.ComponentCollection]])
-        labels[piece] = label
+        labels[entry] = label
       end
 
-      local charges = piece.charges:get()
+      local charges = entry.piece.charges:get()
       label:SetPos(sprite.x, sprite.y)
       label:SetSize(sprite.width, sprite.height)
       label.content = tostring(charges)
@@ -83,15 +94,42 @@ local function sync()
   end
 end
 
+local function hideAll()
+  for _, label in pairs(labels) do
+    if exists(label) then label.hidden = true end
+  end
+end
+
 local initialized = false
 
---- Starts showing the labels. Only the first call has an effect.
+--- Starts showing the labels. Only the first call has an effect. While the labels are disabled, nothing runs.
 function ChargeLabels.init()
   if initialized then return end
   initialized = true
 
-  OutfitCharges.init()
-  zyklib.game_events.native.ServerLogic:subscribe(sync)
+  local sync_handler = zyklib.game_events.native.ServerLogic:subscribeSuspended(sync)
+
+  -- Observing a piece's charges keeps them up to date: OutfitCharges only listens to the server while they are observed.
+  ---@type table<ct.outfit.ChargeLabels.Entry, zyklib.reactive.EventHandler>
+  local charge_handlers = {}
+  for _, entry in ipairs(ENTRIES) do
+    charge_handlers[entry] = entry.piece.charges:subscribeSuspended(function() end)
+  end
+
+  local function update()
+    local enabled = ChargeLabels.settings.enabled:get()
+
+    for entry, handler in pairs(charge_handlers) do
+      handler:setActive(isShown(entry))
+    end
+    sync_handler:setActive(enabled)
+
+    if not enabled then hideAll() end
+  end
+
+  ChargeLabels.settings.enabled:observable():subscribe(update)
+  ChargeLabels.settings.boots:observable():subscribe(update)
+  update()
 end
 
 return ChargeLabels
