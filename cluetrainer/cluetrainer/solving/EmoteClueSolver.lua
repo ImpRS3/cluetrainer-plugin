@@ -47,6 +47,7 @@ end
 ---@field emote_get_hideyhole? ct.interfaces.cluestate.ClueStateAction
 ---@field equip_items? ct.interfaces.cluestate.ClueStateAction
 ---@field summon? ct.interfaces.cluestate.ClueStateAction
+---@field kill_double_agent? ct.interfaces.cluestate.ClueStateAction
 ---@field uri? ct.interfaces.cluestate.ClueStateAction
 ---@field emote_return_hideyhole? ct.interfaces.cluestate.ClueStateAction
 
@@ -96,6 +97,7 @@ end
 
 function EmoteClueSolver:buildActions()
   local globetrotter_owned = var.VarPlayer.TRAIL_OUTFIT_FULL_OWNED.value == 31
+  local globetrotter_legs_owned = var.VarPlayer.TRAIL_OUTFIT_LEGS_OWNED.value == 1
 
   local clue = self.clue
   local state_panel = self.clue_state
@@ -108,14 +110,19 @@ function EmoteClueSolver:buildActions()
 
   self.actions.equip_items = state_panel:addAction(ClueStateAction.Text.new("Equip outfit"))
 
-  if clue.double_agent then
-    self.actions.summon = state_panel:addAction(ClueStateAction.Text.new("Summon and kill " ..
-      RichText.npc("Double Agent")))
+  if globetrotter_legs_owned then
+    self.actions.summon = state_panel:addAction(ClueStateAction.Text.new("Summon " ..
+      RichText.npc(clue.double_agent and "Double Agent" or "Uri")))
   else
-    self.actions.summon = state_panel:addAction(ClueStateAction.Text.new("Summon " .. RichText.npc("Uri")))
+    self.actions.summon = state_panel:addAction(ClueStateAction.Text.new(table.concat(clue.emotes, ", then ")))
   end
 
-  self.actions.uri = state_panel:addAction(ClueStateAction.Text.new("Speak to Uri"))
+  if clue.double_agent then
+    self.actions.kill_double_agent = state_panel:addAction(ClueStateAction.Text.new("Kill " ..
+      RichText.npc("Double Agent")))
+  end
+
+  self.actions.uri = state_panel:addAction(ClueStateAction.Text.new("Speak to " .. RichText.npc("Uri")))
 
   if self.clue.hidey_hole ~= nil and not globetrotter_owned then
     self.actions.emote_return_hideyhole = state_panel:addAction(ClueStateAction.Text.new("Return hidey-hole"))
