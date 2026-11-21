@@ -62,14 +62,6 @@ end
 ---@param previous_version string?
 ---@param reason ct.PatchNotes.OpenReason
 local function open(parent, previous_version, reason)
-  local current_index, previous_index
-  for index, patch in ipairs(data.patches) do
-    if patch.version == data.current_version then current_index = index end
-    if patch.version == previous_version then previous_index = index end
-  end
-  assert(current_index ~= nil, "No patch notes for current version: " .. tostring(data.current_version))
-  local first_index = previous_index and previous_index < current_index and previous_index + 1 or 1
-
   window = prettyui.Window.new(parent, {
     title = titles[reason],
     x = -WINDOW_WIDTH // 2,
@@ -94,37 +86,37 @@ local function open(parent, previous_version, reason)
   })
 
   local displayed = false
-  for index, patch in ipairs(data.patches) do
-    if index >= first_index and index <= current_index then
-      window:AddDivider({ marginTop = 0, marginBottom = 0 })
-      window:AddText({
-        text = patch.date .. " (" .. patch.version .. ") - " .. patch.name,
-        font = id.Font.CINZEL_15PT_BOLD,
-        colour = 0xf0be79ff,
-        alignHorizontal = ui.AlignMode.CENTRE,
-        width = text_width,
-        marginTop = 0,
-      })
-      displayed = true
-      for block_index, block in ipairs(patch.content) do
-        if block.type == "header" then
-          window:AddText({
-            text = block.text,
-            font = id.Font.CINZEL_13PT_BOLD,
-            colour = 0xf0be79ff,
-            width = text_width,
-            marginTop = block_index == 1 and 0 or 6,
-          })
-        elseif block.type == "paragraph" then
-          window:AddText({
-            text = block.text,
-            width = text_width,
-          })
-        elseif block.type == "list" then
-          addList(window, block.items, 0, content_width)
-        else
-          error("Invalid patch notes content type: " .. tostring(block.type))
-        end
+  for index = #data.patches, 1, -1 do
+    local patch = data.patches[index]
+    if patch.version == previous_version then break end
+    window:AddDivider({ marginTop = 0, marginBottom = 0 })
+    window:AddText({
+      text = patch.date .. " (" .. patch.version .. ") - " .. patch.name,
+      font = id.Font.CINZEL_15PT_BOLD,
+      colour = 0xf0be79ff,
+      alignHorizontal = ui.AlignMode.CENTRE,
+      width = text_width,
+      marginTop = 0,
+    })
+    displayed = true
+    for block_index, block in ipairs(patch.content) do
+      if block.type == "header" then
+        window:AddText({
+          text = block.text,
+          font = id.Font.CINZEL_13PT_BOLD,
+          colour = 0xf0be79ff,
+          width = text_width,
+          marginTop = block_index == 1 and 0 or 6,
+        })
+      elseif block.type == "paragraph" then
+        window:AddText({
+          text = block.text,
+          width = text_width,
+        })
+      elseif block.type == "list" then
+        addList(window, block.items, 0, content_width)
+      else
+        error("Invalid patch notes content type: " .. tostring(block.type))
       end
     end
   end
@@ -132,8 +124,8 @@ local function open(parent, previous_version, reason)
     window:AddText("No patch notes are available for this version.")
   end
 
-  if last_opened:get() ~= data.current_version then
-    last_opened:set(data.current_version)
+  if last_opened:get() ~= data.latest_patch.version then
+    last_opened:set(data.latest_patch.version)
   end
 end
 
@@ -157,7 +149,7 @@ end
 function PatchNotesDialog.init()
   local previous_version = last_opened:get()
 
-  if previous_version ~= data.current_version then
+  if previous_version ~= data.latest_patch.version then
     pending = zyklib.game_events.native.Logic:subscribe(function()
       local parent = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_TOP)
       if parent == nil or parent.visibleGlobal == false then return end
