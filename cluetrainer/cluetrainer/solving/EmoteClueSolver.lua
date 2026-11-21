@@ -43,10 +43,10 @@ local HIDEY_HOLE_STATE_COLOURS = {
 ---@return ColourRGBA
 local function hidey_hole_colour(loc)
   local name = loc.config and loc.config.configName and string.upper(loc.config.configName) or ""
-  for _, state in ipairs(HIDEY_HOLE_STATE_COLOURS) do
-    if string.sub(name, -#state.suffix) == state.suffix then return state.colour end
-  end
-  return 0x00FFFFA0 -- Cyan, like other objects, should the state be unknown
+  local state = zyklib.array.find(HIDEY_HOLE_STATE_COLOURS, function(entry)
+    return string.sub(name, -#entry.suffix) == entry.suffix
+  end)
+  return state and state.colour or 0x00FFFFA0 -- Cyan, like other objects, should the state be unknown
 end
 
 ---@param step Emote
