@@ -12,8 +12,6 @@ install environment="test": check-beta-dir (package_into DEV_PLUGINS / "cluetrai
     #!/usr/bin/env bash
     set -euo pipefail
 
-    just install_devtool
-
     install_plugin() {
       local plugin_name="$1"
       local target_dir="{{DEV_PLUGINS}}/$(basename "$plugin_name")"
@@ -44,8 +42,6 @@ install-light environment="test": check-beta-dir (check-environment environment)
       --output "$TARGET" \
       --preserve "resources/prettymap" \
       ENVIRONMENT="{{environment}}"
-
-    just install_devtool
 
 package: (package_into "dist/cluetrainer")
 
